@@ -1,0 +1,13 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {Farm,starter,line,ports,key} from '../dist/engine.js';
+const run=(f,seconds)=>{for(let i=0;i<seconds*20;i++)f.advance(.05);};
+test('connected wheat → flour → bread line delivers to farmhouse',()=>{const f=starter(true);run(f,120);assert.ok(f.stats.bread>=5);assert.ok(f.stats.wheat>=f.stats.flour*2);assert.ok(f.stats.flour>=f.stats.bread*2);});
+test('disconnected output backs up with bounded inventory',()=>{const f=starter();run(f,120);assert.equal(f.stats.bread,0);assert.equal(f.buildings[0].output,4);assert.equal(f.stats.wheat,4);});
+test('only the marked input accepts the correct product and direction',()=>{const f=new Farm();const mill=f.place('mill',5,5);f.lay([{x:4,y:5,dir:0}]);f.belts[key(4,5)].item='wheat';f.move();assert.equal(mill.input,0);f.lay([{x:4,y:6,dir:0}]);f.belts[key(4,6)].item='bread';f.move();assert.equal(mill.input,0);f.belts[key(4,6)].item='wheat';f.move();assert.equal(mill.input,1);});
+test('straight lines snap to dominant axis and reverse travel with drag',()=>{assert.deepEqual(line({x:8,y:5},{x:3,y:7}),[8,7,6,5,4,3].map(x=>({x,y:5,dir:2})));assert.deepEqual(line({x:3,y:9},{x:5,y:3}).at(-1),{x:3,y:3,dir:3});});
+test('3 × 3 footprints and entire lines reject collisions atomically',()=>{const f=starter();assert.equal(f.place('mill',5,12),false);assert.equal(f.place('mill',37,23),false);assert.equal(f.lay(line({x:1,y:11},{x:9,y:11})),false);assert.equal(Object.keys(f.belts).length,0);});
+test('rotated buildings use corresponding side ports',()=>{const f=new Farm();const field=f.place('field',3,1,1),mill=f.place('mill',3,7,1);assert.deepEqual(ports(field).output,{x:4,y:3});f.lay(line({x:4,y:4},{x:4,y:6}));run(f,30);assert.ok(f.stats.flour>0);assert.ok(mill.output>0);});
+test('conveyors turn corners without destroying parcels',()=>{const f=new Farm();f.lay(line({x:1,y:1},{x:4,y:1}));f.lay(line({x:4,y:1},{x:4,y:4}));f.belts[key(1,1)].item='wheat';for(let i=0;i<8;i++)f.move();assert.equal(f.belts[key(4,4)].item,'wheat');assert.equal(Object.values(f.belts).filter(b=>b.item).length,1);});
+test('restoring an undo snapshot restores layout and inventory',()=>{const f=starter(true);run(f,12);const snapshot=f.snapshot();f.remove([{x:3,y:10},{x:7,y:11}]);run(f,20);f.restore(snapshot);assert.equal(f.snapshot(),snapshot);});
+test('two incoming belts cannot duplicate or overwrite cargo at a merge',()=>{const f=new Farm();f.lay([{x:1,y:2,dir:0},{x:2,y:1,dir:1},{x:2,y:2,dir:0}]);f.belts[key(1,2)].item='wheat';f.belts[key(2,1)].item='flour';f.move();assert.equal(Object.values(f.belts).filter(b=>b.item).length,2);});

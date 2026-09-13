@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Animal Factory — The bread plan</title>
+  <meta name="description" content="Build a farm production line. Connect wheat fields, mills, and bakeries with conveyors to feed the farmhouse.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header><div class="brand"><span class="star">★</span><div><h1>ANIMAL FACTORY</h1><p>THE BREAD PLAN <span> / PROTOTYPE 01</span></p></div></div><div class="totals"><div><small>WHEAT HARVESTED</small><strong id="wheat">0</strong></div><div><small>FLOUR MILLED</small><strong id="flour">0</strong></div><div class="bread-total"><small>BREAD DELIVERED</small><strong id="bread">0</strong></div></div></header>
+<main>
+<aside><div class="section-label">PRODUCTION BUREAU <span>01</span></div><h2>Build the bread line.</h2><p class="intro">The fields provide. The house receives.</p>
+<div class="tools" role="group" aria-label="Construction tools">
+<button data-tool="belt" class="tool selected" aria-pressed="true"><span class="tool-icon belt-icon">→</span><span><b>Conveyor</b><small>Drag a straight line</small></span><kbd>1</kbd></button>
+<button data-tool="field" class="tool" aria-pressed="false"><span class="tool-icon field-icon">W</span><span><b>Wheat field</b><small>3 × 3 · produces wheat</small></span><kbd>2</kbd></button>
+<button data-tool="mill" class="tool" aria-pressed="false"><span class="tool-icon mill-icon">M</span><span><b>Mill</b><small>3 × 3 · wheat → flour</small></span><kbd>3</kbd></button>
+<button data-tool="bakery" class="tool" aria-pressed="false"><span class="tool-icon bakery-icon">B</span><span><b>Bakery</b><small>3 × 3 · flour → bread</small></span><kbd>4</kbd></button>
+<div class="secondary-tools"><button data-tool="inspect" aria-pressed="false">Inspect <kbd>5</kbd></button><button data-tool="erase" aria-pressed="false">Remove <kbd>6</kbd></button></div></div>
+<div class="rotation"><span>Facing <b id="direction">EAST →</b></span><button id="rotate" title="Rotate clockwise (R)">Rotate <kbd>R</kbd></button></div>
+<section class="inspector" aria-live="polite"><div class="section-label">BUILDING REPORT</div><h3 id="inspect-title">Conveyor</h3><p id="inspect-description">Drag between tiles. Lines snap horizontally or vertically. The drag sets travel direction.</p><div id="inspect-detail"></div></section>
+<div class="legend"><span><i class="in"></i>Input</span><span><i class="out"></i>Output</span><span>All buildings: 3 × 3</span></div>
+<button id="example" class="example">Connect the example <span>↗</span></button><p class="helper">Or build it yourself: connect each gold output to the next blue input.</p>
+</aside>
+<section class="workspace" aria-label="Farm construction map"><div class="map-bar"><span><i></i> COLLECTIVE FARM No. 01</span><div><button id="pause" aria-label="Pause simulation">Ⅱ Pause</button><button id="speed" aria-label="Change simulation speed">1×</button><button id="undo" disabled>Undo</button><button id="reset">Reset</button></div></div>
+<div class="canvas-wrap"><canvas id="farm" tabindex="0" aria-label="Farm map. Select a tool, then click to place a 3 by 3 building or drag to lay a straight conveyor. Use R to rotate, arrow keys to pan, and plus or minus to zoom."></canvas><div class="map-note"><b>FROM EACH ACCORDING TO THEIR OUTPUT.</b><span>Wheat → Flour → Bread → Farmhouse</span></div><div class="zoom-controls"><button id="zoom-out" aria-label="Zoom out">−</button><button id="fit">Fit</button><button id="zoom-in" aria-label="Zoom in">+</button></div></div>
+<footer><span id="message" role="status">Lay your first line: drag from the field’s gold output to the mill’s blue input.</span><span class="map-help">Drag to build · Right-drag to pan · Scroll to zoom</span></footer>
+</section>
+</main>
+<script type="module" src="app.js"></script>
+</body></html>
