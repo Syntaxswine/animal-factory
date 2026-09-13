@@ -15,5 +15,6 @@ for(const def of Object.values(manifest.characters)){
  for(const frame of def.frames)await checkPNG('assets/characters/'+frame,192,256);
 }
 for(const type of Object.keys(TYPES))await checkPNG(`assets/machines/${type}.png`,320,320);
+for(const type of ['mill','bakery','bottler','dairy'])await checkPNG(`assets/machines/industrial/${type}.png`,320,320);
 for(const file of ['index.html','sprites.html','app.js','engine.js','style.css'])await readFile(new URL(file,root));
-console.log('Verified 32 character frames, 8 strips, 12 machine sprites, and entrypoints.');
+console.log('Verified 32 character frames, 8 strips, 12 machine sprites, 4 industrial variants, and entrypoints.');

@@ -62,12 +62,15 @@ def characters():
     (target/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
     contact.save(ROOT/'art/character-review.jpg',quality=92)
 
-def machines():
+def machines(industrial=False):
     groups={'machines-bread':['field','mill','bakery','house'],
             'machines-alcohol':['orchard','press','fermenter','bottler'],
             'machines-cakes':['feedmill','dairy','sugarworks','confectionery']}
-    target=ROOT/'dist/assets/machines';target.mkdir(parents=True,exist_ok=True)
-    review=Image.new('RGB',(4*340,3*370),'#697659');draw=ImageDraw.Draw(review)
+    if industrial: groups={'machines-industrial':['mill','bakery','bottler','dairy']}
+    target=ROOT/'dist/assets/machines'
+    if industrial: target=target/'industrial'
+    target.mkdir(parents=True,exist_ok=True)
+    review=Image.new('RGB',(1040,1120) if industrial else (4*340,3*370),'#697659');draw=ImageDraw.Draw(review)
     for row,(sheet,names) in enumerate(groups.items()):
         source=Image.open(ROOT/'art/source'/f'{sheet}.png').convert('RGB')
         cw,ch=source.width//2,source.height//2
@@ -79,13 +82,24 @@ def machines():
             alpha[alpha<12]=0;alpha[alpha>244]=255
             image=crop.convert('RGBA');image.putalpha(Image.fromarray(alpha))
             image=image.crop(image.getbbox())
+            large=image.copy()
             image.thumbnail((304,304),Image.Resampling.LANCZOS)
             frame=Image.new('RGBA',(320,320));frame.alpha_composite(image,((320-image.width)//2,312-image.height))
             frame.save(target/f'{name}.png',optimize=True)
-            review.paste(frame,(i*340+10,row*370+8),frame);draw.text((i*340+12,row*370+342),name,fill='#ffefc1')
+            if industrial:
+                large.thumbnail((488,488),Image.Resampling.LANCZOS)
+                px=(i%2)*520;py=(i//2)*560
+                review.paste(large,(px+(520-large.width)//2,py+505-large.height),large)
+                from PIL import ImageFont
+                label={'mill':'SILO MILL','bakery':'INDUSTRIAL BAKERY','bottler':'BOTTLING HALL','dairy':'COLLECTIVE DAIRY'}[name]
+                draw.text((px+20,py+524),label,fill='#ffefc1',font=ImageFont.load_default(size=22))
+            else:
+                review.paste(frame,(i*340+10,row*370+8),frame);draw.text((i*340+12,row*370+342),name,fill='#ffefc1')
             print(f'Prepared machine {name}',flush=True)
-    review.save(ROOT/'art/machine-review.jpg',quality=94)
+    if industrial: review.save(ROOT/'art/industrial-review.png')
+    else: review.save(ROOT/'art/machine-review.jpg',quality=94)
 
 if __name__=='__main__':
-    if len(sys.argv)>1 and sys.argv[1]=='machines': machines()
+    if len(sys.argv)>1 and sys.argv[1]=='industrial': machines(industrial=True)
+    elif len(sys.argv)>1 and sys.argv[1]=='machines': machines()
     else: characters()

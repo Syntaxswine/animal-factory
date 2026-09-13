@@ -26,3 +26,9 @@ See [prompts.md](prompts.md) for the exact generation and edit prompts. Built-in
 `character-review.jpg` and `machine-review.jpg` show the finished assets composited against the farm palette. The in-game art viewer at `/sprites.html` provides light, dark and checkerboard inspection.
 
 Reproduction: run `tools/prepare-sprites.py` for characters or `tools/prepare-sprites.py machines` for machines, with Pillow/numpy and (characters only) rembg[cpu] available in `.sprite-tools/`. Segmentation weights and local dependencies are ignored by Git; they are never required by the browser game.
+
+## Soviet industrial alternatives
+
+Four alternative sprites for the mill, bakery, bottling works, and dairy are saved under `../dist/assets/machines/industrial/`. They retain the 320 × 320 transparent frame format and are paired with the current machines in `/sprites.html#industrial`. They are visual alternatives; the active game still uses the original buildings.
+
+The designs use silo towers, sawtooth factory roofs, brick and concrete factory blocks, large steel tanks, gantries, and external pipework. See [industrial-review.png](industrial-review.png) for the finished quartet and [industrial-prompts.md](industrial-prompts.md) for the exact built-in generation prompt. Reproduce the exports with `tools/prepare-sprites.py industrial`.
