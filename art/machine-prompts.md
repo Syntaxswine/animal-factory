@@ -25,4 +25,3 @@ Create exactly FOUR different isolated miniature farm production buildings in a 
 BACKGROUND MUST BE SOLID PURE MAGENTA RGB(255,0,255) #ff00ff behind and between every object, with no ground plane, gradient, backdrop texture or shadows outside the object. The magenta will be removed locally. Avoid any magenta in objects.
 Positions and subjects:
 TOP LEFT: animal feed mill with olive iron grain grinder, timber feed hopper, burlap feed sacks and a low corrugated dark-red roof. TOP RIGHT: dairy with cream plaster, red brick foundation, metal milk churns, copper processing vat and low red tiled roof; no cow or other animal. BOTTOM LEFT: sugar works with a small sugar beet patch beside a compact brick sugar boiler and cream sugar sacks, all within one square base. BOTTOM RIGHT: cake kitchen with a decorative brick oven under a burgundy roof, olive iron mixer and a finished cream cake on a wooden worktable; different silhouette from a plain bread bakery.
-
