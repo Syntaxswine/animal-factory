@@ -16,3 +16,13 @@ The first cast comprises eight characters and 32 illustrated poses. The painted 
 Art direction: painterly socialist realism with animal faces, sturdy worker silhouettes, olive work clothes, cream canvas, wheat-gold highlights, and red accents. The pig foreman wears an olive uniform and red cap; the director wears a burgundy waistcoat and has a more indulgent silhouette.
 
 See [prompts.md](prompts.md) for the exact generation and edit prompts. Built-in image generation was used.
+
+## Finished runtime sprites
+
+`../dist/assets/characters/` contains 32 transparent 192 × 256 PNG frames, eight 768 × 256 strips, and `manifest.json`. The shared anchor is (96, 244). Original artwork was segmented locally using rembg/isnet with user authorization, then scaled and aligned without repainting the characters.
+
+`../dist/assets/machines/` contains twelve transparent 320 × 320 PNGs. Generated magenta backdrops were keyed out locally. [machine-prompts.md](machine-prompts.md) records the exact prompts and style reference. Original source sheets remain in `source/`.
+
+`character-review.jpg` and `machine-review.jpg` show the finished assets composited against the farm palette. The in-game art viewer at `/sprites.html` provides light, dark and checkerboard inspection.
+
+Reproduction: run `tools/prepare-sprites.py` for characters or `tools/prepare-sprites.py machines` for machines, with Pillow/numpy and (characters only) rembg[cpu] available in `.sprite-tools/`. Segmentation weights and local dependencies are ignored by Git; they are never required by the browser game.

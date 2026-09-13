@@ -32,5 +32,5 @@ TOP ROW: a stout pink PIG FOREMAN with pig snout, floppy ears and small curly ta
 
 Use case: background-extraction. Edit target: the attached Animal Factory sprite atlas. Remove ONLY the entire brown painted background and replace it with genuine transparent alpha. Preserve all eight characters exactly, their colors, clothes, faces, poses, props, positions and image dimensions. Keep all opaque pixels of the animal figures and erase all the backdrop around and between their limbs, ears and props. Every character must be a clean isolated cutout on completely transparent pixels. NO colored background, NO checkerboard drawn into image, NO gradient, NO ground, NO shadow, NO new content. This is a transparent PNG sprite atlas for canvas compositing, not a presentation image.
 
-The generator returned opaque backgrounds, including baked checkerboards on three extraction attempts. These are not valid transparent sprites; transparency must be independently verified before runtime use.
+The generator returned opaque backgrounds, including baked checkerboards on three extraction attempts. These are not valid transparent sprites; the final runtime sprites were instead extracted from the original approved artwork locally with user authorization. Their actual alpha channels were verified before runtime use.
 

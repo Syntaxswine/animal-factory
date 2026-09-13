@@ -1,4 +1,7 @@
 node_modules/
+.sprite-tools/
+.sprite-models/
+.sprite-cache/
 *.zip
 .env
 .env.*
