@@ -7,6 +7,7 @@
 | Mechanics contract | 4/5 pass | Prevent LOS-breaking AP reset. Alerted guards now keep combat active until defeated; opening attacks spend combat AP. |
 | Engine and regression tests | 4/5 pass | 13 tests and 20-seed state-invariant probe passed. Guards now hold firing position when they lack shot AP, instead of wasting movement. A regression test was added. |
 | Interface and play validation | 4/5 pass | Code and combat screenshot reviewed. Recompute click hit testing after camera changes; include both tactics modules in npm syntax checks. Both fixed. |
+| User direction follow-up | 4.5/5 pass | Design-only review against the seven-answer summary. Confirmed rules are separate from proposals and unresolved choices; no blockers. Aimed-shot modes remain open. |
 
 Final suite: 45 tests, syntax checks and inherited asset validation pass. Twenty complete deterministic balance runs (seeds 1947–1966) yielded twenty victories, four survivors each, 6–9 rounds and 202–383 total remaining squad HP. The navigation bot knows enemy positions, but every action uses the normal visibility, path, AP, ammunition, hit and AI rules. These tests establish a forgiving playable baseline; they do not establish experienced-player difficulty.
 
@@ -15,6 +16,8 @@ Browser checks by main agent: real-time movement; movement interrupted by contac
 Artwork: existing Animal Factory painted animal frames and industrial building sprites. Roofless workshop walls, floor and cover geometry are intentionally simple in this mechanics slice. Dedicated armed and attack poses remain future work.
 
 ## Questions for the next iteration
+
+These historical questions were answered by the user. See [the recorded direction](DIRECTION.md) for confirmed decisions, proposals and remaining choices.
 
 1. Should fallen squad members die permanently, become incapacitated for rescue, or recover after the mission?
 2. Should characters grow through fixed roles, skill use, or freely assigned points? What makes each animal species distinct mechanically?
