@@ -1,5 +1,7 @@
 # Red Shift — mechanics prototype
 
+Historical first-slice contract. The current local-map, overmap and edge-wall editor behavior is documented in [README.md](README.md) and `docs/tactics/MAPS.md`. Story work is deferred.
+
 An independent entry at /tactics/index.html using existing Animal Factory assets. No builder changes.
 
 Stage 1 contract: 28x24 isometric factory, open yard, two roofless workshops, solid walls with door gaps, crates provide directional cover and block walking. Four named animal workers (horse, goat, sheep, donkey), twelve animal guards in three groups. All living actors occupy one tile, cardinal movement with BFS avoids walls and units, at 1 AP per tile during combat. Opening attacks during exploration enter combat and spend AP. Shared squad line of sight reveals tiles permanently; opponents render only when currently visible. Squad sight and contact detection are 9 tiles. Contact switches immediately from timed exploration movement to squad turns. No movement queue survives phase transition. Combat remains active while any alerted guard lives; guards pursue last known squad positions even after sight breaks. Defeating the alerted guards returns to exploration. This prevents repeated AP resets at corners. Victory requires defeating all 12, loss all 4. No revival or XP in this slice.

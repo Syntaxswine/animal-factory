@@ -8,7 +8,7 @@
     "serve": "node tools/serve.mjs",
     "serve:tactics": "node tools/serve-tactics.mjs",
     "check:tactics-balance": "node tools/tactics-balance.mjs",
-    "check": "node --check dist/tactics/app.js && node --check dist/tactics/engine.js && node --check dist/app.js && node --check dist/engine.js && node --check dist/renderer.js && node --check dist/people.js && node --check dist/isometric.js && node --test tests/*.test.mjs && node tools/check-assets.mjs"
+    "check": "node --check dist/tactics/maps.js && node --check dist/tactics/world.js && node --check dist/tactics/editor-model.js && node --check dist/tactics/editor.js && node --check dist/tactics/app.js && node --check dist/tactics/engine.js && node --check dist/app.js && node --check dist/engine.js && node --check dist/renderer.js && node --check dist/people.js && node --check dist/isometric.js && node --test tests/*.test.mjs && node tools/check-assets.mjs"
   },
   "engines": {
     "node": ">=22"

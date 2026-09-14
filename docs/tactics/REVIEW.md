@@ -26,3 +26,17 @@ These historical questions were answered by the user. See [the recorded directio
 5. Should weapons be limited by actual carried loadouts, scarce ammo, loot and repairs, or stay freely switchable while testing?
 6. Add stealth/noise and patrols next, or deepen combat with aimed shots, suppression, stances and destructible cover?
 7. Is the campaign about a workers’ revolt, rival state factions, or survival after the factory regime collapses? This will guide objectives, dialogue and progression.
+
+## Map-tool implementation review — 2026-09-14
+
+Story work was removed from the active direction. The map-tool pass was completed in three reviewed stages:
+
+| Gate | Score | Evidence and fixes |
+| --- | --- | --- |
+| Shared-edge walls | 4/5 pass | 21 tactics tests, 200 generated layouts and 13,440 reciprocal LOS comparisons. Required follow-up: cleared/empty maps must remain walkable. |
+| Local maps and overmap | 4.5/5 pass | World regressions and 50 repeated round trips preserved HP, ammunition, equipment, casualties and unit counts; occupied arrivals avoid overlaps. Cleared-map movement fixed. |
+| Editor and integration | 4/5 pass | Full suite: 63 tests. Undo branching, immutable playtest blueprints and malformed import rejection also probed. Unfinished drafts can be exported as well as saved/imported. |
+
+Browser checks by the main agent covered thin-wall rendering, gathering at the marker, overmap travel into Yard test, editor wall placement and undo, seeded generation, saving/loading a draft, a room stamp on a blank map, a one-guard custom playtest with the correct objective, and returning to the unchanged blueprint. Browser testing found a shadowed state variable in the overmap callback; it was corrected and successful travel was retested. Editor/preview console checks were clean.
+
+The final edge-wall balance smoke test cleared all twelve guards in all twenty runs (5–7 rounds; 3–4 squad survivors). Local map state persists in-session; reload still resets the run. Maps are fixed at 28×24; overmap node editing and campaign saving are future work. Imported unfinished maps can be repaired in the editor, but strict validation is required to playtest.

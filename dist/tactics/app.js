@@ -1,6 +1,11 @@
+import {createWorld,currentMap,travel,travelReason} from './world.js';
+import {parseMap} from './maps.js';
+import {edgeCells,edgePoints} from './maps.js';
 import {W,H,WEAPONS,key,alive,squad,guards,occupant,tile,walkable,createGame,pathTo,move,stepMovement,previewAttack,attack,equip,reload,endTurn,stepEnemy,canControl} from './engine.js';
 const $=id=>document.getElementById(id),canvas=$('map'),ctx=canvas.getContext('2d'),mini=$('mini').getContext('2d');
-let s=createGame(),targetId=null,burst=false,showGrid=false,hover=null,hoverActor=null,route=null,lastTick=0,lastRevision=-1,toast='',toastUntil=0,effectUntil=0,lastEffect=null,drag=null,width=1,height=1;
+let customMap=null,loadError='';
+if(new URLSearchParams(location.search).get('map')==='custom'){try{customMap=parseMap(sessionStorage.getItem('red-shift-playtest')||'');}catch(e){loadError='Could not load the playtest map. '+e.message;}}
+let world=createWorld(customMap),s=currentMap(world),targetId=null,burst=false,showGrid=false,hover=null,hoverActor=null,route=null,lastTick=0,lastRevision=-1,toast='',toastUntil=0,effectUntil=0,lastEffect=null,drag=null,width=1,height=1;
 const camera={x:0,y:0,zoom:1.15},images=new Map(),sprites=[];
 const selected=()=>s.units[s.selected],target=()=>s.units.find(u=>u.id===targetId&&alive(u)&&s.visible.has(key(u.x,u.y)));
 function load(src){if(images.has(src))return images.get(src);const img=new Image();img.src=src;img.onerror=()=>message('An artwork file could not load. Reload the page to retry.');images.set(src,img);return img;}
@@ -27,15 +32,24 @@ function drawTerrain(){
    if(!visible)diamond(x,y,'#182c2899');
   }
  }
- for(const [label,x,y]of [['ENTRY / 07',3,2],['LOADING YARD',8,12],['NORTH WORKSHOP',14,7],['ASSEMBLY',21,18]])if(s.seen.has(key(x,y)))textLabel(label,x,y,'#d1c08c99',9);
+ for(const exit of s.definition.exits){if(s.seen.has(key(exit.x,exit.y))){diamond(exit.x,exit.y,'#72bcd555','#a9e5eb');textLabel('TRAVEL',exit.x,exit.y,'#d8f6f4',8);}}
+
+}
+function drawEdge(k,kind){
+ const ends=edgePoints(k),a=project(ends[0].x,ends[0].y),b=project(ends[1].x,ends[1].y),h=(kind==='door'?0:27)*camera.zoom;
+ if(kind==='door'){ctx.strokeStyle='#ebca7a';ctx.lineWidth=3*camera.zoom;ctx.setLineDash([4*camera.zoom,3*camera.zoom]);ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();ctx.setLineDash([]);return;}
+ poly([a,b,{x:b.x,y:b.y-h},{x:a.x,y:a.y-h}],k.startsWith('e')?'#81745b':'#a08f6a','#514c3c');
+ ctx.strokeStyle='#d1bd89';ctx.lineWidth=3*camera.zoom;ctx.beginPath();ctx.moveTo(a.x,a.y-h);ctx.lineTo(b.x,b.y-h);ctx.stroke();
+ ctx.strokeStyle='#544d3c88';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(a.x,a.y-h/2);ctx.lineTo(b.x,b.y-h/2);ctx.stroke();
 }
 function drawObjects(now){
  sprites.length=0;
- const objects=[];for(let y=0;y<H;y++)for(let x=0;x<W;x++)if(s.seen.has(key(x,y))&&['wall','crate'].includes(tile(s,x,y)))objects.push({x,y,type:tile(s,x,y)});
+ const objects=[];for(const [k,kind]of Object.entries(s.edges)){const cells=edgeCells(k);if(cells.some(p=>s.seen.has(key(p.x,p.y))))objects.push({x:(cells[0].x+cells[1].x)/2,y:(cells[0].y+cells[1].y)/2,type:'edge',edge:k,kind,visible:cells.some(p=>s.visible.has(key(p.x,p.y)))});}for(let y=0;y<H;y++)for(let x=0;x<W;x++)if(s.seen.has(key(x,y))&&['wall','crate'].includes(tile(s,x,y)))objects.push({x,y,type:tile(s,x,y)});
  for(const u of s.units)if(u.team==='squad'||s.visible.has(key(u.x,u.y)))objects.push({...u,type:'actor',unit:u});
  objects.sort((a,b)=>(a.x+a.y)-(b.x+b.y)||(a.type==='actor'?1:-1));
- for(const obj of objects){const {x,y,type}=obj,visible=s.visible.has(key(x,y));ctx.globalAlpha=visible?1:.45;
-  if(type==='wall'){block(x,y,23,'#9b8e6b','#625d49','#797158');const p=project(x,y,10);ctx.strokeStyle='#403f3477';ctx.beginPath();ctx.moveTo(p.x,p.y+14*camera.zoom);ctx.lineTo(p.x+28*camera.zoom,p.y);ctx.stroke();}
+ for(const obj of objects){const {x,y,type}=obj,visible=obj.visible??s.visible.has(key(x,y));ctx.globalAlpha=visible?1:.45;
+  if(type==='edge'){drawEdge(obj.edge,obj.kind);}
+  else if(type==='wall'){block(x,y,23,'#9b8e6b','#625d49','#797158');const p=project(x,y,10);ctx.strokeStyle='#403f3477';ctx.beginPath();ctx.moveTo(p.x,p.y+14*camera.zoom);ctx.lineTo(p.x+28*camera.zoom,p.y);ctx.stroke();}
   else if(type==='crate'){block(x,y,14,'#ac8651','#695539','#866b42');const p=project(x,y,14);ctx.strokeStyle='#463d2bb0';ctx.beginPath();ctx.moveTo(p.x-15*camera.zoom,p.y-6*camera.zoom);ctx.lineTo(p.x+13*camera.zoom,p.y+7*camera.zoom);ctx.stroke();}
   else{const u=obj.unit,p=project(x,y),color=u.team==='guard'?'#e57862':u.id===s.selected?'#f2ce79':'#b6d5b0';
    if(!alive(u)){ctx.globalAlpha=.4;diamond(x,y,'#562e2566');ctx.font=`${15*camera.zoom}px monospace`;ctx.textAlign='center';ctx.fillStyle='#b5a17c';ctx.fillText('×',p.x,p.y+4);continue;}
@@ -54,7 +68,7 @@ function drawObjects(now){
 function drawPreview(){
  if(hover&&canControl(s,selected())&&!s.queue.length){const u=hoverActor!==null?s.units[hoverActor]:null;
   if(u?.team==='guard'){diamond(u.x,u.y,'#e87b5933','#ec9a70');const a=project(selected().x,selected().y,30),b=project(u.x,u.y,30);ctx.setLineDash([4,5]);ctx.strokeStyle=previewAttack(s,selected(),u,burst).ok?'#e6c87d':'#bb6d58';ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();ctx.setLineDash([]);}
-  else if(route){route.forEach((p,i)=>diamond(p.x,p.y,i<selected().ap||s.phase==='explore'?'#ddba6744':'#c9634933',null,0,.28));diamond(hover.x,hover.y,'#e0c78133','#d2bb78');}
+  else if(route){route.forEach((p,i)=>diamond(p.x,p.y,i<selected().ap||s.phase!=='player'?'#ddba6744':'#c9634933',null,0,.28));diamond(hover.x,hover.y,'#e0c78133','#d2bb78');}
  }
 }
 function drawMinimap(){mini.fillStyle='#192921';mini.fillRect(0,0,168,144);for(let y=0;y<H;y++)for(let x=0;x<W;x++){if(!s.seen.has(key(x,y)))continue;mini.fillStyle=tile(s,x,y)==='wall'?'#898567':tile(s,x,y)==='crate'?'#a28a52':s.visible.has(key(x,y))?'#566848':'#344636';mini.fillRect(x*6,y*6,5,5);}for(const u of s.units)if(alive(u)&&(u.team==='squad'||s.visible.has(key(u.x,u.y)))){mini.fillStyle=u.team==='guard'?'#ff9275':u.id===s.selected?'#ffda79':'#c8e5b6';mini.fillRect(u.x*6,u.y*6,5,5);}}
@@ -69,13 +83,14 @@ function updateHover(){
  route=pathTo(s,u,hover.x,hover.y);$('hint').textContent=route?.length?`${hover.x}, ${hover.y} · ${route.length} tiles${s.phase==='player'?` / ${route.length} AP${route.length>u.ap?' · NOT ENOUGH AP':''}`:' / free movement'} · Click to move`:walkable(s,hover.x,hover.y)?'Tile occupied or already here.':'Solid obstacle · Find a doorway or go around.';
 }
 function sync(){
+ $('local-name').textContent=s.definition.name;$('recon-name').textContent=s.definition.name;document.title='Red Shift — '+s.definition.name;
  const u=selected(),w=WEAPONS[u.weapon],t=target(),p=t?previewAttack(s,u,t,burst):null,control=canControl(s,u)&&!s.queue.length;
  if(!t)targetId=null;
- $('objective').textContent=`${12-guards(s).length} / 12 guards defeated`;
- $('phase').textContent=({explore:'REAL-TIME EXPLORATION',player:'SQUAD TURN',enemy:'GUARDS MOVING',won:'FACTORY SECURED',lost:'SQUAD LOST'})[s.phase];$('phase').classList.toggle('combat',s.phase==='player'||s.phase==='enemy');
+ $('objective').textContent=`${s.definition.guards.length-guards(s).length} / ${s.definition.guards.length} guards defeated`;
+ $('phase').textContent=({explore:'REAL-TIME EXPLORATION',player:'SQUAD TURN',enemy:'GUARDS MOVING',won:'LOCAL MAP CLEARED',lost:'SQUAD LOST'})[s.phase];$('phase').classList.toggle('combat',s.phase==='player'||s.phase==='enemy');
  $('round').textContent=s.phase==='explore'?'SHIFT 07':`ROUND ${s.round}`;
- $('selected').innerHTML=`<img alt="${u.species}" src="../assets/characters/${u.species}-idle.png"><div><h2>${u.name}</h2><p>${u.species.toUpperCase()} / ${u.hp} HP</p><p>${s.phase==='explore'?'EXPLORING':`${u.ap} / ${u.maxAp} ACTION POINTS`}</p></div>`;
- $('equip-cost').textContent=s.phase==='explore'?'FREE IN EXPLORATION':'2 AP TO SWITCH';
+ $('selected').innerHTML=`<img alt="${u.species}" src="../assets/characters/${u.species}-idle.png"><div><h2>${u.name}</h2><p>${u.species.toUpperCase()} / ${u.hp} HP</p><p>${['explore','won'].includes(s.phase)?'EXPLORING':`${u.ap} / ${u.maxAp} ACTION POINTS`}</p></div>`;
+ $('equip-cost').textContent=['explore','won'].includes(s.phase)?'FREE OUTSIDE COMBAT':'2 AP TO SWITCH';
  $('weapons').innerHTML=Object.entries(WEAPONS).map(([id,v])=>`<button data-weapon="${id}" aria-pressed="${u.weapon===id}" title="${v.name}" ${!control||(s.phase==='player'&&u.ap<2)?'disabled':''}>${id==='hands'?'Hands':v.short}</button>`).join('');
  $('weapon-stats').textContent=`${w.name} · ${w.damage} damage\n${w.cost} AP · ${w.range} tile range · ${w.mag?`${u.ammo[u.weapon]}/${w.mag} rounds`:'melee'}`;
  $('reload').disabled=!control||!w.mag||u.ammo[u.weapon]===w.mag||(s.phase==='player'&&u.ap<3);
@@ -85,14 +100,14 @@ function sync(){
  $('target-info').innerHTML=t?`<b>${t.name}</b> / ${WEAPONS[t.weapon].short}<br>${p.ok?`<strong>${p.chance}%</strong> hit · ${p.cost} AP · ${p.rounds>1?'3 × ':''}${p.damage} damage${p.cover?' · COVER −25%':''}`:`${p.reason}${p.cover?' · in cover':''}`}`:'Select a visible guard to inspect a shot.';
  $('attack').disabled=!control||!p?.ok;$('attack').textContent=burst&&u.weapon==='assault'?'Fire 3-round burst [F]':w.mag?'Fire weapon [F]':'Melee attack [F]';
  $('end').disabled=s.phase!=='player'||s.queue.length>0;
- $('squad').innerHTML=s.units.filter(u=>u.team==='squad').map(u=>`<button class="squad-card" data-unit="${u.id}" aria-pressed="${s.selected===u.id}" ${!alive(u)?'disabled':''}><span class="num">0${u.id+1}</span><img alt="" src="../assets/characters/${u.species}-idle.png"><div class="info"><strong>${u.name}</strong><small>${alive(u)?`${WEAPONS[u.weapon].short} · ${u.hp} HP`:'FALLEN'}</small><div class="bar"><i style="width:${u.hp}%"></i></div><div class="bar ap"><i style="width:${u.ap/u.maxAp*100}%"></i></div><small>${s.phase==='explore'?'READY':`${u.ap} / ${u.maxAp} AP`}</small></div></button>`).join('');
+ $('squad').innerHTML=s.units.filter(u=>u.team==='squad').map(u=>`<button class="squad-card" data-unit="${u.id}" aria-pressed="${s.selected===u.id}" ${!alive(u)?'disabled':''}><span class="num">0${u.id+1}</span><img alt="" src="../assets/characters/${u.species}-idle.png"><div class="info"><strong>${u.name}</strong><small>${alive(u)?`${WEAPONS[u.weapon].short} · ${u.hp} HP`:'FALLEN'}</small><div class="bar"><i style="width:${u.hp}%"></i></div><div class="bar ap"><i style="width:${u.ap/u.maxAp*100}%"></i></div><small>${['explore','won'].includes(s.phase)?'READY':`${u.ap} / ${u.maxAp} AP`}</small></div></button>`).join('');
  $('log').innerHTML=s.log.slice(0,6).map(l=>`<li>${l}</li>`).join('');
- const over=['won','lost'].includes(s.phase);$('outcome').hidden=!over;if(over){$('outcome').querySelector('h2').textContent=s.phase==='won'?'The works are yours.':'The shift is over.';$('outcome').querySelector('p').textContent=s.phase==='won'?`${squad(s).length} comrades survived. All twelve guards defeated.`:`${12-guards(s).length} guards defeated. Reposition, use cover, and keep the squad together on your next attempt.`;}
- drawMinimap();lastRevision=s.revision;if(performance.now()>toastUntil){if(s.phase==='enemy')$('hint').textContent='Guard turn · Your squad will regain AP when the guards finish.';else if(s.queue.length)$('hint').textContent='Moving · Escape to stop';else if(over)$('hint').textContent='Operation complete · Restart to play again';else if(hover)updateHover();else $('hint').textContent=s.phase==='player'?'Squad turn · Use all four workers before ending the turn.':'Click open ground to explore · Keep the squad together.';}
+ const over=s.phase==='lost';$('outcome').hidden=!over;if(over){$('outcome').querySelector('h2').textContent=s.phase==='won'?'The works are yours.':'The shift is over.';$('outcome').querySelector('p').textContent=s.phase==='won'?`${squad(s).length} comrades survived. All twelve guards defeated.`:`${s.definition.guards.length-guards(s).length} guards defeated. Reposition, use cover, and keep the squad together on your next attempt.`;}
+ drawMinimap();lastRevision=s.revision;if(performance.now()>toastUntil){if(s.phase==='enemy')$('hint').textContent='Guard turn · Your squad will regain AP when the guards finish.';else if(s.queue.length)$('hint').textContent='Moving · Escape to stop';else if(over)$('hint').textContent='Operation complete · Restart to play again';else if(hover)updateHover();else $('hint').textContent=s.phase==='player'?'Squad turn · Use all four workers before ending the turn.':s.phase==='won'?'Local map cleared · Gather at the blue travel marker, then open Overmap.':'Click ground to explore · Blue marker: gather within 2 tiles to travel.';}
 }
 function select(id){if(!alive(s.units[id]))return;s.selected=id;targetId=null;burst=false;s.queue=[];sync();}
 function tryAttack(){const t=target();if(t&&attack(s,selected(),t,burst))sync();else message('Attack unavailable. Check range, AP and ammunition.');}
-function restart(){s=createGame();targetId=null;burst=false;hover=null;route=null;lastEffect=null;camera.zoom=1.15;center();sync();}
+function restart(){world=createWorld(customMap);s=currentMap(world);targetId=null;burst=false;hover=null;route=null;lastEffect=null;camera.zoom=1.15;center();sync();}
 function zoom(factor){const cx=width/2,cy=height/2,z=camera.zoom,next=Math.max(.35,Math.min(2.3,z*factor));camera.x=cx+(camera.x-cx)*next/z;camera.y=cy+(camera.y-cy)*next/z;camera.zoom=next;}
 $('squad').addEventListener('click',e=>{const b=e.target.closest('[data-unit]');if(b)select(Number(b.dataset.unit));});
 $('weapons').addEventListener('click',e=>{const b=e.target.closest('[data-weapon]');if(b&&equip(s,selected(),b.dataset.weapon)){burst=false;sync();}});
@@ -106,5 +121,20 @@ canvas.addEventListener('pointerdown',e=>{canvas.focus();if(e.button===2||e.butt
 canvas.addEventListener('pointermove',e=>{if(drag){camera.x+=e.clientX-drag.x;camera.y+=e.clientY-drag.y;drag={x:e.clientX,y:e.clientY};return;}hitTest(e);updateHover();});
 canvas.addEventListener('pointerup',()=>drag=null);canvas.addEventListener('pointercancel',()=>drag=null);canvas.addEventListener('pointerleave',()=>{hover=null;hoverActor=null;route=null;});
 canvas.addEventListener('wheel',e=>{e.preventDefault();zoom(e.deltaY<0?1.1:1/1.1);},{passive:false});
-document.addEventListener('keydown',e=>{if($('manual').open)return;if(e.ctrlKey||e.metaKey||e.altKey)return;if(['INPUT','SELECT','TEXTAREA'].includes(e.target.tagName))return;const k=e.key.toLowerCase();if('1234'.includes(k)&&k.length===1)select(Number(k)-1);else if(k===' '){e.preventDefault();endTurn(s);sync();}else if(k==='r'){reload(s,selected());sync();}else if(k==='f')tryAttack();else if(k==='b'&&selected().weapon==='assault'){burst=!burst;sync();}else if(k==='c')center();else if(k==='g')$('grid').click();else if(k==='?'||k==='h')$('manual').showModal();else if(k==='escape'){s.queue=[];sync();}else if(k==='+'||k==='=')zoom(1.2);else if(k==='-')zoom(1/1.2);else if(k.startsWith('arrow')){e.preventDefault();if(k==='arrowleft')camera.x+=50;if(k==='arrowright')camera.x-=50;if(k==='arrowup')camera.y+=50;if(k==='arrowdown')camera.y-=50;}});
-function frame(now){if(!$('manual').open&&now-lastTick>(s.phase==='enemy'?110:130)){lastTick=now;if(s.phase==='enemy')stepEnemy(s);else if(s.queue.length)stepMovement(s);if(s.revision!==lastRevision)sync();}draw(now);requestAnimationFrame(frame);}resize();sync();requestAnimationFrame(frame);
+document.addEventListener('keydown',e=>{if(document.querySelector('dialog[open]'))return;if(e.ctrlKey||e.metaKey||e.altKey)return;if(['INPUT','SELECT','TEXTAREA'].includes(e.target.tagName))return;const k=e.key.toLowerCase();if('1234'.includes(k)&&k.length===1)select(Number(k)-1);else if(k===' '){e.preventDefault();endTurn(s);sync();}else if(k==='r'){reload(s,selected());sync();}else if(k==='f')tryAttack();else if(k==='b'&&selected().weapon==='assault'){burst=!burst;sync();}else if(k==='c')center();else if(k==='g')$('grid').click();else if(k==='?'||k==='h')$('manual').showModal();else if(k==='escape'){s.queue=[];sync();}else if(k==='+'||k==='=')zoom(1.2);else if(k==='-')zoom(1/1.2);else if(k.startsWith('arrow')){e.preventDefault();if(k==='arrowleft')camera.x+=50;if(k==='arrowright')camera.x-=50;if(k==='arrowup')camera.y+=50;if(k==='arrowdown')camera.y-=50;}});
+function frame(now){if(!document.querySelector('dialog[open]')&&now-lastTick>(s.phase==='enemy'?110:130)){lastTick=now;if(s.phase==='enemy')stepEnemy(s);else if(s.queue.length)stepMovement(s);if(s.revision!==lastRevision)sync();}draw(now);requestAnimationFrame(frame);}resize();sync();requestAnimationFrame(frame);
+
+function showOvermap(){
+ $('route-label').textContent=Object.values(world.definitions).map(d=>d.name).join(' ↔ ');const container=$('locations');container.replaceChildren();
+ for(const [id,definition]of Object.entries(world.definitions)){
+  const card=document.createElement('button');card.className='location';card.dataset.location=id;
+  const name=document.createElement('strong');name.textContent=definition.name;card.append(name);
+  const detail=document.createElement('span');const visited=world.states[id];detail.textContent=id===world.current?'Current location':visited?(guards(visited).length?'Visited · guards remain':'Cleared · terrain remembered'):'Unvisited local map';card.append(detail);
+  const reason=travelReason(world,id);card.disabled=!!reason;card.title=reason||'Travel to this local map';
+  card.onclick=()=>{const result=travel(world,id);if(!result.ok){$('travel-info').textContent=result.error;return;}s=result.state;targetId=null;hover=null;hoverActor=null;route=null;lastEffect=null;center();$('overmap').close();sync();};container.append(card);
+ }
+ const activeMap=currentMap(world),exit=activeMap.definition.exits[0];$('travel-info').textContent=`Travel marker: ${exit.x}, ${exit.y}. Gather every living member within 2 tiles. Travel is unavailable during combat.`;
+ $('overmap').showModal();
+}
+$('world').onclick=showOvermap;$('world-close').onclick=()=>$('overmap').close();
+if(loadError)message(loadError);

@@ -14,7 +14,7 @@ Recorded from the user's answers on 2026-09-14. These are design decisions for t
 | Inventory | Abundant loot with limited carrying capacity. Ammunition scarcity and its placement across maps matter. A strong weapon can arrive early with only the ammunition already loaded, with resupply several maps later. |
 | Weapon slots | A primary and a secondary weapon; switching between those two equipped weapons is free. |
 | Tactical systems | Stealth, overwatch, sight cones and aimed shots. Line of sight is a central mechanic. |
-| Story | Still open. Both mercenary/action-movie satire and post-apocalyptic rebuilding appeal. Violence should not be glorified. |
+| Story | Deferred entirely. The user wants mechanics only at this stage. |
 
 ## Proposed rules to make those choices playable
 
@@ -64,10 +64,6 @@ Preserve the four-versus-twelve factory as the test fixture. Require a hostile r
 
 Acceptance checks should test interactions as well as individual systems: turning across a wall, a free swap during overwatch, an empty rare weapon, an inventory transfer at capacity, a downing just before round end, and leaving contact while a comrade is bleeding out. Exact trait values, AP tuning and XP values remain balance parameters rather than story commitments.
 
-## Story possibility — not selected
+## Current priority: maps and authoring
 
-A small hired animal squad travels through the remains of a Soviet-styled industrial region after a catastrophe. Towns, cooperatives, military remnants and opportunists compete over factories, railways, power and food. Mercenary contracts provide the mission structure and space for action-movie parody; the damaged world provides the rebuilding stakes and resource scarcity.
-
-The central question could be who benefits when a factory starts running again. A mission might preserve machinery, evacuate workers, negotiate access or seize a supply route. Satire can target institutions, propaganda and bravado while characters and communities bear understandable consequences. Post-apocalyptic framing does not automatically make violence harmless: civilian safety, surrender, restraint and alternatives to killing should matter mechanically as well as in dialogue.
-
-This hybrid is an option to explore, not the chosen canon. Keep the cause of the catastrophe, exact era, faction identities, tone and player allegiance open. The current kill-all test is a mechanics benchmark, not a commitment that every campaign objective will be extermination.
+The user has explicitly deferred story work. Build edge-based walls, distinct local maps connected through an overmap, and a map tool for manual block placement and generation before returning to the other proposed mechanics. Walls occupy the boundary between tiles; they do not consume either tile. No narrative, factions, dialogue, or campaign plot should be added in this pass.

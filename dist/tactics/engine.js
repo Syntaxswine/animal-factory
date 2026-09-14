@@ -1,4 +1,5 @@
-export const W=28,H=24;
+import {W,H,factoryMap,validateMap,blockedEdge} from './maps.js';
+export {W,H} from './maps.js';
 export const WEAPONS={
  hands:{name:'Workers’ fists',short:'Hands',cost:3,range:1,damage:16,mag:0},
  knife:{name:'NR-40 knife',short:'NR-40',cost:3,range:1,damage:27,mag:0},
@@ -15,24 +16,22 @@ export const occupant=(s,x,y)=>s.units.find(u=>alive(u)&&u.x===x&&u.y===y);
 export const tile=(s,x,y)=>x<0||y<0||x>=W||y>=H?'wall':s.map[y][x];
 export const walkable=(s,x,y)=>['floor','yard','door'].includes(tile(s,x,y));
 export function log(s,message){s.log.unshift(message);s.log=s.log.slice(0,50);s.revision++;}
-export function createGame(seed=1947){
- const s={map:Array.from({length:H},(_,y)=>Array.from({length:W},(_,x)=>x===0||y===0||x===W-1||y===H-1?'wall':'yard')),units:[],phase:'explore',round:0,selected:0,visible:new Set(),seen:new Set(),log:[],seed,revision:0,queue:[],enemyIndex:0,effect:null};
- for(const [x0,y0,x1,y1,doors] of [[10,3,18,10,[[10,7],[14,10],[18,7]]],[16,14,25,21,[[16,17],[21,14],[21,21]]]]){
-  for(let y=y0;y<=y1;y++)for(let x=x0;x<=x1;x++)s.map[y][x]=(x===x0||x===x1||y===y0||y===y1)?'wall':'floor';
-  for(const [x,y]of doors)s.map[y][x]='door';
- }
- for(const [x,y]of [[7,6],[7,7],[5,12],[6,12],[9,15],[10,15],[13,5],[16,8],[13,12],[14,12],[20,6],[21,6],[20,18],[23,16],[23,19],[12,19],[7,20]])s.map[y][x]='crate';
- const add=(team,name,species,x,y,weapon)=>{s.units.push({id:s.units.length,team,name,species,x,y,hp:team==='squad'?100:45,maxHp:team==='squad'?100:45,ap:team==='squad'?12:7,maxAp:team==='squad'?12:7,accuracy:team==='squad'?85:55,weapon,ammo:Object.fromEntries(Object.entries(WEAPONS).map(([k,v])=>[k,v.mag])),alert:false,lastKnown:null,facing:1,steps:0});};
- [['Yakov','horse',3,4,'assault'],['Anya','goat',3,6,'rifle'],['Misha','donkey',2,5,'pistol'],['Vera','sheep',2,7,'knife']].forEach(a=>add('squad',...a));
- [['Boris','pig-foreman',12,6,'pistol'],['Lev','cow',15,5,'rifle'],['Grigori','pig-foreman',16,9,'pistol'],['Oleg','donkey',13,9,'knife'],['Pavel','pig-foreman',21,4,'assault'],['Igor','goat',24,6,'pistol'],['Anton','cow',22,9,'rifle'],['Vadim','pig-foreman',24,11,'pistol'],['Yuri','pig-foreman',18,16,'pistol'],['Sasha','donkey',23,17,'knife'],['Pyotr','cow',18,20,'rifle'],['Nikolai','pig-foreman',24,20,'assault']].forEach(a=>add('guard',...a));
- refresh(s);log(s,'Shift 07 / Enter the works. Defeat all 12 guards.');return s;
+export function createGame(seed=1947,definition=factoryMap()){
+ const errors=validateMap(definition);if(errors.length)throw Error(errors.join(' '));
+ const s={map:structuredClone(definition.terrain),edges:{...definition.edges},definition:structuredClone(definition),units:[],phase:'explore',round:0,selected:0,visible:new Set(),seen:new Set(),log:[],seed,revision:0,queue:[],enemyIndex:0,effect:null};
+ const add=(team,name,species,x,y,weapon)=>s.units.push({id:s.units.length,team,name,species,x,y,hp:team==='squad'?100:45,maxHp:team==='squad'?100:45,ap:team==='squad'?12:7,maxAp:team==='squad'?12:7,accuracy:team==='squad'?85:55,weapon,ammo:Object.fromEntries(Object.entries(WEAPONS).map(([k,v])=>[k,v.mag])),alert:false,lastKnown:null,facing:1,steps:0});
+ const cast=[['Yakov','horse','assault'],['Anya','goat','rifle'],['Misha','donkey','pistol'],['Vera','sheep','knife']];
+ definition.starts.forEach((p,i)=>add('squad',cast[i][0],cast[i][1],p.x,p.y,cast[i][2]));
+ const names=['Boris','Lev','Grigori','Oleg','Pavel','Igor','Anton','Vadim','Yuri','Sasha','Pyotr','Nikolai'];
+ definition.guards.forEach((g,i)=>add('guard',names[i],g.species,g.x,g.y,g.weapon));
+ refresh(s);log(s,`Local map ready / ${definition.guards.length} guards.`);return s;
 }
 // Supercover grid traversal: touching a solid corner never grants sight through it.
 export function lineOfSight(s,a,b){
  let x=a.x,y=a.y;const dx=b.x-a.x,dy=b.y-a.y,nx=Math.abs(dx),ny=Math.abs(dy),sx=Math.sign(dx),sy=Math.sign(dy);let ix=0,iy=0;
  while(ix<nx||iy<ny){const d=(1+2*ix)*ny-(1+2*iy)*nx;
-  if(d===0){if(tile(s,x+sx,y)==='wall'||tile(s,x,y+sy)==='wall')return false;x+=sx;y+=sy;ix++;iy++;}
-  else if(d<0){x+=sx;ix++;}else{y+=sy;iy++;}
+  if(d===0){const a={x,y},b={x:x+sx,y},c={x,y:y+sy},end={x:x+sx,y:y+sy};if(blockedEdge(s,a,b)||blockedEdge(s,a,c)||blockedEdge(s,b,end)||blockedEdge(s,c,end)||tile(s,b.x,b.y)==='wall'||tile(s,c.x,c.y)==='wall')return false;x+=sx;y+=sy;ix++;iy++;}
+  else if(d<0){if(blockedEdge(s,{x,y},{x:x+sx,y}))return false;x+=sx;ix++;}else{if(blockedEdge(s,{x,y},{x,y:y+sy}))return false;y+=sy;iy++;}
   if(x===b.x&&y===b.y)return true;
   if(tile(s,x,y)==='wall')return false;
  }return true;
@@ -41,14 +40,15 @@ export function pathTo(s,u,x,y){
  if(!walkable(s,x,y)||(occupant(s,x,y)&&occupant(s,x,y)!==u))return null;
  const start=key(u.x,u.y),goal=key(x,y);const visited=new Map([[start,null]]),q=[[u.x,u.y]];
  for(let i=0;i<q.length;i++){const [cx,cy]=q[i];if(key(cx,cy)===goal){const path=[];let k=goal;while(k!==start){const [px,py]=k.split(',').map(Number);path.unshift({x:px,y:py});k=visited.get(k);}return path;}
-  for(const [nx,ny]of [[cx+1,cy],[cx-1,cy],[cx,cy+1],[cx,cy-1]]){const k=key(nx,ny);if(!visited.has(k)&&walkable(s,nx,ny)&&!occupant(s,nx,ny)){visited.set(k,key(cx,cy));q.push([nx,ny]);}}
+  for(const [nx,ny]of [[cx+1,cy],[cx-1,cy],[cx,cy+1],[cx,cy-1]]){const k=key(nx,ny);if(!visited.has(k)&&walkable(s,nx,ny)&&!blockedEdge(s,{x:cx,y:cy},{x:nx,y:ny})&&!occupant(s,nx,ny)){visited.set(k,key(cx,cy));q.push([nx,ny]);}}
  }return null;
 }
 export function refresh(s){
  s.visible=new Set();for(const p of squad(s))for(let y=Math.max(0,p.y-9);y<=Math.min(H-1,p.y+9);y++)for(let x=Math.max(0,p.x-9);x<=Math.min(W-1,p.x+9);x++)if(distance(p,{x,y})<=9&&lineOfSight(s,p,{x,y}))s.visible.add(key(x,y));
  for(const k of s.visible)s.seen.add(k);
- if(!guards(s).length){if(s.phase!=='won')log(s,'Factory secured. All twelve guards defeated.');s.phase='won';s.queue=[];return;}
- if(!squad(s).length){if(s.phase!=='lost')log(s,'The squad has fallen. Restart the operation to try again.');s.phase='lost';s.queue=[];return;}
+ if(!squad(s).length){if(s.phase!=='lost')log(s,'The squad has fallen. Restart the test to try again.');s.phase='lost';s.queue=[];return;}
+ if(!alive(s.units[s.selected]))s.selected=squad(s)[0].id;
+ if(!guards(s).length){if(s.phase!=='won'){log(s,'Local map cleared. Explore or gather at the travel marker.');s.queue=[];}s.phase='won';s.revision++;return;}
  for(const g of guards(s)){const targets=squad(s).filter(p=>distance(g,p)<=9&&lineOfSight(s,g,p));if(targets.length){g.alert=true;const p=targets.sort((a,b)=>distance(g,a)-distance(g,b))[0];g.lastKnown={x:p.x,y:p.y};}}
  const contact=guards(s).some(g=>g.alert);
  if(s.phase==='explore'&&contact){s.phase='player';s.round++;s.queue=[];for(const u of s.units)u.ap=u.maxAp;log(s,'CONTACT / Squad turn. Movement costs 1 AP per tile.');}
@@ -56,20 +56,20 @@ export function refresh(s){
  if(!alive(s.units[s.selected]))s.selected=squad(s)[0].id;
  s.revision++;
 }
-export function canControl(s,u){return u&&alive(u)&&u.team==='squad'&&['explore','player'].includes(s.phase);}
+export function canControl(s,u){return u&&alive(u)&&u.team==='squad'&&['explore','player','won'].includes(s.phase);}
 export function move(s,u,x,y){
  if(!canControl(s,u))return false;const path=pathTo(s,u,x,y);if(!path?.length)return false;
  if(s.phase==='player'&&path.length>u.ap)return false;
  s.queue=path.map(p=>({id:u.id,...p}));return true;
 }
 export function stepMovement(s){
- if(!s.queue.length||!['explore','player'].includes(s.phase))return false;
- const step=s.queue.shift(),u=s.units[step.id];if(!canControl(s,u)||!walkable(s,step.x,step.y)||occupant(s,step.x,step.y)||(s.phase==='player'&&u.ap<1)){s.queue=[];return false;}
+ if(!s.queue.length||!['explore','player','won'].includes(s.phase))return false;
+ const step=s.queue.shift(),u=s.units[step.id];if(!canControl(s,u)||!walkable(s,step.x,step.y)||blockedEdge(s,u,step)||occupant(s,step.x,step.y)||(s.phase==='player'&&u.ap<1)){s.queue=[];return false;}
  u.facing=(step.x-u.x)-(step.y-u.y)>=0?1:-1;u.x=step.x;u.y=step.y;u.steps++;if(s.phase==='player')u.ap--;refresh(s);return true;
 }
 export function coverAgainst(s,a,b){
  const dx=a.x-b.x,dy=a.y-b.y;const cells=[];if(Math.abs(dx)>=Math.abs(dy)*.5)cells.push([b.x+Math.sign(dx),b.y]);if(Math.abs(dy)>=Math.abs(dx)*.5)cells.push([b.x,b.y+Math.sign(dy)]);
- return cells.some(([x,y])=>tile(s,x,y)==='crate'||tile(s,x,y)==='wall');
+ return cells.some(([x,y])=>tile(s,x,y)==='crate'||blockedEdge(s,b,{x,y}));
 }
 export function previewAttack(s,a,b,burst=false){
  if(!a||!b||!alive(a)||!alive(b)||a.team===b.team)return {ok:false,reason:'Choose a living opponent'};
@@ -78,7 +78,7 @@ export function previewAttack(s,a,b,burst=false){
  const cover=!melee&&coverAgainst(s,a,b);
  const chance=Math.max(10,Math.min(95,a.accuracy+(melee?10:0)-Math.max(0,range-3)*3-(cover?25:0)-(rounds===3?10:0)));
  let reason='';
- if(!visible)reason='Target not visible';else if(range>w.range)reason='Out of range';else if(!lineOfSight(s,a,b))reason='Line of fire blocked';else if(w.mag&&a.ammo[a.weapon]<rounds)reason='Reload required';else if(s.phase!=='explore'&&a.ap<cost)reason='Not enough AP';
+ if(!visible)reason='Target not visible';else if(range>w.range)reason='Out of range';else if(!lineOfSight(s,a,b))reason='Line of fire blocked';else if(w.mag&&a.ammo[a.weapon]<rounds)reason='Reload required';else if(!['explore','won'].includes(s.phase)&&a.ap<cost)reason='Not enough AP';
  return {ok:!reason,reason,cost,rounds,chance:Math.round(chance),cover,damage:w.damage,range:w.range};
 }
 function random(s){s.seed=(Math.imul(s.seed,1664525)+1013904223)>>>0;return s.seed/4294967296;}
@@ -95,8 +95,8 @@ export function attack(s,a,b,burst=false,byAI=false){
 export function equip(s,u,id){if(!canControl(s,u)||s.queue.length||!WEAPONS[id]||u.weapon===id||(s.phase==='player'&&u.ap<2))return false;if(s.phase==='player')u.ap-=2;u.weapon=id;log(s,`${u.name} equipped ${WEAPONS[id].name}.`);return true;}
 export function reload(s,u,byAI=false){
  if(byAI?!(s.phase==='enemy'&&u?.team==='guard'&&alive(u)):!canControl(s,u))return false;
- const w=WEAPONS[u.weapon];if(s.queue.length||!w.mag||u.ammo[u.weapon]===w.mag||(s.phase!=='explore'&&u.ap<3))return false;
- if(s.phase!=='explore')u.ap-=3;u.ammo[u.weapon]=w.mag;log(s,`${u.name} reloaded ${w.short}.`);return true;
+ const w=WEAPONS[u.weapon];if(s.queue.length||!w.mag||u.ammo[u.weapon]===w.mag||(!['explore','won'].includes(s.phase)&&u.ap<3))return false;
+ if(!['explore','won'].includes(s.phase))u.ap-=3;u.ammo[u.weapon]=w.mag;log(s,`${u.name} reloaded ${w.short}.`);return true;
 }
 export function endTurn(s){if(s.phase!=='player'||s.queue.length)return false;s.phase='enemy';s.enemyIndex=0;for(const g of guards(s))g.ap=g.maxAp;log(s,'Guard turn.');return true;}
 export function stepEnemy(s){
