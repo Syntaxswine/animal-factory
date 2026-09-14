@@ -4,6 +4,7 @@ import {Farm,starter,line,key,allPorts,DIRS} from '../dist/engine.js';
 import {walkable,findPath,advancePeople,efficiency} from '../dist/people.js';
 import {project,unproject} from '../dist/isometric.js';
 
+function residents(f,count=1){f.place('residence',0,16);f.people.forEach((p,i)=>p.satiety=i<count?60:100);}
 const run=(farm,seconds)=>{for(let i=0;i<seconds*20;i++)farm.advance(.05);};
 function feed(farm,house,good){
   const p=allPorts(house).find(p=>p.role==='input'&&p.good===good),[dx,dy]=DIRS[p.dir];
@@ -71,27 +72,27 @@ test('ration outlet emits on its marked outside tile in all four rotations',()=>
 
 test('a hungry worker reaches the belt end, eats a parcel, and recovers productivity',()=>{
   const f=new Farm(),mill=f.place('mill',3,3);f.lay(line({x:8,y:6},{x:11,y:6}));
-  f.belts[key(11,6)].item='ration';const worker=f.people[0];worker.satiety=0;
-  assert.equal(efficiency(f,mill),.5);
+  f.belts[key(11,6)].item='ration';residents(f);const worker=f.people[0];worker.satiety=0;
+  assert.equal(efficiency(f,mill),0);
   for(let i=0;i<1200&&!f.rationsEaten;i++)advancePeople(f,.05);
   assert.equal(f.rationsEaten,1);assert.equal(worker.meals,1);assert.equal(f.belts[key(11,6)].item,null);
   assert.equal(Math.abs(worker.cell.x-11)+Math.abs(worker.cell.y-6),1);
-  assert.ok(worker.satiety>24);assert.ok(efficiency(f,mill)>.9);
+  assert.ok(worker.satiety>24);run(f,20);assert.ok(efficiency(f,mill)>.85*(.6+.4*worker.health/100)*(.7+.3*worker.happiness/100));
 });
 
 test('unreachable rations remain on the belt until a walking route opens',()=>{
   const f=new Farm();f.place('field',1,2);f.lay(line({x:8,y:0},{x:8,y:23}));
-  f.lay([{x:12,y:5,dir:0}]);f.belts[key(12,5)].item='ration';f.people[0].satiety=0;
+  f.lay([{x:12,y:5,dir:0}]);f.belts[key(12,5)].item='ration';residents(f);f.people[0].satiety=0;
   run(f,30);assert.equal(f.rationsEaten,0);assert.equal(f.belts[key(12,5)].item,'ration');
   f.remove([{x:8,y:5}]);run(f,30);assert.equal(f.rationsEaten,1);
 });
 
-test('building over an animal relocates it to open ground; removing its home removes it',()=>{
-  const f=new Farm();const mill=f.place('mill',3,3),worker=f.people[0],cell={...worker.cell};
+test('building over an animal relocates it to open ground; removing its workplace leaves residents unemployed',()=>{
+  const f=new Farm();const mill=f.place('mill',3,3);residents(f);const worker=f.people[0],cell={...worker.cell};
   assert.ok(f.lay([{...cell,dir:0}]));
   assert.ok(walkable(f,Math.floor(worker.x),Math.floor(worker.y)));
   assert.notDeepEqual(worker.cell,cell);assert.equal(worker.path.length,0);
-  f.remove([{x:mill.x,y:mill.y}]);assert.equal(f.people.length,0);
+  f.remove([{x:mill.x,y:mill.y}]);assert.equal(f.people.length,3);assert.ok(f.people.every(p=>!p.job));
 });
 
 test('blocked ration outlet never stops farmhouse deliveries and preserves the ration share',()=>{

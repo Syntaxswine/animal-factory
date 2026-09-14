@@ -16,5 +16,5 @@ for(const def of Object.values(manifest.characters)){
 }
 for(const [type,t] of Object.entries(TYPES)){if(t.sprite)assert.match(await readFile(new URL('assets/machines/'+t.sprite,root),'utf8'),/<svg/);else await checkPNG(`assets/machines/${type}.png`,320,320);}
 for(const type of ['mill','bakery','bottler','dairy'])await checkPNG(`assets/machines/industrial/${type}.png`,320,320);
-for(const file of ['index.html','sprites.html','app.js','engine.js','people.js','renderer.js','isometric.js','style.css'])await readFile(new URL(file,root));
-console.log('Verified 32 character frames, 8 strips, 12 machine sprites, a depot illustration, 4 industrial variants, and entrypoints.');
+for(const file of ['index.html','sprites.html','app.js','engine.js','people.js','renderer.js','isometric.js','services.js','estate.js','style.css'])await readFile(new URL(file,root));
+console.log(`Verified 32 character frames, 8 strips, ${Object.keys(TYPES).length} building illustrations, 4 industrial variants, and entrypoints.`);
