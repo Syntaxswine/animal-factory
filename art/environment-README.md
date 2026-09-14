@@ -30,3 +30,7 @@ Generated texture joins are not guaranteed pixel-exact. The viewer provides 2× 
 ## Windows and doors expansion
 
 Concrete, brick and corrugated-metal window wall sections; closed steel and wooden doors; and an open concrete doorway. Window apertures and the open doorway retain genuine transparency. Suggested edge rules distinguish movement and sight: windows block crossing but allow sight, closed doors block both, and the open doorway permits both. These are visual variants, not aligned open/close animation frames. Door interaction, aperture-specific ray tests, glass and climbing remain integration work. Additional provenance is in `art/openings-sources.json`.
+
+## Standalone doors (v2)
+
+User-requested polygon crops remove the surrounding wall from the steel door, wooden door and concrete doorway. `tools/crop-doors.ps1` reproduces the three 1254-square transparent v2 files and `dist/tactics/door-art.js` placement metadata. Originals remain intact. Runtime and catalog now use the crops at a full tile edge width and 72 px nominal height (player visible height 59 px); walls and windows are unchanged. The scale review compares original art on the left with v2 on the right. No new image generation was used.

@@ -391,10 +391,10 @@
     },
     {
       "id": "door-steel-closed",
-      "file": "door-steel-closed.png",
+      "file": "door-steel-closed-v2.png",
       "label": "door steel closed",
       "kind": "edge",
-      "description": "A tall narrow warm-gray concrete wall section containing one CLOSED olive-green solid steel personnel door. Closed leaf fills doorway, visible dark handle and heavy hinges, steel jambs and lintel, chipped paint, small rust streaks. Concrete surrounds match the existing concrete wall sprites.",
+      "description": "Standalone cropped door steel closed; surrounding wall removed.",
       "suggestedFootprint": null,
       "orientation": "lower-left to upper-right; mirror for other axis",
       "suggestedRules": {
@@ -402,14 +402,15 @@
         "blocksSight": true,
         "cover": "high"
       },
-      "notes": "Closed pose; opening interaction and matched animation remain integration work."
+      "notes": "User-requested polygon crop of original painted art. Full tile-edge width, 72 px nominal height; originals retained. Open and closed designs are not a matched animation pair.",
+      "renderHeight": 72
     },
     {
       "id": "doorway-concrete-open",
-      "file": "doorway-concrete-open.png",
+      "file": "doorway-concrete-open-v2.png",
       "label": "doorway concrete open",
       "kind": "edge",
-      "description": "A tall narrow warm-gray concrete wall section containing one OPEN EMPTY full-height personnel doorway. Concrete side jambs and lintel remain; door leaf entirely absent. Door opening reaches the ground with NO bottom rail or sill, fully transparent through the opening, no wall behind it, no black fill.",
+      "description": "Standalone cropped doorway concrete open; surrounding wall removed.",
       "suggestedFootprint": null,
       "orientation": "lower-left to upper-right; mirror for other axis",
       "suggestedRules": {
@@ -417,14 +418,15 @@
         "blocksSight": false,
         "cover": "none"
       },
-      "notes": "Open passage; not a frame-matched animation pair."
+      "notes": "User-requested polygon crop of original painted art. Full tile-edge width, 72 px nominal height; originals retained. Open and closed designs are not a matched animation pair.",
+      "renderHeight": 72
     },
     {
       "id": "door-wood-closed",
-      "file": "door-wood-closed.png",
+      "file": "door-wood-closed-v2.png",
       "label": "door wood closed",
       "kind": "edge",
-      "description": "A tall narrow red-brick wall section containing one CLOSED weathered wooden plank door with diagonal timber brace, dark iron strap hinges and latch. Door leaf fills doorway; brick jambs and lintel, muted brown wood, flat wall ends.",
+      "description": "Standalone cropped door wood closed; surrounding wall removed.",
       "suggestedFootprint": null,
       "orientation": "lower-left to upper-right; mirror for other axis",
       "suggestedRules": {
@@ -432,7 +434,8 @@
         "blocksSight": true,
         "cover": "high"
       },
-      "notes": "Closed pose; opening interaction and matched animation remain integration work."
+      "notes": "User-requested polygon crop of original painted art. Full tile-edge width, 72 px nominal height; originals retained. Open and closed designs are not a matched animation pair.",
+      "renderHeight": 72
     }
   ]
 }
