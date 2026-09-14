@@ -1,12 +1,12 @@
 {
   "name": "animal-factory",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
   "type": "module",
   "description": "A farm logistics game prototype.",
   "scripts": {
     "serve": "node tools/serve.mjs",
-    "check": "node --check dist/app.js && node --check dist/engine.js && node --test tests/engine.test.mjs && node tools/check-assets.mjs"
+    "check": "node --check dist/app.js && node --check dist/engine.js && node --check dist/renderer.js && node --check dist/people.js && node --check dist/isometric.js && node --test tests/*.test.mjs && node tools/check-assets.mjs"
   },
   "engines": {
     "node": ">=22"
