@@ -1,0 +1,182 @@
+[
+  {
+    "id": "crate-wood",
+    "description": "One closed square wooden shipping crate with diagonal bracing and iron corner straps.",
+    "footprint": [
+      1,
+      1
+    ],
+    "source": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-54886bf8-f61b-4117-ab51-6624f4584808.png"
+  },
+  {
+    "id": "crate-steel",
+    "description": "One olive-painted rectangular steel military supply chest, sturdy closed lid, metal latches and carrying handles, no weapons or markings.",
+    "footprint": [
+      1,
+      1
+    ],
+    "source": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-8405df00-2fb9-4c5b-a875-c209a880c313.png"
+  },
+  {
+    "id": "crate-stack",
+    "description": "A compact stack of three weathered wooden freight crates, two on bottom and one above, varied sizes.",
+    "footprint": [
+      1,
+      1
+    ],
+    "source": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-0691c5f1-ca06-4ea0-be77-7ae49490793a.png"
+  },
+  {
+    "id": "table-wood",
+    "description": "One plain rectangular wooden factory mess table, empty plank top and four sturdy legs.",
+    "footprint": [
+      2,
+      1
+    ],
+    "source": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-1a41cb40-b046-448b-8c87-543c4009fab9.png"
+  },
+  {
+    "id": "table-steel",
+    "description": "One rectangular steel utility table with dull gray empty top, olive metal legs and lower shelf.",
+    "footprint": [
+      2,
+      1
+    ],
+    "source": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-38ee14cb-c58d-4535-a226-d48e88ec470f.png"
+  },
+  {
+    "id": "workbench-vise",
+    "description": "One heavy wooden mechanics workbench with a mounted dark steel vise, a few small hand tools, storage shelf beneath, no backdrop or pegboard.",
+    "footprint": [
+      2,
+      1
+    ],
+    "source": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-77e289d7-1077-41c6-b482-a8d233035cd9.png"
+  },
+  {
+    "id": "workbench-metal",
+    "description": "One olive industrial metal workbench with drawers, scratched steel top, small open tool tray and red oil can.",
+    "footprint": [
+      2,
+      1
+    ],
+    "source": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-95921b51-8473-43a2-a26e-db986fd6dda1.png"
+  },
+  {
+    "id": "barrel-single",
+    "description": "Exactly ONE upright weathered dark red steel oil barrel, closed circular lid with two bung caps, two reinforcement rings.",
+    "footprint": [
+      1,
+      1
+    ],
+    "source": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-d96fe835-1dc1-483b-afd8-5058db6a1292.png"
+  },
+  {
+    "id": "barrels-cluster",
+    "description": "A compact cluster of THREE upright weathered steel oil barrels, two dull red and one olive, closed lids with bungs, no platform.",
+    "footprint": [
+      1,
+      1
+    ],
+    "source": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-5a67d598-091e-4ea0-9b7b-ad1c373cda87.png"
+  },
+  {
+    "id": "wall-concrete",
+    "description": "One straight tall solid concrete wall segment, weathered warm gray with tiny chips and seams, thin thickness. Wall follows ground axis from screen lower-left to upper-right. Clear flat ends for modular placement, no corner or return wall.",
+    "footprint": [
+      1,
+      0
+    ],
+    "source": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-9f53a0cf-07c0-4c4f-a425-0cf05abcbc5e.png"
+  },
+  {
+    "id": "wall-corrugated",
+    "description": "One straight tall rusted corrugated galvanized metal wall panel held in thin steel frame. Opaque, vertical ribs, muted rust and steel gray. Runs screen lower-left to upper-right along isometric ground axis, no corner or return.",
+    "footprint": [
+      1,
+      0
+    ],
+    "source": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-34aebb27-56ce-4e87-b191-503a72224a19.png"
+  },
+  {
+    "id": "wall-brick",
+    "description": "One straight tall old red-brick wall segment, mortar joints, flat top, slight wear. Runs screen lower-left to upper-right along isometric ground axis, flat ends for modular placement, no corner.",
+    "footprint": [
+      1,
+      0
+    ],
+    "source": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-2f2ba131-6114-413a-bae2-5201945a8109.png"
+  },
+  {
+    "id": "fence-chainlink",
+    "description": "One straight chain-link fence segment between two thin steel posts, tightly woven diamond wire clearly see-through with genuine transparent holes showing alpha background. Runs screen lower-left to upper-right along isometric ground axis. No solid panel, no opaque fill or base, no barbed wire.",
+    "footprint": [
+      1,
+      0
+    ],
+    "source": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-525122eb-1d08-4e13-af1b-6d972325f106.png"
+  },
+  {
+    "id": "fence-railing",
+    "description": "One straight waist-high industrial iron railing segment, slim upright posts, two thin horizontal rails, wide transparent gaps, blocks passage while allowing visibility. Runs screen lower-left to upper-right along isometric ground axis, no opaque fill or base.",
+    "footprint": [
+      1,
+      0
+    ],
+    "source": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-17aeb4e6-3cfe-4d33-b9e5-e51729ae12d4.png"
+  },
+  {
+    "id": "sandbags",
+    "description": "One low compact sandbag barricade stacked three courses high, khaki canvas sacks, straight length along isometric ground axis from lower-left to upper-right.",
+    "footprint": [
+      1,
+      1
+    ],
+    "source": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-66f3185a-189e-4eb2-a839-60b121368f26.png"
+  },
+  {
+    "id": "pallet",
+    "description": "One low empty weathered wooden shipping pallet, rectangular slats and support blocks.",
+    "footprint": [
+      1,
+      1
+    ],
+    "source": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-0a3d9bd7-5f17-453d-9763-2f081c029bbc.png"
+  },
+  {
+    "id": "ground-dirt",
+    "description": "Compacted dry warm brown earth, fine dusty grit and occasional tiny stones.",
+    "footprint": [],
+    "source": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-a54ad858-41c2-41bf-bc5c-6b5dc2a15232.png"
+  },
+  {
+    "id": "ground-gravel",
+    "description": "Small irregular gray and tan crushed gravel evenly scattered.",
+    "footprint": [],
+    "source": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-4fdac72a-511f-4400-a174-94daf730b01b.png"
+  },
+  {
+    "id": "ground-grass",
+    "description": "Short sparse olive grass with subdued brown soil visible between blades.",
+    "footprint": [],
+    "source": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-35f8f9fa-c00c-4db1-9cb3-dcfe73fd4cc9.png"
+  },
+  {
+    "id": "ground-concrete",
+    "description": "Weathered warm gray poured industrial concrete with very fine cracks and subtle stains.",
+    "footprint": [],
+    "source": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-0421d4e5-fca9-492a-a9e0-ea8434933606.png"
+  },
+  {
+    "id": "ground-asphalt",
+    "description": "Dark charcoal weathered asphalt with fine gray aggregate, subtle wear, no markings.",
+    "footprint": [],
+    "source": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-d7997948-f385-4013-9130-0109a045b49e.png"
+  },
+  {
+    "id": "ground-tiles",
+    "description": "Old square gray factory floor tiles with narrow dark mortar lines, slight chips and subdued olive-gray patina. A perfectly regular grid aligned horizontally and vertically.",
+    "footprint": [],
+    "source": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-1c586388-9e8d-41cb-b5ce-7a8c52d1216f.png"
+  }
+]

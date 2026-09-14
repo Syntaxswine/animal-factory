@@ -1,0 +1,348 @@
+{
+  "version": 1,
+  "integrationStatus": "art-pack; gameplay/editor integration pending",
+  "projection": "2:1 isometric props; overhead terrain textures",
+  "assets": [
+    {
+      "id": "crate-wood",
+      "file": "crate-wood.png",
+      "label": "crate wood",
+      "kind": "prop",
+      "description": "One closed square wooden shipping crate with diagonal bracing and iron corner straps.",
+      "suggestedFootprint": [
+        1,
+        1
+      ],
+      "orientation": "as illustrated",
+      "suggestedRules": {
+        "blocksMovement": true,
+        "blocksSight": false,
+        "cover": "low"
+      }
+    },
+    {
+      "id": "crate-steel",
+      "file": "crate-steel.png",
+      "label": "crate steel",
+      "kind": "prop",
+      "description": "One olive-painted rectangular steel military supply chest, sturdy closed lid, metal latches and carrying handles, no weapons or markings.",
+      "suggestedFootprint": [
+        1,
+        1
+      ],
+      "orientation": "as illustrated",
+      "suggestedRules": {
+        "blocksMovement": true,
+        "blocksSight": false,
+        "cover": "low"
+      }
+    },
+    {
+      "id": "crate-stack",
+      "file": "crate-stack.png",
+      "label": "crate stack",
+      "kind": "prop",
+      "description": "A compact stack of three weathered wooden freight crates, two on bottom and one above, varied sizes.",
+      "suggestedFootprint": [
+        1,
+        1
+      ],
+      "orientation": "as illustrated",
+      "suggestedRules": {
+        "blocksMovement": true,
+        "blocksSight": true,
+        "cover": "high"
+      }
+    },
+    {
+      "id": "table-wood",
+      "file": "table-wood.png",
+      "label": "table wood",
+      "kind": "prop",
+      "description": "One plain rectangular wooden factory mess table, empty plank top and four sturdy legs.",
+      "suggestedFootprint": [
+        2,
+        1
+      ],
+      "orientation": "as illustrated",
+      "suggestedRules": {
+        "blocksMovement": true,
+        "blocksSight": false,
+        "cover": "low"
+      }
+    },
+    {
+      "id": "table-steel",
+      "file": "table-steel.png",
+      "label": "table steel",
+      "kind": "prop",
+      "description": "One rectangular steel utility table with dull gray empty top, olive metal legs and lower shelf.",
+      "suggestedFootprint": [
+        2,
+        1
+      ],
+      "orientation": "as illustrated",
+      "suggestedRules": {
+        "blocksMovement": true,
+        "blocksSight": false,
+        "cover": "low"
+      }
+    },
+    {
+      "id": "workbench-vise",
+      "file": "workbench-vise.png",
+      "label": "workbench vise",
+      "kind": "prop",
+      "description": "One heavy wooden mechanics workbench with a mounted dark steel vise, a few small hand tools, storage shelf beneath, no backdrop or pegboard.",
+      "suggestedFootprint": [
+        2,
+        1
+      ],
+      "orientation": "as illustrated",
+      "suggestedRules": {
+        "blocksMovement": true,
+        "blocksSight": false,
+        "cover": "low"
+      }
+    },
+    {
+      "id": "workbench-metal",
+      "file": "workbench-metal.png",
+      "label": "workbench metal",
+      "kind": "prop",
+      "description": "One olive industrial metal workbench with drawers, scratched steel top, small open tool tray and red oil can.",
+      "suggestedFootprint": [
+        2,
+        1
+      ],
+      "orientation": "as illustrated",
+      "suggestedRules": {
+        "blocksMovement": true,
+        "blocksSight": false,
+        "cover": "low"
+      }
+    },
+    {
+      "id": "barrel-single",
+      "file": "barrel-single.png",
+      "label": "barrel single",
+      "kind": "prop",
+      "description": "Exactly ONE upright weathered dark red steel oil barrel, closed circular lid with two bung caps, two reinforcement rings.",
+      "suggestedFootprint": [
+        1,
+        1
+      ],
+      "orientation": "as illustrated",
+      "suggestedRules": {
+        "blocksMovement": true,
+        "blocksSight": false,
+        "cover": "low"
+      }
+    },
+    {
+      "id": "barrels-cluster",
+      "file": "barrels-cluster.png",
+      "label": "barrels cluster",
+      "kind": "prop",
+      "description": "A compact cluster of THREE upright weathered steel oil barrels, two dull red and one olive, closed lids with bungs, no platform.",
+      "suggestedFootprint": [
+        1,
+        1
+      ],
+      "orientation": "as illustrated",
+      "suggestedRules": {
+        "blocksMovement": true,
+        "blocksSight": false,
+        "cover": "low"
+      }
+    },
+    {
+      "id": "wall-concrete",
+      "file": "wall-concrete.png",
+      "label": "wall concrete",
+      "kind": "edge",
+      "description": "One straight tall solid concrete wall segment, weathered warm gray with tiny chips and seams, thin thickness. Wall follows ground axis from screen lower-left to upper-right. Clear flat ends for modular placement, no corner or return wall.",
+      "suggestedFootprint": null,
+      "orientation": "lower-left to upper-right; mirror for other axis",
+      "suggestedRules": {
+        "blocksMovement": true,
+        "blocksSight": true,
+        "cover": "high"
+      }
+    },
+    {
+      "id": "wall-corrugated",
+      "file": "wall-corrugated.png",
+      "label": "wall corrugated",
+      "kind": "edge",
+      "description": "One straight tall rusted corrugated galvanized metal wall panel held in thin steel frame. Opaque, vertical ribs, muted rust and steel gray. Runs screen lower-left to upper-right along isometric ground axis, no corner or return.",
+      "suggestedFootprint": null,
+      "orientation": "lower-left to upper-right; mirror for other axis",
+      "suggestedRules": {
+        "blocksMovement": true,
+        "blocksSight": true,
+        "cover": "high"
+      }
+    },
+    {
+      "id": "wall-brick",
+      "file": "wall-brick.png",
+      "label": "wall brick",
+      "kind": "edge",
+      "description": "One straight tall old red-brick wall segment, mortar joints, flat top, slight wear. Runs screen lower-left to upper-right along isometric ground axis, flat ends for modular placement, no corner.",
+      "suggestedFootprint": null,
+      "orientation": "lower-left to upper-right; mirror for other axis",
+      "suggestedRules": {
+        "blocksMovement": true,
+        "blocksSight": true,
+        "cover": "high"
+      }
+    },
+    {
+      "id": "fence-chainlink",
+      "file": "fence-chainlink.png",
+      "label": "fence chainlink",
+      "kind": "edge",
+      "description": "One straight chain-link fence segment between two thin steel posts, tightly woven diamond wire clearly see-through with genuine transparent holes showing alpha background. Runs screen lower-left to upper-right along isometric ground axis. No solid panel, no opaque fill or base, no barbed wire.",
+      "suggestedFootprint": null,
+      "orientation": "lower-left to upper-right; mirror for other axis",
+      "suggestedRules": {
+        "blocksMovement": true,
+        "blocksSight": false,
+        "cover": "none"
+      }
+    },
+    {
+      "id": "fence-railing",
+      "file": "fence-railing.png",
+      "label": "fence railing",
+      "kind": "edge",
+      "description": "One straight waist-high industrial iron railing segment, slim upright posts, two thin horizontal rails, wide transparent gaps, blocks passage while allowing visibility. Runs screen lower-left to upper-right along isometric ground axis, no opaque fill or base.",
+      "suggestedFootprint": null,
+      "orientation": "lower-left to upper-right; mirror for other axis",
+      "suggestedRules": {
+        "blocksMovement": true,
+        "blocksSight": false,
+        "cover": "none"
+      }
+    },
+    {
+      "id": "sandbags",
+      "file": "sandbags.png",
+      "label": "sandbags",
+      "kind": "prop",
+      "description": "One low compact sandbag barricade stacked three courses high, khaki canvas sacks, straight length along isometric ground axis from lower-left to upper-right.",
+      "suggestedFootprint": [
+        1,
+        1
+      ],
+      "orientation": "as illustrated",
+      "suggestedRules": {
+        "blocksMovement": true,
+        "blocksSight": false,
+        "cover": "low"
+      }
+    },
+    {
+      "id": "pallet",
+      "file": "pallet.png",
+      "label": "pallet",
+      "kind": "prop",
+      "description": "One low empty weathered wooden shipping pallet, rectangular slats and support blocks.",
+      "suggestedFootprint": [
+        1,
+        1
+      ],
+      "orientation": "as illustrated",
+      "suggestedRules": {
+        "blocksMovement": false,
+        "blocksSight": false,
+        "cover": "none"
+      }
+    },
+    {
+      "id": "ground-dirt",
+      "file": "ground-dirt.png",
+      "label": "ground dirt",
+      "kind": "terrain",
+      "description": "Compacted dry warm brown earth, fine dusty grit and occasional tiny stones.",
+      "projection": "map square texture to ground diamond",
+      "repeat": "visual repeat; exact edge matching not guaranteed",
+      "suggestedRules": {
+        "blocksMovement": false,
+        "blocksSight": false,
+        "cover": "none"
+      }
+    },
+    {
+      "id": "ground-gravel",
+      "file": "ground-gravel.png",
+      "label": "ground gravel",
+      "kind": "terrain",
+      "description": "Small irregular gray and tan crushed gravel evenly scattered.",
+      "projection": "map square texture to ground diamond",
+      "repeat": "visual repeat; exact edge matching not guaranteed",
+      "suggestedRules": {
+        "blocksMovement": false,
+        "blocksSight": false,
+        "cover": "none"
+      }
+    },
+    {
+      "id": "ground-grass",
+      "file": "ground-grass.png",
+      "label": "ground grass",
+      "kind": "terrain",
+      "description": "Short sparse olive grass with subdued brown soil visible between blades.",
+      "projection": "map square texture to ground diamond",
+      "repeat": "visual repeat; exact edge matching not guaranteed",
+      "suggestedRules": {
+        "blocksMovement": false,
+        "blocksSight": false,
+        "cover": "none"
+      }
+    },
+    {
+      "id": "ground-concrete",
+      "file": "ground-concrete.png",
+      "label": "ground concrete",
+      "kind": "terrain",
+      "description": "Weathered warm gray poured industrial concrete with very fine cracks and subtle stains.",
+      "projection": "map square texture to ground diamond",
+      "repeat": "visual repeat; exact edge matching not guaranteed",
+      "suggestedRules": {
+        "blocksMovement": false,
+        "blocksSight": false,
+        "cover": "none"
+      }
+    },
+    {
+      "id": "ground-asphalt",
+      "file": "ground-asphalt.png",
+      "label": "ground asphalt",
+      "kind": "terrain",
+      "description": "Dark charcoal weathered asphalt with fine gray aggregate, subtle wear, no markings.",
+      "projection": "map square texture to ground diamond",
+      "repeat": "visual repeat; exact edge matching not guaranteed",
+      "suggestedRules": {
+        "blocksMovement": false,
+        "blocksSight": false,
+        "cover": "none"
+      }
+    },
+    {
+      "id": "ground-tiles",
+      "file": "ground-tiles.png",
+      "label": "ground tiles",
+      "kind": "terrain",
+      "description": "Old square gray factory floor tiles with narrow dark mortar lines, slight chips and subdued olive-gray patina. A perfectly regular grid aligned horizontally and vertically.",
+      "projection": "map square texture to ground diamond",
+      "repeat": "visual repeat; exact edge matching not guaranteed",
+      "suggestedRules": {
+        "blocksMovement": false,
+        "blocksSight": false,
+        "cover": "none"
+      }
+    }
+  ]
+}
