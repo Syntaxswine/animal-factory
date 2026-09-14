@@ -1,5 +1,7 @@
 # Red Shift — mechanics prototype
 
+Historical design record. The current implementation expands this foundation to 240 × 240 tiles, 24 × 24 sectors, three levels and 50 characters. See README.md for current behavior.
+
 Historical first-slice contract. The current local-map, overmap and edge-wall editor behavior is documented in [README.md](README.md) and `docs/tactics/MAPS.md`. Story work is deferred.
 
 An independent entry at /tactics/index.html using existing Animal Factory assets. No builder changes.

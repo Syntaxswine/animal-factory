@@ -40,3 +40,7 @@ Story work was removed from the active direction. The map-tool pass was complete
 Browser checks by the main agent covered thin-wall rendering, gathering at the marker, overmap travel into Yard test, editor wall placement and undo, seeded generation, saving/loading a draft, a room stamp on a blank map, a one-guard custom playtest with the correct objective, and returning to the unchanged blueprint. Browser testing found a shadowed state variable in the overmap callback; it was corrected and successful travel was retested. Editor/preview console checks were clean.
 
 The final edge-wall balance smoke test cleared all twelve guards in all twenty runs (5–7 rounds; 3–4 squad survivors). Local map state persists in-session; reload still resets the run. Maps are fixed at 28×24; overmap node editing and campaign saving are future work. Imported unfinished maps can be repaired in the editor, but strict validation is required to playtest.
+
+## Large map and elevation update
+
+The prior 28×24 limit is superseded by 240×240 maps with three walkable levels and a 50-character capacity. See SCALE.md for the new review gates, regression fixes, browser evidence and performance measurements.

@@ -1,0 +1,7 @@
+import {W,H,SECTOR,levelOf,terrainAt} from './maps.js';
+export function bounds(camera,width,height){const pts=[[-80,-100],[width+80,-100],[-80,height+120],[width+80,height+120]].map(([x,y])=>{const a=(x-camera.x)/(28*camera.zoom),b=(y-camera.y)/(14*camera.zoom);return {x:(a+b)/2,y:(b-a)/2};});return {x0:Math.max(0,Math.floor(Math.min(...pts.map(p=>p.x)))),x1:Math.min(W-1,Math.ceil(Math.max(...pts.map(p=>p.x)))),y0:Math.max(0,Math.floor(Math.min(...pts.map(p=>p.y)))),y1:Math.min(H-1,Math.ceil(Math.max(...pts.map(p=>p.y))))};}
+export function inView(p,b){return p.x>=b.x0-1&&p.x<=b.x1+1&&p.y>=b.y0-1&&p.y<=b.y1+1;}
+export function focusSector(camera,width,height,sx,sy){camera.zoom=Math.min((width-80)/(SECTOR*56),(height-100)/(SECTOR*28));const x=sx*SECTOR+(SECTOR-1)/2,y=sy*SECTOR+(SECTOR-1)/2;camera.x=width/2-(x-y)*28*camera.zoom;camera.y=height/2-(x+y)*14*camera.zoom;}
+export function sectorOverview(ctx,project,map,z,seen=null){for(let sy=0;sy<10;sy++)for(let sx=0;sx<10;sx++){const x=sx*SECTOR-.5,y=sy*SECTOR-.5,pts=[[x,y],[x+SECTOR,y],[x+SECTOR,y+SECTOR],[x,y+SECTOR]].map(([x,y])=>project(x,y));ctx.beginPath();pts.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.closePath();ctx.fillStyle=z?'#33443e':(sx+sy)%2?'#526044':'#5c684b';ctx.fill();ctx.strokeStyle='#9b9d7266';ctx.stroke();}
+ if(z)for(const [k,t]of Object.entries(map.upper[z-1])){const [x,y]=k.split(',').map(Number);if(seen&&!seen.has(k+','+z))continue;const p=project(x,y);ctx.fillStyle=t==='crate'?'#be985c':'#aea47e';ctx.fillRect(p.x-1,p.y-1,2,2);}
+}

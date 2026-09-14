@@ -14,13 +14,13 @@ Walls occupy shared tile edges, not whole tiles. Both neighboring tiles remain u
 
 Click or drag to paint yard, concrete, crates, walls, doorways or erased barriers. Wall tools snap to the nearest tile edge; other tools snap to tile centers. Click **Room block** to stamp a small room or workshop with floor, perimeter walls and two openings; rotation swaps the footprint dimensions. Units retain their own movement tiles inside and outside the walls.
 
-Choose **Squad start** and a member to move one of the four starts. Choose **Guard start**, species and weapon to place a guard or edit one already present. Erase guards with **Erase guard**. Up to twelve guards are supported; zero-guard maps work for exploration tests. **Travel marker** moves the gathering location.
+Choose **Squad start** and a member to move one of the four starts. Choose **Guard start**, species and weapon to place a guard or edit one already present. Erase guards with **Erase guard**. Up to 46 guards are supported (50 characters including the squad); zero-guard maps work for exploration tests. **Travel marker** moves the gathering location.
 
-**Generate** uses the given whole-number seed to create a reproducible layout with four starts and twelve guards. **Blank map** and **Factory template** replace the working blueprint. These actions are undoable. A continuous brush stroke is one undo step; Ctrl+Z and Ctrl+Shift+Z also work outside form fields.
+**Generate** uses the given whole-number seed to create a reproducible layout with four starts and 46 guards. **Blank map** and **Factory template** replace the working blueprint. These actions are undoable. A continuous brush stroke is one undo step; Ctrl+Z and Ctrl+Shift+Z also work outside form fields.
 
 **Save draft / Load draft** use browser-local storage, including disconnected drafts awaiting repair. **Export JSON / Import JSON** provide portable backup and sharing. Structurally malformed or oversized imports are rejected without changing the working map. Disconnected maps can be imported, saved and exported, but cannot be playtested until the editor's reachability checks pass.
 
-**Playtest map** opens the current blueprint in a contained game preview; playing does not modify the blueprint. Return to the editor with the preview's top button. The same map schema drives the editor, generator and game. Local maps are fixed at 28 × 24 tiles for now; overmap editing and arbitrary sizes are not part of this slice.
+**Playtest map** opens the current blueprint in a contained game preview; playing does not modify the blueprint. Return to the editor with the preview's top button. The same map schema drives the editor, generator and game. Local maps are 240 × 240 tiles: 10 × 10 sectors of 24 × 24 tiles, with three walkable levels. Overmap editing is not part of this slice.
 
 ## Combat controls
 
@@ -33,3 +33,15 @@ Squad: 100 HP, 12 AP and 85 base accuracy. Guards: 45 HP, 7 AP, 55 base accuracy
 ## Verification
 
 `npm run check` validates syntax, gameplay and map/editor/world regressions, plus inherited assets. `npm run check:tactics-balance` runs twenty complete combat simulations using legal actions; the navigation bot knows guard locations, so this is a balance smoke test rather than a substitute for player feedback. Reviews and scope notes are under `docs/tactics/`.
+
+## Large maps and height
+
+Use **Level** to inspect floors, **Sector X/Y** (1–10) and **View sector** to navigate, or **Overview / Fit map** to see the complete map. Double-click the overview to enter a sector. In the game, clicking the minimap also opens a sector. The editor offers a 24 × 24 room block. Zoom in before placing tiles.
+
+Upper levels begin as empty space. Paint concrete or stamp rooms, then use **Stairs up** on level 1 or 2 to create floor endpoints and connect the next floor. **Erase stairs** removes connections touching the current floor; **Remove floor** creates openings. Starts and stairs are protected from blocked or missing support.
+
+In the game, stand on a cyan stair marker and use **Stairs ↑ / ↓**. Transitions cost 2 AP in combat. Each floor has its own walls, occupancy and visibility. Solid floors block fire; stairs and platform edges can allow cross-level shots. Contact and squad labels show actor levels.
+
+Version-1 drafts and JSON maps migrate into the larger ground plane; existing contents and boundary walls remain. New portable JSON files use version 2 with a 4 MB limit. Reachability checks run in a background worker before playtesting.
+
+Validation: 73 automated checks pass; the original 12-guard factory balance smoke test wins 20/20 seeds. Full 50-character maps have separate population, pathfinding and enemy-turn checks. At current visual pacing, the worst-case all-alert guard turn takes about 41 seconds despite under one second of measured simulation CPU time.

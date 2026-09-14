@@ -1,5 +1,7 @@
 # Local maps, overmap and editor
 
+Historical design record. The current implementation expands this foundation to 240 × 240 tiles, 24 × 24 sectors, three levels and 50 characters. See SCALE.md for current behavior.
+
 Mechanics-only scope. Story work is deferred.
 
 1. Walls are canonical shared edges. Both adjacent tiles remain walkable. The same barrier query drives pathfinding, sight, firing and AI. Door edges are open passages for this slice. Crates remain full-tile objects.
