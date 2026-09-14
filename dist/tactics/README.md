@@ -28,7 +28,7 @@ Select a squad member with 1–4 or the cards. Click ground to walk; hover previ
 
 The existing test armoury remains: hands, NR-40, TT-33, Mosin-Nagant and AK-47. Everyone can test every weapon. Equip costs 2 AP in combat, reload costs 3 AP, and the AK burst costs 6 AP and three rounds. Magazines persist across switching; reserves remain unlimited in this original combat slice. Finite backpacks, two-slot free swapping, facing cones, medical care and leveling are recorded directions for later implementation, not features claimed in this map-tool update.
 
-Squad: 100 HP, 12 AP and 85 base accuracy. Guards: 45 HP, 7 AP, 55 base accuracy and 65% weapon damage. Existing painted Animal Factory sprites are reused; dedicated armed poses and richer environment art remain future work. Story work is explicitly deferred.
+Squad: 100 HP, 12 AP and 85 base accuracy. Guards: 45 HP, 7 AP, 55 base accuracy and 65% weapon damage. Existing painted Animal Factory sprites are reused; dedicated armed poses remain future work. Story work is explicitly deferred.
 
 ## Verification
 
@@ -44,4 +44,14 @@ In the game, stand on a cyan stair marker and use **Stairs ↑ / ↓**. Transiti
 
 Version-1 drafts and JSON maps migrate into the larger ground plane; existing contents and boundary walls remain. New portable JSON files use version 2 with a 4 MB limit. Reachability checks run in a background worker before playtesting.
 
-Validation: 73 automated checks pass; the original 12-guard factory balance smoke test wins 20/20 seeds. Full 50-character maps have separate population, pathfinding and enemy-turn checks. At current visual pacing, the worst-case all-alert guard turn takes about 41 seconds despite under one second of measured simulation CPU time.
+Validation: 88 automated checks pass; the original 12-guard factory balance smoke test wins 20/20 seeds. Full 50-character maps have separate population, pathfinding and enemy-turn checks. At current visual pacing, the worst-case all-alert guard turn takes about 41 seconds despite under one second of measured simulation CPU time.
+
+## Environment palette and sector rules
+
+The editor now places all 28 supplied environment assets: eleven props, eleven wall/fence/window/door materials and six walkable ground textures. Select **Environment prop**, choose its type, and use **Rotate room / prop** to turn its full footprint. **Erase prop** removes the entire object from either occupied cell. Material selection applies to **Wall edge**; fences and railings block crossing without blocking sight. Tall crate stacks block sight, low props provide directional cover, and pallets remain walkable. **Ground texture** paints the chosen texture.
+
+Choose **Layout rules → River north–south / two bridges** or **River east–west / two bridges**, then Generate. The 100 sectors are assembled using matching land, road and water connections. Both bridge decks and complete approach corridors must remain open. The river is straight in this first template set; winding rivers, branches and a general rule-authoring UI remain future work. Water is impassable, bridge decks walkable. Use Fit map to see the full plan.
+
+**Ladder up** connects the next floor for 3 AP, while stairs remain 2 AP. Climb buttons display the connection type and price. Downhill gun range and sight increase by one tile per level, capped at two levels. Uphill fire takes a 15-point cover penalty; stronger ordinary cover replaces this penalty rather than stacking. Solid floors and walls always retain their sight-blocking behavior.
+
+Window walls block walking and provide cover. Shots and sight use a central aperture (middle 70% of the edge, height 1.0–2.4 within a 3-unit floor); solid sills and outer wall portions still block rays. Closed steel/wood door poses are static barriers for testing, and the open concrete doorway is passable. Door opening/closing is not implemented in this slice.

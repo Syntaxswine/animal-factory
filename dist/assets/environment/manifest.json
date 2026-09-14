@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "integrationStatus": "art-pack; gameplay/editor integration pending",
+  "integrationStatus": "Integrated in the tactical editor and game; explicit rules in tactics/environment.js",
   "projection": "2:1 isometric props; overhead terrain textures",
   "assets": [
     {

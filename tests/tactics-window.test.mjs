@@ -1,0 +1,5 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {blankMap,edgeKey,sightEdge} from '../dist/tactics/maps.js';
+import {createGame,lineOfSight,pathTo,coverAgainst} from '../dist/tactics/engine.js';
+test('window aperture permits centered sight but blocks movement, sill and outer frame rays',()=>{const m=blankMap();m.edges[edgeKey('e',3,4)]='window-concrete';const s=createGame(1,m),a={x:3,y:4,z:0},b={x:4,y:4,z:0};assert.ok(lineOfSight(s,a,b));assert.ok(lineOfSight(s,b,a));assert.ok(pathTo(s,s.units[0],4,4).length>1);assert.ok(coverAgainst(s,b,a));assert.ok(sightEdge(s,a,b,{height:.8,offset:.5}));assert.ok(sightEdge(s,a,b,{height:1.3,offset:.05}));assert.equal(lineOfSight(s,a,{x:4,y:5,z:0}),false);});
+test('closed door poses block sight and walking; open doorway admits both',()=>{for(const kind of ['door-steel-closed','door-wood-closed','doorway-concrete-open']){const m=blankMap();m.edges[edgeKey('e',3,4)]=kind;const s=createGame(1,m),open=kind==='doorway-concrete-open';assert.equal(lineOfSight(s,s.units[0],{x:4,y:4}),open);assert.equal(pathTo(s,s.units[0],4,4).length===1,open);}});

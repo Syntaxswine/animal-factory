@@ -1,4 +1,5 @@
-import {W,H,factoryMap,validateMap,blockedEdge,levelOf,tileKey,terrainAt,neighbors,stairSet,canStep,LEVELS} from './maps.js';
+import {PROPS,EDGES,propAt,propTall} from './environment.js';
+import {W,H,factoryMap,validateMap,blockedEdge,levelOf,tileKey,terrainAt,neighbors,stairSet,canStep,LEVELS,passable,sightEdge,edgeBetween} from './maps.js';
 export {W,H} from './maps.js';
 export const WEAPONS={
  hands:{name:'Workers’ fists',short:'Hands',cost:3,range:1,damage:16,mag:0},
@@ -14,11 +15,11 @@ export const squad=s=>s.units.filter(u=>u.team==='squad'&&alive(u));
 export const guards=s=>s.units.filter(u=>u.team==='guard'&&alive(u));
 export const occupant=(s,x,y,z=0)=>s.units.find(u=>alive(u)&&u.x===x&&u.y===y&&levelOf(u)===z);
 export const tile=(s,x,y,z=0)=>terrainAt(s,x,y,z);
-export const walkable=(s,x,y,z=0)=>['floor','yard','door'].includes(tile(s,x,y,z));
+export const walkable=(s,x,y,z=0)=>passable(s,{x,y,z});
 export function log(s,message){s.log.unshift(message);s.log=s.log.slice(0,50);s.revision++;}
 export function createGame(seed=1947,definition=factoryMap(),detect=true){
  const errors=validateMap(definition);if(errors.length)throw Error(errors.join(' '));
- const s={map:structuredClone(definition.terrain),upper:structuredClone(definition.upper),stairs:structuredClone(definition.stairs),edges:{...definition.edges},definition:structuredClone(definition),units:[],phase:'explore',round:0,selected:0,visible:new Set(),seen:new Set(),log:[],seed,revision:0,queue:[],enemyIndex:0,effect:null};
+ const s={map:structuredClone(definition.terrain),upper:structuredClone(definition.upper),stairs:structuredClone(definition.stairs),props:structuredClone(definition.props||[]),sectors:structuredClone(definition.sectors),edges:{...definition.edges},definition:structuredClone(definition),units:[],phase:'explore',round:0,selected:0,visible:new Set(),seen:new Set(),log:[],seed,revision:0,queue:[],enemyIndex:0,effect:null};
  const add=(team,name,species,x,y,weapon,z=0)=>s.units.push({id:s.units.length,team,name,species,x,y,z,hp:team==='squad'?100:45,maxHp:team==='squad'?100:45,ap:team==='squad'?12:7,maxAp:team==='squad'?12:7,accuracy:team==='squad'?85:55,weapon,ammo:Object.fromEntries(Object.entries(WEAPONS).map(([k,v])=>[k,v.mag])),alert:false,lastKnown:null,facing:1,steps:0});
  const cast=[['Yakov','horse','assault'],['Anya','goat','rifle'],['Misha','donkey','pistol'],['Vera','sheep','knife']];
  definition.starts.forEach((p,i)=>add('squad',cast[i][0],cast[i][1],p.x,p.y,cast[i][2],levelOf(p)));
@@ -34,12 +35,12 @@ export function lineOfSight(s,a,b){
   for(const x of xs)for(const y of ys)if(tile(s,x,y,z)!=='void'&&!(s.stairs||[]).some(p=>p.x===x&&p.y===y&&p.z===z-1))return false;
  }}
  let x=a.x,y=a.y,ix=0,iy=0;const nx=Math.abs(dx),ny=Math.abs(dy),sx=Math.sign(dx),sy=Math.sign(dy);
- const blocked=(p,q,t)=>{const h=h0+dh*t,z=Math.floor(h/3);return h-z*3<=2.7&&blockedEdge(s,{...p,z},{...q,z});};
+ const blocked=(p,q,t)=>{const h=h0+dh*t,z=Math.floor(h/3);return h-z*3<=2.7&&sightEdge(s,{...p,z},{...q,z},{height:h-z*3,offset:p.x!==q.x?a.y+dy*t-p.y+.5:a.x+dx*t-p.x+.5});};
  while(ix<nx||iy<ny){const d=(1+2*ix)*ny-(1+2*iy)*nx;
-  if(d===0){const t=(ix+.5)/nx,p={x,y},q={x:x+sx,y},r={x,y:y+sy},e={x:x+sx,y:y+sy};if(blocked(p,q,t)||blocked(p,r,t)||blocked(q,e,t)||blocked(r,e,t)||tile(s,q.x,q.y,az)==='wall'||tile(s,r.x,r.y,az)==='wall')return false;x+=sx;y+=sy;ix++;iy++;}
+  if(d===0){const t=(ix+.5)/nx,p={x,y},q={x:x+sx,y},r={x,y:y+sy},e={x:x+sx,y:y+sy};if(blocked(p,q,t)||blocked(p,r,t)||blocked(q,e,t)||blocked(r,e,t)||tile(s,q.x,q.y,az)==='wall'||tile(s,r.x,r.y,az)==='wall'||propTall(s,q.x,q.y,Math.floor((h0+dh*t)/3))||propTall(s,r.x,r.y,Math.floor((h0+dh*t)/3)))return false;x+=sx;y+=sy;ix++;iy++;}
   else if(d<0){if(blocked({x,y},{x:x+sx,y},(ix+.5)/nx))return false;x+=sx;ix++;}
   else {if(blocked({x,y},{x,y:y+sy},(iy+.5)/ny))return false;y+=sy;iy++;}
-  if(tile(s,x,y,az)==='wall'&&(x!==b.x||y!==b.y))return false;
+  const t=nx>=ny?(x-a.x)/(dx||1):(y-a.y)/(dy||1),z=Math.floor((h0+dh*t)/3);if((tile(s,x,y,z)==='wall'||propTall(s,x,y,z))&&(x!==b.x||y!==b.y||z!==bz))return false;
  }return true;
 }
 export const pathCost=path=>path.reduce((n,p)=>n+(p.cost||1),0);
@@ -55,13 +56,15 @@ export function pathTo(s,u,x,y,z=levelOf(u)){
   for(const q of neighbors(s,p,stairs)){const k=key(q.x,q.y,q.z),g=p.g+q.cost;if(occupied.has(k)||g>=(scores.get(k)??Infinity))continue;scores.set(k,g);parents.set(k,{parent:p.k,point:q});push({...q,k,g,f:g+heuristic(q)});}
  }return null;
 }
+export const sightRange=(a,b)=>9+Math.max(0,levelOf(a)-levelOf(b));
+export const canSee=(s,a,b)=>distance(a,b)<=sightRange(a,b)&&lineOfSight(s,a,b);
 export function refresh(s){
- s.visible=new Set();for(const p of squad(s))for(let z=0;z<LEVELS;z++)for(let y=Math.max(0,p.y-9);y<=Math.min(H-1,p.y+9);y++)for(let x=Math.max(0,p.x-9);x<=Math.min(W-1,p.x+9);x++)if(distance(p,{x,y,z})<=9&&lineOfSight(s,p,{x,y,z}))s.visible.add(key(x,y,z));
+ s.visible=new Set();for(const p of squad(s))for(let z=0;z<LEVELS;z++)for(let y=Math.max(0,p.y-11);y<=Math.min(H-1,p.y+11);y++)for(let x=Math.max(0,p.x-11);x<=Math.min(W-1,p.x+11);x++)if(canSee(s,p,{x,y,z}))s.visible.add(key(x,y,z));
  for(const k of s.visible)s.seen.add(k);
  if(!squad(s).length){if(s.phase!=='lost')log(s,'The squad has fallen. Restart the test to try again.');s.phase='lost';s.queue=[];return;}
  if(!alive(s.units[s.selected]))s.selected=squad(s)[0].id;
  if(!guards(s).length){if(s.phase!=='won'){log(s,'Local map cleared. Explore or gather at the travel marker.');s.queue=[];}s.phase='won';s.revision++;return;}
- for(const g of guards(s)){const targets=squad(s).filter(p=>distance(g,p)<=9&&lineOfSight(s,g,p));if(targets.length){g.alert=true;const p=targets.sort((a,b)=>distance(g,a)-distance(g,b))[0];g.lastKnown={x:p.x,y:p.y,z:levelOf(p)};}}
+ for(const g of guards(s)){if(squad(s).some(p=>canSee(s,p,g)))g.alert=true;const targets=squad(s).filter(p=>canSee(s,g,p));if(targets.length){g.alert=true;const p=targets.sort((a,b)=>distance(g,a)-distance(g,b))[0];g.lastKnown={x:p.x,y:p.y,z:levelOf(p)};}}
  const contact=guards(s).some(g=>g.alert);
  if(s.phase==='explore'&&contact){s.phase='player';s.round++;s.queue=[];for(const u of s.units)u.ap=u.maxAp;log(s,'CONTACT / Squad turn. Movement costs 1 AP per tile.');}
  else if((s.phase==='player'||s.phase==='enemy')&&!contact){s.phase='explore';s.queue=[];log(s,'Area clear. Real-time exploration resumed.');}
@@ -76,22 +79,22 @@ export function move(s,u,x,y,z=levelOf(u)){
 }
 export function stepMovement(s){
  if(!s.queue.length||!['explore','player','won'].includes(s.phase))return false;
- const step=s.queue.shift(),u=s.units[step.id];if(!canControl(s,u)||!canStep(s,u,step)||occupant(s,step.x,step.y,levelOf(step))||(s.phase==='player'&&u.ap<(step.cost||1))){s.queue=[];return false;}
- u.facing=(step.x-u.x)-(step.y-u.y)>=0?1:-1;u.x=step.x;u.y=step.y;u.z=levelOf(step);u.steps++;if(s.phase==='player')u.ap-=step.cost||1;refresh(s);return true;
+ const step=s.queue.shift(),u=s.units[step.id],currentStep=u&&neighbors(s,u).find(p=>p.x===step.x&&p.y===step.y&&p.z===levelOf(step));if(!canControl(s,u)||!currentStep||occupant(s,step.x,step.y,levelOf(step))||(s.phase==='player'&&u.ap<currentStep.cost)){s.queue=[];return false;}
+ u.facing=(step.x-u.x)-(step.y-u.y)>=0?1:-1;u.x=step.x;u.y=step.y;u.z=levelOf(step);u.steps++;if(s.phase==='player')u.ap-=currentStep.cost;refresh(s);return true;
 }
 export function coverAgainst(s,a,b){
  const dx=a.x-b.x,dy=a.y-b.y;if(dx===0&&dy===0)return false;const cells=[];if(Math.abs(dx)>=Math.abs(dy)*.5)cells.push([b.x+Math.sign(dx),b.y]);if(Math.abs(dy)>=Math.abs(dx)*.5)cells.push([b.x,b.y+Math.sign(dy)]);
- return cells.some(([x,y])=>tile(s,x,y,levelOf(b))==='crate'||blockedEdge(s,b,{x,y,z:levelOf(b)}));
+ return cells.some(([x,y])=>tile(s,x,y,levelOf(b))==='crate'||PROPS[propAt(s,x,y,levelOf(b))?.kind]?.cover>0||(EDGES[s.edges[edgeBetween(b,{x,y,z:levelOf(b)})]]?.cover||0)>0);
 }
 export function previewAttack(s,a,b,burst=false){
  if(!a||!b||!alive(a)||!alive(b)||a.team===b.team)return {ok:false,reason:'Choose a living opponent'};
  const w=WEAPONS[a.weapon],rounds=burst&&a.weapon==='assault'?3:1,cost=w.cost+(rounds===3?2:0),range=distance(a,b),melee=w.mag===0;
- const visible=a.team==='squad'?s.visible.has(key(b.x,b.y,levelOf(b))):distance(a,b)<=9&&lineOfSight(s,a,b);
- const cover=!melee&&coverAgainst(s,a,b);
- const chance=Math.max(10,Math.min(95,a.accuracy+(melee?10:0)-Math.max(0,range-3)*3-(cover?25:0)-(rounds===3?10:0)));
+ const visible=a.team==='squad'?s.visible.has(key(b.x,b.y,levelOf(b))):canSee(s,a,b);
+ const cover=!melee&&coverAgainst(s,a,b),heightCover=!melee&&levelOf(b)>levelOf(a)&&(a.x!==b.x||a.y!==b.y),coverPenalty=cover?25:heightCover?15:0,rangeBonus=melee?0:Math.min(2,Math.max(0,levelOf(a)-levelOf(b))),effectiveRange=w.range+rangeBonus;
+ const chance=Math.max(10,Math.min(95,a.accuracy+(melee?10:0)-Math.max(0,range-3)*3-coverPenalty-(rounds===3?10:0)));
  let reason='';
- if(!visible)reason='Target not visible';else if(range>w.range)reason='Out of range';else if(!lineOfSight(s,a,b))reason='Line of fire blocked';else if(w.mag&&a.ammo[a.weapon]<rounds)reason='Reload required';else if(!['explore','won'].includes(s.phase)&&a.ap<cost)reason='Not enough AP';
- return {ok:!reason,reason,cost,rounds,chance:Math.round(chance),cover,damage:w.damage,range:w.range};
+ if(!visible)reason='Target not visible';else if(range>effectiveRange)reason='Out of range';else if(!lineOfSight(s,a,b))reason='Line of fire blocked';else if(w.mag&&a.ammo[a.weapon]<rounds)reason='Reload required';else if(!['explore','won'].includes(s.phase)&&a.ap<cost)reason='Not enough AP';
+ return {ok:!reason,reason,cost,rounds,chance:Math.round(chance),cover,heightCover,coverPenalty,rangeBonus,damage:w.damage,range:effectiveRange};
 }
 function random(s){s.seed=(Math.imul(s.seed,1664525)+1013904223)>>>0;return s.seed/4294967296;}
 export function attack(s,a,b,burst=false,byAI=false){
@@ -116,7 +119,7 @@ export function stepEnemy(s){
  const g=s.units[s.enemyIndex];
  if(!g){s.phase='player';s.round++;for(const p of squad(s))p.ap=p.maxAp;refresh(s);log(s,`Squad turn / ${s.round}.`);return true;}
  if(g.team!=='guard'||!alive(g)||!g.alert||g.ap<1){s.enemyIndex++;return true;}
- const targets=squad(s).filter(p=>distance(g,p)<=9&&lineOfSight(s,g,p)).sort((a,b)=>distance(g,a)-distance(g,b));
+ const targets=squad(s).filter(p=>canSee(s,g,p)).sort((a,b)=>distance(g,a)-distance(g,b));
  const target=targets[0];if(target)g.lastKnown={x:target.x,y:target.y,z:levelOf(target)};
  if(target&&previewAttack(s,g,target).ok){attack(s,g,target,false,true);return true;}
  if(target&&previewAttack(s,g,target).reason==='Not enough AP'){g.ap=0;s.enemyIndex++;return true;}
