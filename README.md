@@ -2,6 +2,14 @@
 
 A standalone farm logistics prototype inspired by the appetite of the pigs in Animal Farm. Build connected production chains and supply bread, alcohol, and cakes to the farmhouse.
 
+## Play online
+
+[Play Animal Factory](https://syntaxswine.github.io/animal-factory-play/) · [Sprite viewer](https://syntaxswine.github.io/animal-factory-play/sprites.html)
+
+GitHub Pages serves the browser-ready files from [Syntaxswine/animal-factory-play](https://github.com/Syntaxswine/animal-factory-play), using the root of its `main` branch. This development repository remains private. The public repository contains only `dist/` contents; it excludes raw source-art sheets, prompts, local tools, dependencies, and development history.
+
+To publish an update, run `npm run check`, copy the contents of `dist/` into the public repository checkout, then commit and push that checkout's `main` branch. GitHub Pages redeploys automatically. Development-repository pushes alone do not publish the public build.
+
 ## Play locally
 
 Requires Node.js 22 or newer. No dependencies or build step.
