@@ -1,6 +1,6 @@
 # Tactical environment collection 01
 
-22 original PNG assets generated with the built-in image_gen tool. Exact prompts are recorded in [environment-prompts.md](environment-prompts.md).
+28 original PNG assets generated with the built-in image_gen tool. Exact prompts are recorded in [environment-prompts.md](environment-prompts.md).
 
 ## Files and preview
 
@@ -26,3 +26,7 @@ This delivery is an art pack and preview, not a map-schema or gameplay change. T
 Walls and fences belong on shared tile edges. Ground textures are square overhead images and should be mapped to the game's diamond using its projection. Props retain their original framing; calculate trimmed bounds and a ground anchor when creating runtime atlases. Footprints are suggestions, not calibrated game scale. Mirroring supports the opposite isometric axis but reverses baked lighting.
 
 Generated texture joins are not guaranteed pixel-exact. The viewer provides 2× and 4× repeats for inspection; production terrain blending and transitions remain integration work. Full-resolution originals retain generated alpha without keying, repainting or destructive processing.
+
+## Windows and doors expansion
+
+Concrete, brick and corrugated-metal window wall sections; closed steel and wooden doors; and an open concrete doorway. Window apertures and the open doorway retain genuine transparency. Suggested edge rules distinguish movement and sight: windows block crossing but allow sight, closed doors block both, and the open doorway permits both. These are visual variants, not aligned open/close animation frames. Door interaction, aperture-specific ray tests, glass and climbing remain integration work. Additional provenance is in `art/openings-sources.json`.

@@ -343,6 +343,96 @@
         "blocksSight": false,
         "cover": "none"
       }
+    },
+    {
+      "id": "window-concrete",
+      "file": "window-concrete.png",
+      "label": "window concrete",
+      "kind": "edge",
+      "description": "A tall straight warm-gray concrete wall section with one large rectangular industrial window centered above a waist-high solid sill. Thin olive metal window frame with four panes; the panes are empty see-through openings (no glass reflection or opaque fill). Flat wall top and ends; small chips, rust beneath frame.",
+      "suggestedFootprint": null,
+      "orientation": "lower-left to upper-right; mirror for other axis",
+      "suggestedRules": {
+        "blocksMovement": true,
+        "blocksSight": false,
+        "cover": "low"
+      },
+      "notes": "Sight through aperture; surrounding wall remains solid. No glass or climbing mechanics implemented."
+    },
+    {
+      "id": "window-brick",
+      "file": "window-brick.png",
+      "label": "window brick",
+      "kind": "edge",
+      "description": "A tall straight weathered red-brick factory wall section with one wide six-pane industrial window above a waist-high brick sill, slender dark iron mullions, stone lintel. All six pane openings are transparent (no opaque glass or interior), flat wall ends.",
+      "suggestedFootprint": null,
+      "orientation": "lower-left to upper-right; mirror for other axis",
+      "suggestedRules": {
+        "blocksMovement": true,
+        "blocksSight": false,
+        "cover": "low"
+      },
+      "notes": "Sight through aperture; surrounding wall remains solid. No glass or climbing mechanics implemented."
+    },
+    {
+      "id": "window-corrugated",
+      "file": "window-corrugated.png",
+      "label": "window corrugated",
+      "kind": "edge",
+      "description": "A tall straight rusted corrugated galvanized wall panel with one broad rectangular three-pane window above waist height. Olive steel frame; three genuinely transparent empty window openings, no interior backdrop or reflective glass. Vertical corrugations and slender steel wall end posts.",
+      "suggestedFootprint": null,
+      "orientation": "lower-left to upper-right; mirror for other axis",
+      "suggestedRules": {
+        "blocksMovement": true,
+        "blocksSight": false,
+        "cover": "low"
+      },
+      "notes": "Sight through aperture; surrounding wall remains solid. No glass or climbing mechanics implemented."
+    },
+    {
+      "id": "door-steel-closed",
+      "file": "door-steel-closed.png",
+      "label": "door steel closed",
+      "kind": "edge",
+      "description": "A tall narrow warm-gray concrete wall section containing one CLOSED olive-green solid steel personnel door. Closed leaf fills doorway, visible dark handle and heavy hinges, steel jambs and lintel, chipped paint, small rust streaks. Concrete surrounds match the existing concrete wall sprites.",
+      "suggestedFootprint": null,
+      "orientation": "lower-left to upper-right; mirror for other axis",
+      "suggestedRules": {
+        "blocksMovement": true,
+        "blocksSight": true,
+        "cover": "high"
+      },
+      "notes": "Closed pose; opening interaction and matched animation remain integration work."
+    },
+    {
+      "id": "doorway-concrete-open",
+      "file": "doorway-concrete-open.png",
+      "label": "doorway concrete open",
+      "kind": "edge",
+      "description": "A tall narrow warm-gray concrete wall section containing one OPEN EMPTY full-height personnel doorway. Concrete side jambs and lintel remain; door leaf entirely absent. Door opening reaches the ground with NO bottom rail or sill, fully transparent through the opening, no wall behind it, no black fill.",
+      "suggestedFootprint": null,
+      "orientation": "lower-left to upper-right; mirror for other axis",
+      "suggestedRules": {
+        "blocksMovement": false,
+        "blocksSight": false,
+        "cover": "none"
+      },
+      "notes": "Open passage; not a frame-matched animation pair."
+    },
+    {
+      "id": "door-wood-closed",
+      "file": "door-wood-closed.png",
+      "label": "door wood closed",
+      "kind": "edge",
+      "description": "A tall narrow red-brick wall section containing one CLOSED weathered wooden plank door with diagonal timber brace, dark iron strap hinges and latch. Door leaf fills doorway; brick jambs and lintel, muted brown wood, flat wall ends.",
+      "suggestedFootprint": null,
+      "orientation": "lower-left to upper-right; mirror for other axis",
+      "suggestedRules": {
+        "blocksMovement": true,
+        "blocksSight": true,
+        "cover": "high"
+      },
+      "notes": "Closed pose; opening interaction and matched animation remain integration work."
     }
   ]
 }
