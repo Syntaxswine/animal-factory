@@ -94,13 +94,16 @@ test('building over an animal relocates it to open ground; removing its home rem
   f.remove([{x:mill.x,y:mill.y}]);assert.equal(f.people.length,0);
 });
 
-test('blocked ration outlet stops food intake with bounded storage and resumes when opened',()=>{
+test('blocked ration outlet never stops farmhouse deliveries and preserves the ration share',()=>{
   const f=new Farm(),house=f.place('house',10,10);
-  for(let i=0;i<40;i++){feed(f,house,'bread');f.advance(.05);}
-  assert.equal(house.output,4);assert.equal(house.rationReserve,5);assert.equal(f.delivered.bread,25);
+  for(let i=0;i<100;i++){for(const good of ['bread','cake','alcohol'])assert.ok(feed(f,house,good));f.advance(.05);}
+  assert.deepEqual(f.delivered,{bread:100,alcohol:100,cake:100});
+  assert.equal(house.output,4);assert.equal(house.rationReserve,180);
   const p=allPorts(house).find(p=>p.role==='output'),[dx,dy]=DIRS[p.dir];
-  f.lay([{x:p.x+dx,y:p.y+dy,dir:p.dir}]);f.move();f.advance(.05);
-  assert.equal(house.rationReserve,0);assert.ok(feed(f,house,'bread'));
+  f.lay([{x:p.x+dx,y:p.y+dy,dir:p.dir}]);
+  let emitted=0;
+  for(let i=0;i<200;i++){f.advance(.3);const belt=f.belts[key(p.x+dx,p.y+dy)];if(belt.item){emitted++;belt.item=null;}}
+  assert.equal(emitted,40);assert.equal(house.output,0);assert.equal(house.rationReserve,0);
 });
 
 test('undo restores animal positions, hunger, ration inventory and meals together',()=>{
