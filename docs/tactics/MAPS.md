@@ -10,3 +10,9 @@ Mechanics-only scope. Story work is deferred.
 4. Playtesting does not change the blueprint. Editor and live game are separate pages so opening the editor preserves an active game. Draft storage is local to this browser; exported JSON is the portable backup. Overmap run state is in memory only for now, not a campaign save system.
 
 Review each part at >=4/5 before the next. Verify shared-edge geometry, persistence through travel, constraints during combat, authoring/import/undo correctness and generated map reachability. Keep existing individual squad control and combat tuning.
+
+## Area and line painting
+
+Drag Concrete or Floor / roof texture to preview an inclusive rectangle on the selected level, then release to apply. Upper-level floor areas provide roof platforms. Yard, water, bridge and floor removal use the same rectangle gesture. Wall, doorway and edge erasure gestures lock to the starting shared-edge direction and draw a straight line. Selections clip to the active 24×24 block or 240×240 map. Escape and interrupted gestures cancel; each applied selection is one undo entry. Existing saves and JSON exports retain the painted geometry.
+
+Verification: 127 tracked and new shape tests pass, along with syntax and asset checks. An unrelated untracked Red Hats test currently references unfinished assets and was excluded. Browser checks confirmed an upper-floor rectangle, whole-selection undo/redo and a straight wall. Hostile review: 4/5 pass, including 48 outer-boundary probes.
