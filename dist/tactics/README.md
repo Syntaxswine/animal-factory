@@ -44,7 +44,7 @@ In the game, stand on a cyan stair marker and use **Stairs ↑ / ↓**. Transiti
 
 Version-1 drafts and JSON maps migrate into the larger ground plane; existing contents and boundary walls remain. New portable JSON files use version 2 with a 4 MB limit. Reachability checks run in a background worker before playtesting.
 
-Validation: 102 automated checks pass; the original 12-guard factory balance smoke test wins 20/20 seeds. Full 50-character maps have separate population, pathfinding and enemy-turn checks. At current visual pacing, the worst-case all-alert guard turn takes about 41 seconds despite under one second of measured simulation CPU time.
+Validation: 109 automated checks pass; the original 12-guard factory balance smoke test wins 20/20 seeds. Full 50-character maps have separate population, pathfinding and enemy-turn checks. At current visual pacing, the worst-case all-alert guard turn takes about 41 seconds despite under one second of measured simulation CPU time.
 
 ## Environment palette and sector rules
 
@@ -63,3 +63,11 @@ Window walls block walking and provide cover. Shots and sight use a central aper
 Standing, kneeling and prone movement costs 2, 4 and 8 AP per horizontal tile. Use the stance buttons beside the selected character. Any change to another stance costs 2 AP in combat, including standing directly to prone; repeating the current stance costs nothing. Changes are free in exploration. Movement must stop before changing stance. Climbing requires standing and retains its existing fixed AP cost. Stance persists between turns and local maps. Guards currently remain standing and pay 2 AP per tile.
 
 Map labels use [K] for kneeling and [P] for prone; standing has no suffix. Character artwork still uses existing idle/walk frames. Stance-specific shooting, cover, sight and stealth effects are not part of this movement-cost change.
+
+## Reusable blocks and saved designs
+
+Choose **Design size** to switch between a240×240 map and a24×24 block workspace. Each workspace keeps its own current design and undo history during the session. Blocks include all three levels of terrain, walls, props, guards, stairs and roof climbs. Squad starts and travel markers belong to full maps.
+
+**Save design** updates the current named browser-library record; **Save new copy** creates another record. Choose a record and **Open selected** to reload it. Saves use IndexedDB and remain local to this browser, device and website origin. **Export design JSON** creates a portable backup; **Import design JSON** recognizes either format. Existing full-map drafts still load. Export localhost designs before moving to a hosted editor: browser storage does not migrate automatically.
+
+In the full-map workspace, choose Sector X/Y and **Save sector as block** to capture it. Choose a saved block and **Place selected block** to replace that sector on all three levels; Undo restores it. Placement preserves squad starts/travel markers and rejects conflicts, broken river rules and objects crossing sector boundaries. Blocks become playable when placed into a valid full map.

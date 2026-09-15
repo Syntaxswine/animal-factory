@@ -3,3 +3,5 @@
 .view-tools,.map-tools{flex-wrap:wrap;max-width:calc(100% - 32px)} .view-tools label,.map-tools label{display:inline-flex;align-items:center;gap:4px;color:#e2d5b0;font:11px monospace} .view-tools input,.map-tools input{width:42px} .view-tools select,.map-tools select,.map-tools input{color:#eadcb6;background:#28382e;border:1px solid #647156;padding:5px} .view-tools input{padding:5px} #mini{cursor:crosshair}
 
 .layout-label{display:flex;flex-direction:column;gap:5px;margin-bottom:8px} #asset-rules{margin:0 0 8px;color:#d3bd83}
+
+aside>label{display:grid;gap:6px;min-width:0}aside>label select{width:100%;min-width:0;max-width:100%;box-sizing:border-box}
