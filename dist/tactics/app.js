@@ -108,7 +108,7 @@ function sync(){ $('sight-info').textContent=(selected().cone??120)+'° cone · 
  if(!t)targetId=null;
  $('objective').textContent=`${s.definition.guards.length-guards(s).length} / ${s.definition.guards.length} guards defeated`;
  $('phase').textContent=({explore:'REAL-TIME EXPLORATION',player:'SQUAD TURN',enemy:'GUARDS MOVING',won:'LOCAL MAP CLEARED',lost:'SQUAD LOST'})[s.phase];$('phase').classList.toggle('combat',s.phase==='player'||s.phase==='enemy');
- $('round').textContent=s.phase==='explore'?'SHIFT 07':`ROUND ${s.round}`;
+ $('round').textContent=(s.difficulty==='easy'?'EASY · ':'STANDARD · ')+(s.phase==='explore'?'SHIFT 07':`ROUND ${s.round}`);
  $('selected').innerHTML=`<img alt="${u.species}" src="${characterArt(u.species,u.weapon).src}"><div><h2>${u.name}</h2><p>${u.species.toUpperCase()} / L${levelOf(u)+1} / ${u.hp} HP / ${STANCES[stanceOf(u)].label}</p><p>${['explore','won'].includes(s.phase)?'EXPLORING':`${u.ap} / ${u.maxAp} ACTION POINTS`}</p></div>`;
  $('stances').innerHTML=Object.entries(STANCES).map(([id,v])=>`<button data-stance="${id}" aria-pressed="${stanceOf(u)===id}" ${!control||stanceOf(u)===id||(s.phase==='player'&&u.ap<2)?'disabled':''}>${v.label}</button>`).join('');
  $('stance-info').textContent=(STANCES[stanceOf(u)].moveCost+(u.sneaking?2:0))+' AP / tile · '+(s.phase==='player'?'2 AP to change stance':'Free stance changes outside combat')+' · Stand to climb';
@@ -131,7 +131,7 @@ function select(id,toggle=false){if(!alive(s.units[id]))return;if(toggle){if(sel
 function shotKey(t){const u=selected();return [u.id,t.id,aimZone,burst,s.round,s.phase,s.revision,u.x,u.y,u.z,u.weapon,u.ap,t.x,t.y,t.z,t.hp].join(':');}
 function chooseEnemy(id){const t=s.units[id];if(!t||!alive(t)||!s.detected.has(id))return;if(targetId===id&&shotConfirmation===shotKey(t)){tryAttack();return;}targetId=id;shotConfirmation=shotKey(t);sync();updateHover();}
 function tryAttack(){const t=target();shotConfirmation=null;if(t&&attack(s,selected(),t,burst,false,aimZone))sync();else message('Attack unavailable. Check range, AP and ammunition.');}
-function restart(){selectedIds=new Set([0]);shotConfirmation=null;aimZone='torso';$('aim-zone').value=aimZone;world=createWorld(customMap);s=currentMap(world);targetId=null;burst=false;hover=null;route=null;lastEffect=null;camera.zoom=1.15;center();sync();}
+function restart(){selectedIds=new Set([0]);shotConfirmation=null;aimZone='torso';$('aim-zone').value=aimZone;world=createWorld(customMap,$('difficulty').value);s=currentMap(world);targetId=null;burst=false;hover=null;route=null;lastEffect=null;camera.zoom=1.15;center();sync();}
 function zoom(factor){const cx=width/2,cy=height/2,z=camera.zoom,next=Math.max(.025,Math.min(2.3,z*factor));camera.x=cx+(camera.x-cx)*next/z;camera.y=cy+(camera.y-cy)*next/z;camera.zoom=next;}
 $('squad').addEventListener('click',e=>{const b=e.target.closest('[data-unit]');if(b)select(Number(b.dataset.unit),e.shiftKey);});
 $('weapons').addEventListener('click',e=>{const b=e.target.closest('[data-weapon]');if(b&&equip(s,selected(),b.dataset.weapon)){burst=false;sync();}});
