@@ -71,3 +71,10 @@ Choose **Design size** to switch between a240×240 map and a24×24 block workspa
 **Save design** updates the current named browser-library record; **Save new copy** creates another record. Choose a record and **Open selected** to reload it. Saves use IndexedDB and remain local to this browser, device and website origin. **Export design JSON** creates a portable backup; **Import design JSON** recognizes either format. Existing full-map drafts still load. Export localhost designs before moving to a hosted editor: browser storage does not migrate automatically.
 
 In the full-map workspace, choose Sector X/Y and **Save sector as block** to capture it. Choose a saved block and **Place selected block** to replace that sector on all three levels; Undo restores it. Placement preserves squad starts/travel markers and rejects conflicts, broken river rules and objects crossing sector boundaries. Blocks become playable when placed into a valid full map.
+
+## Live GitHub Pages
+
+- Game: https://syntaxswine.github.io/animal-factory-tactics-pages/tactics/index.html
+- Editor: https://syntaxswine.github.io/animal-factory-tactics-pages/tactics/editor.html
+
+Pages publishes the public distribution repository. Run `npm run build:tactics-pages` after source checks, then commit and push the reviewed `.pages-output` distribution to update the live site. Publishing the private development branch alone does not update Pages.
