@@ -30,3 +30,9 @@ Uphill gunfire adds one tile of effective horizontal distance per level; downhil
 Optional marked roof edges connect adjacent tiles exactly one level apart. Climbing costs 6 AP in either direction (twice a ladder), allowing the 7 AP guards to use these routes. Roof support, empty foothold headroom, an open upper edge, and unoccupied endpoints are required. Roof links do not cut sight holes through floors. The editor provides placement and erasure from either endpoint; JSON and world state preserve links. Multiple links can share a foothold: climb buttons choose the first route, while selecting a destination tile allows other routes.
 
 Validation: 95 automated tests pass, including actual enemy roof traversal and AP accounting. Browser playtesting confirmed editor placement and player ascent/descent. Hostile review passed at 4/5 after correcting the initial unaffordable guard climb cost.
+
+## Stance movement
+
+Three actor states: standing (2 AP/tile), kneeling (4), prone (8). Direct stance changes cost 2 AP in combat and are free outside combat. Dead characters, enemy turns, insufficient AP, active movement, invalid stances and redundant changes cannot spend AP. Stairs/ladders/roof links require standing and retain 2/3/6 AP costs. Actor-aware path costs drive previews, movement, queued-step revalidation and enemy movement. Stance persists with squad state through local travel. No new shooting or visibility modifiers are inferred. Current sprites retain standing poses; UI and map labels expose stance.
+
+Validation: 102 tests pass; factory balance smoke test wins 20/20 seeds in 7–10 rounds with 3–4 survivors. The bot uses actual route costs and stays standing. Browser checks confirm all three stance controls and labels. Hostile review: 4/5 pass. The review found and resolved a distant-path slowdown by making the A* estimate account for stance movement costs.

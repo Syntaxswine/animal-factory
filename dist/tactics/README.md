@@ -44,7 +44,7 @@ In the game, stand on a cyan stair marker and use **Stairs ↑ / ↓**. Transiti
 
 Version-1 drafts and JSON maps migrate into the larger ground plane; existing contents and boundary walls remain. New portable JSON files use version 2 with a 4 MB limit. Reachability checks run in a background worker before playtesting.
 
-Validation: 95 automated checks pass; the original 12-guard factory balance smoke test wins 20/20 seeds. Full 50-character maps have separate population, pathfinding and enemy-turn checks. At current visual pacing, the worst-case all-alert guard turn takes about 41 seconds despite under one second of measured simulation CPU time.
+Validation: 102 automated checks pass; the original 12-guard factory balance smoke test wins 20/20 seeds. Full 50-character maps have separate population, pathfinding and enemy-turn checks. At current visual pacing, the worst-case all-alert guard turn takes about 41 seconds despite under one second of measured simulation CPU time.
 
 ## Environment palette and sector rules
 
@@ -57,3 +57,9 @@ Choose **Layout rules → River north–south / two bridges** or **River east–
 Window walls block walking and provide cover. Shots and sight use a central aperture (middle 70% of the edge, height 1.0–2.4 within a 3-unit floor); solid sills and outer wall portions still block rays. Closed steel/wood door poses are static barriers for testing, and the open concrete doorway is passable. Door opening/closing is not implemented in this slice.
 
 **Roof climb** marks an optional climbable edge: paint an upper roof tile, return to the lower level, then click the neighboring foothold close to that edge. The foothold must have empty space above it and the upper edge must be open. Gold R arrows mark both ends. Climbing up or down costs 6 AP and changes height by exactly one level. Use the climb buttons or click the destination on its level. Erase roof climb removes the link from either end. Roof links do not create stair holes through floors.
+
+## Stances
+
+Standing, kneeling and prone movement costs 2, 4 and 8 AP per horizontal tile. Use the stance buttons beside the selected character. Any change to another stance costs 2 AP in combat, including standing directly to prone; repeating the current stance costs nothing. Changes are free in exploration. Movement must stop before changing stance. Climbing requires standing and retains its existing fixed AP cost. Stance persists between turns and local maps. Guards currently remain standing and pay 2 AP per tile.
+
+Map labels use [K] for kneeling and [P] for prone; standing has no suffix. Character artwork still uses existing idle/walk frames. Stance-specific shooting, cover, sight and stealth effects are not part of this movement-cost change.

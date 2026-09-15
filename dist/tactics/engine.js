@@ -8,6 +8,9 @@ export const WEAPONS={
  rifle:{name:'Mosin-Nagant',short:'Mosin',cost:6,range:14,damage:48,mag:5},
  assault:{name:'AK-47',short:'AK-47',cost:4,range:10,damage:26,mag:30}
 };
+export const STANCES={standing:{label:'Standing',moveCost:2},kneeling:{label:'Kneeling',moveCost:4},prone:{label:'Prone',moveCost:8}};
+export const stanceOf=u=>Object.hasOwn(STANCES,u?.stance)?u.stance:'standing';
+export function movementNeighbors(s,u,p=u,stairs){return neighbors(s,p,stairs).filter(q=>levelOf(q)===levelOf(p)||stanceOf(u)==='standing').map(q=>({...q,cost:levelOf(q)===levelOf(p)?STANCES[stanceOf(u)].moveCost:q.cost}));}
 export const key=tileKey;
 export const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y,(levelOf(a)-levelOf(b))*3);
 export const alive=u=>u.hp>0;
@@ -20,7 +23,7 @@ export function log(s,message){s.log.unshift(message);s.log=s.log.slice(0,50);s.
 export function createGame(seed=1947,definition=factoryMap(),detect=true){
  const errors=validateMap(definition);if(errors.length)throw Error(errors.join(' '));
  const s={map:structuredClone(definition.terrain),upper:structuredClone(definition.upper),stairs:structuredClone(definition.stairs),climbs:structuredClone(definition.climbs||[]),props:structuredClone(definition.props||[]),sectors:structuredClone(definition.sectors),edges:{...definition.edges},definition:structuredClone(definition),units:[],phase:'explore',round:0,selected:0,visible:new Set(),seen:new Set(),log:[],seed,revision:0,queue:[],enemyIndex:0,effect:null};
- const add=(team,name,species,x,y,weapon,z=0)=>s.units.push({id:s.units.length,team,name,species,x,y,z,hp:team==='squad'?100:45,maxHp:team==='squad'?100:45,ap:team==='squad'?12:7,maxAp:team==='squad'?12:7,accuracy:team==='squad'?85:55,weapon,ammo:Object.fromEntries(Object.entries(WEAPONS).map(([k,v])=>[k,v.mag])),alert:false,lastKnown:null,facing:1,steps:0});
+ const add=(team,name,species,x,y,weapon,z=0)=>s.units.push({id:s.units.length,team,name,species,x,y,z,stance:'standing',hp:team==='squad'?100:45,maxHp:team==='squad'?100:45,ap:team==='squad'?12:7,maxAp:team==='squad'?12:7,accuracy:team==='squad'?85:55,weapon,ammo:Object.fromEntries(Object.entries(WEAPONS).map(([k,v])=>[k,v.mag])),alert:false,lastKnown:null,facing:1,steps:0});
  const cast=[['Yakov','horse','assault'],['Anya','goat','rifle'],['Misha','donkey','pistol'],['Vera','sheep','knife']];
  definition.starts.forEach((p,i)=>add('squad',cast[i][0],cast[i][1],p.x,p.y,cast[i][2],levelOf(p)));
  const names=['Boris','Lev','Grigori','Oleg','Pavel','Igor','Anton','Vadim','Yuri','Sasha','Pyotr','Nikolai'];
@@ -47,13 +50,13 @@ export const pathCost=path=>path.reduce((n,p)=>n+(p.cost||1),0);
 export function pathTo(s,u,x,y,z=levelOf(u)){
  if(!walkable(s,x,y,z)||(occupant(s,x,y,z)&&occupant(s,x,y,z)!==u))return null;
  const start=key(u.x,u.y,levelOf(u)),goal=key(x,y,z),occupied=new Set(s.units.filter(p=>alive(p)&&p!==u).map(p=>key(p.x,p.y,levelOf(p)))),stairs=stairSet(s);
- const heuristic=p=>Math.abs(p.x-x)+Math.abs(p.y-y)+2*Math.abs(levelOf(p)-z),heap=[],scores=new Map([[start,0]]),parents=new Map();
+ const heuristic=p=>(Math.abs(p.x-x)+Math.abs(p.y-y))*STANCES[stanceOf(u)].moveCost+2*Math.abs(levelOf(p)-z),heap=[],scores=new Map([[start,0]]),parents=new Map();
  const less=(a,b)=>a.f<b.f||(a.f===b.f&&a.g>b.g);
  const push=n=>{heap.push(n);let i=heap.length-1;while(i){const p=(i-1)>>1;if(!less(heap[i],heap[p]))break;[heap[i],heap[p]]=[heap[p],heap[i]];i=p;}};
  const pop=()=>{const first=heap[0],last=heap.pop();if(heap.length){heap[0]=last;let i=0;while(true){let c=i*2+1;if(c>=heap.length)break;if(c+1<heap.length&&less(heap[c+1],heap[c]))c++;if(!less(heap[c],heap[i]))break;[heap[i],heap[c]]=[heap[c],heap[i]];i=c;}}return first;};
  push({...u,z:levelOf(u),k:start,g:0,f:heuristic(u)});
  while(heap.length){const p=pop();if(p.g!==scores.get(p.k))continue;if(p.k===goal){const path=[];let k=goal;while(k!==start){const entry=parents.get(k);path.push(entry.point);k=entry.parent;}return path.reverse();}
-  for(const q of neighbors(s,p,stairs)){const k=key(q.x,q.y,q.z),g=p.g+q.cost;if(occupied.has(k)||g>=(scores.get(k)??Infinity))continue;scores.set(k,g);parents.set(k,{parent:p.k,point:q});push({...q,k,g,f:g+heuristic(q)});}
+  for(const q of movementNeighbors(s,u,p,stairs)){const k=key(q.x,q.y,q.z),g=p.g+q.cost;if(occupied.has(k)||g>=(scores.get(k)??Infinity))continue;scores.set(k,g);parents.set(k,{parent:p.k,point:q});push({...q,k,g,f:g+heuristic(q)});}
  }return null;
 }
 export const sightRange=(a,b)=>9+Math.max(0,levelOf(a)-levelOf(b));
@@ -66,12 +69,16 @@ export function refresh(s){
  if(!guards(s).length){if(s.phase!=='won'){log(s,'Local map cleared. Explore or gather at the travel marker.');s.queue=[];}s.phase='won';s.revision++;return;}
  for(const g of guards(s)){if(squad(s).some(p=>canSee(s,p,g)))g.alert=true;const targets=squad(s).filter(p=>canSee(s,g,p));if(targets.length){g.alert=true;const p=targets.sort((a,b)=>distance(g,a)-distance(g,b))[0];g.lastKnown={x:p.x,y:p.y,z:levelOf(p)};}}
  const contact=guards(s).some(g=>g.alert);
- if(s.phase==='explore'&&contact){s.phase='player';s.round++;s.queue=[];for(const u of s.units)u.ap=u.maxAp;log(s,'CONTACT / Squad turn. Movement costs 1 AP per tile.');}
+ if(s.phase==='explore'&&contact){s.phase='player';s.round++;s.queue=[];for(const u of s.units)u.ap=u.maxAp;log(s,'CONTACT / Squad turn. Movement costs 2 / 4 / 8 AP per tile: standing / kneeling / prone.');}
  else if((s.phase==='player'||s.phase==='enemy')&&!contact){s.phase='explore';s.queue=[];log(s,'Area clear. Real-time exploration resumed.');}
  if(!alive(s.units[s.selected]))s.selected=squad(s)[0].id;
  s.revision++;
 }
 export function canControl(s,u){return u&&alive(u)&&u.team==='squad'&&['explore','player','won'].includes(s.phase);}
+export function setStance(s,u,stance){
+ if(!Object.hasOwn(STANCES,stance)||!canControl(s,u)||s.queue.length||stanceOf(u)===stance||(s.phase==='player'&&u.ap<2))return false;
+ if(s.phase==='player')u.ap-=2;u.stance=stance;log(s,u.name+' is '+stance+'.');return true;
+}
 export function move(s,u,x,y,z=levelOf(u)){
  if(!canControl(s,u))return false;const path=pathTo(s,u,x,y,z);if(!path?.length)return false;
  if(s.phase==='player'&&pathCost(path)>u.ap)return false;
@@ -79,7 +86,7 @@ export function move(s,u,x,y,z=levelOf(u)){
 }
 export function stepMovement(s){
  if(!s.queue.length||!['explore','player','won'].includes(s.phase))return false;
- const step=s.queue.shift(),u=s.units[step.id],currentStep=u&&neighbors(s,u).find(p=>p.x===step.x&&p.y===step.y&&p.z===levelOf(step));if(!canControl(s,u)||!currentStep||occupant(s,step.x,step.y,levelOf(step))||(s.phase==='player'&&u.ap<currentStep.cost)){s.queue=[];return false;}
+ const step=s.queue.shift(),u=s.units[step.id],currentStep=u&&movementNeighbors(s,u).find(p=>p.x===step.x&&p.y===step.y&&p.z===levelOf(step));if(!canControl(s,u)||!currentStep||occupant(s,step.x,step.y,levelOf(step))||(s.phase==='player'&&u.ap<currentStep.cost)){s.queue=[];return false;}
  u.facing=(step.x-u.x)-(step.y-u.y)>=0?1:-1;u.x=step.x;u.y=step.y;u.z=levelOf(step);u.steps++;if(s.phase==='player')u.ap-=currentStep.cost;refresh(s);return true;
 }
 export function coverAgainst(s,a,b){
