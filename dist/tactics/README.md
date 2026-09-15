@@ -22,13 +22,17 @@ Choose **Squad start** and a member to move one of the four starts. Choose **Gua
 
 **Playtest map** opens the current blueprint in a contained game preview; playing does not modify the blueprint. Return to the editor with the preview's top button. The same map schema drives the editor, generator and game. Local maps are 240 × 240 tiles: 10 × 10 sectors of 24 × 24 tiles, with three walkable levels. Overmap editing is not part of this slice.
 
-## Combat controls
+## Combat and character controls
 
-Select a squad member with 1–4 or the cards. Click ground to walk; hover previews the route and cost. Movement costs 1 AP per tile during combat, and contact interrupts real-time movement. Click a guard or contact button to inspect a shot, then **Attack / F** to confirm. **Space** ends the squad turn; **R** reloads; **B** toggles AK burst; **Escape** stops movement. Right-drag or arrows pan; wheel or +/− zoom; **C** centers; **G** toggles the grid.
+Select individually or Shift-click cards/characters to form a group. Select all on layer gathers the current floor. Click ground for a formation order; Escape stops it. Standing/kneeling/prone costs2/4/8AP per cardinal step and diagonals cost1.5times. Sneaking adds2AP before the diagonal multiplier. Contact cancels movement.
 
-The existing test armoury remains: hands, NR-40, TT-33, Mosin-Nagant and AK-47. Everyone can test every weapon. Equip costs 2 AP in combat, reload costs 3 AP, and the AK burst costs 6 AP and three rounds. Magazines persist across switching; reserves remain unlimited in this original combat slice. Finite backpacks, two-slot free swapping, facing cones, medical care and leveling are recorded directions for later implementation, not features claimed in this map-tool update.
+Choose a facing and Turn for free. Species cones, 75tile landscape and60tile character maxima share terrain occlusion. Click an enemy, choose torso/head/arms/legs, click again to fire; hover shows odds. Overwatch reserves one normal shot for the enemy turn. Turning, moving or changing equipment cancels it without refund.
 
-Squad: 100 HP, 12 AP and 85 base accuracy. Guards: 45 HP, 7 AP, 55 base accuracy and 65% weapon damage. Existing painted Animal Factory sprites are reused; dedicated armed poses remain future work. Story work is explicitly deferred.
+Two equipped weapons swap for free. Stored secondary equips cost3AP in combat. Reload costs3AP and transfers finite compatible reserves. The backpack uses16kg capacity, including utilities, and one weapon of each type. Drop/pick up and adjacent teammate transfers preserve loaded rounds. Nearby loot appears in the backpack panel; golden diamonds mark piles.
+
+Choose Easy or Standard for the next run, then Restart. Easy automatically stabilizes fallen workers; Standard gives six squad-turn ends for medkit treatment. Stabilized workers return at5HP after the encounter. Whole-squad incapacitation requires retry. Wire cutters and medical skill retain their existing rules.
+
+Each defeated guard grants25sharedXP; every100XP gives a level and3assignable points, up tolevel10. Train between encounters using the character sheet. Species traits and trainable shooting/medical/stealth/vitality/mobility are separate. Values remain provisional; no fixed classes, respec or story have been added.
 
 ## Verification
 

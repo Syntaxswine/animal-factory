@@ -1,3 +1,4 @@
+import {initProgression,awardCombatXP,train} from './progression.js';
 import {initInventory,reserve,consumeAmmo,syncWeapons,accepts,receive} from './inventory.js';
 import {inCone,headingTo} from './perception.js';
 export {inCone,headingTo} from './perception.js';
@@ -36,7 +37,7 @@ export function createGame(seed=1947,definition=factoryMap(),detect=true,difficu
  definition.starts.forEach((p,i)=>add('squad',cast[i][0],cast[i][1],p.x,p.y,cast[i][2],levelOf(p)));
  const names=['Boris','Lev','Grigori','Oleg','Pavel','Igor','Anton','Vadim','Yuri','Sasha','Pyotr','Nikolai'];
  definition.guards.forEach((g,i)=>add('guard',names[i]||`Guard ${i+1}`,g.species,g.x,g.y,g.weapon,levelOf(g)));
- for(const u of s.units)initInventory(u,WEAPONS);s.loot=definition.starts.map((p,i)=>({...p,items:[{type:'ammo',kind:i%2?'rifle':'pistol',count:i%2?5:8}]}));
+ for(const u of s.units){initInventory(u,WEAPONS);if(u.team==='squad')initProgression(u);}s.loot=definition.starts.map((p,i)=>({...p,items:[{type:'ammo',kind:i%2?'rifle':'pistol',count:i%2?5:8}]}));
  if(detect)refresh(s);log(s,`Local map ready / ${definition.guards.length} guards.`);return s;
 }
 // Eye rays traverse tile edges and solid upper floors; stairs are floor openings.
@@ -131,7 +132,7 @@ export function attack(s,a,b,burst=false,byAI=false,zone='torso',reaction=false)
  if(b.team==='guard'){b.alert=true;b.lastKnown={x:a.x,y:a.y,z:levelOf(a)};}if(s.phase==='explore'){b.alert=true;refresh(s);} // Opening attacks always spend combat AP.
  if(!reaction)a.ap-=p.cost;emitNoise(s,a,WEAPONS[a.weapon].mag?30:2);if(WEAPONS[a.weapon].mag)a.ammo[a.weapon]-=p.rounds;
  let damage=0;for(let i=0;i<p.rounds;i++)if(random(s)*100<p.chance)damage+=Math.round(p.damage*(a.team==='guard'?.65:1));
- b.hp=Math.max(0,b.hp-damage);if(!b.hp&&b.team==='guard'&&!b.lootDropped){delete s.contacts[b.id];syncWeapons(b);s.loot.push({x:b.x,y:b.y,z:levelOf(b),items:b.pack});b.pack=[];b.lootDropped=true;}if(!b.hp&&b.team==='squad'){b.casualty=s.difficulty==='easy'?'stable':'bleeding';b.bleedTurns=s.difficulty==='easy'?0:6;b.ap=0;s.queue=[];}a.heading=headingTo(a,b);a.facing=(b.x-a.x)-(b.y-a.y)>=0?1:-1;s.effect={ax:a.x,ay:a.y,bx:b.x,by:b.y,az:levelOf(a),bz:levelOf(b),hit:damage>0};
+ b.hp=Math.max(0,b.hp-damage);if(!b.hp&&b.team==='guard'&&!b.lootDropped){delete s.contacts[b.id];awardCombatXP(s);syncWeapons(b);s.loot.push({x:b.x,y:b.y,z:levelOf(b),items:b.pack});b.pack=[];b.lootDropped=true;}if(!b.hp&&b.team==='squad'){b.casualty=s.difficulty==='easy'?'stable':'bleeding';b.bleedTurns=s.difficulty==='easy'?0:6;b.ap=0;s.queue=[];}a.heading=headingTo(a,b);a.facing=(b.x-a.x)-(b.y-a.y)>=0?1:-1;s.effect={ax:a.x,ay:a.y,bx:b.x,by:b.y,az:levelOf(a),bz:levelOf(b),hit:damage>0};
  log(s,`${a.name} → ${b.name}: ${damage?`${damage} damage`:'miss'}${!alive(b)?' / down':''}.`);refresh(s);if(byAI)resolveOverwatch(s,a);return true;
 }
 export function equip(s,u,id,slot=1){if(!canControl(s,u)||s.queue.length||!WEAPONS[id]||u.weapon===id||!(id==='hands'||u.pack.some(i=>i.type==='weapon'&&i.kind===id)))return false;const stored=id!=='hands'&&!u.slots.includes(id),cost=stored?3:0;if(s.phase==='player'&&u.ap<cost)return false;if(s.phase==='player')u.ap-=cost;if(stored)u.slots[slot===0?0:1]=id;u.weapon=id;u.overwatch=null;log(s,u.name+' equipped '+WEAPONS[id].name+'.');return true;}
@@ -179,3 +180,5 @@ export function emitNoise(s,u,radius){if(u.team!=='squad')return;for(const g of 
 export function stepInvestigation(s){if(!['explore','won'].includes(s.phase))return false;for(const g of guards(s))if(g.lastHeard&&g.searchSteps>0){const dest=g.lastHeard;g.heading=headingTo(g,dest);const path=pathTo(s,g,dest.x,dest.y,dest.z);g.searchSteps--;if(path?.length){const p=path[0];g.x=p.x;g.y=p.y;g.z=p.z;g.steps++;}else g.searchSteps=0;if(!g.searchSteps)g.lastHeard=null;refresh(s);return true;}return false;}
 export function setOverwatch(s,u){if(!canControl(s,u)||s.phase!=='player'||s.queue.length||u.overwatch||!WEAPONS[u.weapon].mag||u.ammo[u.weapon]<1||u.ap<WEAPONS[u.weapon].cost)return false;u.ap-=WEAPONS[u.weapon].cost;u.overwatch={weapon:u.weapon,heading:u.heading};log(s,u.name+' reserved one overwatch shot.');return true;}
 export function resolveOverwatch(s,g){if(s.phase!=='enemy'||!alive(g))return;for(const u of squad(s)){const watch=u.overwatch;if(!watch)continue;if(watch.weapon!==u.weapon||watch.heading!==u.heading){u.overwatch=null;continue;}if(canSee(s,u,g)&&previewAttack(s,{...u,ap:WEAPONS[u.weapon].cost},g).ok){attack(s,u,g,false,false,'torso',true);if(!alive(g)||s.phase!=='enemy')break;}}}
+
+export function allocateSkill(s,u,skill){if(!canControl(s,u)||s.queue.length||!['explore','won'].includes(s.phase)||!train(u,skill))return false;log(s,u.name+' trained '+skill+'.');refresh(s);return true;}

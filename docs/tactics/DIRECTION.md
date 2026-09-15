@@ -1,4 +1,6 @@
-# Red Shift — next-iteration direction
+# Red Shift — mechanics direction and completion record
+
+The five-stage implementation order below was completed on 2026-09-15; the final section records the reviewed behavior and supersedes historical proposals.
 
 Recorded from the user's answers on 2026-09-14. These are design decisions for the next implementation pass, not a description of features already present in the playable prototype. The initial prototype contract remains in `dist/tactics/DESIGN.md`; its free test armoury, unlimited reserves, uniform stats and death-only model will be superseded during implementation.
 
@@ -77,3 +79,7 @@ The user has explicitly deferred story work. Build edge-based walls, distinct lo
 3. Stealth, investigation and reactions: complete, hostile review 4/5. Sneaking adds 2 AP/cardinal step and reduces detection range; noise yields an approximate search area. One overwatch shot reserves AP now and revalidates cone/weapon/ammunition during the enemy turn; switching or turning cancels without refund. Aimed fire retained. Group movement shares noise and reservation rules. 170 tests passed, browser confirmed controls and accounting.
 
 4. Difficulty and casualties: complete, hostile review 4/5. Next-run Easy/Standard selection; Easy auto-stabilizes and recovers to 5 HP after encounter; Standard six-turn treatment deadline. Whole-squad incapacitation requires retry in both modes. Difficulty follows travel. 173 tests passed and browser verified setting changes only on Restart.
+
+5. Character sheet and progression: complete, hostile review 4/5. Shared 25 XP per defeated guard, three points per 100 XP, level cap10; five trainable skills, no free healing or AP refill. Separate horse/goat/donkey/sheep traits use existing art and appear on sheets. Training between encounters; no respec yet. 177 tests passed and browser verified species-derived stats. Stage1 default cones are superseded for these four species by their displayed trait values; guards retain120°.
+
+Open tuning questions: weight-only versus spatial backpacks; inventory duplicates and authored supply placement; respec and XP pacing; future species roster (including foxes); Easy whole-squad retreat versus retry. Story remains deferred. Campaign progress persists across local-map travel in the current run; reload still starts a new run.
