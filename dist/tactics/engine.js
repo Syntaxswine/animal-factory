@@ -76,7 +76,7 @@ export function refresh(s){
  for(const g of guards(s))if(s.detected.has(g.id))s.contacts[g.id]={x:g.x,y:g.y,z:levelOf(g)};
  if(s.queue.length&&[...s.detected].some(id=>!oldDetected.has(id))){s.queue=[];log(s,'Movement stopped: new opponent spotted.');}
  if(s.visible!==oldVisible||s.seen.size<s.visible.size)for(const k of s.visible)s.seen.add(k);
- if(!squad(s).length){if(s.phase!=='lost')log(s,'The squad has fallen. Restart the test to try again.');s.phase='lost';s.queue=[];return;}
+ if(!squad(s).length){if(!s.defeat){for(const u of s.units.filter(u=>u.team==='squad')){u.casualty=u.casualty==='stable'?'captured':'dead';u.bleedTurns=0;u.ap=0;u.overwatch=null;syncWeapons(u);}s.defeat={location:s.definition.name,round:s.round,captured:s.units.filter(u=>u.team==='squad'&&u.casualty==='captured').map(u=>structuredClone(u)),dead:s.units.filter(u=>u.team==='squad'&&u.casualty==='dead').map(u=>({id:u.id,name:u.name}))};log(s,s.defeat.captured.length+' captured / '+s.defeat.dead.length+' dead.');}s.phase='lost';s.queue=[];return;}
  if(!alive(s.units[s.selected]))s.selected=squad(s)[0].id;
  const pending=s.units.some(u=>u.casualty==='bleeding');
  if(!guards(s).some(g=>g.alert)&&!s.detected.size&&!pending)for(const u of s.units)if(u.casualty==='stable'){u.hp=5;u.casualty=null;log(s,u.name+' recovered after the encounter (5 HP).');}

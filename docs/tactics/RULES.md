@@ -81,3 +81,7 @@ Every stage passed independent hostile review4/5. Final177tests, syntax and asse
 ## Spatial inventory — current rule
 
 The weight-only limit is superseded by a 4×4 backpack grid. Rifle/assault weapons use two contiguous horizontal cells; pistols, ammo stacks, knives and utilities use one. Two separate ready slots each fit one long gun and do not consume backpack cells; switching between them is free. Equipping either ready slot from storage costs3AP in combat; the outgoing item must fit the backpack. Manual placement, fragmentation and capacity are enforced atomically. 180 tests passed; hostile review4/5, headless browser placement verified.
+
+## Defeat and permanent training — current rule
+
+On total defeat, stabilized mercenaries become captured and all bleeding mercenaries die immediately. The captured roster preserves identity, progression and carried equipment in a separate snapshot within the run. Captured characters cannot act, gain XP, auto-recover or appear as corpses. The planned mid-to-late-game rescue facility and post-defeat campaign continuation are not yet playable; reloading or restarting still resets the run. Training is permanently learned, with no respecs. 182 tests passed; capture/no-respec hostile review4/5.
