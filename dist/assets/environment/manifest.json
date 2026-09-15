@@ -436,6 +436,486 @@
       },
       "notes": "User-requested polygon crop of original painted art. Full tile-edge width, 72 px nominal height; originals retained. Open and closed designs are not a matched animation pair.",
       "renderHeight": 72
+    },
+    {
+      "id": "botanical-chamber",
+      "file": "facility/botanical-chamber.png",
+      "label": "botanical chamber",
+      "kind": "prop",
+      "suggestedFootprint": [
+        1,
+        1
+      ],
+      "suggestedRules": {
+        "blocksMovement": true,
+        "blocksSight": true,
+        "cover": "low"
+      }
+    },
+    {
+      "id": "jail-bars",
+      "file": "facility/jail-bars.png",
+      "label": "jail bars",
+      "kind": "edge",
+      "suggestedFootprint": [
+        1,
+        0
+      ],
+      "suggestedRules": {
+        "blocksMovement": true,
+        "blocksSight": false,
+        "cover": "none"
+      }
+    },
+    {
+      "id": "jail-door-closed",
+      "file": "facility/jail-door-closed.png",
+      "label": "jail door closed",
+      "kind": "edge",
+      "suggestedFootprint": [
+        1,
+        0
+      ],
+      "suggestedRules": {
+        "blocksMovement": true,
+        "blocksSight": false,
+        "cover": "none"
+      }
+    },
+    {
+      "id": "lab-bench",
+      "file": "facility/lab-bench.png",
+      "label": "lab bench",
+      "kind": "prop",
+      "suggestedFootprint": [
+        2,
+        1
+      ],
+      "suggestedRules": {
+        "blocksMovement": true,
+        "blocksSight": false,
+        "cover": "low"
+      }
+    },
+    {
+      "id": "lab-control-console",
+      "file": "facility/lab-control-console.png",
+      "label": "lab control console",
+      "kind": "prop",
+      "suggestedFootprint": [
+        1,
+        1
+      ],
+      "suggestedRules": {
+        "blocksMovement": true,
+        "blocksSight": false,
+        "cover": "low"
+      }
+    },
+    {
+      "id": "medical-exam-table",
+      "file": "facility/medical-exam-table.png",
+      "label": "medical exam table",
+      "kind": "prop",
+      "suggestedFootprint": [
+        2,
+        1
+      ],
+      "suggestedRules": {
+        "blocksMovement": true,
+        "blocksSight": false,
+        "cover": "low"
+      }
+    },
+    {
+      "id": "medical-surgical-table",
+      "file": "facility/medical-surgical-table.png",
+      "label": "medical surgical table",
+      "kind": "prop",
+      "suggestedFootprint": [
+        2,
+        1
+      ],
+      "suggestedRules": {
+        "blocksMovement": true,
+        "blocksSight": false,
+        "cover": "low"
+      }
+    },
+    {
+      "id": "medicine-cabinet",
+      "file": "facility/medicine-cabinet.png",
+      "label": "medicine cabinet",
+      "kind": "prop",
+      "suggestedFootprint": [
+        1,
+        1
+      ],
+      "suggestedRules": {
+        "blocksMovement": true,
+        "blocksSight": true,
+        "cover": "low"
+      }
+    },
+    {
+      "id": "bedside-monitor",
+      "file": "hospital/bedside-monitor.png",
+      "label": "bedside monitor",
+      "kind": "prop",
+      "suggestedFootprint": [
+        1,
+        1
+      ],
+      "suggestedRules": {
+        "blocksMovement": true,
+        "blocksSight": false,
+        "cover": "low"
+      }
+    },
+    {
+      "id": "hospital-bed",
+      "file": "hospital/hospital-bed.png",
+      "label": "hospital bed",
+      "kind": "prop",
+      "suggestedFootprint": [
+        1,
+        2
+      ],
+      "suggestedRules": {
+        "blocksMovement": true,
+        "blocksSight": false,
+        "cover": "low"
+      }
+    },
+    {
+      "id": "instrument-trolley",
+      "file": "hospital/instrument-trolley.png",
+      "label": "instrument trolley",
+      "kind": "prop",
+      "suggestedFootprint": [
+        1,
+        1
+      ],
+      "suggestedRules": {
+        "blocksMovement": true,
+        "blocksSight": false,
+        "cover": "low"
+      }
+    },
+    {
+      "id": "iv-stand",
+      "file": "hospital/iv-stand.png",
+      "label": "iv stand",
+      "kind": "prop",
+      "suggestedFootprint": [
+        1,
+        1
+      ],
+      "suggestedRules": {
+        "blocksMovement": true,
+        "blocksSight": false,
+        "cover": "none"
+      }
+    },
+    {
+      "id": "scrub-sink",
+      "file": "hospital/scrub-sink.png",
+      "label": "scrub sink",
+      "kind": "prop",
+      "suggestedFootprint": [
+        1,
+        2
+      ],
+      "suggestedRules": {
+        "blocksMovement": true,
+        "blocksSight": false,
+        "cover": "low"
+      }
+    },
+    {
+      "id": "wheeled-stretcher",
+      "file": "hospital/wheeled-stretcher.png",
+      "label": "wheeled stretcher",
+      "kind": "prop",
+      "suggestedFootprint": [
+        1,
+        2
+      ],
+      "suggestedRules": {
+        "blocksMovement": true,
+        "blocksSight": false,
+        "cover": "low"
+      }
+    },
+    {
+      "id": "medicine-cabinet-closed",
+      "file": "containers/medicine-cabinet-closed.png",
+      "label": "medicine cabinet closed",
+      "kind": "prop",
+      "suggestedFootprint": [
+        1,
+        1
+      ],
+      "suggestedRules": {
+        "blocksMovement": true,
+        "blocksSight": true,
+        "cover": "low"
+      }
+    },
+    {
+      "id": "medicine-cabinet-open",
+      "file": "containers/medicine-cabinet-open.png",
+      "label": "medicine cabinet open",
+      "kind": "prop",
+      "suggestedFootprint": [
+        1,
+        1
+      ],
+      "suggestedRules": {
+        "blocksMovement": true,
+        "blocksSight": true,
+        "cover": "low"
+      }
+    },
+    {
+      "id": "supply-chest-closed",
+      "file": "containers/supply-chest-closed.png",
+      "label": "supply chest closed",
+      "kind": "prop",
+      "suggestedFootprint": [
+        1,
+        1
+      ],
+      "suggestedRules": {
+        "blocksMovement": true,
+        "blocksSight": false,
+        "cover": "low"
+      }
+    },
+    {
+      "id": "supply-chest-open",
+      "file": "containers/supply-chest-open.png",
+      "label": "supply chest open",
+      "kind": "prop",
+      "suggestedFootprint": [
+        1,
+        1
+      ],
+      "suggestedRules": {
+        "blocksMovement": true,
+        "blocksSight": false,
+        "cover": "low"
+      }
+    },
+    {
+      "id": "toolbox-closed",
+      "file": "containers/toolbox-closed.png",
+      "label": "toolbox closed",
+      "kind": "prop",
+      "suggestedFootprint": [
+        1,
+        1
+      ],
+      "suggestedRules": {
+        "blocksMovement": true,
+        "blocksSight": false,
+        "cover": "none"
+      }
+    },
+    {
+      "id": "toolbox-open",
+      "file": "containers/toolbox-open.png",
+      "label": "toolbox open",
+      "kind": "prop",
+      "suggestedFootprint": [
+        1,
+        1
+      ],
+      "suggestedRules": {
+        "blocksMovement": true,
+        "blocksSight": false,
+        "cover": "none"
+      }
+    },
+    {
+      "id": "wooden-crate-closed",
+      "file": "containers/wooden-crate-closed.png",
+      "label": "wooden crate closed",
+      "kind": "prop",
+      "suggestedFootprint": [
+        1,
+        1
+      ],
+      "suggestedRules": {
+        "blocksMovement": true,
+        "blocksSight": false,
+        "cover": "low"
+      }
+    },
+    {
+      "id": "wooden-crate-open",
+      "file": "containers/wooden-crate-open.png",
+      "label": "wooden crate open",
+      "kind": "prop",
+      "suggestedFootprint": [
+        1,
+        1
+      ],
+      "suggestedRules": {
+        "blocksMovement": true,
+        "blocksSight": false,
+        "cover": "low"
+      }
+    },
+    {
+      "id": "ammo-assault",
+      "file": "loot/ammo-assault.png",
+      "label": "ammo assault",
+      "kind": "prop",
+      "suggestedFootprint": [
+        1,
+        1
+      ],
+      "suggestedRules": {
+        "blocksMovement": false,
+        "blocksSight": false,
+        "cover": "none"
+      }
+    },
+    {
+      "id": "ammo-pistol",
+      "file": "loot/ammo-pistol.png",
+      "label": "ammo pistol",
+      "kind": "prop",
+      "suggestedFootprint": [
+        1,
+        1
+      ],
+      "suggestedRules": {
+        "blocksMovement": false,
+        "blocksSight": false,
+        "cover": "none"
+      }
+    },
+    {
+      "id": "ammo-rifle",
+      "file": "loot/ammo-rifle.png",
+      "label": "ammo rifle",
+      "kind": "prop",
+      "suggestedFootprint": [
+        1,
+        1
+      ],
+      "suggestedRules": {
+        "blocksMovement": false,
+        "blocksSight": false,
+        "cover": "none"
+      }
+    },
+    {
+      "id": "first-aid-kit",
+      "file": "loot/first-aid-kit.png",
+      "label": "first aid kit",
+      "kind": "prop",
+      "suggestedFootprint": [
+        1,
+        1
+      ],
+      "suggestedRules": {
+        "blocksMovement": false,
+        "blocksSight": false,
+        "cover": "none"
+      }
+    },
+    {
+      "id": "gun-assault",
+      "file": "loot/gun-assault.png",
+      "label": "gun assault",
+      "kind": "prop",
+      "suggestedFootprint": [
+        1,
+        1
+      ],
+      "suggestedRules": {
+        "blocksMovement": false,
+        "blocksSight": false,
+        "cover": "none"
+      }
+    },
+    {
+      "id": "gun-pistol",
+      "file": "loot/gun-pistol.png",
+      "label": "gun pistol",
+      "kind": "prop",
+      "suggestedFootprint": [
+        1,
+        1
+      ],
+      "suggestedRules": {
+        "blocksMovement": false,
+        "blocksSight": false,
+        "cover": "none"
+      }
+    },
+    {
+      "id": "gun-rifle",
+      "file": "loot/gun-rifle.png",
+      "label": "gun rifle",
+      "kind": "prop",
+      "suggestedFootprint": [
+        1,
+        1
+      ],
+      "suggestedRules": {
+        "blocksMovement": false,
+        "blocksSight": false,
+        "cover": "none"
+      }
+    },
+    {
+      "id": "spare-parts",
+      "file": "loot/spare-parts.png",
+      "label": "spare parts",
+      "kind": "prop",
+      "suggestedFootprint": [
+        1,
+        1
+      ],
+      "suggestedRules": {
+        "blocksMovement": false,
+        "blocksSight": false,
+        "cover": "none"
+      }
+    },
+    {
+      "id": "wire-cutters",
+      "file": "loot/wire-cutters.png",
+      "label": "wire cutters",
+      "kind": "prop",
+      "suggestedFootprint": [
+        1,
+        1
+      ],
+      "suggestedRules": {
+        "blocksMovement": false,
+        "blocksSight": false,
+        "cover": "none"
+      }
+    },
+    {
+      "id": "fence-cut",
+      "file": "fence-chainlink-cut.png",
+      "label": "fence cut",
+      "kind": "edge",
+      "suggestedFootprint": [
+        1,
+        0
+      ],
+      "suggestedRules": {
+        "blocksMovement": false,
+        "blocksSight": false,
+        "cover": "none"
+      }
     }
   ]
 }
