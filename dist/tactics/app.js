@@ -1,4 +1,5 @@
 import {characterArt,ARMED_WEAPONS} from './character-art.js';
+import {LOOT_WEAPONS,fallenVisible,drawDeathDrops} from './loot-art.js';
 import {PROPS,propCells} from './environment.js';
 import {environmentRenderer} from './environment-renderer.js';
 import {bounds,inView,focusSector,sectorOverview} from './view.js';
@@ -18,6 +19,7 @@ function load(src){if(images.has(src))return images.get(src);const img=new Image
 for(const species of new Set(s.units.map(u=>u.species)))for(const pose of ['idle','walk-a','walk-b'])load(`../assets/characters/${species}-${pose}.png`);
 for(const species of new Set(s.units.map(u=>u.species)))for(const weapon of ARMED_WEAPONS)load(characterArt(species,weapon).src);
 for(const name of ['mill','bakery','bottler','dairy'])load(`../assets/machines/industrial/${name}.png`);
+for(const weapon of LOOT_WEAPONS)for(const kind of ['gun','ammo'])load(`../assets/environment/loot/${kind}-${weapon}.png`);
 function project(x,y,z=0){return {x:camera.x+(x-y)*28*camera.zoom,y:camera.y+(x+y)*14*camera.zoom-z*camera.zoom};}
 function pick(x,y){const px=(x-camera.x)/(28*camera.zoom),py=(y-camera.y)/(14*camera.zoom);return {x:Math.round((px+py)/2),y:Math.round((py-px)/2)};}
 function center(){const p=selected();viewLevel=levelOf(p);$('level').value=viewLevel;camera.x=width*.46-(p.x-p.y)*28*camera.zoom;camera.y=height*.48-(p.x+p.y)*14*camera.zoom;}
@@ -55,7 +57,7 @@ function drawObjects(now){
  sprites.length=0;
  const b=bounds(camera,width,height),objects=[];for(const [k,kind]of Object.entries(s.edges)){const cells=edgeCells(k);if(levelOf(cells[0])===viewLevel&&cells.some(p=>inView(p,b))&&cells.some(p=>s.seen.has(key(p.x,p.y,viewLevel))))objects.push({x:(cells[0].x+cells[1].x)/2,y:(cells[0].y+cells[1].y)/2,type:'edge',edge:k,kind,visible:cells.some(p=>s.visible.has(key(p.x,p.y,viewLevel)))});}for(let y=b.y0;y<=b.y1;y++)for(let x=b.x0;x<=b.x1;x++)if(s.seen.has(key(x,y,viewLevel))&&['wall','crate'].includes(tile(s,x,y,viewLevel)))objects.push({x,y,type:tile(s,x,y,viewLevel)});
  for(const p of s.props)if(levelOf(p)===viewLevel&&propCells(p).some(q=>inView(q,b)&&s.seen.has(key(q.x,q.y,q.z))))objects.push({...p,type:'prop',depth:Math.max(...propCells(p).map(q=>q.x+q.y))});
- for(const u of s.units)if(levelOf(u)===viewLevel&&inView(u,b)&&(u.team==='squad'||s.detected.has(u.id)))objects.push({...u,type:'actor',unit:u});
+ for(const u of s.units)if(levelOf(u)===viewLevel&&inView(u,b)&&(u.team==='squad'||s.detected.has(u.id)||fallenVisible(s,u,viewLevel)))objects.push({...u,type:'actor',unit:u});
  objects.sort((a,b)=>(a.depth??a.x+a.y)-(b.depth??b.x+b.y)||(a.type==='actor'?1:-1));
  for(const obj of objects){const {x,y,type}=obj,visible=obj.visible??s.visible.has(key(x,y,viewLevel));ctx.globalAlpha=visible?1:.45;
   if(type==='prop'){art.prop(ctx,project,camera.zoom,obj);}
@@ -63,7 +65,7 @@ function drawObjects(now){
   else if(type==='wall'){block(x,y,23,'#9b8e6b','#625d49','#797158');const p=project(x,y,10);ctx.strokeStyle='#403f3477';ctx.beginPath();ctx.moveTo(p.x,p.y+14*camera.zoom);ctx.lineTo(p.x+28*camera.zoom,p.y);ctx.stroke();}
   else if(type==='crate'){if(art.prop(ctx,project,camera.zoom,{...obj,kind:'crate-wood'})){ctx.globalAlpha=1;continue;}block(x,y,14,'#ac8651','#695539','#866b42');const p=project(x,y,14);ctx.strokeStyle='#463d2bb0';ctx.beginPath();ctx.moveTo(p.x-15*camera.zoom,p.y-6*camera.zoom);ctx.lineTo(p.x+13*camera.zoom,p.y+7*camera.zoom);ctx.stroke();}
   else{const u=obj.unit,p=project(x,y),color=u.team==='guard'?'#e57862':u.id===s.selected?'#f2ce79':'#b6d5b0';
-   if(!alive(u)){ctx.globalAlpha=.4;diamond(x,y,'#562e2566');ctx.font=`${15*camera.zoom}px monospace`;ctx.textAlign='center';ctx.fillStyle='#b5a17c';ctx.fillText('×',p.x,p.y+4);continue;}
+   if(!alive(u)){diamond(x,y,'#562e2566');drawDeathDrops(ctx,load,u,p,camera.zoom);ctx.font=`${10*camera.zoom}px monospace`;ctx.textAlign='center';ctx.fillStyle='#b5a17c';ctx.fillText('×',p.x-17*camera.zoom,p.y+7*camera.zoom);ctx.globalAlpha=1;continue;}
    ctx.fillStyle='#13241d66';ctx.beginPath();ctx.ellipse(p.x,p.y+2*camera.zoom,15*camera.zoom,7*camera.zoom,0,0,Math.PI*2);ctx.fill();
    ctx.strokeStyle=color;ctx.lineWidth=u.id===s.selected?2.4:1.5;ctx.beginPath();ctx.ellipse(p.x,p.y,19*camera.zoom,9*camera.zoom,0,0,Math.PI*2);ctx.stroke();
    if(u.id===targetId)diamond(x,y,null,'#ffb28d',0,.9);
