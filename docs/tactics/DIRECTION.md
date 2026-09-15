@@ -89,3 +89,7 @@ Open tuning questions: weight-only versus spatial backpacks; inventory duplicate
 ## Current follow-up decisions
 
 Spatial inventory is implemented as a 4×4 backpack. Rifles/assault rifles take two adjacent cells; pistols, ammunition stacks and utilities take one. Two separate two-cell ready slots can each hold a long gun and swap free. Training is irreversible: no respecs. On total defeat, stabilized mercs are captured and bleeding mercs die; the future rescue facility belongs in the middle or late campaign. See STORY.md for confirmed narrative direction and explicitly proposed campaign systems.
+
+## Demo scope clarification
+
+The demo is an easy single-map mission with a fixed team and a fixed library of blocks assembled procedurally. Its purpose is both learning the controls and exercising implemented features. Clearing the map remains the simple objective. Reinforcements are explicitly reserved for another map; do not make the demo harder through reinforcement waves or a demanding extraction. Procedural variety should preserve forgiving combat and reliable access to feature-testing opportunities.
