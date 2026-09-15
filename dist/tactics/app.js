@@ -7,11 +7,12 @@ import {bounds,inView,focusSector,sectorOverview} from './view.js';
 import {createWorld,currentMap,travel,travelReason} from './world.js';
 import {parseMap,levelOf,roofTop,neighbors} from './maps.js';
 import {edgeCells,edgePoints} from './maps.js';
-import {W,H,WEAPONS,AIM_ZONES,moveGroup,key,alive,incapacitated,medicalCost,stabilizePreview,stabilize,cutPreview,cutFence,squad,guards,occupant,tile,walkable,createGame,STANCES,stanceOf,setStance,movementNeighbors,navigationPath,pathCost,pathTo,move,stepMovement,previewAttack,attack,equip,reload,endTurn,stepEnemy,canControl} from './engine.js';
+import {W,H,WEAPONS,turnTo,AIM_ZONES,moveGroup,key,alive,incapacitated,medicalCost,stabilizePreview,stabilize,cutPreview,cutFence,squad,guards,occupant,tile,walkable,createGame,STANCES,stanceOf,setStance,movementNeighbors,navigationPath,pathCost,pathTo,move,stepMovement,previewAttack,attack,equip,reload,endTurn,stepEnemy,canControl} from './engine.js';
 const $=id=>document.getElementById(id),canvas=$('map'),mainCtx=canvas.getContext('2d'),mini=$('mini').getContext('2d');
 let customMap=null,loadError='';
 if(new URLSearchParams(location.search).get('map')==='custom'){try{customMap=parseMap(sessionStorage.getItem('red-shift-playtest')||'');}catch(e){loadError='Could not load the playtest map. '+e.message;}}
 let ctx=mainCtx,renderLevel=0;const compositeLayers=layerCompositor();
+let showCone=false;
 let selectedIds=new Set([0]),aimZone='torso',shotConfirmation=null;
 let viewLevel=0,routeCache=null;
 let world=createWorld(customMap),s=currentMap(world),targetId=null,burst=false,showGrid=false,hover=null,hoverActor=null,route=null,lastTick=0,lastRevision=-1,toast='',toastUntil=0,effectUntil=0,lastEffect=null,drag=null,width=1,height=1;
@@ -34,6 +35,8 @@ function diamond(x,y,fill,stroke,z=0,scale=1){const p=project(x,y,z),a=28*camera
 function block(x,y,h,top,left,right){const p=project(x,y),a=28*camera.zoom,b=14*camera.zoom,z=h*camera.zoom;poly([{x:p.x-a,y:p.y},{x:p.x,y:p.y+b},{x:p.x,y:p.y+b-z},{x:p.x-a,y:p.y-z}],left,'#242b2480');poly([{x:p.x,y:p.y+b},{x:p.x+a,y:p.y},{x:p.x+a,y:p.y-z},{x:p.x,y:p.y+b-z}],right,'#242b2480');diamond(x,y,top,'#555643',h);}
 function textLabel(label,x,y,color='#ddcf9f',size=11){const p=project(x,y);ctx.font=`${size*camera.zoom}px monospace`;ctx.textAlign='center';ctx.fillStyle=color;ctx.fillText(label,p.x,p.y);}
 function drawTerrain(){
+
+
  // Existing industrial sprites form the factory skyline, outside the walkable map.
  if(renderLevel===0)for(const [name,x,y,size]of [['mill',7,-3,225],['bakery',17,-3,245],['bottler',25,-2,220],['dairy',34,14,200]]){const p=project(x,y),img=load(`../assets/machines/industrial/${name}.png`);if(img.complete&&img.naturalWidth){ctx.globalAlpha=.58;ctx.drawImage(img,p.x-size*camera.zoom/2,p.y-size*camera.zoom,size*camera.zoom,size*camera.zoom);ctx.globalAlpha=1;}}
  const b=bounds(camera,width,height);for(let y=b.y0;y<=b.y1;y++)for(let x=b.x0;x<=b.x1;x++){const k=key(x,y,renderLevel),seen=s.seen.has(k),visible=s.visible.has(k),t=tile(s,x,y,renderLevel),n=(x*37+y*13)%9;if(seen&&t==='void'||!seen&&(renderLevel!==viewLevel||renderLevel>0))continue;
@@ -88,7 +91,7 @@ function drawPreview(){
  }
 }
 function drawMinimap(){mini.fillStyle='#192921';mini.fillRect(0,0,168,144);mini.strokeStyle='#647351';for(let i=0;i<=10;i++){mini.beginPath();mini.moveTo(i*16.8,0);mini.lineTo(i*16.8,144);mini.moveTo(0,i*14.4);mini.lineTo(168,i*14.4);mini.stroke();}for(let level=0;level<3;level++){const style=layerStyle(level,viewLevel);mini.save();mini.globalAlpha=style.alpha;mini.filter=style.filter;for(const k of s.seen){const [x,y,z=0]=k.split(',').map(Number);if(z!==level)continue;mini.fillStyle='#718263';mini.fillRect(x/W*168,y/H*144,1,1);}for(const u of s.units)if(levelOf(u)===level&&alive(u)&&(u.team==='squad'||s.detected.has(u.id))){mini.fillStyle=u.team==='guard'?'#ff9275':u.id===s.selected?'#ffda79':'#c8e5b6';mini.fillRect(u.x/W*168-2,u.y/H*144-2,4,4);}mini.restore();}}
-function draw(now){ctx.clearRect(0,0,width,height);ctx.fillStyle='#202c29';ctx.fillRect(0,0,width,height);if(camera.zoom<.2){sprites.length=0;compositeLayers(mainCtx,viewLevel,width,height,(ink,level)=>{sectorOverview(ink,project,s,level,s.seen,level===0);for(const u of s.units)if(levelOf(u)===level&&alive(u)&&(u.team==='squad'||s.detected.has(u.id))){const p=project(u.x,u.y);ink.fillStyle=u.team==='squad'?'#ffda79':'#ff9275';ink.fillRect(p.x-2,p.y-2,4,4);}});return;}sprites.length=0;compositeLayers(mainCtx,viewLevel,width,height,(ink,level)=>{ctx=ink;renderLevel=level;try{drawTerrain();drawObjects(now);}finally{ctx=mainCtx;renderLevel=viewLevel;}});ctx=mainCtx;renderLevel=viewLevel;drawPreview();
+function draw(now){ctx.clearRect(0,0,width,height);ctx.fillStyle='#202c29';ctx.fillRect(0,0,width,height);if(camera.zoom<.2){sprites.length=0;compositeLayers(mainCtx,viewLevel,width,height,(ink,level)=>{sectorOverview(ink,project,s,level,s.seen,level===0);for(const u of s.units)if(levelOf(u)===level&&alive(u)&&(u.team==='squad'||s.detected.has(u.id))){const p=project(u.x,u.y);ink.fillStyle=u.team==='squad'?'#ffda79':'#ff9275';ink.fillRect(p.x-2,p.y-2,4,4);}});return;}sprites.length=0;compositeLayers(mainCtx,viewLevel,width,height,(ink,level)=>{ctx=ink;renderLevel=level;try{drawTerrain(); if(showCone&&renderLevel===levelOf(selected())){const u=selected(),points=[project(u.x,u.y)];for(let a=u.heading-u.cone/2;a<=u.heading+u.cone/2;a+=3)points.push(project(u.x+60*Math.cos(a*Math.PI/180),u.y+60*Math.sin(a*Math.PI/180)));poly(points,'#e8cb6920','#e8cb6990');}drawObjects(now);}finally{ctx=mainCtx;renderLevel=viewLevel;}});ctx=mainCtx;renderLevel=viewLevel;drawPreview();
  if(s.effect!==lastEffect){lastEffect=s.effect;effectUntil=now+350;}if(s.effect&&now<effectUntil&&(s.effect.az===viewLevel||s.effect.bz===viewLevel)){const a=project(s.effect.ax,s.effect.ay,30),b=project(s.effect.bx,s.effect.by,30);ctx.strokeStyle=s.effect.hit?'#ffe6a2':'#c2c5a0';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();ctx.beginPath();ctx.arc(b.x,b.y,7,0,7);ctx.stroke();}
 }
 function message(text){toast=text;toastUntil=performance.now()+3000;$('hint').textContent=text;}
@@ -97,7 +100,7 @@ function updateHover(){
  route=null;if(camera.zoom<.2){$('hint').textContent='240 × 240 tiles · Double-click a sector to inspect it.';return;}if(!hover)return;const u=selected();if(hoverActor!==null&&s.units[hoverActor]?.team==='guard'){const t=s.units[hoverActor],p=previewAttack(s,u,t,burst,aimZone);$('hint').textContent=`${t.name} / ${WEAPONS[t.weapon].short} / ${t.hp} HP · ${p.ok?`${p.chance}% · ${p.cost} AP${p.cover?' · COVER':''}`:p.reason} · ${AIM_ZONES[aimZone].label} · ${shotConfirmation===shotKey(t)?'Click again to fire':'Click to select enemy'}`;return;}
  const routeKey=[s.revision,u.id,u.x,u.y,u.z,hover.x,hover.y,viewLevel].join(':');if(routeCache?.state===s&&routeCache.key===routeKey)route=routeCache.path;else{route=navigationPath(s,u,hover.x,hover.y,viewLevel);routeCache={state:s,key:routeKey,path:route};}$('hint').textContent=route?.length?`${hover.x}, ${hover.y} · ${route.length} tiles${s.phase==='player'?` / ${pathCost(route)} AP${pathCost(route)>u.ap?' · will stop when AP is spent':''}`:' / explore and replan'} · Click to move`:'No route through discovered terrain, or already at destination.';
 }
-function sync(){selectedIds=new Set([...selectedIds].filter(id=>alive(s.units[id])));selectedIds.add(s.selected);
+function sync(){ $('sight-info').textContent=(selected().cone??120)+'° cone · 75 tile landscape / 60 tile detection maximum';$('turn').disabled=!canControl(s,selected())||!!s.queue.length;selectedIds=new Set([...selectedIds].filter(id=>alive(s.units[id])));selectedIds.add(s.selected);
  $('level').value=viewLevel;const stairs=movementNeighbors(s,selected()).filter(p=>p.z!==levelOf(selected()));for(const [id,delta]of [['up',1],['down',-1]]){const link=stairs.find(p=>p.z===levelOf(selected())+delta);$(id).disabled=!canControl(s,selected())||s.queue.length>0||!link||(s.phase==='player'&&selected().ap<link.cost);$(id).textContent=(link?.kind==='roof'?'Roof':link?.cost===3?'Ladder':link?'Stairs':'Climb')+(delta===1?' ↑':' ↓')+(link?' · '+link.cost+' AP':'');}
  $('local-name').textContent=s.definition.name;$('recon-name').textContent=s.definition.name;document.title='Red Shift — '+s.definition.name;
  const u=selected(),w=WEAPONS[u.weapon],t=target(),p=t?previewAttack(s,u,t,burst,aimZone):null,control=canControl(s,u)&&!s.queue.length;
@@ -169,3 +172,5 @@ function renderUtilities(){const u=selected();$('medical-info').textContent='Med
 
 $('select-all').onclick=()=>{selectedIds=new Set(squad(s).filter(u=>levelOf(u)===viewLevel).map(u=>u.id));if(!selectedIds.size){message('No conscious squad members on this layer.');selectedIds.add(s.selected);return;}if(!selectedIds.has(s.selected))s.selected=[...selectedIds][0];s.queue=[];shotConfirmation=null;targetId=null;sync();};
 $('aim-zone').onchange=()=>{aimZone=$('aim-zone').value;shotConfirmation=target()?shotKey(target()):null;sync();updateHover();};
+
+$('turn').onclick=()=>{if(!turnTo(s,selected(),Number($('facing').value)))message('Cannot turn now.');shotConfirmation=null;sync();};$('cone').onclick=()=>{showCone=!showCone;$('cone').setAttribute('aria-pressed',showCone);};

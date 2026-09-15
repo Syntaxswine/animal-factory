@@ -7,10 +7,10 @@ Recorded from the user's answers on 2026-09-14. These are design decisions for t
 | System | User direction |
 | --- | --- |
 | Easy difficulty | Fallen characters automatically revive with 5 HP. The exact revival timing is not yet decided. |
-| Harder difficulties | Downed characters need medical care within a few turns to prevent bleeding out. Surviving characters recover after battle. Exact countdown, recovery HP and the consequence of bleeding out remain to be chosen. |
+| Harder difficulties | Downed characters need medical care within a few turns to prevent bleeding out. Surviving characters recover after battle. Six squad-turn ends to stabilize; death on timeout; stabilized survivors recover to 5 HP (implemented). |
 | Progression | Level-ups award skill points that the player assigns. |
 | Species | Species can favor particular classes through traits: fox stealth affinity is an example. HP, AP, shooting ability and sight-cone differences are all supported directions. Exact traits and values are pending. |
-| Movement | Continue moving each character individually. No automatic squad formation. |
+| Movement | Individual control plus optional multi-selection and formation orders (implemented). |
 | Inventory | Abundant loot with limited carrying capacity. Ammunition scarcity and its placement across maps matter. A strong weapon can arrive early with only the ammunition already loaded, with resupply several maps later. |
 | Weapon slots | A primary and a secondary weapon; switching between those two equipped weapons is free. |
 | Tactical systems | Stealth, overwatch, sight cones and aimed shots. Line of sight is a central mechanic. |
@@ -26,7 +26,7 @@ Use explicit states: active, downed, stabilized and dead. A downed or stabilized
 
 Recommended Easy timing: revive at encounter end with 5 HP. This avoids repeatedly reviving into enemy fire and eliminates an unlimited mid-combat revival loop. Keep whole-squad defeat as a separate rule to decide: does Easy allow a costly retreat, or require a retry? Do not assume the current prototype's defeat rule is the final answer.
 
-Recommended harder-mode starting point for testing: three full rounds to stabilize. Whether a dead character is permanently lost, and the HP restored after a successful encounter, remain open. Encounter completion must check pending casualties explicitly; merely losing sight of enemies must not trigger recovery or reset a countdown.
+Superseded: the implemented harder-mode timer is six squad-turn ends to stabilize. Whether a dead character is permanently lost, and the HP restored after a successful encounter, remain open. Encounter completion must check pending casualties explicitly; merely losing sight of enemies must not trigger recovery or reset a countdown.
 
 ### Skill points and species
 
@@ -67,3 +67,7 @@ Acceptance checks should test interactions as well as individual systems: turnin
 ## Current priority: maps and authoring
 
 The user has explicitly deferred story work. Build edge-based walls, distinct local maps connected through an overmap, and a map tool for manual block placement and generation before returning to the other proposed mechanics. Walls occupy the boundary between tiles; they do not consume either tile. No narrative, factions, dialogue, or campaign plot should be added in this pass.
+
+## Sequential mechanics pass — 2026-09-15
+
+1. Facing and shared sight: complete, hostile review 4/5. 120° default, 75/60 tile limits, terrain occlusion, personal firing cone, free manual turning, explicit cone guide. Formation movement retained. 161 tests passed; browser confirmed free combat turning.
