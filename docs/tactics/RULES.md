@@ -36,3 +36,9 @@ Validation: 95 automated tests pass, including actual enemy roof traversal and A
 Three actor states: standing (2 AP/tile), kneeling (4), prone (8). Direct stance changes cost 2 AP in combat and are free outside combat. Dead characters, enemy turns, insufficient AP, active movement, invalid stances and redundant changes cannot spend AP. Stairs/ladders/roof links require standing and retain 2/3/6 AP costs. Actor-aware path costs drive previews, movement, queued-step revalidation and enemy movement. Stance persists with squad state through local travel. No new shooting or visibility modifiers are inferred. Current sprites retain standing poses; UI and map labels expose stance.
 
 Validation: 102 tests pass; factory balance smoke test wins 20/20 seeds in 7–10 rounds with 3–4 survivors. The bot uses actual route costs and stays standing. Browser checks confirm all three stance controls and labels. Hostile review: 4/5 pass. The review found and resolved a distant-path slowdown by making the A* estimate account for stance movement costs.
+
+## Diagonal movement
+
+Same-level diagonal steps cost1.5 times cardinal movement:3 AP standing,6 kneeling,12 prone. A step requires both flanking tiles and the destination to be supported and clear, with all four bordering edges open. Living flank occupants block the route and queued steps recheck them. Vertical links retain their fixed cost and standing requirement. Melee pursuit still closes to valid striking range.
+
+Verification: all117 current tests passed, including six diagonal regressions. The committed asset validator passed; an unrelated in-progress stance-art validator references an unfinished PNG and was excluded from this release. Factory balance won20/20 seeds. Hostile review4/5. Connectivity checks use cardinal links because permitted diagonals cannot connect otherwise disconnected regions; this avoids unnecessary work in large-map validation.
