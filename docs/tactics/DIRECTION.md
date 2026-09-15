@@ -1,5 +1,7 @@
 # Red Shift — mechanics direction and completion record
 
+Latest decisions: spatial backpacks with two double-sized ready slots; no respecs; stabilized mercs captured on defeat and bleeding mercs dead. Story development now follows STORY.md: coercive workforce control, compromised corporate sponsorship, and self-government as the hardest ending. These supersede older deferrals and open questions below.
+
 The five-stage implementation order below was completed on 2026-09-15; the final section records the reviewed behavior and supersedes historical proposals.
 
 Recorded from the user's answers on 2026-09-14. These are design decisions for the next implementation pass, not a description of features already present in the playable prototype. The initial prototype contract remains in `dist/tactics/DESIGN.md`; its free test armoury, unlimited reserves, uniform stats and death-only model will be superseded during implementation.
@@ -83,3 +85,7 @@ The user has explicitly deferred story work. Build edge-based walls, distinct lo
 5. Character sheet and progression: complete, hostile review 4/5. Shared 25 XP per defeated guard, three points per 100 XP, level cap10; five trainable skills, no free healing or AP refill. Separate horse/goat/donkey/sheep traits use existing art and appear on sheets. Training between encounters; no respec yet. 177 tests passed and browser verified species-derived stats. Stage1 default cones are superseded for these four species by their displayed trait values; guards retain120°.
 
 Open tuning questions: weight-only versus spatial backpacks; inventory duplicates and authored supply placement; respec and XP pacing; future species roster (including foxes); Easy whole-squad retreat versus retry. Story remains deferred. Campaign progress persists across local-map travel in the current run; reload still starts a new run.
+
+## Current follow-up decisions
+
+Spatial inventory is implemented as a 4×4 backpack. Rifles/assault rifles take two adjacent cells; pistols, ammunition stacks and utilities take one. Two separate two-cell ready slots can each hold a long gun and swap free. Training is irreversible: no respecs. On total defeat, stabilized mercs are captured and bleeding mercs die; the future rescue facility belongs in the middle or late campaign. See STORY.md for confirmed narrative direction and explicitly proposed campaign systems.
