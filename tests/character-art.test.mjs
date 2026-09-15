@@ -12,3 +12,14 @@ test('every equipped weapon has artwork for the full cast, with a common ground 
  }
  assert.equal(characterArt('horse','hands','walk-b').src,'../assets/characters/horse-walk-b.png');
 });
+test('stance artwork covers every loadout and stays grounded while changing silhouette',()=>{
+ for(const species of CHARACTER_SPECIES)for(const weapon of Object.keys(WEAPONS)){
+  const standing=characterArt(species,weapon),kneeling=characterArt(species,weapon,'idle','kneeling'),prone=characterArt(species,weapon,'idle','prone');
+  assert.ok(standing.contentHeight>kneeling.contentHeight&&kneeling.contentHeight>prone.contentHeight);
+  for(const [stance,frame]of [['kneeling',kneeling],['prone',prone]]){
+   assert.equal(frame.src,`../assets/characters/stances/${species}-${weapon}-${stance}.png`);
+   assert.equal(frame.anchor[1],standing.anchor[1]);assert.equal(frame.anchor[0],frame.width/2);
+   assert.equal(characterArt(species,weapon,'walk-b',stance).src,frame.src);
+  }
+ }
+});

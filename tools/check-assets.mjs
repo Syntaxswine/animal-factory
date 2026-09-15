@@ -12,6 +12,7 @@ async function checkPNG(path,width,height,channels=6){
 }
 const manifest=JSON.parse(await readFile(new URL('assets/characters/manifest.json',root)));
 for(const species of CHARACTER_SPECIES)for(const weapon of ARMED_WEAPONS)await checkPNG(`assets/characters/armed/${species}-${weapon}.png`,256,256);
+for(const species of CHARACTER_SPECIES)for(const weapon of ['hands',...ARMED_WEAPONS])for(const stance of ['kneeling','prone'])await checkPNG(`assets/characters/stances/${species}-${weapon}-${stance}.png`,384,256);
 assert.equal(Object.keys(manifest.characters).length,8);
 for(const def of Object.values(manifest.characters)){
  assert.equal(def.frames.length,4);await checkPNG('assets/characters/'+def.sheet,768,256);
@@ -24,4 +25,4 @@ const environment=JSON.parse(await readFile(new URL('assets/environment/manifest
 const artIds=[...Object.keys(PROPS),...new Set(Object.values(EDGES).map(r=>r.art).filter(Boolean)),...GROUNDS];
 assert.deepEqual(environment.assets.map(a=>a.id).sort(),artIds.sort());
 for(const a of environment.assets)await checkPNG('assets/environment/'+a.file,1254,1254,a.kind==='terrain'?2:6);
-console.log('Verified 28 tactical environment assets;  32 character frames, 8 strips, 12 machine sprites, a depot illustration, 4 industrial variants, and entrypoints.');
+console.log('Verified 28 tactical environment assets;  32 character frames, 32 armed sprites, 80 stance sprites, 8 strips, 12 machine sprites, a depot illustration, 4 industrial variants, and entrypoints.');

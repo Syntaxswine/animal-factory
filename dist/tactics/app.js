@@ -67,11 +67,11 @@ function drawObjects(now){
    ctx.fillStyle='#13241d66';ctx.beginPath();ctx.ellipse(p.x,p.y+2*camera.zoom,15*camera.zoom,7*camera.zoom,0,0,Math.PI*2);ctx.fill();
    ctx.strokeStyle=color;ctx.lineWidth=u.id===s.selected?2.4:1.5;ctx.beginPath();ctx.ellipse(p.x,p.y,19*camera.zoom,9*camera.zoom,0,0,Math.PI*2);ctx.stroke();
    if(u.id===targetId)diamond(x,y,null,'#ffb28d',0,.9);
-   const walking=(s.queue[0]?.id===u.id)||(s.phase==='enemy'&&s.units[s.enemyIndex]?.id===u.id);const pose=walking?(Math.floor(now/170)%2?'walk-a':'walk-b'):'idle',frame=characterArt(u.species,u.weapon,pose),img=load(frame.src),sw=frame.width/4*camera.zoom,sh=64*camera.zoom;
+   const walking=(s.queue[0]?.id===u.id)||(s.phase==='enemy'&&s.units[s.enemyIndex]?.id===u.id);const pose=walking?(Math.floor(now/170)%2?'walk-a':'walk-b'):'idle',frame=characterArt(u.species,u.weapon,pose,stanceOf(u)),img=load(frame.src),sw=frame.width/4*camera.zoom,sh=64*camera.zoom;
    ctx.save();ctx.translate(p.x,p.y+3*camera.zoom);ctx.scale(u.facing,1);if(img.complete&&img.naturalWidth)ctx.drawImage(img,-sw/2,-sh,sw,sh);else{ctx.fillStyle=color;ctx.fillRect(-sw/4,-sh,sw/2,sh);}ctx.restore();
-   ctx.globalAlpha=1;ctx.fillStyle='#14221d';ctx.fillRect(p.x-17*camera.zoom,p.y-66*camera.zoom,34*camera.zoom,4*camera.zoom);ctx.fillStyle=color;ctx.fillRect(p.x-17*camera.zoom,p.y-66*camera.zoom,34*camera.zoom*u.hp/u.maxHp,3*camera.zoom);
+   ctx.globalAlpha=1;ctx.fillStyle='#14221d';ctx.fillRect(p.x-17*camera.zoom,p.y-(frame.contentHeight/4+7)*camera.zoom,34*camera.zoom,4*camera.zoom);ctx.fillStyle=color;ctx.fillRect(p.x-17*camera.zoom,p.y-(frame.contentHeight/4+7)*camera.zoom,34*camera.zoom*u.hp/u.maxHp,3*camera.zoom);
    ctx.font=`bold ${9*camera.zoom}px monospace`;ctx.textAlign='center';ctx.fillStyle=color;ctx.fillText((u.team==='squad'?`${u.id+1} ${u.name}`:u.name)+(stanceOf(u)==='standing'?'':stanceOf(u)==='kneeling'?' [K]':' [P]'),p.x,p.y+17*camera.zoom);
-   sprites.push({id:u.id,x:p.x-sw/2,y:p.y-sh,w:sw,h:sh+10*camera.zoom});
+   sprites.push({id:u.id,x:p.x-sw/2,y:p.y-frame.contentHeight/4*camera.zoom,w:sw,h:(frame.contentHeight/4+10)*camera.zoom});
   }ctx.globalAlpha=1;
  }
  ctx.globalAlpha=1;

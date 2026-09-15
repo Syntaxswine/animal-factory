@@ -1,0 +1,562 @@
+[
+  {
+    "species": "horse",
+    "stance": "kneeling",
+    "weapon": "hands",
+    "prompt": "Edit the supplied character sprite into ONE new pose for the same tactical game. Preserve the exact face, animal identity, outfit, palette, body proportions, weapon identity and warm hand-painted textured style. Same elevated three-quarter isometric camera, facing screen-right, visible top surfaces. Full character and weapon uncropped, generous transparent margins, genuine transparent alpha background, no ground, shadow, scenery, text or extra objects. Anatomically coherent two arms and two legs (hen: two feathered wing-hands and two clawed feet). Do not stretch or compress the body to fake the stance. KNEELING: one knee rests on the ground, other knee raised with foot firmly planted forward toward screen-right. Torso upright, head alert, compact stable silhouette. Full kneeling height should be about 72% of this character standing, preserving head and torso size. Equipment: UNARMED: empty hands, no weapon. For kneeling, hold hands in a compact protective guard near torso. For prone, forearms support the chest, empty hands forward.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-4242528e-4554-4cbb-94ff-dad859dacb88.png"
+  },
+  {
+    "species": "horse",
+    "stance": "kneeling",
+    "weapon": "knife",
+    "prompt": "Edit the supplied character sprite into ONE new pose for the same tactical game. Preserve the exact face, animal identity, outfit, palette, body proportions, weapon identity and warm hand-painted textured style. Same elevated three-quarter isometric camera, facing screen-right, visible top surfaces. Full character and weapon uncropped, generous transparent margins, genuine transparent alpha background, no ground, shadow, scenery, text or extra objects. Anatomically coherent two arms and two legs (hen: two feathered wing-hands and two clawed feet). Do not stretch or compress the body to fake the stance. KNEELING: one knee rests on the ground, other knee raised with foot firmly planted forward toward screen-right. Torso upright, head alert, compact stable silhouette. Full kneeling height should be about 72% of this character standing, preserving head and torso size. Equipment: NR-40 knife in forward hand, blade points toward screen-right, free hand supports/balances the pose.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-bab8fb53-e096-4423-857a-d84690bbe34a.png"
+  },
+  {
+    "species": "horse",
+    "stance": "kneeling",
+    "weapon": "pistol",
+    "prompt": "Edit the supplied character sprite into ONE new pose for the same tactical game. Preserve the exact face, animal identity, outfit, palette, body proportions, weapon identity and warm hand-painted textured style. Same elevated three-quarter isometric camera, facing screen-right, visible top surfaces. Full character and weapon uncropped, generous transparent margins, genuine transparent alpha background, no ground, shadow, scenery, text or extra objects. Anatomically coherent two arms and two legs (hen: two feathered wing-hands and two clawed feet). Do not stretch or compress the body to fake the stance. KNEELING: one knee rests on the ground, other knee raised with foot firmly planted forward toward screen-right. Torso upright, head alert, compact stable silhouette. Full kneeling height should be about 72% of this character standing, preserving head and torso size. Equipment: TT-33 pistol pointed toward screen-right in two-handed supported grip; elbows bent and compact.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-97b1090c-59f3-4e6d-be12-cb3bb990efd2.png"
+  },
+  {
+    "species": "horse",
+    "stance": "kneeling",
+    "weapon": "rifle",
+    "prompt": "Edit the supplied character sprite into ONE new pose for the same tactical game. Preserve the exact face, animal identity, outfit, palette, body proportions, weapon identity and warm hand-painted textured style. Same elevated three-quarter isometric camera, facing screen-right, visible top surfaces. Full character and weapon uncropped, generous transparent margins, genuine transparent alpha background, no ground, shadow, scenery, text or extra objects. Anatomically coherent two arms and two legs (hen: two feathered wing-hands and two clawed feet). Do not stretch or compress the body to fake the stance. KNEELING: one knee rests on the ground, other knee raised with foot firmly planted forward toward screen-right. Torso upright, head alert, compact stable silhouette. Full kneeling height should be about 72% of this character standing, preserving head and torso size. Equipment: Mosin-Nagant bolt-action rifle with wood stock, held with both hands, stock at shoulder and barrel aimed screen-right.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-a909a980-12e6-4664-8a7e-874e4b4034a1.png"
+  },
+  {
+    "species": "horse",
+    "stance": "kneeling",
+    "weapon": "assault",
+    "prompt": "Edit the supplied character sprite into ONE new pose for the same tactical game. Preserve the exact face, animal identity, outfit, palette, body proportions, weapon identity and warm hand-painted textured style. Same elevated three-quarter isometric camera, facing screen-right, visible top surfaces. Full character and weapon uncropped, generous transparent margins, genuine transparent alpha background, no ground, shadow, scenery, text or extra objects. Anatomically coherent two arms and two legs (hen: two feathered wing-hands and two clawed feet). Do not stretch or compress the body to fake the stance. KNEELING: one knee rests on the ground, other knee raised with foot firmly planted forward toward screen-right. Torso upright, head alert, compact stable silhouette. Full kneeling height should be about 72% of this character standing, preserving head and torso size. Equipment: AK-47 with wood furniture and curved magazine, held with both hands, stock at shoulder and barrel aimed screen-right.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-3a2597fc-4b2c-4289-a75c-27c79b833d3d.png"
+  },
+  {
+    "species": "horse",
+    "stance": "prone",
+    "weapon": "hands",
+    "prompt": "Edit the supplied character sprite into ONE new pose for the same tactical game. Preserve the exact face, animal identity, outfit, palette, body proportions, weapon identity and warm hand-painted textured style. Same elevated three-quarter isometric camera, facing screen-right, visible top surfaces. Full character and weapon uncropped, generous transparent margins, genuine transparent alpha background, no ground, shadow, scenery, text or extra objects. Anatomically coherent two arms and two legs (hen: two feathered wing-hands and two clawed feet). Do not stretch or compress the body to fake the stance. PRONE: lying flat on belly, legs extended behind toward screen-left, chest low, head raised and looking screen-right, elbows planted near the front. Clear long horizontal silhouette, elevated isometric view with back/shoulders visible. Fully extended legs and feet visible. Head/torso must keep their normal size. Not sitting, not kneeling, not on hands and knees. Equipment: UNARMED: empty hands, no weapon. For kneeling, hold hands in a compact protective guard near torso. For prone, forearms support the chest, empty hands forward.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-bf445dd7-7229-406b-83ba-d47ad7d110a8.png"
+  },
+  {
+    "species": "horse",
+    "stance": "prone",
+    "weapon": "knife",
+    "prompt": "Edit the supplied character sprite into ONE new pose for the same tactical game. Preserve the exact face, animal identity, outfit, palette, body proportions, weapon identity and warm hand-painted textured style. Same elevated three-quarter isometric camera, facing screen-right, visible top surfaces. Full character and weapon uncropped, generous transparent margins, genuine transparent alpha background, no ground, shadow, scenery, text or extra objects. Anatomically coherent two arms and two legs (hen: two feathered wing-hands and two clawed feet). Do not stretch or compress the body to fake the stance. PRONE: lying flat on belly, legs extended behind toward screen-left, chest low, head raised and looking screen-right, elbows planted near the front. Clear long horizontal silhouette, elevated isometric view with back/shoulders visible. Fully extended legs and feet visible. Head/torso must keep their normal size. Not sitting, not kneeling, not on hands and knees. Equipment: NR-40 knife in forward hand, blade points toward screen-right, free hand supports/balances the pose.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-792e8f5a-1090-4439-a720-0cdd655dd654.png"
+  },
+  {
+    "species": "horse",
+    "stance": "prone",
+    "weapon": "pistol",
+    "prompt": "Edit the supplied character sprite into ONE new pose for the same tactical game. Preserve the exact face, animal identity, outfit, palette, body proportions, weapon identity and warm hand-painted textured style. Same elevated three-quarter isometric camera, facing screen-right, visible top surfaces. Full character and weapon uncropped, generous transparent margins, genuine transparent alpha background, no ground, shadow, scenery, text or extra objects. Anatomically coherent two arms and two legs (hen: two feathered wing-hands and two clawed feet). Do not stretch or compress the body to fake the stance. PRONE: lying flat on belly, legs extended behind toward screen-left, chest low, head raised and looking screen-right, elbows planted near the front. Clear long horizontal silhouette, elevated isometric view with back/shoulders visible. Fully extended legs and feet visible. Head/torso must keep their normal size. Not sitting, not kneeling, not on hands and knees. Equipment: TT-33 pistol pointed toward screen-right in two-handed supported grip; elbows bent and compact.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-b70d3830-c2c1-4344-92bc-9c02c666fd41.png"
+  },
+  {
+    "species": "horse",
+    "stance": "prone",
+    "weapon": "rifle",
+    "prompt": "Edit the supplied character sprite into ONE new pose for the same tactical game. Preserve the exact face, animal identity, outfit, palette, body proportions, weapon identity and warm hand-painted textured style. Same elevated three-quarter isometric camera, facing screen-right, visible top surfaces. Full character and weapon uncropped, generous transparent margins, genuine transparent alpha background, no ground, shadow, scenery, text or extra objects. Anatomically coherent two arms and two legs (hen: two feathered wing-hands and two clawed feet). Do not stretch or compress the body to fake the stance. PRONE: lying flat on belly, legs extended behind toward screen-left, chest low, head raised and looking screen-right, elbows planted near the front. Clear long horizontal silhouette, elevated isometric view with back/shoulders visible. Fully extended legs and feet visible. Head/torso must keep their normal size. Not sitting, not kneeling, not on hands and knees. Equipment: Mosin-Nagant bolt-action rifle with wood stock, held with both hands, stock at shoulder and barrel aimed screen-right.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-b018986b-e247-4281-b3aa-91a7aa532b55.png"
+  },
+  {
+    "species": "horse",
+    "stance": "prone",
+    "weapon": "assault",
+    "prompt": "Edit the supplied character sprite into ONE new pose for the same tactical game. Preserve the exact face, animal identity, outfit, palette, body proportions, weapon identity and warm hand-painted textured style. Same elevated three-quarter isometric camera, facing screen-right, visible top surfaces. Full character and weapon uncropped, generous transparent margins, genuine transparent alpha background, no ground, shadow, scenery, text or extra objects. Anatomically coherent two arms and two legs (hen: two feathered wing-hands and two clawed feet). Do not stretch or compress the body to fake the stance. PRONE: lying flat on belly, legs extended behind toward screen-left, chest low, head raised and looking screen-right, elbows planted near the front. Clear long horizontal silhouette, elevated isometric view with back/shoulders visible. Fully extended legs and feet visible. Head/torso must keep their normal size. Not sitting, not kneeling, not on hands and knees. Equipment: AK-47 with wood furniture and curved magazine, held with both hands, stock at shoulder and barrel aimed screen-right.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-94dcff8d-38d5-453a-860e-48c8dfe94d53.png"
+  },
+  {
+    "species": "goat",
+    "stance": "kneeling",
+    "weapon": "hands",
+    "prompt": "Edit the supplied character sprite into ONE new pose for the same tactical game. Preserve the exact face, animal identity, outfit, palette, body proportions, weapon identity and warm hand-painted textured style. Same elevated three-quarter isometric camera, facing screen-right, visible top surfaces. Full character and weapon uncropped, generous transparent margins, genuine transparent alpha background, no ground, shadow, scenery, text or extra objects. Anatomically coherent two arms and two legs (hen: two feathered wing-hands and two clawed feet). Do not stretch or compress the body to fake the stance. KNEELING: one knee rests on the ground, other knee raised with foot firmly planted forward toward screen-right. Torso upright, head alert, compact stable silhouette. Full kneeling height should be about 72% of this character standing, preserving head and torso size. Equipment: UNARMED: empty hands, no weapon. For kneeling, hold hands in a compact protective guard near torso. For prone, forearms support the chest, empty hands forward.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-bdf80b42-0796-4efa-91ea-a7f8e609fc72.png"
+  },
+  {
+    "species": "goat",
+    "stance": "kneeling",
+    "weapon": "knife",
+    "prompt": "Edit the supplied character sprite into ONE new pose for the same tactical game. Preserve the exact face, animal identity, outfit, palette, body proportions, weapon identity and warm hand-painted textured style. Same elevated three-quarter isometric camera, facing screen-right, visible top surfaces. Full character and weapon uncropped, generous transparent margins, genuine transparent alpha background, no ground, shadow, scenery, text or extra objects. Anatomically coherent two arms and two legs (hen: two feathered wing-hands and two clawed feet). Do not stretch or compress the body to fake the stance. KNEELING: one knee rests on the ground, other knee raised with foot firmly planted forward toward screen-right. Torso upright, head alert, compact stable silhouette. Full kneeling height should be about 72% of this character standing, preserving head and torso size. Equipment: NR-40 knife in forward hand, blade points toward screen-right, free hand supports/balances the pose.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-48296a78-8620-481a-99b6-e55bafb7bc1c.png"
+  },
+  {
+    "species": "goat",
+    "stance": "kneeling",
+    "weapon": "pistol",
+    "prompt": "Edit the supplied character sprite into ONE new pose for the same tactical game. Preserve the exact face, animal identity, outfit, palette, body proportions, weapon identity and warm hand-painted textured style. Same elevated three-quarter isometric camera, facing screen-right, visible top surfaces. Full character and weapon uncropped, generous transparent margins, genuine transparent alpha background, no ground, shadow, scenery, text or extra objects. Anatomically coherent two arms and two legs (hen: two feathered wing-hands and two clawed feet). Do not stretch or compress the body to fake the stance. KNEELING: one knee rests on the ground, other knee raised with foot firmly planted forward toward screen-right. Torso upright, head alert, compact stable silhouette. Full kneeling height should be about 72% of this character standing, preserving head and torso size. Equipment: TT-33 pistol pointed toward screen-right in two-handed supported grip; elbows bent and compact.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-2fd52169-c84f-4a17-8b6c-6812b987717d.png"
+  },
+  {
+    "species": "goat",
+    "stance": "kneeling",
+    "weapon": "rifle",
+    "prompt": "Edit the supplied character sprite into ONE new pose for the same tactical game. Preserve the exact face, animal identity, outfit, palette, body proportions, weapon identity and warm hand-painted textured style. Same elevated three-quarter isometric camera, facing screen-right, visible top surfaces. Full character and weapon uncropped, generous transparent margins, genuine transparent alpha background, no ground, shadow, scenery, text or extra objects. Anatomically coherent two arms and two legs (hen: two feathered wing-hands and two clawed feet). Do not stretch or compress the body to fake the stance. KNEELING: one knee rests on the ground, other knee raised with foot firmly planted forward toward screen-right. Torso upright, head alert, compact stable silhouette. Full kneeling height should be about 72% of this character standing, preserving head and torso size. Equipment: Mosin-Nagant bolt-action rifle with wood stock, held with both hands, stock at shoulder and barrel aimed screen-right.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-2946fc7a-6a40-4a9b-8702-18f1231a709d.png"
+  },
+  {
+    "species": "goat",
+    "stance": "kneeling",
+    "weapon": "assault",
+    "prompt": "Edit the supplied character sprite into ONE new pose for the same tactical game. Preserve the exact face, animal identity, outfit, palette, body proportions, weapon identity and warm hand-painted textured style. Same elevated three-quarter isometric camera, facing screen-right, visible top surfaces. Full character and weapon uncropped, generous transparent margins, genuine transparent alpha background, no ground, shadow, scenery, text or extra objects. Anatomically coherent two arms and two legs (hen: two feathered wing-hands and two clawed feet). Do not stretch or compress the body to fake the stance. KNEELING: one knee rests on the ground, other knee raised with foot firmly planted forward toward screen-right. Torso upright, head alert, compact stable silhouette. Full kneeling height should be about 72% of this character standing, preserving head and torso size. Equipment: AK-47 with wood furniture and curved magazine, held with both hands, stock at shoulder and barrel aimed screen-right.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-42d0b8f4-33ef-4977-a326-cfe61a6751a0.png"
+  },
+  {
+    "species": "goat",
+    "stance": "prone",
+    "weapon": "hands",
+    "prompt": "Edit the supplied character sprite into ONE new pose for the same tactical game. Preserve the exact face, animal identity, outfit, palette, body proportions, weapon identity and warm hand-painted textured style. Same elevated three-quarter isometric camera, facing screen-right, visible top surfaces. Full character and weapon uncropped, generous transparent margins, genuine transparent alpha background, no ground, shadow, scenery, text or extra objects. Anatomically coherent two arms and two legs (hen: two feathered wing-hands and two clawed feet). Do not stretch or compress the body to fake the stance. PRONE: lying flat on belly, legs extended behind toward screen-left, chest low, head raised and looking screen-right, elbows planted near the front. Clear long horizontal silhouette, elevated isometric view with back/shoulders visible. Fully extended legs and feet visible. Head/torso must keep their normal size. Not sitting, not kneeling, not on hands and knees. Equipment: UNARMED: empty hands, no weapon. For kneeling, hold hands in a compact protective guard near torso. For prone, forearms support the chest, empty hands forward.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-5752f1bd-17fc-4cdc-9729-478b37033e17.png"
+  },
+  {
+    "species": "goat",
+    "stance": "prone",
+    "weapon": "knife",
+    "prompt": "Edit the supplied character sprite into ONE new pose for the same tactical game. Preserve the exact face, animal identity, outfit, palette, body proportions, weapon identity and warm hand-painted textured style. Same elevated three-quarter isometric camera, facing screen-right, visible top surfaces. Full character and weapon uncropped, generous transparent margins, genuine transparent alpha background, no ground, shadow, scenery, text or extra objects. Anatomically coherent two arms and two legs (hen: two feathered wing-hands and two clawed feet). Do not stretch or compress the body to fake the stance. PRONE: lying flat on belly, legs extended behind toward screen-left, chest low, head raised and looking screen-right, elbows planted near the front. Clear long horizontal silhouette, elevated isometric view with back/shoulders visible. Fully extended legs and feet visible. Head/torso must keep their normal size. Not sitting, not kneeling, not on hands and knees. Equipment: NR-40 knife in forward hand, blade points toward screen-right, free hand supports/balances the pose.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-6ec524aa-ba34-4e86-88c2-224e4747902c.png"
+  },
+  {
+    "species": "goat",
+    "stance": "prone",
+    "weapon": "pistol",
+    "prompt": "Edit the supplied character sprite into ONE new pose for the same tactical game. Preserve the exact face, animal identity, outfit, palette, body proportions, weapon identity and warm hand-painted textured style. Same elevated three-quarter isometric camera, facing screen-right, visible top surfaces. Full character and weapon uncropped, generous transparent margins, genuine transparent alpha background, no ground, shadow, scenery, text or extra objects. Anatomically coherent two arms and two legs (hen: two feathered wing-hands and two clawed feet). Do not stretch or compress the body to fake the stance. PRONE: lying flat on belly, legs extended behind toward screen-left, chest low, head raised and looking screen-right, elbows planted near the front. Clear long horizontal silhouette, elevated isometric view with back/shoulders visible. Fully extended legs and feet visible. Head/torso must keep their normal size. Not sitting, not kneeling, not on hands and knees. Equipment: TT-33 pistol pointed toward screen-right in two-handed supported grip; elbows bent and compact.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-3a5b1bd5-d0ef-4804-b42d-05a152990d7a.png"
+  },
+  {
+    "species": "goat",
+    "stance": "prone",
+    "weapon": "rifle",
+    "prompt": "Edit the supplied character sprite into ONE new pose for the same tactical game. Preserve the exact face, animal identity, outfit, palette, body proportions, weapon identity and warm hand-painted textured style. Same elevated three-quarter isometric camera, facing screen-right, visible top surfaces. Full character and weapon uncropped, generous transparent margins, genuine transparent alpha background, no ground, shadow, scenery, text or extra objects. Anatomically coherent two arms and two legs (hen: two feathered wing-hands and two clawed feet). Do not stretch or compress the body to fake the stance. PRONE: lying flat on belly, legs extended behind toward screen-left, chest low, head raised and looking screen-right, elbows planted near the front. Clear long horizontal silhouette, elevated isometric view with back/shoulders visible. Fully extended legs and feet visible. Head/torso must keep their normal size. Not sitting, not kneeling, not on hands and knees. Equipment: Mosin-Nagant bolt-action rifle with wood stock, held with both hands, stock at shoulder and barrel aimed screen-right.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-686bdc10-35b2-476d-addc-cdc7a60b36b7.png"
+  },
+  {
+    "species": "goat",
+    "stance": "prone",
+    "weapon": "assault",
+    "prompt": "Edit the supplied character sprite into ONE new pose for the same tactical game. Preserve the exact face, animal identity, outfit, palette, body proportions, weapon identity and warm hand-painted textured style. Same elevated three-quarter isometric camera, facing screen-right, visible top surfaces. Full character and weapon uncropped, generous transparent margins, genuine transparent alpha background, no ground, shadow, scenery, text or extra objects. Anatomically coherent two arms and two legs (hen: two feathered wing-hands and two clawed feet). Do not stretch or compress the body to fake the stance. PRONE: lying flat on belly, legs extended behind toward screen-left, chest low, head raised and looking screen-right, elbows planted near the front. Clear long horizontal silhouette, elevated isometric view with back/shoulders visible. Fully extended legs and feet visible. Head/torso must keep their normal size. Not sitting, not kneeling, not on hands and knees. Equipment: AK-47 with wood furniture and curved magazine, held with both hands, stock at shoulder and barrel aimed screen-right.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-0b4b00b0-fe70-4ed3-a2b6-657bd0a72a88.png"
+  },
+  {
+    "species": "donkey",
+    "stance": "kneeling",
+    "weapon": "hands",
+    "prompt": "Edit the supplied character sprite into ONE new pose for the same tactical game. Preserve the exact face, animal identity, outfit, palette, body proportions, weapon identity and warm hand-painted textured style. Same elevated three-quarter isometric camera, facing screen-right, visible top surfaces. Full character and weapon uncropped, generous transparent margins, genuine transparent alpha background, no ground, shadow, scenery, text or extra objects. Anatomically coherent two arms and two legs (hen: two feathered wing-hands and two clawed feet). Do not stretch or compress the body to fake the stance. KNEELING: one knee rests on the ground, other knee raised with foot firmly planted forward toward screen-right. Torso upright, head alert, compact stable silhouette. Full kneeling height should be about 72% of this character standing, preserving head and torso size. Equipment: UNARMED: empty hands, no weapon. For kneeling, hold hands in a compact protective guard near torso. For prone, forearms support the chest, empty hands forward.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-9bfc218c-95cc-44e9-a86b-a16507edd649.png"
+  },
+  {
+    "species": "donkey",
+    "stance": "kneeling",
+    "weapon": "knife",
+    "prompt": "Edit the supplied character sprite into ONE new pose for the same tactical game. Preserve the exact face, animal identity, outfit, palette, body proportions, weapon identity and warm hand-painted textured style. Same elevated three-quarter isometric camera, facing screen-right, visible top surfaces. Full character and weapon uncropped, generous transparent margins, genuine transparent alpha background, no ground, shadow, scenery, text or extra objects. Anatomically coherent two arms and two legs (hen: two feathered wing-hands and two clawed feet). Do not stretch or compress the body to fake the stance. KNEELING: one knee rests on the ground, other knee raised with foot firmly planted forward toward screen-right. Torso upright, head alert, compact stable silhouette. Full kneeling height should be about 72% of this character standing, preserving head and torso size. Equipment: NR-40 knife in forward hand, blade points toward screen-right, free hand supports/balances the pose.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-77babd70-8289-41ae-97d3-683624f4929f.png"
+  },
+  {
+    "species": "donkey",
+    "stance": "kneeling",
+    "weapon": "pistol",
+    "prompt": "Edit the supplied character sprite into ONE new pose for the same tactical game. Preserve the exact face, animal identity, outfit, palette, body proportions, weapon identity and warm hand-painted textured style. Same elevated three-quarter isometric camera, facing screen-right, visible top surfaces. Full character and weapon uncropped, generous transparent margins, genuine transparent alpha background, no ground, shadow, scenery, text or extra objects. Anatomically coherent two arms and two legs (hen: two feathered wing-hands and two clawed feet). Do not stretch or compress the body to fake the stance. KNEELING: one knee rests on the ground, other knee raised with foot firmly planted forward toward screen-right. Torso upright, head alert, compact stable silhouette. Full kneeling height should be about 72% of this character standing, preserving head and torso size. Equipment: TT-33 pistol pointed toward screen-right in two-handed supported grip; elbows bent and compact.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-4d9c483f-361e-48ce-b2b9-d6419994dd01.png"
+  },
+  {
+    "species": "donkey",
+    "stance": "kneeling",
+    "weapon": "rifle",
+    "prompt": "Edit the supplied character sprite into ONE new pose for the same tactical game. Preserve the exact face, animal identity, outfit, palette, body proportions, weapon identity and warm hand-painted textured style. Same elevated three-quarter isometric camera, facing screen-right, visible top surfaces. Full character and weapon uncropped, generous transparent margins, genuine transparent alpha background, no ground, shadow, scenery, text or extra objects. Anatomically coherent two arms and two legs (hen: two feathered wing-hands and two clawed feet). Do not stretch or compress the body to fake the stance. KNEELING: one knee rests on the ground, other knee raised with foot firmly planted forward toward screen-right. Torso upright, head alert, compact stable silhouette. Full kneeling height should be about 72% of this character standing, preserving head and torso size. Equipment: Mosin-Nagant bolt-action rifle with wood stock, held with both hands, stock at shoulder and barrel aimed screen-right.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-0a368f3d-55fe-4453-a94e-3b9b4dd0c2ce.png"
+  },
+  {
+    "species": "donkey",
+    "stance": "kneeling",
+    "weapon": "assault",
+    "prompt": "Edit the supplied character sprite into ONE new pose for the same tactical game. Preserve the exact face, animal identity, outfit, palette, body proportions, weapon identity and warm hand-painted textured style. Same elevated three-quarter isometric camera, facing screen-right, visible top surfaces. Full character and weapon uncropped, generous transparent margins, genuine transparent alpha background, no ground, shadow, scenery, text or extra objects. Anatomically coherent two arms and two legs (hen: two feathered wing-hands and two clawed feet). Do not stretch or compress the body to fake the stance. KNEELING: one knee rests on the ground, other knee raised with foot firmly planted forward toward screen-right. Torso upright, head alert, compact stable silhouette. Full kneeling height should be about 72% of this character standing, preserving head and torso size. Equipment: AK-47 with wood furniture and curved magazine, held with both hands, stock at shoulder and barrel aimed screen-right.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-4f3e0412-f535-48d8-b089-393a70014643.png"
+  },
+  {
+    "species": "donkey",
+    "stance": "prone",
+    "weapon": "hands",
+    "prompt": "Edit the supplied character sprite into ONE new pose for the same tactical game. Preserve the exact face, animal identity, outfit, palette, body proportions, weapon identity and warm hand-painted textured style. Same elevated three-quarter isometric camera, facing screen-right, visible top surfaces. Full character and weapon uncropped, generous transparent margins, genuine transparent alpha background, no ground, shadow, scenery, text or extra objects. Anatomically coherent two arms and two legs (hen: two feathered wing-hands and two clawed feet). Do not stretch or compress the body to fake the stance. PRONE: lying flat on belly, legs extended behind toward screen-left, chest low, head raised and looking screen-right, elbows planted near the front. Clear long horizontal silhouette, elevated isometric view with back/shoulders visible. Fully extended legs and feet visible. Head/torso must keep their normal size. Not sitting, not kneeling, not on hands and knees. Equipment: UNARMED: empty hands, no weapon. For kneeling, hold hands in a compact protective guard near torso. For prone, forearms support the chest, empty hands forward.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-2701f556-c528-45e8-98a0-c2edf0e00acc.png"
+  },
+  {
+    "species": "donkey",
+    "stance": "prone",
+    "weapon": "knife",
+    "prompt": "Edit the supplied character sprite into ONE new pose for the same tactical game. Preserve the exact face, animal identity, outfit, palette, body proportions, weapon identity and warm hand-painted textured style. Same elevated three-quarter isometric camera, facing screen-right, visible top surfaces. Full character and weapon uncropped, generous transparent margins, genuine transparent alpha background, no ground, shadow, scenery, text or extra objects. Anatomically coherent two arms and two legs (hen: two feathered wing-hands and two clawed feet). Do not stretch or compress the body to fake the stance. PRONE: lying flat on belly, legs extended behind toward screen-left, chest low, head raised and looking screen-right, elbows planted near the front. Clear long horizontal silhouette, elevated isometric view with back/shoulders visible. Fully extended legs and feet visible. Head/torso must keep their normal size. Not sitting, not kneeling, not on hands and knees. Equipment: NR-40 knife in forward hand, blade points toward screen-right, free hand supports/balances the pose.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-f45b8fef-d0ef-4231-9441-a14d80c27b40.png"
+  },
+  {
+    "species": "donkey",
+    "stance": "prone",
+    "weapon": "pistol",
+    "prompt": "Edit the supplied character sprite into ONE new pose for the same tactical game. Preserve the exact face, animal identity, outfit, palette, body proportions, weapon identity and warm hand-painted textured style. Same elevated three-quarter isometric camera, facing screen-right, visible top surfaces. Full character and weapon uncropped, generous transparent margins, genuine transparent alpha background, no ground, shadow, scenery, text or extra objects. Anatomically coherent two arms and two legs (hen: two feathered wing-hands and two clawed feet). Do not stretch or compress the body to fake the stance. PRONE: lying flat on belly, legs extended behind toward screen-left, chest low, head raised and looking screen-right, elbows planted near the front. Clear long horizontal silhouette, elevated isometric view with back/shoulders visible. Fully extended legs and feet visible. Head/torso must keep their normal size. Not sitting, not kneeling, not on hands and knees. Equipment: TT-33 pistol pointed toward screen-right in two-handed supported grip; elbows bent and compact.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-4dcd5bc8-0a8c-4bb7-be60-915dc6317b93.png"
+  },
+  {
+    "species": "donkey",
+    "stance": "prone",
+    "weapon": "rifle",
+    "prompt": "Edit the supplied character sprite into ONE new pose for the same tactical game. Preserve the exact face, animal identity, outfit, palette, body proportions, weapon identity and warm hand-painted textured style. Same elevated three-quarter isometric camera, facing screen-right, visible top surfaces. Full character and weapon uncropped, generous transparent margins, genuine transparent alpha background, no ground, shadow, scenery, text or extra objects. Anatomically coherent two arms and two legs (hen: two feathered wing-hands and two clawed feet). Do not stretch or compress the body to fake the stance. PRONE: lying flat on belly, legs extended behind toward screen-left, chest low, head raised and looking screen-right, elbows planted near the front. Clear long horizontal silhouette, elevated isometric view with back/shoulders visible. Fully extended legs and feet visible. Head/torso must keep their normal size. Not sitting, not kneeling, not on hands and knees. Equipment: Mosin-Nagant bolt-action rifle with wood stock, held with both hands, stock at shoulder and barrel aimed screen-right.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-25c6a6d3-5eeb-487b-9a83-7eae8316944f.png"
+  },
+  {
+    "species": "donkey",
+    "stance": "prone",
+    "weapon": "assault",
+    "prompt": "Edit the supplied character sprite into ONE new pose for the same tactical game. Preserve the exact face, animal identity, outfit, palette, body proportions, weapon identity and warm hand-painted textured style. Same elevated three-quarter isometric camera, facing screen-right, visible top surfaces. Full character and weapon uncropped, generous transparent margins, genuine transparent alpha background, no ground, shadow, scenery, text or extra objects. Anatomically coherent two arms and two legs (hen: two feathered wing-hands and two clawed feet). Do not stretch or compress the body to fake the stance. PRONE: lying flat on belly, legs extended behind toward screen-left, chest low, head raised and looking screen-right, elbows planted near the front. Clear long horizontal silhouette, elevated isometric view with back/shoulders visible. Fully extended legs and feet visible. Head/torso must keep their normal size. Not sitting, not kneeling, not on hands and knees. Equipment: AK-47 with wood furniture and curved magazine, held with both hands, stock at shoulder and barrel aimed screen-right.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-81d9bf16-9ff5-49c0-8a27-ada26c55bf2b.png"
+  },
+  {
+    "species": "sheep",
+    "stance": "kneeling",
+    "weapon": "hands",
+    "prompt": "Edit the supplied character sprite into ONE new pose for the same tactical game. Preserve the exact face, animal identity, outfit, palette, body proportions, weapon identity and warm hand-painted textured style. Same elevated three-quarter isometric camera, facing screen-right, visible top surfaces. Full character and weapon uncropped, generous transparent margins, genuine transparent alpha background, no ground, shadow, scenery, text or extra objects. Anatomically coherent two arms and two legs (hen: two feathered wing-hands and two clawed feet). Do not stretch or compress the body to fake the stance. KNEELING: one knee rests on the ground, other knee raised with foot firmly planted forward toward screen-right. Torso upright, head alert, compact stable silhouette. Full kneeling height should be about 72% of this character standing, preserving head and torso size. Equipment: UNARMED: empty hands, no weapon. For kneeling, hold hands in a compact protective guard near torso. For prone, forearms support the chest, empty hands forward.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-521b7b27-80df-4915-8a6b-dbc531e188ed.png"
+  },
+  {
+    "species": "sheep",
+    "stance": "kneeling",
+    "weapon": "knife",
+    "prompt": "Edit the supplied character sprite into ONE new pose for the same tactical game. Preserve the exact face, animal identity, outfit, palette, body proportions, weapon identity and warm hand-painted textured style. Same elevated three-quarter isometric camera, facing screen-right, visible top surfaces. Full character and weapon uncropped, generous transparent margins, genuine transparent alpha background, no ground, shadow, scenery, text or extra objects. Anatomically coherent two arms and two legs (hen: two feathered wing-hands and two clawed feet). Do not stretch or compress the body to fake the stance. KNEELING: one knee rests on the ground, other knee raised with foot firmly planted forward toward screen-right. Torso upright, head alert, compact stable silhouette. Full kneeling height should be about 72% of this character standing, preserving head and torso size. Equipment: NR-40 knife in forward hand, blade points toward screen-right, free hand supports/balances the pose.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-775bf673-128e-433b-bf41-85193fd760ed.png"
+  },
+  {
+    "species": "sheep",
+    "stance": "kneeling",
+    "weapon": "pistol",
+    "prompt": "Edit the supplied character sprite into ONE new pose for the same tactical game. Preserve the exact face, animal identity, outfit, palette, body proportions, weapon identity and warm hand-painted textured style. Same elevated three-quarter isometric camera, facing screen-right, visible top surfaces. Full character and weapon uncropped, generous transparent margins, genuine transparent alpha background, no ground, shadow, scenery, text or extra objects. Anatomically coherent two arms and two legs (hen: two feathered wing-hands and two clawed feet). Do not stretch or compress the body to fake the stance. KNEELING: one knee rests on the ground, other knee raised with foot firmly planted forward toward screen-right. Torso upright, head alert, compact stable silhouette. Full kneeling height should be about 72% of this character standing, preserving head and torso size. Equipment: TT-33 pistol pointed toward screen-right in two-handed supported grip; elbows bent and compact.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-ed12d474-cba7-4634-b31c-631e75b3fad0.png"
+  },
+  {
+    "species": "sheep",
+    "stance": "kneeling",
+    "weapon": "rifle",
+    "prompt": "Edit the supplied character sprite into ONE new pose for the same tactical game. Preserve the exact face, animal identity, outfit, palette, body proportions, weapon identity and warm hand-painted textured style. Same elevated three-quarter isometric camera, facing screen-right, visible top surfaces. Full character and weapon uncropped, generous transparent margins, genuine transparent alpha background, no ground, shadow, scenery, text or extra objects. Anatomically coherent two arms and two legs (hen: two feathered wing-hands and two clawed feet). Do not stretch or compress the body to fake the stance. KNEELING: one knee rests on the ground, other knee raised with foot firmly planted forward toward screen-right. Torso upright, head alert, compact stable silhouette. Full kneeling height should be about 72% of this character standing, preserving head and torso size. Equipment: Mosin-Nagant bolt-action rifle with wood stock, held with both hands, stock at shoulder and barrel aimed screen-right.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-e4bd6351-7247-411f-a684-4adc4188c6a5.png"
+  },
+  {
+    "species": "sheep",
+    "stance": "kneeling",
+    "weapon": "assault",
+    "prompt": "Edit the supplied character sprite into ONE new pose for the same tactical game. Preserve the exact face, animal identity, outfit, palette, body proportions, weapon identity and warm hand-painted textured style. Same elevated three-quarter isometric camera, facing screen-right, visible top surfaces. Full character and weapon uncropped, generous transparent margins, genuine transparent alpha background, no ground, shadow, scenery, text or extra objects. Anatomically coherent two arms and two legs (hen: two feathered wing-hands and two clawed feet). Do not stretch or compress the body to fake the stance. KNEELING: one knee rests on the ground, other knee raised with foot firmly planted forward toward screen-right. Torso upright, head alert, compact stable silhouette. Full kneeling height should be about 72% of this character standing, preserving head and torso size. Equipment: AK-47 with wood furniture and curved magazine, held with both hands, stock at shoulder and barrel aimed screen-right.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-c8fb3619-67f6-4a3e-bec1-41b1de4a3011.png"
+  },
+  {
+    "species": "sheep",
+    "stance": "prone",
+    "weapon": "hands",
+    "prompt": "Edit the supplied character sprite into ONE new pose for the same tactical game. Preserve the exact face, animal identity, outfit, palette, body proportions, weapon identity and warm hand-painted textured style. Same elevated three-quarter isometric camera, facing screen-right, visible top surfaces. Full character and weapon uncropped, generous transparent margins, genuine transparent alpha background, no ground, shadow, scenery, text or extra objects. Anatomically coherent two arms and two legs (hen: two feathered wing-hands and two clawed feet). Do not stretch or compress the body to fake the stance. PRONE: lying flat on belly, legs extended behind toward screen-left, chest low, head raised and looking screen-right, elbows planted near the front. Clear long horizontal silhouette, elevated isometric view with back/shoulders visible. Fully extended legs and feet visible. Head/torso must keep their normal size. Not sitting, not kneeling, not on hands and knees. Equipment: UNARMED: empty hands, no weapon. For kneeling, hold hands in a compact protective guard near torso. For prone, forearms support the chest, empty hands forward.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-93d91200-7a77-4936-bf57-e2e2c242afbf.png"
+  },
+  {
+    "species": "sheep",
+    "stance": "prone",
+    "weapon": "knife",
+    "prompt": "Edit the supplied character sprite into ONE new pose for the same tactical game. Preserve the exact face, animal identity, outfit, palette, body proportions, weapon identity and warm hand-painted textured style. Same elevated three-quarter isometric camera, facing screen-right, visible top surfaces. Full character and weapon uncropped, generous transparent margins, genuine transparent alpha background, no ground, shadow, scenery, text or extra objects. Anatomically coherent two arms and two legs (hen: two feathered wing-hands and two clawed feet). Do not stretch or compress the body to fake the stance. PRONE: lying flat on belly, legs extended behind toward screen-left, chest low, head raised and looking screen-right, elbows planted near the front. Clear long horizontal silhouette, elevated isometric view with back/shoulders visible. Fully extended legs and feet visible. Head/torso must keep their normal size. Not sitting, not kneeling, not on hands and knees. Equipment: NR-40 knife in forward hand, blade points toward screen-right, free hand supports/balances the pose.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-b51d3e3d-e604-43cf-b79f-4a8c28414015.png"
+  },
+  {
+    "species": "sheep",
+    "stance": "prone",
+    "weapon": "pistol",
+    "prompt": "Edit the supplied character sprite into ONE new pose for the same tactical game. Preserve the exact face, animal identity, outfit, palette, body proportions, weapon identity and warm hand-painted textured style. Same elevated three-quarter isometric camera, facing screen-right, visible top surfaces. Full character and weapon uncropped, generous transparent margins, genuine transparent alpha background, no ground, shadow, scenery, text or extra objects. Anatomically coherent two arms and two legs (hen: two feathered wing-hands and two clawed feet). Do not stretch or compress the body to fake the stance. PRONE: lying flat on belly, legs extended behind toward screen-left, chest low, head raised and looking screen-right, elbows planted near the front. Clear long horizontal silhouette, elevated isometric view with back/shoulders visible. Fully extended legs and feet visible. Head/torso must keep their normal size. Not sitting, not kneeling, not on hands and knees. Equipment: TT-33 pistol pointed toward screen-right in two-handed supported grip; elbows bent and compact.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-02b96d93-c288-466a-8d15-4332833a176e.png"
+  },
+  {
+    "species": "sheep",
+    "stance": "prone",
+    "weapon": "rifle",
+    "prompt": "Edit the supplied character sprite into ONE new pose for the same tactical game. Preserve the exact face, animal identity, outfit, palette, body proportions, weapon identity and warm hand-painted textured style. Same elevated three-quarter isometric camera, facing screen-right, visible top surfaces. Full character and weapon uncropped, generous transparent margins, genuine transparent alpha background, no ground, shadow, scenery, text or extra objects. Anatomically coherent two arms and two legs (hen: two feathered wing-hands and two clawed feet). Do not stretch or compress the body to fake the stance. PRONE: lying flat on belly, legs extended behind toward screen-left, chest low, head raised and looking screen-right, elbows planted near the front. Clear long horizontal silhouette, elevated isometric view with back/shoulders visible. Fully extended legs and feet visible. Head/torso must keep their normal size. Not sitting, not kneeling, not on hands and knees. Equipment: Mosin-Nagant bolt-action rifle with wood stock, held with both hands, stock at shoulder and barrel aimed screen-right.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-600c24f3-966c-448e-ba2a-0704c2d822d1.png"
+  },
+  {
+    "species": "sheep",
+    "stance": "prone",
+    "weapon": "assault",
+    "prompt": "Edit the supplied character sprite into ONE new pose for the same tactical game. Preserve the exact face, animal identity, outfit, palette, body proportions, weapon identity and warm hand-painted textured style. Same elevated three-quarter isometric camera, facing screen-right, visible top surfaces. Full character and weapon uncropped, generous transparent margins, genuine transparent alpha background, no ground, shadow, scenery, text or extra objects. Anatomically coherent two arms and two legs (hen: two feathered wing-hands and two clawed feet). Do not stretch or compress the body to fake the stance. PRONE: lying flat on belly, legs extended behind toward screen-left, chest low, head raised and looking screen-right, elbows planted near the front. Clear long horizontal silhouette, elevated isometric view with back/shoulders visible. Fully extended legs and feet visible. Head/torso must keep their normal size. Not sitting, not kneeling, not on hands and knees. Equipment: AK-47 with wood furniture and curved magazine, held with both hands, stock at shoulder and barrel aimed screen-right.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-a4a61916-9ee6-4a04-8bc1-5d14a07bc650.png"
+  },
+  {
+    "species": "cow",
+    "stance": "kneeling",
+    "weapon": "hands",
+    "prompt": "Edit the supplied character sprite into ONE new pose for the same tactical game. Preserve the exact face, animal identity, outfit, palette, body proportions, weapon identity and warm hand-painted textured style. Same elevated three-quarter isometric camera, facing screen-right, visible top surfaces. Full character and weapon uncropped, generous transparent margins, genuine transparent alpha background, no ground, shadow, scenery, text or extra objects. Anatomically coherent two arms and two legs (hen: two feathered wing-hands and two clawed feet). Do not stretch or compress the body to fake the stance. KNEELING: one knee rests on the ground, other knee raised with foot firmly planted forward toward screen-right. Torso upright, head alert, compact stable silhouette. Full kneeling height should be about 72% of this character standing, preserving head and torso size. Equipment: UNARMED: empty hands, no weapon. For kneeling, hold hands in a compact protective guard near torso. For prone, forearms support the chest, empty hands forward.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-7b74b752-0e4a-4d4d-83b7-44720792cb09.png"
+  },
+  {
+    "species": "cow",
+    "stance": "kneeling",
+    "weapon": "knife",
+    "prompt": "Edit the supplied character sprite into ONE new pose for the same tactical game. Preserve the exact face, animal identity, outfit, palette, body proportions, weapon identity and warm hand-painted textured style. Same elevated three-quarter isometric camera, facing screen-right, visible top surfaces. Full character and weapon uncropped, generous transparent margins, genuine transparent alpha background, no ground, shadow, scenery, text or extra objects. Anatomically coherent two arms and two legs (hen: two feathered wing-hands and two clawed feet). Do not stretch or compress the body to fake the stance. KNEELING: one knee rests on the ground, other knee raised with foot firmly planted forward toward screen-right. Torso upright, head alert, compact stable silhouette. Full kneeling height should be about 72% of this character standing, preserving head and torso size. Equipment: NR-40 knife in forward hand, blade points toward screen-right, free hand supports/balances the pose.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-263b1a64-1117-4a1e-be67-ba7dc721f9f2.png"
+  },
+  {
+    "species": "cow",
+    "stance": "kneeling",
+    "weapon": "pistol",
+    "prompt": "Edit the supplied character sprite into ONE new pose for the same tactical game. Preserve the exact face, animal identity, outfit, palette, body proportions, weapon identity and warm hand-painted textured style. Same elevated three-quarter isometric camera, facing screen-right, visible top surfaces. Full character and weapon uncropped, generous transparent margins, genuine transparent alpha background, no ground, shadow, scenery, text or extra objects. Anatomically coherent two arms and two legs (hen: two feathered wing-hands and two clawed feet). Do not stretch or compress the body to fake the stance. KNEELING: one knee rests on the ground, other knee raised with foot firmly planted forward toward screen-right. Torso upright, head alert, compact stable silhouette. Full kneeling height should be about 72% of this character standing, preserving head and torso size. Equipment: TT-33 pistol pointed toward screen-right in two-handed supported grip; elbows bent and compact.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-2fc8f256-233d-482d-a130-8e1cbbe1ecdd.png"
+  },
+  {
+    "species": "cow",
+    "stance": "kneeling",
+    "weapon": "rifle",
+    "prompt": "Edit the supplied character sprite into ONE new pose for the same tactical game. Preserve the exact face, animal identity, outfit, palette, body proportions, weapon identity and warm hand-painted textured style. Same elevated three-quarter isometric camera, facing screen-right, visible top surfaces. Full character and weapon uncropped, generous transparent margins, genuine transparent alpha background, no ground, shadow, scenery, text or extra objects. Anatomically coherent two arms and two legs (hen: two feathered wing-hands and two clawed feet). Do not stretch or compress the body to fake the stance. KNEELING: one knee rests on the ground, other knee raised with foot firmly planted forward toward screen-right. Torso upright, head alert, compact stable silhouette. Full kneeling height should be about 72% of this character standing, preserving head and torso size. Equipment: Mosin-Nagant bolt-action rifle with wood stock, held with both hands, stock at shoulder and barrel aimed screen-right.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-21a2237f-eafa-4662-a504-843288f0446d.png"
+  },
+  {
+    "species": "cow",
+    "stance": "kneeling",
+    "weapon": "assault",
+    "prompt": "Edit the supplied character sprite into ONE new pose for the same tactical game. Preserve the exact face, animal identity, outfit, palette, body proportions, weapon identity and warm hand-painted textured style. Same elevated three-quarter isometric camera, facing screen-right, visible top surfaces. Full character and weapon uncropped, generous transparent margins, genuine transparent alpha background, no ground, shadow, scenery, text or extra objects. Anatomically coherent two arms and two legs (hen: two feathered wing-hands and two clawed feet). Do not stretch or compress the body to fake the stance. KNEELING: one knee rests on the ground, other knee raised with foot firmly planted forward toward screen-right. Torso upright, head alert, compact stable silhouette. Full kneeling height should be about 72% of this character standing, preserving head and torso size. Equipment: AK-47 with wood furniture and curved magazine, held with both hands, stock at shoulder and barrel aimed screen-right.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-33476516-e15a-4cbc-95fc-7cb15d336a66.png"
+  },
+  {
+    "species": "cow",
+    "stance": "prone",
+    "weapon": "hands",
+    "prompt": "Edit the supplied character sprite into ONE new pose for the same tactical game. Preserve the exact face, animal identity, outfit, palette, body proportions, weapon identity and warm hand-painted textured style. Same elevated three-quarter isometric camera, facing screen-right, visible top surfaces. Full character and weapon uncropped, generous transparent margins, genuine transparent alpha background, no ground, shadow, scenery, text or extra objects. Anatomically coherent two arms and two legs (hen: two feathered wing-hands and two clawed feet). Do not stretch or compress the body to fake the stance. PRONE: lying flat on belly, legs extended behind toward screen-left, chest low, head raised and looking screen-right, elbows planted near the front. Clear long horizontal silhouette, elevated isometric view with back/shoulders visible. Fully extended legs and feet visible. Head/torso must keep their normal size. Not sitting, not kneeling, not on hands and knees. Equipment: UNARMED: empty hands, no weapon. For kneeling, hold hands in a compact protective guard near torso. For prone, forearms support the chest, empty hands forward.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-a5dacd70-3463-49b3-ad0b-a03038dcdfc3.png"
+  },
+  {
+    "species": "cow",
+    "stance": "prone",
+    "weapon": "knife",
+    "prompt": "Edit the supplied character sprite into ONE new pose for the same tactical game. Preserve the exact face, animal identity, outfit, palette, body proportions, weapon identity and warm hand-painted textured style. Same elevated three-quarter isometric camera, facing screen-right, visible top surfaces. Full character and weapon uncropped, generous transparent margins, genuine transparent alpha background, no ground, shadow, scenery, text or extra objects. Anatomically coherent two arms and two legs (hen: two feathered wing-hands and two clawed feet). Do not stretch or compress the body to fake the stance. PRONE: lying flat on belly, legs extended behind toward screen-left, chest low, head raised and looking screen-right, elbows planted near the front. Clear long horizontal silhouette, elevated isometric view with back/shoulders visible. Fully extended legs and feet visible. Head/torso must keep their normal size. Not sitting, not kneeling, not on hands and knees. Equipment: NR-40 knife in forward hand, blade points toward screen-right, free hand supports/balances the pose.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-7bc40f7a-8c3f-41eb-8e99-1b81d3f332ef.png"
+  },
+  {
+    "species": "cow",
+    "stance": "prone",
+    "weapon": "pistol",
+    "prompt": "Edit the supplied character sprite into ONE new pose for the same tactical game. Preserve the exact face, animal identity, outfit, palette, body proportions, weapon identity and warm hand-painted textured style. Same elevated three-quarter isometric camera, facing screen-right, visible top surfaces. Full character and weapon uncropped, generous transparent margins, genuine transparent alpha background, no ground, shadow, scenery, text or extra objects. Anatomically coherent two arms and two legs (hen: two feathered wing-hands and two clawed feet). Do not stretch or compress the body to fake the stance. PRONE: lying flat on belly, legs extended behind toward screen-left, chest low, head raised and looking screen-right, elbows planted near the front. Clear long horizontal silhouette, elevated isometric view with back/shoulders visible. Fully extended legs and feet visible. Head/torso must keep their normal size. Not sitting, not kneeling, not on hands and knees. Equipment: TT-33 pistol pointed toward screen-right in two-handed supported grip; elbows bent and compact.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-79752dff-8344-42a4-b902-b139a030e60c.png"
+  },
+  {
+    "species": "cow",
+    "stance": "prone",
+    "weapon": "rifle",
+    "prompt": "Edit the supplied character sprite into ONE new pose for the same tactical game. Preserve the exact face, animal identity, outfit, palette, body proportions, weapon identity and warm hand-painted textured style. Same elevated three-quarter isometric camera, facing screen-right, visible top surfaces. Full character and weapon uncropped, generous transparent margins, genuine transparent alpha background, no ground, shadow, scenery, text or extra objects. Anatomically coherent two arms and two legs (hen: two feathered wing-hands and two clawed feet). Do not stretch or compress the body to fake the stance. PRONE: lying flat on belly, legs extended behind toward screen-left, chest low, head raised and looking screen-right, elbows planted near the front. Clear long horizontal silhouette, elevated isometric view with back/shoulders visible. Fully extended legs and feet visible. Head/torso must keep their normal size. Not sitting, not kneeling, not on hands and knees. Equipment: Mosin-Nagant bolt-action rifle with wood stock, held with both hands, stock at shoulder and barrel aimed screen-right.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-9a35ae1c-1583-4973-9a4c-28baaf82231a.png"
+  },
+  {
+    "species": "cow",
+    "stance": "prone",
+    "weapon": "assault",
+    "prompt": "Edit the supplied character sprite into ONE new pose for the same tactical game. Preserve the exact face, animal identity, outfit, palette, body proportions, weapon identity and warm hand-painted textured style. Same elevated three-quarter isometric camera, facing screen-right, visible top surfaces. Full character and weapon uncropped, generous transparent margins, genuine transparent alpha background, no ground, shadow, scenery, text or extra objects. Anatomically coherent two arms and two legs (hen: two feathered wing-hands and two clawed feet). Do not stretch or compress the body to fake the stance. PRONE: lying flat on belly, legs extended behind toward screen-left, chest low, head raised and looking screen-right, elbows planted near the front. Clear long horizontal silhouette, elevated isometric view with back/shoulders visible. Fully extended legs and feet visible. Head/torso must keep their normal size. Not sitting, not kneeling, not on hands and knees. Equipment: AK-47 with wood furniture and curved magazine, held with both hands, stock at shoulder and barrel aimed screen-right.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-118d25a8-a253-4ff7-a9b9-dbf1b05971a2.png"
+  },
+  {
+    "species": "hen",
+    "stance": "kneeling",
+    "weapon": "hands",
+    "prompt": "Edit the supplied character sprite into ONE new pose for the same tactical game. Preserve the exact face, animal identity, outfit, palette, body proportions, weapon identity and warm hand-painted textured style. Same elevated three-quarter isometric camera, facing screen-right, visible top surfaces. Full character and weapon uncropped, generous transparent margins, genuine transparent alpha background, no ground, shadow, scenery, text or extra objects. Anatomically coherent two arms and two legs (hen: two feathered wing-hands and two clawed feet). Do not stretch or compress the body to fake the stance. KNEELING: one knee rests on the ground, other knee raised with foot firmly planted forward toward screen-right. Torso upright, head alert, compact stable silhouette. Full kneeling height should be about 72% of this character standing, preserving head and torso size. Equipment: UNARMED: empty hands, no weapon. For kneeling, hold hands in a compact protective guard near torso. For prone, forearms support the chest, empty hands forward. Preserve feathered wings as gripping hands and cream apron. Fold one feathered leg beneath body with other yellow clawed foot forward; bird-like proportions.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-d753975f-6ab5-4cd1-8dde-3a618550e7cf.png"
+  },
+  {
+    "species": "hen",
+    "stance": "kneeling",
+    "weapon": "knife",
+    "prompt": "Edit the supplied character sprite into ONE new pose for the same tactical game. Preserve the exact face, animal identity, outfit, palette, body proportions, weapon identity and warm hand-painted textured style. Same elevated three-quarter isometric camera, facing screen-right, visible top surfaces. Full character and weapon uncropped, generous transparent margins, genuine transparent alpha background, no ground, shadow, scenery, text or extra objects. Anatomically coherent two arms and two legs (hen: two feathered wing-hands and two clawed feet). Do not stretch or compress the body to fake the stance. KNEELING: one knee rests on the ground, other knee raised with foot firmly planted forward toward screen-right. Torso upright, head alert, compact stable silhouette. Full kneeling height should be about 72% of this character standing, preserving head and torso size. Equipment: NR-40 knife in forward hand, blade points toward screen-right, free hand supports/balances the pose. Preserve feathered wings as gripping hands and cream apron. Fold one feathered leg beneath body with other yellow clawed foot forward; bird-like proportions.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-673b0a56-aa96-4741-8cab-faa07e263e23.png"
+  },
+  {
+    "species": "hen",
+    "stance": "kneeling",
+    "weapon": "pistol",
+    "prompt": "Edit the supplied character sprite into ONE new pose for the same tactical game. Preserve the exact face, animal identity, outfit, palette, body proportions, weapon identity and warm hand-painted textured style. Same elevated three-quarter isometric camera, facing screen-right, visible top surfaces. Full character and weapon uncropped, generous transparent margins, genuine transparent alpha background, no ground, shadow, scenery, text or extra objects. Anatomically coherent two arms and two legs (hen: two feathered wing-hands and two clawed feet). Do not stretch or compress the body to fake the stance. KNEELING: one knee rests on the ground, other knee raised with foot firmly planted forward toward screen-right. Torso upright, head alert, compact stable silhouette. Full kneeling height should be about 72% of this character standing, preserving head and torso size. Equipment: TT-33 pistol pointed toward screen-right in two-handed supported grip; elbows bent and compact. Preserve feathered wings as gripping hands and cream apron. Fold one feathered leg beneath body with other yellow clawed foot forward; bird-like proportions.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-665e3467-03a4-401f-b3d3-5f0399c8e1fa.png"
+  },
+  {
+    "species": "hen",
+    "stance": "kneeling",
+    "weapon": "rifle",
+    "prompt": "Edit the supplied character sprite into ONE new pose for the same tactical game. Preserve the exact face, animal identity, outfit, palette, body proportions, weapon identity and warm hand-painted textured style. Same elevated three-quarter isometric camera, facing screen-right, visible top surfaces. Full character and weapon uncropped, generous transparent margins, genuine transparent alpha background, no ground, shadow, scenery, text or extra objects. Anatomically coherent two arms and two legs (hen: two feathered wing-hands and two clawed feet). Do not stretch or compress the body to fake the stance. KNEELING: one knee rests on the ground, other knee raised with foot firmly planted forward toward screen-right. Torso upright, head alert, compact stable silhouette. Full kneeling height should be about 72% of this character standing, preserving head and torso size. Equipment: Mosin-Nagant bolt-action rifle with wood stock, held with both hands, stock at shoulder and barrel aimed screen-right. Preserve feathered wings as gripping hands and cream apron. Fold one feathered leg beneath body with other yellow clawed foot forward; bird-like proportions.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-bd378df8-0a49-4791-bcbb-b88b509b5063.png"
+  },
+  {
+    "species": "hen",
+    "stance": "kneeling",
+    "weapon": "assault",
+    "prompt": "Edit the supplied character sprite into ONE new pose for the same tactical game. Preserve the exact face, animal identity, outfit, palette, body proportions, weapon identity and warm hand-painted textured style. Same elevated three-quarter isometric camera, facing screen-right, visible top surfaces. Full character and weapon uncropped, generous transparent margins, genuine transparent alpha background, no ground, shadow, scenery, text or extra objects. Anatomically coherent two arms and two legs (hen: two feathered wing-hands and two clawed feet). Do not stretch or compress the body to fake the stance. KNEELING: one knee rests on the ground, other knee raised with foot firmly planted forward toward screen-right. Torso upright, head alert, compact stable silhouette. Full kneeling height should be about 72% of this character standing, preserving head and torso size. Equipment: AK-47 with wood furniture and curved magazine, held with both hands, stock at shoulder and barrel aimed screen-right. Preserve feathered wings as gripping hands and cream apron. Fold one feathered leg beneath body with other yellow clawed foot forward; bird-like proportions.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-2a9c2d50-6116-48c1-87e5-93b4b60c76c2.png"
+  },
+  {
+    "species": "hen",
+    "stance": "prone",
+    "weapon": "hands",
+    "prompt": "Edit the supplied character sprite into ONE new pose for the same tactical game. Preserve the exact face, animal identity, outfit, palette, body proportions, weapon identity and warm hand-painted textured style. Same elevated three-quarter isometric camera, facing screen-right, visible top surfaces. Full character and weapon uncropped, generous transparent margins, genuine transparent alpha background, no ground, shadow, scenery, text or extra objects. Anatomically coherent two arms and two legs (hen: two feathered wing-hands and two clawed feet). Do not stretch or compress the body to fake the stance. PRONE: lying flat on belly, legs extended behind toward screen-left, chest low, head raised and looking screen-right, elbows planted near the front. Clear long horizontal silhouette, elevated isometric view with back/shoulders visible. Fully extended legs and feet visible. Head/torso must keep their normal size. Not sitting, not kneeling, not on hands and knees. Equipment: UNARMED: empty hands, no weapon. For kneeling, hold hands in a compact protective guard near torso. For prone, forearms support the chest, empty hands forward. Preserve feathered wings as gripping hands, cream apron, and bird proportions. Short feathered legs and yellow clawed feet extend behind the body, wing elbows support the front.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-8584caaa-dbfd-4c63-b6e6-21a94d69aa20.png"
+  },
+  {
+    "species": "hen",
+    "stance": "prone",
+    "weapon": "knife",
+    "prompt": "Edit the supplied character sprite into ONE new pose for the same tactical game. Preserve the exact face, animal identity, outfit, palette, body proportions, weapon identity and warm hand-painted textured style. Same elevated three-quarter isometric camera, facing screen-right, visible top surfaces. Full character and weapon uncropped, generous transparent margins, genuine transparent alpha background, no ground, shadow, scenery, text or extra objects. Anatomically coherent two arms and two legs (hen: two feathered wing-hands and two clawed feet). Do not stretch or compress the body to fake the stance. PRONE: lying flat on belly, legs extended behind toward screen-left, chest low, head raised and looking screen-right, elbows planted near the front. Clear long horizontal silhouette, elevated isometric view with back/shoulders visible. Fully extended legs and feet visible. Head/torso must keep their normal size. Not sitting, not kneeling, not on hands and knees. Equipment: NR-40 knife in forward hand, blade points toward screen-right, free hand supports/balances the pose. Preserve feathered wings as gripping hands, cream apron, and bird proportions. Short feathered legs and yellow clawed feet extend behind the body, wing elbows support the front.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-31102e84-5762-4707-a564-90775f9d9eb1.png"
+  },
+  {
+    "species": "hen",
+    "stance": "prone",
+    "weapon": "pistol",
+    "prompt": "Edit the supplied character sprite into ONE new pose for the same tactical game. Preserve the exact face, animal identity, outfit, palette, body proportions, weapon identity and warm hand-painted textured style. Same elevated three-quarter isometric camera, facing screen-right, visible top surfaces. Full character and weapon uncropped, generous transparent margins, genuine transparent alpha background, no ground, shadow, scenery, text or extra objects. Anatomically coherent two arms and two legs (hen: two feathered wing-hands and two clawed feet). Do not stretch or compress the body to fake the stance. PRONE: lying flat on belly, legs extended behind toward screen-left, chest low, head raised and looking screen-right, elbows planted near the front. Clear long horizontal silhouette, elevated isometric view with back/shoulders visible. Fully extended legs and feet visible. Head/torso must keep their normal size. Not sitting, not kneeling, not on hands and knees. Equipment: TT-33 pistol pointed toward screen-right in two-handed supported grip; elbows bent and compact. Preserve feathered wings as gripping hands, cream apron, and bird proportions. Short feathered legs and yellow clawed feet extend behind the body, wing elbows support the front.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-ffbdfdc5-d713-4afd-990b-a4cbe364f464.png"
+  },
+  {
+    "species": "hen",
+    "stance": "prone",
+    "weapon": "rifle",
+    "prompt": "Edit the supplied character sprite into ONE new pose for the same tactical game. Preserve the exact face, animal identity, outfit, palette, body proportions, weapon identity and warm hand-painted textured style. Same elevated three-quarter isometric camera, facing screen-right, visible top surfaces. Full character and weapon uncropped, generous transparent margins, genuine transparent alpha background, no ground, shadow, scenery, text or extra objects. Anatomically coherent two arms and two legs (hen: two feathered wing-hands and two clawed feet). Do not stretch or compress the body to fake the stance. PRONE: lying flat on belly, legs extended behind toward screen-left, chest low, head raised and looking screen-right, elbows planted near the front. Clear long horizontal silhouette, elevated isometric view with back/shoulders visible. Fully extended legs and feet visible. Head/torso must keep their normal size. Not sitting, not kneeling, not on hands and knees. Equipment: Mosin-Nagant bolt-action rifle with wood stock, held with both hands, stock at shoulder and barrel aimed screen-right. Preserve feathered wings as gripping hands, cream apron, and bird proportions. Short feathered legs and yellow clawed feet extend behind the body, wing elbows support the front.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-8cbe9fe2-6a29-4bc8-8271-61b065eec854.png"
+  },
+  {
+    "species": "hen",
+    "stance": "prone",
+    "weapon": "assault",
+    "prompt": "Edit the supplied character sprite into ONE new pose for the same tactical game. Preserve the exact face, animal identity, outfit, palette, body proportions, weapon identity and warm hand-painted textured style. Same elevated three-quarter isometric camera, facing screen-right, visible top surfaces. Full character and weapon uncropped, generous transparent margins, genuine transparent alpha background, no ground, shadow, scenery, text or extra objects. Anatomically coherent two arms and two legs (hen: two feathered wing-hands and two clawed feet). Do not stretch or compress the body to fake the stance. PRONE: lying flat on belly, legs extended behind toward screen-left, chest low, head raised and looking screen-right, elbows planted near the front. Clear long horizontal silhouette, elevated isometric view with back/shoulders visible. Fully extended legs and feet visible. Head/torso must keep their normal size. Not sitting, not kneeling, not on hands and knees. Equipment: AK-47 with wood furniture and curved magazine, held with both hands, stock at shoulder and barrel aimed screen-right. Preserve feathered wings as gripping hands, cream apron, and bird proportions. Short feathered legs and yellow clawed feet extend behind the body, wing elbows support the front.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-1b87d15a-2987-41bd-8ee5-b3293b166b60.png"
+  },
+  {
+    "species": "pig-foreman",
+    "stance": "kneeling",
+    "weapon": "hands",
+    "prompt": "Edit the supplied character sprite into ONE new pose for the same tactical game. Preserve the exact face, animal identity, outfit, palette, body proportions, weapon identity and warm hand-painted textured style. Same elevated three-quarter isometric camera, facing screen-right, visible top surfaces. Full character and weapon uncropped, generous transparent margins, genuine transparent alpha background, no ground, shadow, scenery, text or extra objects. Anatomically coherent two arms and two legs (hen: two feathered wing-hands and two clawed feet). Do not stretch or compress the body to fake the stance. KNEELING: one knee rests on the ground, other knee raised with foot firmly planted forward toward screen-right. Torso upright, head alert, compact stable silhouette. Full kneeling height should be about 72% of this character standing, preserving head and torso size. Equipment: UNARMED: empty hands, no weapon. For kneeling, hold hands in a compact protective guard near torso. For prone, forearms support the chest, empty hands forward.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-5a7b5214-8f66-4429-b13b-1d1af1497b25.png"
+  },
+  {
+    "species": "pig-foreman",
+    "stance": "kneeling",
+    "weapon": "knife",
+    "prompt": "Edit the supplied character sprite into ONE new pose for the same tactical game. Preserve the exact face, animal identity, outfit, palette, body proportions, weapon identity and warm hand-painted textured style. Same elevated three-quarter isometric camera, facing screen-right, visible top surfaces. Full character and weapon uncropped, generous transparent margins, genuine transparent alpha background, no ground, shadow, scenery, text or extra objects. Anatomically coherent two arms and two legs (hen: two feathered wing-hands and two clawed feet). Do not stretch or compress the body to fake the stance. KNEELING: one knee rests on the ground, other knee raised with foot firmly planted forward toward screen-right. Torso upright, head alert, compact stable silhouette. Full kneeling height should be about 72% of this character standing, preserving head and torso size. Equipment: NR-40 knife in forward hand, blade points toward screen-right, free hand supports/balances the pose.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-f138a865-e98e-492d-87cf-e33ca6926dfb.png"
+  },
+  {
+    "species": "pig-foreman",
+    "stance": "kneeling",
+    "weapon": "pistol",
+    "prompt": "Edit the supplied character sprite into ONE new pose for the same tactical game. Preserve the exact face, animal identity, outfit, palette, body proportions, weapon identity and warm hand-painted textured style. Same elevated three-quarter isometric camera, facing screen-right, visible top surfaces. Full character and weapon uncropped, generous transparent margins, genuine transparent alpha background, no ground, shadow, scenery, text or extra objects. Anatomically coherent two arms and two legs (hen: two feathered wing-hands and two clawed feet). Do not stretch or compress the body to fake the stance. KNEELING: one knee rests on the ground, other knee raised with foot firmly planted forward toward screen-right. Torso upright, head alert, compact stable silhouette. Full kneeling height should be about 72% of this character standing, preserving head and torso size. Equipment: TT-33 pistol pointed toward screen-right in two-handed supported grip; elbows bent and compact.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-cdb79bf7-85d1-4cd2-9259-d813080745ab.png"
+  },
+  {
+    "species": "pig-foreman",
+    "stance": "kneeling",
+    "weapon": "rifle",
+    "prompt": "Edit the supplied character sprite into ONE new pose for the same tactical game. Preserve the exact face, animal identity, outfit, palette, body proportions, weapon identity and warm hand-painted textured style. Same elevated three-quarter isometric camera, facing screen-right, visible top surfaces. Full character and weapon uncropped, generous transparent margins, genuine transparent alpha background, no ground, shadow, scenery, text or extra objects. Anatomically coherent two arms and two legs (hen: two feathered wing-hands and two clawed feet). Do not stretch or compress the body to fake the stance. KNEELING: one knee rests on the ground, other knee raised with foot firmly planted forward toward screen-right. Torso upright, head alert, compact stable silhouette. Full kneeling height should be about 72% of this character standing, preserving head and torso size. Equipment: Mosin-Nagant bolt-action rifle with wood stock, held with both hands, stock at shoulder and barrel aimed screen-right.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-adfdf90b-f2d2-4459-9b59-28c4ea14bf66.png"
+  },
+  {
+    "species": "pig-foreman",
+    "stance": "kneeling",
+    "weapon": "assault",
+    "prompt": "Edit the supplied character sprite into ONE new pose for the same tactical game. Preserve the exact face, animal identity, outfit, palette, body proportions, weapon identity and warm hand-painted textured style. Same elevated three-quarter isometric camera, facing screen-right, visible top surfaces. Full character and weapon uncropped, generous transparent margins, genuine transparent alpha background, no ground, shadow, scenery, text or extra objects. Anatomically coherent two arms and two legs (hen: two feathered wing-hands and two clawed feet). Do not stretch or compress the body to fake the stance. KNEELING: one knee rests on the ground, other knee raised with foot firmly planted forward toward screen-right. Torso upright, head alert, compact stable silhouette. Full kneeling height should be about 72% of this character standing, preserving head and torso size. Equipment: AK-47 with wood furniture and curved magazine, held with both hands, stock at shoulder and barrel aimed screen-right.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-6256faea-d65e-4049-9412-132f8d0c8f2d.png"
+  },
+  {
+    "species": "pig-foreman",
+    "stance": "prone",
+    "weapon": "hands",
+    "prompt": "Edit the supplied character sprite into ONE new pose for the same tactical game. Preserve the exact face, animal identity, outfit, palette, body proportions, weapon identity and warm hand-painted textured style. Same elevated three-quarter isometric camera, facing screen-right, visible top surfaces. Full character and weapon uncropped, generous transparent margins, genuine transparent alpha background, no ground, shadow, scenery, text or extra objects. Anatomically coherent two arms and two legs (hen: two feathered wing-hands and two clawed feet). Do not stretch or compress the body to fake the stance. PRONE: lying flat on belly, legs extended behind toward screen-left, chest low, head raised and looking screen-right, elbows planted near the front. Clear long horizontal silhouette, elevated isometric view with back/shoulders visible. Fully extended legs and feet visible. Head/torso must keep their normal size. Not sitting, not kneeling, not on hands and knees. Equipment: UNARMED: empty hands, no weapon. For kneeling, hold hands in a compact protective guard near torso. For prone, forearms support the chest, empty hands forward.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-14d1ed1e-c538-487b-bbb3-f3916e8b7959.png"
+  },
+  {
+    "species": "pig-foreman",
+    "stance": "prone",
+    "weapon": "knife",
+    "prompt": "Edit the supplied character sprite into ONE new pose for the same tactical game. Preserve the exact face, animal identity, outfit, palette, body proportions, weapon identity and warm hand-painted textured style. Same elevated three-quarter isometric camera, facing screen-right, visible top surfaces. Full character and weapon uncropped, generous transparent margins, genuine transparent alpha background, no ground, shadow, scenery, text or extra objects. Anatomically coherent two arms and two legs (hen: two feathered wing-hands and two clawed feet). Do not stretch or compress the body to fake the stance. PRONE: lying flat on belly, legs extended behind toward screen-left, chest low, head raised and looking screen-right, elbows planted near the front. Clear long horizontal silhouette, elevated isometric view with back/shoulders visible. Fully extended legs and feet visible. Head/torso must keep their normal size. Not sitting, not kneeling, not on hands and knees. Equipment: NR-40 knife in forward hand, blade points toward screen-right, free hand supports/balances the pose.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-3c91aad5-95e4-4a8d-ad5b-d854f6dafce8.png"
+  },
+  {
+    "species": "pig-foreman",
+    "stance": "prone",
+    "weapon": "pistol",
+    "prompt": "Edit the supplied character sprite into ONE new pose for the same tactical game. Preserve the exact face, animal identity, outfit, palette, body proportions, weapon identity and warm hand-painted textured style. Same elevated three-quarter isometric camera, facing screen-right, visible top surfaces. Full character and weapon uncropped, generous transparent margins, genuine transparent alpha background, no ground, shadow, scenery, text or extra objects. Anatomically coherent two arms and two legs (hen: two feathered wing-hands and two clawed feet). Do not stretch or compress the body to fake the stance. PRONE: lying flat on belly, legs extended behind toward screen-left, chest low, head raised and looking screen-right, elbows planted near the front. Clear long horizontal silhouette, elevated isometric view with back/shoulders visible. Fully extended legs and feet visible. Head/torso must keep their normal size. Not sitting, not kneeling, not on hands and knees. Equipment: TT-33 pistol pointed toward screen-right in two-handed supported grip; elbows bent and compact.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-85c1eab0-6db7-45b4-9efc-56770ddd70b0.png"
+  },
+  {
+    "species": "pig-foreman",
+    "stance": "prone",
+    "weapon": "rifle",
+    "prompt": "Edit the supplied character sprite into ONE new pose for the same tactical game. Preserve the exact face, animal identity, outfit, palette, body proportions, weapon identity and warm hand-painted textured style. Same elevated three-quarter isometric camera, facing screen-right, visible top surfaces. Full character and weapon uncropped, generous transparent margins, genuine transparent alpha background, no ground, shadow, scenery, text or extra objects. Anatomically coherent two arms and two legs (hen: two feathered wing-hands and two clawed feet). Do not stretch or compress the body to fake the stance. PRONE: lying flat on belly, legs extended behind toward screen-left, chest low, head raised and looking screen-right, elbows planted near the front. Clear long horizontal silhouette, elevated isometric view with back/shoulders visible. Fully extended legs and feet visible. Head/torso must keep their normal size. Not sitting, not kneeling, not on hands and knees. Equipment: Mosin-Nagant bolt-action rifle with wood stock, held with both hands, stock at shoulder and barrel aimed screen-right.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-2f1a3640-a1d1-42ab-a1b0-cb03b6a5d005.png"
+  },
+  {
+    "species": "pig-foreman",
+    "stance": "prone",
+    "weapon": "assault",
+    "prompt": "Edit the supplied character sprite into ONE new pose for the same tactical game. Preserve the exact face, animal identity, outfit, palette, body proportions, weapon identity and warm hand-painted textured style. Same elevated three-quarter isometric camera, facing screen-right, visible top surfaces. Full character and weapon uncropped, generous transparent margins, genuine transparent alpha background, no ground, shadow, scenery, text or extra objects. Anatomically coherent two arms and two legs (hen: two feathered wing-hands and two clawed feet). Do not stretch or compress the body to fake the stance. PRONE: lying flat on belly, legs extended behind toward screen-left, chest low, head raised and looking screen-right, elbows planted near the front. Clear long horizontal silhouette, elevated isometric view with back/shoulders visible. Fully extended legs and feet visible. Head/torso must keep their normal size. Not sitting, not kneeling, not on hands and knees. Equipment: AK-47 with wood furniture and curved magazine, held with both hands, stock at shoulder and barrel aimed screen-right.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-b78cb8d0-4a8f-46f1-b133-092faa322718.png"
+  },
+  {
+    "species": "pig-director",
+    "stance": "kneeling",
+    "weapon": "hands",
+    "prompt": "Edit the supplied character sprite into ONE new pose for the same tactical game. Preserve the exact face, animal identity, outfit, palette, body proportions, weapon identity and warm hand-painted textured style. Same elevated three-quarter isometric camera, facing screen-right, visible top surfaces. Full character and weapon uncropped, generous transparent margins, genuine transparent alpha background, no ground, shadow, scenery, text or extra objects. Anatomically coherent two arms and two legs (hen: two feathered wing-hands and two clawed feet). Do not stretch or compress the body to fake the stance. KNEELING: one knee rests on the ground, other knee raised with foot firmly planted forward toward screen-right. Torso upright, head alert, compact stable silhouette. Full kneeling height should be about 72% of this character standing, preserving head and torso size. Equipment: UNARMED: empty hands, no weapon. For kneeling, hold hands in a compact protective guard near torso. For prone, forearms support the chest, empty hands forward.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-d845fb74-0006-4740-ad62-6099b27b4ff8.png"
+  },
+  {
+    "species": "pig-director",
+    "stance": "kneeling",
+    "weapon": "knife",
+    "prompt": "Edit the supplied character sprite into ONE new pose for the same tactical game. Preserve the exact face, animal identity, outfit, palette, body proportions, weapon identity and warm hand-painted textured style. Same elevated three-quarter isometric camera, facing screen-right, visible top surfaces. Full character and weapon uncropped, generous transparent margins, genuine transparent alpha background, no ground, shadow, scenery, text or extra objects. Anatomically coherent two arms and two legs (hen: two feathered wing-hands and two clawed feet). Do not stretch or compress the body to fake the stance. KNEELING: one knee rests on the ground, other knee raised with foot firmly planted forward toward screen-right. Torso upright, head alert, compact stable silhouette. Full kneeling height should be about 72% of this character standing, preserving head and torso size. Equipment: NR-40 knife in forward hand, blade points toward screen-right, free hand supports/balances the pose.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-5032167b-ccce-48ef-b136-f03ee5df7c43.png"
+  },
+  {
+    "species": "pig-director",
+    "stance": "kneeling",
+    "weapon": "pistol",
+    "prompt": "Edit the supplied character sprite into ONE new pose for the same tactical game. Preserve the exact face, animal identity, outfit, palette, body proportions, weapon identity and warm hand-painted textured style. Same elevated three-quarter isometric camera, facing screen-right, visible top surfaces. Full character and weapon uncropped, generous transparent margins, genuine transparent alpha background, no ground, shadow, scenery, text or extra objects. Anatomically coherent two arms and two legs (hen: two feathered wing-hands and two clawed feet). Do not stretch or compress the body to fake the stance. KNEELING: one knee rests on the ground, other knee raised with foot firmly planted forward toward screen-right. Torso upright, head alert, compact stable silhouette. Full kneeling height should be about 72% of this character standing, preserving head and torso size. Equipment: TT-33 pistol pointed toward screen-right in two-handed supported grip; elbows bent and compact.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-d12d8a52-d506-4864-80ac-f2a345ea5812.png"
+  },
+  {
+    "species": "pig-director",
+    "stance": "kneeling",
+    "weapon": "rifle",
+    "prompt": "Edit the supplied character sprite into ONE new pose for the same tactical game. Preserve the exact face, animal identity, outfit, palette, body proportions, weapon identity and warm hand-painted textured style. Same elevated three-quarter isometric camera, facing screen-right, visible top surfaces. Full character and weapon uncropped, generous transparent margins, genuine transparent alpha background, no ground, shadow, scenery, text or extra objects. Anatomically coherent two arms and two legs (hen: two feathered wing-hands and two clawed feet). Do not stretch or compress the body to fake the stance. KNEELING: one knee rests on the ground, other knee raised with foot firmly planted forward toward screen-right. Torso upright, head alert, compact stable silhouette. Full kneeling height should be about 72% of this character standing, preserving head and torso size. Equipment: Mosin-Nagant bolt-action rifle with wood stock, held with both hands, stock at shoulder and barrel aimed screen-right.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-b03fcefb-bc19-4267-a674-7b5b62276c64.png"
+  },
+  {
+    "species": "pig-director",
+    "stance": "kneeling",
+    "weapon": "assault",
+    "prompt": "Edit the supplied character sprite into ONE new pose for the same tactical game. Preserve the exact face, animal identity, outfit, palette, body proportions, weapon identity and warm hand-painted textured style. Same elevated three-quarter isometric camera, facing screen-right, visible top surfaces. Full character and weapon uncropped, generous transparent margins, genuine transparent alpha background, no ground, shadow, scenery, text or extra objects. Anatomically coherent two arms and two legs (hen: two feathered wing-hands and two clawed feet). Do not stretch or compress the body to fake the stance. KNEELING: one knee rests on the ground, other knee raised with foot firmly planted forward toward screen-right. Torso upright, head alert, compact stable silhouette. Full kneeling height should be about 72% of this character standing, preserving head and torso size. Equipment: AK-47 with wood furniture and curved magazine, held with both hands, stock at shoulder and barrel aimed screen-right.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-95b927a8-5fb2-48d6-ac44-154826527cb3.png"
+  },
+  {
+    "species": "pig-director",
+    "stance": "prone",
+    "weapon": "hands",
+    "prompt": "Edit the supplied character sprite into ONE new pose for the same tactical game. Preserve the exact face, animal identity, outfit, palette, body proportions, weapon identity and warm hand-painted textured style. Same elevated three-quarter isometric camera, facing screen-right, visible top surfaces. Full character and weapon uncropped, generous transparent margins, genuine transparent alpha background, no ground, shadow, scenery, text or extra objects. Anatomically coherent two arms and two legs (hen: two feathered wing-hands and two clawed feet). Do not stretch or compress the body to fake the stance. PRONE: lying flat on belly, legs extended behind toward screen-left, chest low, head raised and looking screen-right, elbows planted near the front. Clear long horizontal silhouette, elevated isometric view with back/shoulders visible. Fully extended legs and feet visible. Head/torso must keep their normal size. Not sitting, not kneeling, not on hands and knees. Equipment: UNARMED: empty hands, no weapon. For kneeling, hold hands in a compact protective guard near torso. For prone, forearms support the chest, empty hands forward.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-46ea5c95-4eec-4f7a-9192-82304ce934a6.png"
+  },
+  {
+    "species": "pig-director",
+    "stance": "prone",
+    "weapon": "knife",
+    "prompt": "Edit the supplied character sprite into ONE new pose for the same tactical game. Preserve the exact face, animal identity, outfit, palette, body proportions, weapon identity and warm hand-painted textured style. Same elevated three-quarter isometric camera, facing screen-right, visible top surfaces. Full character and weapon uncropped, generous transparent margins, genuine transparent alpha background, no ground, shadow, scenery, text or extra objects. Anatomically coherent two arms and two legs (hen: two feathered wing-hands and two clawed feet). Do not stretch or compress the body to fake the stance. PRONE: lying flat on belly, legs extended behind toward screen-left, chest low, head raised and looking screen-right, elbows planted near the front. Clear long horizontal silhouette, elevated isometric view with back/shoulders visible. Fully extended legs and feet visible. Head/torso must keep their normal size. Not sitting, not kneeling, not on hands and knees. Equipment: NR-40 knife in forward hand, blade points toward screen-right, free hand supports/balances the pose.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-16c78689-01d6-437e-bbfe-ad17e1676a54.png"
+  },
+  {
+    "species": "pig-director",
+    "stance": "prone",
+    "weapon": "pistol",
+    "prompt": "Edit the supplied character sprite into ONE new pose for the same tactical game. Preserve the exact face, animal identity, outfit, palette, body proportions, weapon identity and warm hand-painted textured style. Same elevated three-quarter isometric camera, facing screen-right, visible top surfaces. Full character and weapon uncropped, generous transparent margins, genuine transparent alpha background, no ground, shadow, scenery, text or extra objects. Anatomically coherent two arms and two legs (hen: two feathered wing-hands and two clawed feet). Do not stretch or compress the body to fake the stance. PRONE: lying flat on belly, legs extended behind toward screen-left, chest low, head raised and looking screen-right, elbows planted near the front. Clear long horizontal silhouette, elevated isometric view with back/shoulders visible. Fully extended legs and feet visible. Head/torso must keep their normal size. Not sitting, not kneeling, not on hands and knees. Equipment: TT-33 pistol pointed toward screen-right in two-handed supported grip; elbows bent and compact.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-92d70cb7-9ec6-4e58-bf03-49560482d6d4.png"
+  },
+  {
+    "species": "pig-director",
+    "stance": "prone",
+    "weapon": "rifle",
+    "prompt": "Edit the supplied character sprite into ONE new pose for the same tactical game. Preserve the exact face, animal identity, outfit, palette, body proportions, weapon identity and warm hand-painted textured style. Same elevated three-quarter isometric camera, facing screen-right, visible top surfaces. Full character and weapon uncropped, generous transparent margins, genuine transparent alpha background, no ground, shadow, scenery, text or extra objects. Anatomically coherent two arms and two legs (hen: two feathered wing-hands and two clawed feet). Do not stretch or compress the body to fake the stance. PRONE: lying flat on belly, legs extended behind toward screen-left, chest low, head raised and looking screen-right, elbows planted near the front. Clear long horizontal silhouette, elevated isometric view with back/shoulders visible. Fully extended legs and feet visible. Head/torso must keep their normal size. Not sitting, not kneeling, not on hands and knees. Equipment: Mosin-Nagant bolt-action rifle with wood stock, held with both hands, stock at shoulder and barrel aimed screen-right.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-03c5228d-53eb-44a9-996a-350aee82fa61.png"
+  },
+  {
+    "species": "pig-director",
+    "stance": "prone",
+    "weapon": "assault",
+    "prompt": "Edit the supplied character sprite into ONE new pose for the same tactical game. Preserve the exact face, animal identity, outfit, palette, body proportions, weapon identity and warm hand-painted textured style. Same elevated three-quarter isometric camera, facing screen-right, visible top surfaces. Full character and weapon uncropped, generous transparent margins, genuine transparent alpha background, no ground, shadow, scenery, text or extra objects. Anatomically coherent two arms and two legs (hen: two feathered wing-hands and two clawed feet). Do not stretch or compress the body to fake the stance. PRONE: lying flat on belly, legs extended behind toward screen-left, chest low, head raised and looking screen-right, elbows planted near the front. Clear long horizontal silhouette, elevated isometric view with back/shoulders visible. Fully extended legs and feet visible. Head/torso must keep their normal size. Not sitting, not kneeling, not on hands and knees. Equipment: AK-47 with wood furniture and curved magazine, held with both hands, stock at shoulder and barrel aimed screen-right.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-78c119ab-dbf5-4988-a50b-cecb1fa7e60e.png"
+  }
+]
