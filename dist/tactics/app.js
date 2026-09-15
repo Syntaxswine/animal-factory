@@ -1,3 +1,4 @@
+import {characterArt,ARMED_WEAPONS} from './character-art.js';
 import {PROPS,propCells} from './environment.js';
 import {environmentRenderer} from './environment-renderer.js';
 import {bounds,inView,focusSector,sectorOverview} from './view.js';
@@ -15,6 +16,7 @@ const art=environmentRenderer(()=>{},id=>message('Could not load '+id+' artwork.
 const selected=()=>s.units[s.selected],target=()=>s.units.find(u=>u.id===targetId&&alive(u)&&s.visible.has(key(u.x,u.y,levelOf(u))));
 function load(src){if(images.has(src))return images.get(src);const img=new Image();img.src=src;img.onerror=()=>message('An artwork file could not load. Reload the page to retry.');images.set(src,img);return img;}
 for(const species of new Set(s.units.map(u=>u.species)))for(const pose of ['idle','walk-a','walk-b'])load(`../assets/characters/${species}-${pose}.png`);
+for(const species of new Set(s.units.map(u=>u.species)))for(const weapon of ARMED_WEAPONS)load(characterArt(species,weapon).src);
 for(const name of ['mill','bakery','bottler','dairy'])load(`../assets/machines/industrial/${name}.png`);
 function project(x,y,z=0){return {x:camera.x+(x-y)*28*camera.zoom,y:camera.y+(x+y)*14*camera.zoom-z*camera.zoom};}
 function pick(x,y){const px=(x-camera.x)/(28*camera.zoom),py=(y-camera.y)/(14*camera.zoom);return {x:Math.round((px+py)/2),y:Math.round((py-px)/2)};}
@@ -65,7 +67,7 @@ function drawObjects(now){
    ctx.fillStyle='#13241d66';ctx.beginPath();ctx.ellipse(p.x,p.y+2*camera.zoom,15*camera.zoom,7*camera.zoom,0,0,Math.PI*2);ctx.fill();
    ctx.strokeStyle=color;ctx.lineWidth=u.id===s.selected?2.4:1.5;ctx.beginPath();ctx.ellipse(p.x,p.y,19*camera.zoom,9*camera.zoom,0,0,Math.PI*2);ctx.stroke();
    if(u.id===targetId)diamond(x,y,null,'#ffb28d',0,.9);
-   const walking=(s.queue[0]?.id===u.id)||(s.phase==='enemy'&&s.units[s.enemyIndex]?.id===u.id);const pose=walking?(Math.floor(now/170)%2?'walk-a':'walk-b'):'idle',img=load(`../assets/characters/${u.species}-${pose}.png`),sw=48*camera.zoom,sh=64*camera.zoom;
+   const walking=(s.queue[0]?.id===u.id)||(s.phase==='enemy'&&s.units[s.enemyIndex]?.id===u.id);const pose=walking?(Math.floor(now/170)%2?'walk-a':'walk-b'):'idle',frame=characterArt(u.species,u.weapon,pose),img=load(frame.src),sw=frame.width/4*camera.zoom,sh=64*camera.zoom;
    ctx.save();ctx.translate(p.x,p.y+3*camera.zoom);ctx.scale(u.facing,1);if(img.complete&&img.naturalWidth)ctx.drawImage(img,-sw/2,-sh,sw,sh);else{ctx.fillStyle=color;ctx.fillRect(-sw/4,-sh,sw/2,sh);}ctx.restore();
    ctx.globalAlpha=1;ctx.fillStyle='#14221d';ctx.fillRect(p.x-17*camera.zoom,p.y-66*camera.zoom,34*camera.zoom,4*camera.zoom);ctx.fillStyle=color;ctx.fillRect(p.x-17*camera.zoom,p.y-66*camera.zoom,34*camera.zoom*u.hp/u.maxHp,3*camera.zoom);
    ctx.font=`bold ${9*camera.zoom}px monospace`;ctx.textAlign='center';ctx.fillStyle=color;ctx.fillText((u.team==='squad'?`${u.id+1} ${u.name}`:u.name)+(stanceOf(u)==='standing'?'':stanceOf(u)==='kneeling'?' [K]':' [P]'),p.x,p.y+17*camera.zoom);
@@ -99,7 +101,7 @@ function sync(){
  $('objective').textContent=`${s.definition.guards.length-guards(s).length} / ${s.definition.guards.length} guards defeated`;
  $('phase').textContent=({explore:'REAL-TIME EXPLORATION',player:'SQUAD TURN',enemy:'GUARDS MOVING',won:'LOCAL MAP CLEARED',lost:'SQUAD LOST'})[s.phase];$('phase').classList.toggle('combat',s.phase==='player'||s.phase==='enemy');
  $('round').textContent=s.phase==='explore'?'SHIFT 07':`ROUND ${s.round}`;
- $('selected').innerHTML=`<img alt="${u.species}" src="../assets/characters/${u.species}-idle.png"><div><h2>${u.name}</h2><p>${u.species.toUpperCase()} / L${levelOf(u)+1} / ${u.hp} HP / ${STANCES[stanceOf(u)].label}</p><p>${['explore','won'].includes(s.phase)?'EXPLORING':`${u.ap} / ${u.maxAp} ACTION POINTS`}</p></div>`;
+ $('selected').innerHTML=`<img alt="${u.species}" src="${characterArt(u.species,u.weapon).src}"><div><h2>${u.name}</h2><p>${u.species.toUpperCase()} / L${levelOf(u)+1} / ${u.hp} HP / ${STANCES[stanceOf(u)].label}</p><p>${['explore','won'].includes(s.phase)?'EXPLORING':`${u.ap} / ${u.maxAp} ACTION POINTS`}</p></div>`;
  $('stances').innerHTML=Object.entries(STANCES).map(([id,v])=>`<button data-stance="${id}" aria-pressed="${stanceOf(u)===id}" ${!control||stanceOf(u)===id||(s.phase==='player'&&u.ap<2)?'disabled':''}>${v.label}</button>`).join('');
  $('stance-info').textContent=STANCES[stanceOf(u)].moveCost+' AP / tile · '+(s.phase==='player'?'2 AP to change stance':'Free stance changes outside combat')+' · Stand to climb';
  $('equip-cost').textContent=['explore','won'].includes(s.phase)?'FREE OUTSIDE COMBAT':'2 AP TO SWITCH';
@@ -112,7 +114,7 @@ function sync(){
  $('target-info').innerHTML=t?`<b>${t.name}</b> / L${levelOf(t)+1} / ${WEAPONS[t.weapon].short}<br>${p.ok?`<strong>${p.chance}%</strong> hit · ${p.cost} AP · ${p.rounds>1?'3 × ':''}${p.damage} damage${p.coverPenalty?` · ${p.heightCover&&!p.cover?'HEIGHT COVER':'COVER'} −${p.coverPenalty}%`:''}${p.rangePenalty?` · UPHILL +${p.rangePenalty} distance`:''}`:`${p.reason}${p.cover?' · in cover':''}`}`:'Select a visible guard to inspect a shot.';
  $('attack').disabled=!control||!p?.ok;$('attack').textContent=burst&&u.weapon==='assault'?'Fire 3-round burst [F]':w.mag?'Fire weapon [F]':'Melee attack [F]';
  $('end').disabled=s.phase!=='player'||s.queue.length>0;
- $('squad').innerHTML=s.units.filter(u=>u.team==='squad').map(u=>`<button class="squad-card" data-unit="${u.id}" aria-pressed="${s.selected===u.id}" ${!alive(u)?'disabled':''}><span class="num">0${u.id+1}</span><img alt="" src="../assets/characters/${u.species}-idle.png"><div class="info"><strong>${u.name}</strong><small>${alive(u)?`L${levelOf(u)+1} · ${STANCES[stanceOf(u)].label} · ${WEAPONS[u.weapon].short} · ${u.hp} HP`:'FALLEN'}</small><div class="bar"><i style="width:${u.hp}%"></i></div><div class="bar ap"><i style="width:${u.ap/u.maxAp*100}%"></i></div><small>${['explore','won'].includes(s.phase)?'READY':`${u.ap} / ${u.maxAp} AP`}</small></div></button>`).join('');
+ $('squad').innerHTML=s.units.filter(u=>u.team==='squad').map(u=>`<button class="squad-card" data-unit="${u.id}" aria-pressed="${s.selected===u.id}" ${!alive(u)?'disabled':''}><span class="num">0${u.id+1}</span><img alt="" src="${characterArt(u.species,u.weapon).src}"><div class="info"><strong>${u.name}</strong><small>${alive(u)?`L${levelOf(u)+1} · ${STANCES[stanceOf(u)].label} · ${WEAPONS[u.weapon].short} · ${u.hp} HP`:'FALLEN'}</small><div class="bar"><i style="width:${u.hp}%"></i></div><div class="bar ap"><i style="width:${u.ap/u.maxAp*100}%"></i></div><small>${['explore','won'].includes(s.phase)?'READY':`${u.ap} / ${u.maxAp} AP`}</small></div></button>`).join('');
  $('log').innerHTML=s.log.slice(0,6).map(l=>`<li>${l}</li>`).join('');
  const over=s.phase==='lost';$('outcome').hidden=!over;if(over){$('outcome').querySelector('h2').textContent=s.phase==='won'?'The works are yours.':'The shift is over.';$('outcome').querySelector('p').textContent=s.phase==='won'?`${squad(s).length} comrades survived. All twelve guards defeated.`:`${s.definition.guards.length-guards(s).length} guards defeated. Reposition, use cover, and keep the squad together on your next attempt.`;}
  drawMinimap();lastRevision=s.revision;if(performance.now()>toastUntil){if(s.phase==='enemy')$('hint').textContent='Guard turn · Your squad will regain AP when the guards finish.';else if(s.queue.length)$('hint').textContent='Moving · Escape to stop';else if(over)$('hint').textContent='Operation complete · Restart to play again';else if(hover)updateHover();else $('hint').textContent=s.phase==='player'?'Squad turn · Use all four workers before ending the turn.':s.phase==='won'?'Local map cleared · Gather at the blue travel marker, then open Overmap.':'Click ground to explore · Blue marker: gather within 2 tiles to travel.';}

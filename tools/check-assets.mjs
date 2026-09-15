@@ -1,4 +1,5 @@
 import {PROPS,EDGES,GROUNDS} from '../dist/tactics/environment.js';
+import {CHARACTER_SPECIES,ARMED_WEAPONS} from '../dist/tactics/character-art.js';
 import {readFile} from 'node:fs/promises';
 import assert from 'node:assert/strict';
 import {TYPES} from '../dist/engine.js';
@@ -10,6 +11,7 @@ async function checkPNG(path,width,height,channels=6){
  assert.equal(data[25],channels,`${path} has unexpected PNG channels`);
 }
 const manifest=JSON.parse(await readFile(new URL('assets/characters/manifest.json',root)));
+for(const species of CHARACTER_SPECIES)for(const weapon of ARMED_WEAPONS)await checkPNG(`assets/characters/armed/${species}-${weapon}.png`,256,256);
 assert.equal(Object.keys(manifest.characters).length,8);
 for(const def of Object.values(manifest.characters)){
  assert.equal(def.frames.length,4);await checkPNG('assets/characters/'+def.sheet,768,256);
