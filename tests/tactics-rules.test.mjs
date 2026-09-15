@@ -12,6 +12,6 @@ test('river rules reject a missing bridge deck, blocked road or incompatible sec
 
 test('queued vertical movement uses the current ladder AP cost',()=>{const m=blankMap();addStairs(m,3,4,0);m.guards=[{x:220,y:220,z:0,species:'cow',weapon:'pistol'}];const s=createGame(1,m),u=s.units[0];s.units[4].alert=true;s.phase='player';u.ap=2;assert.ok(move(s,u,3,4,1));s.stairs[0].kind='ladder';assert.equal(stepMovement(s),false);assert.equal(u.ap,2);assert.equal(u.z,0);});
 
-test('spotting downhill starts combat even when the guard cannot see back',()=>{const m=blankMap();addStairs(m,3,4,0);m.starts[0].z=1;m.guards=[{x:12,y:4,z:0,species:'cow',weapon:'pistol'}];const s=createGame(1,m),a=s.units[0],b=s.units[4];assert.ok(canSee(s,a,b));assert.equal(canSee(s,b,a),false);assert.equal(s.phase,'player');assert.equal(b.lastKnown,null);});
+test('downhill spotting uses the same60tile character cap',()=>{const m=blankMap();addStairs(m,3,4,0);m.starts[0].z=1;m.guards=[{x:12,y:4,z:0,species:'cow',weapon:'pistol'}];const s=createGame(1,m),a=s.units[0],b=s.units[4];assert.ok(canSee(s,a,b));assert.equal(canSee(s,b,a),true);assert.equal(s.phase,'player');assert.ok(b.lastKnown);});
 
 test('bridge-sector approach cells must stay walkable, not only the water crossing',()=>{const m=generateMap(7,'River',0,{layout:'river'}),row=m.sectors.cells.findIndex(r=>r.includes('bridge-ns')),col=m.sectors.cells[row].indexOf('bridge-ns');for(let y=10;y<=13;y++)m.terrain[row*24+y][col*24+8]='crate';assert.ok(validateMap(m).some(e=>e.includes('approach road')));});

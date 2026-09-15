@@ -5,7 +5,7 @@ import {bounds,inView,focusSector,sectorOverview} from './view.js';
 import {createWorld,currentMap,travel,travelReason} from './world.js';
 import {parseMap,levelOf,roofTop,neighbors} from './maps.js';
 import {edgeCells,edgePoints} from './maps.js';
-import {W,H,WEAPONS,key,alive,squad,guards,occupant,tile,walkable,createGame,STANCES,stanceOf,setStance,movementNeighbors,pathCost,pathTo,move,stepMovement,previewAttack,attack,equip,reload,endTurn,stepEnemy,canControl} from './engine.js';
+import {W,H,WEAPONS,key,alive,squad,guards,occupant,tile,walkable,createGame,STANCES,stanceOf,setStance,movementNeighbors,navigationPath,pathCost,pathTo,move,stepMovement,previewAttack,attack,equip,reload,endTurn,stepEnemy,canControl} from './engine.js';
 const $=id=>document.getElementById(id),canvas=$('map'),ctx=canvas.getContext('2d'),mini=$('mini').getContext('2d');
 let customMap=null,loadError='';
 if(new URLSearchParams(location.search).get('map')==='custom'){try{customMap=parseMap(sessionStorage.getItem('red-shift-playtest')||'');}catch(e){loadError='Could not load the playtest map. '+e.message;}}
@@ -13,7 +13,7 @@ let viewLevel=0,routeCache=null;
 let world=createWorld(customMap),s=currentMap(world),targetId=null,burst=false,showGrid=false,hover=null,hoverActor=null,route=null,lastTick=0,lastRevision=-1,toast='',toastUntil=0,effectUntil=0,lastEffect=null,drag=null,width=1,height=1;
 const camera={x:0,y:0,zoom:1.15},images=new Map(),sprites=[];
 const art=environmentRenderer(()=>{},id=>message('Could not load '+id+' artwork.'));
-const selected=()=>s.units[s.selected],target=()=>s.units.find(u=>u.id===targetId&&alive(u)&&s.visible.has(key(u.x,u.y,levelOf(u))));
+const selected=()=>s.units[s.selected],target=()=>s.units.find(u=>u.id===targetId&&alive(u)&&s.detected.has(u.id));
 function load(src){if(images.has(src))return images.get(src);const img=new Image();img.src=src;img.onerror=()=>message('An artwork file could not load. Reload the page to retry.');images.set(src,img);return img;}
 for(const species of new Set(s.units.map(u=>u.species)))for(const pose of ['idle','walk-a','walk-b'])load(`../assets/characters/${species}-${pose}.png`);
 for(const species of new Set(s.units.map(u=>u.species)))for(const weapon of ARMED_WEAPONS)load(characterArt(species,weapon).src);
@@ -31,7 +31,7 @@ function textLabel(label,x,y,color='#ddcf9f',size=11){const p=project(x,y);ctx.f
 function drawTerrain(){
  // Existing industrial sprites form the factory skyline, outside the walkable map.
  if(viewLevel===0)for(const [name,x,y,size]of [['mill',7,-3,225],['bakery',17,-3,245],['bottler',25,-2,220],['dairy',34,14,200]]){const p=project(x,y),img=load(`../assets/machines/industrial/${name}.png`);if(img.complete&&img.naturalWidth){ctx.globalAlpha=.58;ctx.drawImage(img,p.x-size*camera.zoom/2,p.y-size*camera.zoom,size*camera.zoom,size*camera.zoom);ctx.globalAlpha=1;}}
- const b=bounds(camera,width,height);for(let y=b.y0;y<=b.y1;y++)for(let x=b.x0;x<=b.x1;x++){const k=key(x,y,viewLevel),seen=s.seen.has(k),visible=s.visible.has(k),t=tile(s,x,y,viewLevel),n=(x*37+y*13)%9;if(t==='void')continue;
+ const b=bounds(camera,width,height);for(let y=b.y0;y<=b.y1;y++)for(let x=b.x0;x<=b.x1;x++){const k=key(x,y,viewLevel),seen=s.seen.has(k),visible=s.visible.has(k),t=tile(s,x,y,viewLevel),n=(x*37+y*13)%9;if(seen&&t==='void')continue;
   const base=t==='floor'?['#77745a','#7b765b','#736f56'][n%3]:['#6f7053','#737256','#696d51'][n%3];
   diamond(x,y,seen?base:'#303c34',showGrid&&seen?(x%24===0||y%24===0?'#e3cf8f99':'#a3a17b45'):seen?'#555e4533':'#37433644');
   if(seen){if(t==='water')diamond(x,y,'#365f72');else art.ground(ctx,project,camera.zoom,x,y,t);if(t==='bridge')textLabel('═',x,y,'#ccb88c',12);if(showGrid)diamond(x,y,null,x%24===0||y%24===0?'#e3cf8f99':'#a3a17b45');if(n===0||n===4){const p=project(x,y);ctx.strokeStyle='#3c473541';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(p.x-12*camera.zoom,p.y-4*camera.zoom);ctx.lineTo(p.x-5*camera.zoom,p.y);ctx.lineTo(p.x+5*camera.zoom,p.y-2*camera.zoom);ctx.stroke();}
@@ -55,7 +55,7 @@ function drawObjects(now){
  sprites.length=0;
  const b=bounds(camera,width,height),objects=[];for(const [k,kind]of Object.entries(s.edges)){const cells=edgeCells(k);if(levelOf(cells[0])===viewLevel&&cells.some(p=>inView(p,b))&&cells.some(p=>s.seen.has(key(p.x,p.y,viewLevel))))objects.push({x:(cells[0].x+cells[1].x)/2,y:(cells[0].y+cells[1].y)/2,type:'edge',edge:k,kind,visible:cells.some(p=>s.visible.has(key(p.x,p.y,viewLevel)))});}for(let y=b.y0;y<=b.y1;y++)for(let x=b.x0;x<=b.x1;x++)if(s.seen.has(key(x,y,viewLevel))&&['wall','crate'].includes(tile(s,x,y,viewLevel)))objects.push({x,y,type:tile(s,x,y,viewLevel)});
  for(const p of s.props)if(levelOf(p)===viewLevel&&propCells(p).some(q=>inView(q,b)&&s.seen.has(key(q.x,q.y,q.z))))objects.push({...p,type:'prop',depth:Math.max(...propCells(p).map(q=>q.x+q.y))});
- for(const u of s.units)if(levelOf(u)===viewLevel&&inView(u,b)&&(u.team==='squad'||s.visible.has(key(u.x,u.y,levelOf(u)))))objects.push({...u,type:'actor',unit:u});
+ for(const u of s.units)if(levelOf(u)===viewLevel&&inView(u,b)&&(u.team==='squad'||s.detected.has(u.id)))objects.push({...u,type:'actor',unit:u});
  objects.sort((a,b)=>(a.depth??a.x+a.y)-(b.depth??b.x+b.y)||(a.type==='actor'?1:-1));
  for(const obj of objects){const {x,y,type}=obj,visible=obj.visible??s.visible.has(key(x,y,viewLevel));ctx.globalAlpha=visible?1:.45;
   if(type==='prop'){art.prop(ctx,project,camera.zoom,obj);}
@@ -82,16 +82,15 @@ function drawPreview(){
   else if(route){route.filter(p=>levelOf(p)===viewLevel).forEach(p=>diamond(p.x,p.y,pathCost(route)<=selected().ap||s.phase!=='player'?'#ddba6744':'#c9634933',null,0,.28));diamond(hover.x,hover.y,'#e0c78133','#d2bb78');}
  }
 }
-function drawMinimap(){mini.fillStyle='#192921';mini.fillRect(0,0,168,144);mini.strokeStyle='#647351';for(let i=0;i<=10;i++){mini.beginPath();mini.moveTo(i*16.8,0);mini.lineTo(i*16.8,144);mini.moveTo(0,i*14.4);mini.lineTo(168,i*14.4);mini.stroke();}for(const k of s.seen){const [x,y,z=0]=k.split(',').map(Number);if(z!==viewLevel)continue;mini.fillStyle='#718263';mini.fillRect(x/W*168,y/H*144,1,1);}for(const u of s.units)if(levelOf(u)===viewLevel&&alive(u)&&(u.team==='squad'||s.visible.has(key(u.x,u.y,viewLevel)))){mini.fillStyle=u.team==='guard'?'#ff9275':u.id===s.selected?'#ffda79':'#c8e5b6';mini.fillRect(u.x/W*168-2,u.y/H*144-2,4,4);}}
-function draw(now){ctx.clearRect(0,0,width,height);ctx.fillStyle='#202c29';ctx.fillRect(0,0,width,height);if(camera.zoom<.2){sprites.length=0;sectorOverview(ctx,project,s,viewLevel,s.seen);for(const u of s.units)if(levelOf(u)===viewLevel&&alive(u)&&(u.team==='squad'||s.visible.has(key(u.x,u.y,viewLevel)))){const p=project(u.x,u.y);ctx.fillStyle=u.team==='squad'?'#ffda79':'#ff9275';ctx.fillRect(p.x-2,p.y-2,4,4);}return;}drawTerrain();drawObjects(now);drawPreview();
+function drawMinimap(){mini.fillStyle='#192921';mini.fillRect(0,0,168,144);mini.strokeStyle='#647351';for(let i=0;i<=10;i++){mini.beginPath();mini.moveTo(i*16.8,0);mini.lineTo(i*16.8,144);mini.moveTo(0,i*14.4);mini.lineTo(168,i*14.4);mini.stroke();}for(const k of s.seen){const [x,y,z=0]=k.split(',').map(Number);if(z!==viewLevel)continue;mini.fillStyle='#718263';mini.fillRect(x/W*168,y/H*144,1,1);}for(const u of s.units)if(levelOf(u)===viewLevel&&alive(u)&&(u.team==='squad'||s.detected.has(u.id))){mini.fillStyle=u.team==='guard'?'#ff9275':u.id===s.selected?'#ffda79':'#c8e5b6';mini.fillRect(u.x/W*168-2,u.y/H*144-2,4,4);}}
+function draw(now){ctx.clearRect(0,0,width,height);ctx.fillStyle='#202c29';ctx.fillRect(0,0,width,height);if(camera.zoom<.2){sprites.length=0;sectorOverview(ctx,project,s,viewLevel,s.seen);for(const u of s.units)if(levelOf(u)===viewLevel&&alive(u)&&(u.team==='squad'||s.detected.has(u.id))){const p=project(u.x,u.y);ctx.fillStyle=u.team==='squad'?'#ffda79':'#ff9275';ctx.fillRect(p.x-2,p.y-2,4,4);}return;}drawTerrain();drawObjects(now);drawPreview();
  if(s.effect!==lastEffect){lastEffect=s.effect;effectUntil=now+350;}if(s.effect&&now<effectUntil&&(s.effect.az===viewLevel||s.effect.bz===viewLevel)){const a=project(s.effect.ax,s.effect.ay,30),b=project(s.effect.bx,s.effect.by,30);ctx.strokeStyle=s.effect.hit?'#ffe6a2':'#c2c5a0';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();ctx.beginPath();ctx.arc(b.x,b.y,7,0,7);ctx.stroke();}
 }
 function message(text){toast=text;toastUntil=performance.now()+3000;$('hint').textContent=text;}
 function hitTest(e){const r=canvas.getBoundingClientRect(),px=e.clientX-r.left,py=e.clientY-r.top;hoverActor=null;for(const v of [...sprites].reverse())if(px>=v.x&&px<=v.x+v.w&&py>=v.y&&py<=v.y+v.h){hoverActor=v.id;break;}hover=pick(px,py);}
 function updateHover(){
  route=null;if(camera.zoom<.2){$('hint').textContent='240 × 240 tiles · Double-click a sector to inspect it.';return;}if(!hover)return;const u=selected();if(hoverActor!==null&&s.units[hoverActor]?.team==='guard'){const t=s.units[hoverActor],p=previewAttack(s,u,t,burst);$('hint').textContent=`${t.name} / ${WEAPONS[t.weapon].short} / ${t.hp} HP · ${p.ok?`${p.chance}% · ${p.cost} AP${p.cover?' · COVER':''}`:p.reason} · Click to target`;return;}
- if(!s.seen.has(key(hover.x,hover.y,viewLevel))){$('hint').textContent='Unexplored ground. Approach to reveal the route.';return;}
- const routeKey=[s.revision,u.id,u.x,u.y,u.z,hover.x,hover.y,viewLevel].join(':');if(routeCache?.state===s&&routeCache.key===routeKey)route=routeCache.path;else{route=pathTo(s,u,hover.x,hover.y,viewLevel);routeCache={state:s,key:routeKey,path:route};}$('hint').textContent=route?.length?`${hover.x}, ${hover.y} · ${route.length} tiles${s.phase==='player'?` / ${pathCost(route)} AP${pathCost(route)>u.ap?' · NOT ENOUGH AP':''}`:' / free movement'} · Click to move`:walkable(s,hover.x,hover.y,viewLevel)?'Tile occupied or already here.':'Solid obstacle · Find a doorway or go around.';
+ const routeKey=[s.revision,u.id,u.x,u.y,u.z,hover.x,hover.y,viewLevel].join(':');if(routeCache?.state===s&&routeCache.key===routeKey)route=routeCache.path;else{route=navigationPath(s,u,hover.x,hover.y,viewLevel);routeCache={state:s,key:routeKey,path:route};}$('hint').textContent=route?.length?`${hover.x}, ${hover.y} · ${route.length} tiles${s.phase==='player'?` / ${pathCost(route)} AP${pathCost(route)>u.ap?' · will stop when AP is spent':''}`:' / explore and replan'} · Click to move`:'No route through discovered terrain, or already at destination.';
 }
 function sync(){
  $('level').value=viewLevel;const stairs=movementNeighbors(s,selected()).filter(p=>p.z!==levelOf(selected()));for(const [id,delta]of [['up',1],['down',-1]]){const link=stairs.find(p=>p.z===levelOf(selected())+delta);$(id).disabled=!canControl(s,selected())||s.queue.length>0||!link||(s.phase==='player'&&selected().ap<link.cost);$(id).textContent=(link?.kind==='roof'?'Roof':link?.cost===3?'Ladder':link?'Stairs':'Climb')+(delta===1?' ↑':' ↓')+(link?' · '+link.cost+' AP':'');}
@@ -109,7 +108,7 @@ function sync(){
  $('weapon-stats').textContent=`${w.name} · ${w.damage} damage\n${w.cost} AP · ${w.range} tile range · ${w.mag?`${u.ammo[u.weapon]}/${w.mag} rounds`:'melee'}`;
  $('reload').disabled=!control||!w.mag||u.ammo[u.weapon]===w.mag||(s.phase==='player'&&u.ap<3);
  $('burst').disabled=!control||u.weapon!=='assault';$('burst').textContent=`Burst: ${burst?'on':'off'} [B]`;$('burst').setAttribute('aria-pressed',burst);
- const contacts=guards(s).filter(g=>s.visible.has(key(g.x,g.y,levelOf(g))));$('contact-count').textContent=`${contacts.length} VISIBLE`;
+ const contacts=guards(s).filter(g=>s.detected.has(g.id));$('contact-count').textContent=`${contacts.length} VISIBLE`;
  $('targets').innerHTML=contacts.map(g=>`<button data-target="${g.id}" aria-pressed="${targetId===g.id}">${g.name} · L${levelOf(g)+1} · ${g.hp}</button>`).join('');
  $('target-info').innerHTML=t?`<b>${t.name}</b> / L${levelOf(t)+1} / ${WEAPONS[t.weapon].short}<br>${p.ok?`<strong>${p.chance}%</strong> hit · ${p.cost} AP · ${p.rounds>1?'3 × ':''}${p.damage} damage${p.coverPenalty?` · ${p.heightCover&&!p.cover?'HEIGHT COVER':'COVER'} −${p.coverPenalty}%`:''}${p.rangePenalty?` · UPHILL +${p.rangePenalty} distance`:''}`:`${p.reason}${p.cover?' · in cover':''}`}`:'Select a visible guard to inspect a shot.';
  $('attack').disabled=!control||!p?.ok;$('attack').textContent=burst&&u.weapon==='assault'?'Fire 3-round burst [F]':w.mag?'Fire weapon [F]':'Melee attack [F]';
@@ -132,7 +131,7 @@ $('restart').onclick=restart;$('again').onclick=restart;$('help').onclick=()=>$(
 canvas.addEventListener('contextmenu',e=>e.preventDefault());
 canvas.addEventListener('pointerdown',e=>{canvas.focus();if(e.button===2||e.button===1||e.altKey){drag={x:e.clientX,y:e.clientY};canvas.setPointerCapture(e.pointerId);return;}if(e.button!==0)return;if(camera.zoom<.2){message('Double-click a sector to inspect it.');return;}hitTest(e);
  if(hoverActor!==null){const u=s.units[hoverActor];if(u.team==='squad')select(u.id);else{targetId=u.id;sync();}return;}
- if(!hover||!s.seen.has(key(hover.x,hover.y,viewLevel))){message('Explore nearby ground first.');return;}if(!move(s,selected(),hover.x,hover.y,viewLevel))message('Cannot move there. Check the path and available AP.');sync();});
+ if(!hover)return;if(!move(s,selected(),hover.x,hover.y,viewLevel))message('Cannot move there. Check the path and available AP.');sync();});
 canvas.addEventListener('pointermove',e=>{if(drag){camera.x+=e.clientX-drag.x;camera.y+=e.clientY-drag.y;drag={x:e.clientX,y:e.clientY};return;}hitTest(e);updateHover();});
 canvas.addEventListener('pointerup',()=>drag=null);canvas.addEventListener('pointercancel',()=>drag=null);canvas.addEventListener('pointerleave',()=>{hover=null;hoverActor=null;route=null;});
 canvas.addEventListener('wheel',e=>{e.preventDefault();zoom(e.deltaY<0?1.1:1/1.1);},{passive:false});

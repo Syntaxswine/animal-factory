@@ -2,7 +2,7 @@
 
 This slice implements mechanics only.
 
-- Elevated sight uses the existing three-dimensional ray checks, plus one tile of downward sight distance per level. Solid walls and floors remain authoritative.
+- Landscape visibility reaches 75 tiles and character detection reaches 60 tiles, using three-dimensional distance and ray checks. Elevation does not extend these caps. Solid walls and floors remain authoritative.
 - Guns use horizontal distance plus 1 tile per level uphill for range and distance-based accuracy. Downhill shots use normal horizontal distance with no range bonus or penalty. Melee range does not change. An elevated target gives a 15 percentage-point uphill cover penalty; ordinary directional cover remains 25 points and the two do not stack. Direct vertical stair shots have no imaginary platform-cover bonus.
 - Stairs cost 2 AP per level, ladders 3 AP. Old untyped connections remain stairs. Both connect matching XY cells on adjacent levels. Elevators are reserved for later travel between local maps and are not implemented here.
 - Environment props have explicit footprints independent of artwork. Tables and workbenches occupy 2x1 cells, or 1x2 when mirrored. Low props provide directional cover; stacked crates block sight; pallets can be walked over. Fences and railings block crossing while leaving sight open. Wall art remains on shared tile edges.
@@ -25,7 +25,7 @@ Independent hostile review gates passed at 4/5 for core mechanics, editor integr
 
 ## Uphill distance correction and roof climbs
 
-Uphill gunfire adds one tile of effective horizontal distance per level; downhill has no distance penalty or bonus. Melee retains its original three-dimensional reach. Existing elevated cover and downward sight rules remain.
+Uphill gunfire adds one tile of effective horizontal distance per level; downhill has no distance penalty or bonus. Melee retains its original three-dimensional reach. Existing elevated cover remains; sight uses the visibility caps below.
 
 Optional marked roof edges connect adjacent tiles exactly one level apart. Climbing costs 6 AP in either direction (twice a ladder), allowing the 7 AP guards to use these routes. Roof support, empty foothold headroom, an open upper edge, and unoccupied endpoints are required. Roof links do not cut sight holes through floors. The editor provides placement and erasure from either endpoint; JSON and world state preserve links. Multiple links can share a foothold: climb buttons choose the first route, while selecting a destination tile allows other routes.
 
@@ -42,3 +42,14 @@ Validation: 102 tests pass; factory balance smoke test wins 20/20 seeds in 7–1
 Same-level diagonal steps cost1.5 times cardinal movement:3 AP standing,6 kneeling,12 prone. A step requires both flanking tiles and the destination to be supported and clear, with all four bordering edges open. Living flank occupants block the route and queued steps recheck them. Vertical links retain their fixed cost and standing requirement. Melee pursuit still closes to valid striking range.
 
 Verification: all117 current tests passed, including six diagonal regressions. The committed asset validator passed; an unrelated in-progress stance-art validator references an unfinished PNG and was excluded from this release. Factory balance won20/20 seeds. Hostile review4/5. Connectivity checks use cardinal links because permitted diagonals cannot connect otherwise disconnected regions; this avoids unnecessary work in large-map validation.
+
+
+## Unknown terrain and long-distance visibility
+
+Individual movement orders can target unexplored ground. Routes treat unknown terrain as open, favor direct travel, and replan after each step using newly discovered terrain, barriers, and visible occupants. Hidden obstacles and characters cannot influence the preview. Discovered stairs, ladders, and roof links support travel between levels.
+
+Landscape visibility reaches 75 tiles; character detection reaches 60 tiles in clear conditions. Terrain discovery and character detection are separate. Walls, floors and window openings still block rays. These are distance limits for the upcoming sight-cone work; facing cones are not implemented yet. Longer detection means the default factory can begin in combat.
+
+Movement stops on new hostile contact, exhausted AP, a blocked destination, or explicit cancellation. Combat orders may exceed remaining AP and stop when the next step is unaffordable; they do not automatically resume next turn. Existing stance, diagonal and climbing AP costs remain unchanged.
+
+Verification: all 124 automated tests, syntax checks and asset validation pass. Seven new regressions cover distance boundaries, unknown-route information leaks, replanning, blocked goals, contact interruption, partial AP orders and visibility-cache invalidation. Browser testing confirmed travel into an unexplored sector. Independent hostile review passed at 4/5, including 20,000 comparisons between compiled terrain rays and existing LOS with zero mismatches. Factory balance won 20/20 seeds in 7–10 rounds with 2–4 survivors; this is not a balance guarantee for generated encounters.
