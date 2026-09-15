@@ -26,3 +26,5 @@ const artIds=[...Object.keys(PROPS),...new Set(Object.values(EDGES).map(r=>r.art
 assert.deepEqual(environment.assets.map(a=>a.id).sort(),artIds.sort());
 for(const a of environment.assets)await checkPNG('assets/environment/'+a.file,1254,1254,a.kind==='terrain'?2:6);
 console.log('Verified 28 tactical environment assets;  32 character frames, 32 armed sprites, 80 stance sprites, 8 strips, 12 machine sprites, a depot illustration, 4 industrial variants, and entrypoints.');
+
+for(const species of ['horse','goat','donkey','sheep','cow','hen'])await checkPNG('assets/characters/red-hats/'+species+'-idle.png',256,256);
