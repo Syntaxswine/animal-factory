@@ -2,6 +2,7 @@ import {RED_HAT_SPECIES,ARMED_WEAPONS,CHARACTER_STANCES,redHatArt} from './red-h
 import {characterArt} from './character-art.js';
 const $=id=>document.getElementById(id),labels={hands:'Unarmed',knife:'NR-40 knife',pistol:'TT-33 pistol',rifle:'Mosin-Nagant',assault:'AK-47'};
 for(const s of RED_HAT_SPECIES)$('species').add(new Option(s.replaceAll('-',' '),s));
+const requested=new URLSearchParams(location.search).get('species');if(RED_HAT_SPECIES.includes(requested))$('species').value=requested;
 function render(){
  const cards=[];
  for(const species of RED_HAT_SPECIES.filter(s=>$('species').value==='all'||$('species').value===s))

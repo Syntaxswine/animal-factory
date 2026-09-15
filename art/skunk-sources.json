@@ -1,0 +1,216 @@
+[
+  {
+    "outfit": "normal",
+    "weapon": "hands",
+    "stance": "standing",
+    "prompt": "Create ONE new anthropomorphic SKUNK character sprite for this tactical game, using the provided goat only as a reference for painterly art style, clothing materials and elevated three-quarter camera facing screen-right. Skunk has black fur, clear white forehead stripe and white twin stripes on one bushy tail, small rounded ears, pointed skunk muzzle, black nose. Compact sturdy adult build. Normal worker outfit: faded ochre rolled-sleeve shirt, olive work overalls, red neckerchief, worn dark boots. No hat. STANDING UNARMED hand-to-hand ready stance, two hands raised loosely before torso, two legs planted. ONE bushy tail curves behind body toward screen-left and stays below top of head. Warm hand-painted textured illustration, muted industrial palette, matching reference proportions and detail. Full character uncropped, generous margins, genuine transparent alpha background, no ground, no shadow, no text, no other figures.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-9a93a7c6-7202-4d44-8d27-0f37480c2137.png"
+  },
+  {
+    "outfit": "red-hats",
+    "weapon": "hands",
+    "stance": "standing",
+    "prompt": "Edit the SKUNK in first reference into the Red Hats faction uniform shown on goat in second reference. Preserve exact skunk identity, black-and-white fur markings, bushy striped single tail, compact adult build, face and standing unarmed raised-fist hand-to-hand stance. Replace clothing with deep red peaked cap with black visor and brass badge, olive rolled-sleeve shirt, red armband, brown suspenders and brown trousers, dark boots. No neckerchief or overalls. Same hand-painted textured industrial illustration and elevated three-quarter view facing screen-right. Full body and tail uncropped, generous margins. Genuine transparent alpha background, no scenery, no floor, no shadow, no text. Only ONE skunk.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-778aad02-06bb-49af-9e5d-6a555e300a70.png"
+  },
+  {
+    "outfit": "normal",
+    "stance": "standing",
+    "weapon": "knife",
+    "prompt": "Correct ONLY the knife. It currently appears bent where blade meets hilt. Make a straight rigid NR-40 blade whose long center axis is perfectly collinear with the handle axis, one continuous straight line from pommel through the closed fist through crossguard to blade point. Use a straight spine and modest pointed tip, not a curved machete. Keep the grip anatomically correct. Preserve everything else. Preserve exact skunk face, fur, outfit, pose, camera, color palette and hand-painted texture. Full sprite uncropped with transparent alpha background, no added shadow/text.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-ab60cf10-7004-439f-bffa-ad3add57eedb.png",
+    "previousPath": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-38a5686c-779a-4f59-9132-7c7ad5897613.png",
+    "originalPrompt": "Edit this skunk into ONE new combat pose. Preserve exact skunk identity, face, black-and-white fur markings, adult build and all outfit details/colors from reference. Same warm hand-painted textured illustration, muted industrial palette, elevated three-quarter isometric view facing screen-right. Exactly two arms, two legs and ONE bushy striped tail attached behind hips; coherent anatomy and grips. Full character, boots, tail and weapon uncropped with generous margins; genuine transparent alpha, no background, scenery, floor, shadow or text. Standing upright on both boots in combat-ready stance. Single tail curves behind body below head. Equipment: NR-40 combat knife held in forward hand blade toward screen-right, other hand balances."
+  },
+  {
+    "outfit": "normal",
+    "stance": "standing",
+    "weapon": "pistol",
+    "prompt": "Edit this skunk into ONE new combat pose. Preserve exact skunk identity, face, black-and-white fur markings, adult build and all outfit details/colors from reference. Same warm hand-painted textured illustration, muted industrial palette, elevated three-quarter isometric view facing screen-right. Exactly two arms, two legs and ONE bushy striped tail attached behind hips; coherent anatomy and grips. Full character, boots, tail and weapon uncropped with generous margins; genuine transparent alpha, no background, scenery, floor, shadow or text. Standing upright on both boots in combat-ready stance. Single tail curves behind body below head. Equipment: TT-33 pistol aimed screen-right, two-handed supported grip.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-109f310b-d471-40c7-86fb-47fa7f7ea827.png"
+  },
+  {
+    "outfit": "normal",
+    "stance": "standing",
+    "weapon": "rifle",
+    "prompt": "Edit this skunk into ONE new combat pose. Preserve exact skunk identity, face, black-and-white fur markings, adult build and all outfit details/colors from reference. Same warm hand-painted textured illustration, muted industrial palette, elevated three-quarter isometric view facing screen-right. Exactly two arms, two legs and ONE bushy striped tail attached behind hips; coherent anatomy and grips. Full character, boots, tail and weapon uncropped with generous margins; genuine transparent alpha, no background, scenery, floor, shadow or text. Standing upright on both boots in combat-ready stance. Single tail curves behind body below head. Equipment: Mosin-Nagant bolt-action rifle, wood stock at shoulder, both hands holding weapon, barrel toward screen-right.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-be769982-f110-4a77-b960-af882ee68b2e.png"
+  },
+  {
+    "outfit": "normal",
+    "stance": "standing",
+    "weapon": "assault",
+    "prompt": "Edit this skunk into ONE new combat pose. Preserve exact skunk identity, face, black-and-white fur markings, adult build and all outfit details/colors from reference. Same warm hand-painted textured illustration, muted industrial palette, elevated three-quarter isometric view facing screen-right. Exactly two arms, two legs and ONE bushy striped tail attached behind hips; coherent anatomy and grips. Full character, boots, tail and weapon uncropped with generous margins; genuine transparent alpha, no background, scenery, floor, shadow or text. Standing upright on both boots in combat-ready stance. Single tail curves behind body below head. Equipment: AK-47 with wooden furniture and curved magazine, stock at shoulder, both hands holding weapon, barrel toward screen-right.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-8827eb05-ed6e-497e-b827-f8a95ad57a9f.png"
+  },
+  {
+    "outfit": "normal",
+    "stance": "kneeling",
+    "weapon": "hands",
+    "prompt": "Edit this skunk into ONE new combat pose. Preserve exact skunk identity, face, black-and-white fur markings, adult build and all outfit details/colors from reference. Same warm hand-painted textured illustration, muted industrial palette, elevated three-quarter isometric view facing screen-right. Exactly two arms, two legs and ONE bushy striped tail attached behind hips; coherent anatomy and grips. Full character, boots, tail and weapon uncropped with generous margins; genuine transparent alpha, no background, scenery, floor, shadow or text. Kneeling on one knee, other knee raised with boot planted forward toward screen-right, torso upright. Single bushy tail curls low behind body toward screen-left, not above head. Equipment: No weapon; empty hands.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-6e83013d-7c25-43f7-9d5a-a46671785c57.png"
+  },
+  {
+    "outfit": "normal",
+    "stance": "kneeling",
+    "weapon": "knife",
+    "prompt": "Edit this skunk into ONE new combat pose. Preserve exact skunk identity, face, black-and-white fur markings, adult build and all outfit details/colors from reference. Same warm hand-painted textured illustration, muted industrial palette, elevated three-quarter isometric view facing screen-right. Exactly two arms, two legs and ONE bushy striped tail attached behind hips; coherent anatomy and grips. Full character, boots, tail and weapon uncropped with generous margins; genuine transparent alpha, no background, scenery, floor, shadow or text. Kneeling on one knee, other knee raised with boot planted forward toward screen-right, torso upright. Single bushy tail curls low behind body toward screen-left, not above head. Equipment: NR-40 combat knife held in forward hand blade toward screen-right, other hand balances.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-a65f5293-3277-491f-b36a-cad281cd3df8.png"
+  },
+  {
+    "outfit": "normal",
+    "stance": "kneeling",
+    "weapon": "pistol",
+    "prompt": "Edit this skunk into ONE new combat pose. Preserve exact skunk identity, face, black-and-white fur markings, adult build and all outfit details/colors from reference. Same warm hand-painted textured illustration, muted industrial palette, elevated three-quarter isometric view facing screen-right. Exactly two arms, two legs and ONE bushy striped tail attached behind hips; coherent anatomy and grips. Full character, boots, tail and weapon uncropped with generous margins; genuine transparent alpha, no background, scenery, floor, shadow or text. Kneeling on one knee, other knee raised with boot planted forward toward screen-right, torso upright. Single bushy tail curls low behind body toward screen-left, not above head. Equipment: TT-33 pistol aimed screen-right, two-handed supported grip.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-0d868598-0999-4752-ae60-2aa74b827e7e.png"
+  },
+  {
+    "outfit": "normal",
+    "stance": "kneeling",
+    "weapon": "rifle",
+    "prompt": "Edit this skunk into ONE new combat pose. Preserve exact skunk identity, face, black-and-white fur markings, adult build and all outfit details/colors from reference. Same warm hand-painted textured illustration, muted industrial palette, elevated three-quarter isometric view facing screen-right. Exactly two arms, two legs and ONE bushy striped tail attached behind hips; coherent anatomy and grips. Full character, boots, tail and weapon uncropped with generous margins; genuine transparent alpha, no background, scenery, floor, shadow or text. Kneeling on one knee, other knee raised with boot planted forward toward screen-right, torso upright. Single bushy tail curls low behind body toward screen-left, not above head. Equipment: Mosin-Nagant bolt-action rifle, wood stock at shoulder, both hands holding weapon, barrel toward screen-right.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-68f8d8e8-cbc3-4b79-90c2-01d886f5c282.png"
+  },
+  {
+    "outfit": "normal",
+    "stance": "kneeling",
+    "weapon": "assault",
+    "prompt": "Edit this skunk into ONE new combat pose. Preserve exact skunk identity, face, black-and-white fur markings, adult build and all outfit details/colors from reference. Same warm hand-painted textured illustration, muted industrial palette, elevated three-quarter isometric view facing screen-right. Exactly two arms, two legs and ONE bushy striped tail attached behind hips; coherent anatomy and grips. Full character, boots, tail and weapon uncropped with generous margins; genuine transparent alpha, no background, scenery, floor, shadow or text. Kneeling on one knee, other knee raised with boot planted forward toward screen-right, torso upright. Single bushy tail curls low behind body toward screen-left, not above head. Equipment: AK-47 with wooden furniture and curved magazine, stock at shoulder, both hands holding weapon, barrel toward screen-right.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-356b1500-5b03-40e9-a7a9-2dc678fac6a5.png"
+  },
+  {
+    "outfit": "normal",
+    "stance": "prone",
+    "weapon": "hands",
+    "prompt": "Edit this skunk into ONE new combat pose. Preserve exact skunk identity, face, black-and-white fur markings, adult build and all outfit details/colors from reference. Same warm hand-painted textured illustration, muted industrial palette, elevated three-quarter isometric view facing screen-right. Exactly two arms, two legs and ONE bushy striped tail attached behind hips; coherent anatomy and grips. Full character, boots, tail and weapon uncropped with generous margins; genuine transparent alpha, no background, scenery, floor, shadow or text. PRONE lying flat on belly with BOTH legs extended behind toward screen-left, elbows supporting raised head and weapon toward screen-right. Long horizontal silhouette. Single bushy striped tail rests along ground behind hips toward screen-left, below shoulder level. Not sitting or kneeling. Equipment: No weapon; empty hands.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-f2b2419f-fbdf-4b36-ada3-0d34274eb609.png"
+  },
+  {
+    "outfit": "normal",
+    "stance": "prone",
+    "weapon": "knife",
+    "prompt": "Edit this skunk into ONE new combat pose. Preserve exact skunk identity, face, black-and-white fur markings, adult build and all outfit details/colors from reference. Same warm hand-painted textured illustration, muted industrial palette, elevated three-quarter isometric view facing screen-right. Exactly two arms, two legs and ONE bushy striped tail attached behind hips; coherent anatomy and grips. Full character, boots, tail and weapon uncropped with generous margins; genuine transparent alpha, no background, scenery, floor, shadow or text. PRONE lying flat on belly with BOTH legs extended behind toward screen-left, elbows supporting raised head and weapon toward screen-right. Long horizontal silhouette. Single bushy striped tail rests along ground behind hips toward screen-left, below shoulder level. Not sitting or kneeling. Equipment: NR-40 combat knife held in forward hand blade toward screen-right, other hand balances.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-369e2aca-a18c-4fb5-9637-cf3ad7e7135b.png"
+  },
+  {
+    "outfit": "normal",
+    "stance": "prone",
+    "weapon": "pistol",
+    "prompt": "Edit this skunk into ONE new combat pose. Preserve exact skunk identity, face, black-and-white fur markings, adult build and all outfit details/colors from reference. Same warm hand-painted textured illustration, muted industrial palette, elevated three-quarter isometric view facing screen-right. Exactly two arms, two legs and ONE bushy striped tail attached behind hips; coherent anatomy and grips. Full character, boots, tail and weapon uncropped with generous margins; genuine transparent alpha, no background, scenery, floor, shadow or text. PRONE lying flat on belly with BOTH legs extended behind toward screen-left, elbows supporting raised head and weapon toward screen-right. Long horizontal silhouette. Single bushy striped tail rests along ground behind hips toward screen-left, below shoulder level. Not sitting or kneeling. Equipment: TT-33 pistol aimed screen-right, two-handed supported grip.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-28f8c074-d3e3-42f8-8999-2e938e733d45.png"
+  },
+  {
+    "outfit": "normal",
+    "stance": "prone",
+    "weapon": "rifle",
+    "prompt": "Edit this skunk into ONE new combat pose. Preserve exact skunk identity, face, black-and-white fur markings, adult build and all outfit details/colors from reference. Same warm hand-painted textured illustration, muted industrial palette, elevated three-quarter isometric view facing screen-right. Exactly two arms, two legs and ONE bushy striped tail attached behind hips; coherent anatomy and grips. Full character, boots, tail and weapon uncropped with generous margins; genuine transparent alpha, no background, scenery, floor, shadow or text. PRONE lying flat on belly with BOTH legs extended behind toward screen-left, elbows supporting raised head and weapon toward screen-right. Long horizontal silhouette. Single bushy striped tail rests along ground behind hips toward screen-left, below shoulder level. Not sitting or kneeling. Equipment: Mosin-Nagant bolt-action rifle, wood stock at shoulder, both hands holding weapon, barrel toward screen-right.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-4d7a744a-8b24-4d3a-86bd-ee31cc666c73.png"
+  },
+  {
+    "outfit": "normal",
+    "stance": "prone",
+    "weapon": "assault",
+    "prompt": "Edit this skunk into ONE new combat pose. Preserve exact skunk identity, face, black-and-white fur markings, adult build and all outfit details/colors from reference. Same warm hand-painted textured illustration, muted industrial palette, elevated three-quarter isometric view facing screen-right. Exactly two arms, two legs and ONE bushy striped tail attached behind hips; coherent anatomy and grips. Full character, boots, tail and weapon uncropped with generous margins; genuine transparent alpha, no background, scenery, floor, shadow or text. PRONE lying flat on belly with BOTH legs extended behind toward screen-left, elbows supporting raised head and weapon toward screen-right. Long horizontal silhouette. Single bushy striped tail rests along ground behind hips toward screen-left, below shoulder level. Not sitting or kneeling. Equipment: AK-47 with wooden furniture and curved magazine, stock at shoulder, both hands holding weapon, barrel toward screen-right.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-e116a2b1-eb48-4ce8-ba8a-9cb2c152f3da.png"
+  },
+  {
+    "outfit": "red-hats",
+    "stance": "standing",
+    "weapon": "knife",
+    "prompt": "Edit this skunk into ONE new combat pose. Preserve exact skunk identity, face, black-and-white fur markings, adult build and all outfit details/colors from reference. Same warm hand-painted textured illustration, muted industrial palette, elevated three-quarter isometric view facing screen-right. Exactly two arms, two legs and ONE bushy striped tail attached behind hips; coherent anatomy and grips. Full character, boots, tail and weapon uncropped with generous margins; genuine transparent alpha, no background, scenery, floor, shadow or text. Standing upright on both boots in combat-ready stance. Single tail curves behind body below head. Equipment: NR-40 combat knife held in forward hand blade toward screen-right, other hand balances.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-8629c7ee-79db-4527-a0ec-d88101a6a480.png"
+  },
+  {
+    "outfit": "red-hats",
+    "stance": "standing",
+    "weapon": "pistol",
+    "prompt": "Edit this skunk into ONE new combat pose. Preserve exact skunk identity, face, black-and-white fur markings, adult build and all outfit details/colors from reference. Same warm hand-painted textured illustration, muted industrial palette, elevated three-quarter isometric view facing screen-right. Exactly two arms, two legs and ONE bushy striped tail attached behind hips; coherent anatomy and grips. Full character, boots, tail and weapon uncropped with generous margins; genuine transparent alpha, no background, scenery, floor, shadow or text. Standing upright on both boots in combat-ready stance. Single tail curves behind body below head. Equipment: TT-33 pistol aimed screen-right, two-handed supported grip.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-2f5c6dd2-f189-4711-bdbd-d80a76c41214.png"
+  },
+  {
+    "outfit": "red-hats",
+    "stance": "standing",
+    "weapon": "rifle",
+    "prompt": "Edit this skunk into ONE new combat pose. Preserve exact skunk identity, face, black-and-white fur markings, adult build and all outfit details/colors from reference. Same warm hand-painted textured illustration, muted industrial palette, elevated three-quarter isometric view facing screen-right. Exactly two arms, two legs and ONE bushy striped tail attached behind hips; coherent anatomy and grips. Full character, boots, tail and weapon uncropped with generous margins; genuine transparent alpha, no background, scenery, floor, shadow or text. Standing upright on both boots in combat-ready stance. Single tail curves behind body below head. Equipment: Mosin-Nagant bolt-action rifle, wood stock at shoulder, both hands holding weapon, barrel toward screen-right.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-6e0547e7-e281-493d-8b15-dbef5e4b5256.png"
+  },
+  {
+    "outfit": "red-hats",
+    "stance": "standing",
+    "weapon": "assault",
+    "prompt": "Edit this skunk into ONE new combat pose. Preserve exact skunk identity, face, black-and-white fur markings, adult build and all outfit details/colors from reference. Same warm hand-painted textured illustration, muted industrial palette, elevated three-quarter isometric view facing screen-right. Exactly two arms, two legs and ONE bushy striped tail attached behind hips; coherent anatomy and grips. Full character, boots, tail and weapon uncropped with generous margins; genuine transparent alpha, no background, scenery, floor, shadow or text. Standing upright on both boots in combat-ready stance. Single tail curves behind body below head. Equipment: AK-47 with wooden furniture and curved magazine, stock at shoulder, both hands holding weapon, barrel toward screen-right.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-b32eae8e-9090-4a5b-8b9c-398b6a4c409a.png"
+  },
+  {
+    "outfit": "red-hats",
+    "stance": "kneeling",
+    "weapon": "hands",
+    "prompt": "Edit this skunk into ONE new combat pose. Preserve exact skunk identity, face, black-and-white fur markings, adult build and all outfit details/colors from reference. Same warm hand-painted textured illustration, muted industrial palette, elevated three-quarter isometric view facing screen-right. Exactly two arms, two legs and ONE bushy striped tail attached behind hips; coherent anatomy and grips. Full character, boots, tail and weapon uncropped with generous margins; genuine transparent alpha, no background, scenery, floor, shadow or text. Kneeling on one knee, other knee raised with boot planted forward toward screen-right, torso upright. Single bushy tail curls low behind body toward screen-left, not above head. Equipment: No weapon; empty hands.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-d1bb4e8d-827f-451f-97b6-56033bd72619.png"
+  },
+  {
+    "outfit": "red-hats",
+    "stance": "kneeling",
+    "weapon": "knife",
+    "prompt": "Edit this skunk into ONE new combat pose. Preserve exact skunk identity, face, black-and-white fur markings, adult build and all outfit details/colors from reference. Same warm hand-painted textured illustration, muted industrial palette, elevated three-quarter isometric view facing screen-right. Exactly two arms, two legs and ONE bushy striped tail attached behind hips; coherent anatomy and grips. Full character, boots, tail and weapon uncropped with generous margins; genuine transparent alpha, no background, scenery, floor, shadow or text. Kneeling on one knee, other knee raised with boot planted forward toward screen-right, torso upright. Single bushy tail curls low behind body toward screen-left, not above head. Equipment: NR-40 combat knife held in forward hand blade toward screen-right, other hand balances.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-f4e30dbf-d134-45b5-baa8-a626ed31ef07.png"
+  },
+  {
+    "outfit": "red-hats",
+    "stance": "kneeling",
+    "weapon": "pistol",
+    "prompt": "Edit this skunk into ONE new combat pose. Preserve exact skunk identity, face, black-and-white fur markings, adult build and all outfit details/colors from reference. Same warm hand-painted textured illustration, muted industrial palette, elevated three-quarter isometric view facing screen-right. Exactly two arms, two legs and ONE bushy striped tail attached behind hips; coherent anatomy and grips. Full character, boots, tail and weapon uncropped with generous margins; genuine transparent alpha, no background, scenery, floor, shadow or text. Kneeling on one knee, other knee raised with boot planted forward toward screen-right, torso upright. Single bushy tail curls low behind body toward screen-left, not above head. Equipment: TT-33 pistol aimed screen-right, two-handed supported grip.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-4b7b47eb-6407-4c8e-8a97-d876fc1576c7.png"
+  },
+  {
+    "outfit": "red-hats",
+    "stance": "kneeling",
+    "weapon": "rifle",
+    "prompt": "Edit this skunk into ONE new combat pose. Preserve exact skunk identity, face, black-and-white fur markings, adult build and all outfit details/colors from reference. Same warm hand-painted textured illustration, muted industrial palette, elevated three-quarter isometric view facing screen-right. Exactly two arms, two legs and ONE bushy striped tail attached behind hips; coherent anatomy and grips. Full character, boots, tail and weapon uncropped with generous margins; genuine transparent alpha, no background, scenery, floor, shadow or text. Kneeling on one knee, other knee raised with boot planted forward toward screen-right, torso upright. Single bushy tail curls low behind body toward screen-left, not above head. Equipment: Mosin-Nagant bolt-action rifle, wood stock at shoulder, both hands holding weapon, barrel toward screen-right.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-b09cc4ed-22df-4d0e-90ea-15f5769bf6f3.png"
+  },
+  {
+    "outfit": "red-hats",
+    "stance": "kneeling",
+    "weapon": "assault",
+    "prompt": "Edit this skunk into ONE new combat pose. Preserve exact skunk identity, face, black-and-white fur markings, adult build and all outfit details/colors from reference. Same warm hand-painted textured illustration, muted industrial palette, elevated three-quarter isometric view facing screen-right. Exactly two arms, two legs and ONE bushy striped tail attached behind hips; coherent anatomy and grips. Full character, boots, tail and weapon uncropped with generous margins; genuine transparent alpha, no background, scenery, floor, shadow or text. Kneeling on one knee, other knee raised with boot planted forward toward screen-right, torso upright. Single bushy tail curls low behind body toward screen-left, not above head. Equipment: AK-47 with wooden furniture and curved magazine, stock at shoulder, both hands holding weapon, barrel toward screen-right.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-9078f575-e56f-4a45-8118-b587d39c22a9.png"
+  },
+  {
+    "outfit": "red-hats",
+    "stance": "prone",
+    "weapon": "hands",
+    "prompt": "Correct ONLY tail depth ordering. Bring the bushy striped tail IN FRONT OF the rear/far trouser leg: the tail's lower fur edge must clearly overlap and obscure the upper part of that back leg from hip toward boot. Tail attaches at pelvis and lies over the back leg, not behind it. Keep the near leg and both boots readable, exactly two legs and one tail. Preserve everything else. Preserve exact skunk face, fur, outfit, pose, camera, color palette and hand-painted texture. Full sprite uncropped with transparent alpha background, no added shadow/text.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-fe21b2b2-396d-45af-8d1f-ad0a9c667b00.png",
+    "previousPath": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-f8ea55e4-e28a-4ad8-949f-b9e8508ac87c.png",
+    "originalPrompt": "Edit this skunk into ONE new combat pose. Preserve exact skunk identity, face, black-and-white fur markings, adult build and all outfit details/colors from reference. Same warm hand-painted textured illustration, muted industrial palette, elevated three-quarter isometric view facing screen-right. Exactly two arms, two legs and ONE bushy striped tail attached behind hips; coherent anatomy and grips. Full character, boots, tail and weapon uncropped with generous margins; genuine transparent alpha, no background, scenery, floor, shadow or text. PRONE lying flat on belly with BOTH legs extended behind toward screen-left, elbows supporting raised head and weapon toward screen-right. Long horizontal silhouette. Single bushy striped tail rests along ground behind hips toward screen-left, below shoulder level. Not sitting or kneeling. Equipment: No weapon; empty hands."
+  },
+  {
+    "outfit": "red-hats",
+    "stance": "prone",
+    "weapon": "knife",
+    "prompt": "Edit this skunk into ONE new combat pose. Preserve exact skunk identity, face, black-and-white fur markings, adult build and all outfit details/colors from reference. Same warm hand-painted textured illustration, muted industrial palette, elevated three-quarter isometric view facing screen-right. Exactly two arms, two legs and ONE bushy striped tail attached behind hips; coherent anatomy and grips. Full character, boots, tail and weapon uncropped with generous margins; genuine transparent alpha, no background, scenery, floor, shadow or text. PRONE lying flat on belly with BOTH legs extended behind toward screen-left, elbows supporting raised head and weapon toward screen-right. Long horizontal silhouette. Single bushy striped tail rests along ground behind hips toward screen-left, below shoulder level. Not sitting or kneeling. Equipment: NR-40 combat knife held in forward hand blade toward screen-right, other hand balances.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-68142884-b428-4943-88bd-dea68e7a80b6.png"
+  },
+  {
+    "outfit": "red-hats",
+    "stance": "prone",
+    "weapon": "pistol",
+    "prompt": "Edit this skunk into ONE new combat pose. Preserve exact skunk identity, face, black-and-white fur markings, adult build and all outfit details/colors from reference. Same warm hand-painted textured illustration, muted industrial palette, elevated three-quarter isometric view facing screen-right. Exactly two arms, two legs and ONE bushy striped tail attached behind hips; coherent anatomy and grips. Full character, boots, tail and weapon uncropped with generous margins; genuine transparent alpha, no background, scenery, floor, shadow or text. PRONE lying flat on belly with BOTH legs extended behind toward screen-left, elbows supporting raised head and weapon toward screen-right. Long horizontal silhouette. Single bushy striped tail rests along ground behind hips toward screen-left, below shoulder level. Not sitting or kneeling. Equipment: TT-33 pistol aimed screen-right, two-handed supported grip.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-5819b250-15b6-4d3b-8575-9f649c017a9d.png"
+  },
+  {
+    "outfit": "red-hats",
+    "stance": "prone",
+    "weapon": "rifle",
+    "prompt": "Edit this skunk into ONE new combat pose. Preserve exact skunk identity, face, black-and-white fur markings, adult build and all outfit details/colors from reference. Same warm hand-painted textured illustration, muted industrial palette, elevated three-quarter isometric view facing screen-right. Exactly two arms, two legs and ONE bushy striped tail attached behind hips; coherent anatomy and grips. Full character, boots, tail and weapon uncropped with generous margins; genuine transparent alpha, no background, scenery, floor, shadow or text. PRONE lying flat on belly with BOTH legs extended behind toward screen-left, elbows supporting raised head and weapon toward screen-right. Long horizontal silhouette. Single bushy striped tail rests along ground behind hips toward screen-left, below shoulder level. Not sitting or kneeling. Equipment: Mosin-Nagant bolt-action rifle, wood stock at shoulder, both hands holding weapon, barrel toward screen-right.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-383c1067-cd03-4d82-a136-02170727f36c.png"
+  },
+  {
+    "outfit": "red-hats",
+    "stance": "prone",
+    "weapon": "assault",
+    "prompt": "Edit this skunk into ONE new combat pose. Preserve exact skunk identity, face, black-and-white fur markings, adult build and all outfit details/colors from reference. Same warm hand-painted textured illustration, muted industrial palette, elevated three-quarter isometric view facing screen-right. Exactly two arms, two legs and ONE bushy striped tail attached behind hips; coherent anatomy and grips. Full character, boots, tail and weapon uncropped with generous margins; genuine transparent alpha, no background, scenery, floor, shadow or text. PRONE lying flat on belly with BOTH legs extended behind toward screen-left, elbows supporting raised head and weapon toward screen-right. Long horizontal silhouette. Single bushy striped tail rests along ground behind hips toward screen-left, below shoulder level. Not sitting or kneeling. Equipment: AK-47 with wooden furniture and curved magazine, stock at shoulder, both hands holding weapon, barrel toward screen-right.",
+    "path": "C:\\Users\\baals\\.codex\\generated_images\\01a0a228-af58-7732-9a5d-365bcf242bdc\\exec-621da0e2-8255-4486-be11-59b455f0d78c.png"
+  }
+]

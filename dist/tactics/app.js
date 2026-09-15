@@ -22,7 +22,7 @@ const camera={x:0,y:0,zoom:1.15},images=new Map(),sprites=[];
 const art=environmentRenderer(()=>{},id=>message('Could not load '+id+' artwork.'));
 const selected=()=>s.units[s.selected],target=()=>s.units.find(u=>u.id===targetId&&alive(u)&&s.detected.has(u.id));
 function load(src){if(images.has(src))return images.get(src);const img=new Image();img.src=src;img.onerror=()=>message('An artwork file could not load. Reload the page to retry.');images.set(src,img);return img;}
-for(const species of new Set(s.units.map(u=>u.species)))for(const pose of ['idle','walk-a','walk-b'])load(`../assets/characters/${species}-${pose}.png`);
+for(const species of new Set(s.units.map(u=>u.species)))for(const pose of ['idle','walk-a','walk-b'])load(characterArt(species,"hands",pose).src);
 for(const species of new Set(s.units.map(u=>u.species)))for(const weapon of ARMED_WEAPONS)load(characterArt(species,weapon).src);
 for(const name of ['mill','bakery','bottler','dairy'])load(`../assets/machines/industrial/${name}.png`);
 for(const weapon of LOOT_WEAPONS)for(const kind of ['gun','ammo'])load(`../assets/environment/loot/${kind}-${weapon}.png`);

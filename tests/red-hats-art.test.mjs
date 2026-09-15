@@ -10,7 +10,7 @@ test("Red Hats have every armed stance with valid transparent frames and a share
   const png=await readFile(new URL("../dist/tactics/"+frame.src,import.meta.url));
   assert.equal(png.subarray(1,4).toString(),"PNG");assert.equal(png.readUInt32BE(16),frame.width);assert.equal(png.readUInt32BE(20),frame.height);assert.equal(png[25],6);
  }
- assert.equal(paths.size,84);
+ assert.equal(paths.size,RED_HAT_SPECIES.length*ARMED_WEAPONS.length*CHARACTER_STANCES.length);
  assert.equal(redHatArt("horse","hands","prone"),null);
  assert.equal(redHatArt("unknown","rifle"),null);
  assert.ok(redHatArt("horse","hands","standing"));
