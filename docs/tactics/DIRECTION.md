@@ -73,3 +73,5 @@ The user has explicitly deferred story work. Build edge-based walls, distinct lo
 1. Facing and shared sight: complete, hostile review 4/5. 120° default, 75/60 tile limits, terrain occlusion, personal firing cone, free manual turning, explicit cone guide. Formation movement retained. 161 tests passed; browser confirmed free combat turning.
 
 2. Inventory: complete, hostile review 4/5. Two slots with free swaps; stored secondary equip 3 AP, finite compatible reserves, partial reloads, 16 kg capacity including utilities, one carried weapon per type, ground/dead-guard loot and adjacent transfers. Existing local-map travel preserves inventories and piles. 164 tests passed; browser verified free swap and reserve display.
+
+3. Stealth, investigation and reactions: complete, hostile review 4/5. Sneaking adds 2 AP/cardinal step and reduces detection range; noise yields an approximate search area. One overwatch shot reserves AP now and revalidates cone/weapon/ammunition during the enemy turn; switching or turning cancels without refund. Aimed fire retained. Group movement shares noise and reservation rules. 170 tests passed, browser confirmed controls and accounting.
