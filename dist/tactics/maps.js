@@ -20,13 +20,22 @@ export function stairSet(m){return new Map((m.stairs||[]).map(p=>[stairKey(p.x,p
 export function neighbors(m,p,stairs=stairSet(m)){
  const z=levelOf(p),out=[];
  for(const b of [{x:p.x+1,y:p.y,z},{x:p.x-1,y:p.y,z},{x:p.x,y:p.y+1,z},{x:p.x,y:p.y-1,z}])if(passable(m,b)&&!blockedEdge(m,p,b))out.push({...b,cost:1});
- for(const dz of [-1,1])if(stairs.has(stairKey(p.x,p.y,Math.min(z,z+dz)))&&passable(m,{x:p.x,y:p.y,z:z+dz}))out.push({x:p.x,y:p.y,z:z+dz,cost:stairs.get(stairKey(p.x,p.y,Math.min(z,z+dz)))});return out;
+ for(const dz of [-1,1])if(stairs.has(stairKey(p.x,p.y,Math.min(z,z+dz)))&&passable(m,{x:p.x,y:p.y,z:z+dz}))out.push({x:p.x,y:p.y,z:z+dz,cost:stairs.get(stairKey(p.x,p.y,Math.min(z,z+dz)))});for(const link of roofNeighbors(m,p))out.push(link);return out;
 }
+
+// Marked roof edges connect an outdoor foothold to the adjacent upper platform.
+export const roofTop=p=>({x:p.x+p.dx,y:p.y+p.dy,z:p.z+1});
+export const roofValid=(m,p)=>inBounds(p.x,p.y,p.z)&&p.z<2&&Math.abs(p.dx)+Math.abs(p.dy)===1&&Number.isInteger(p.dx)&&Number.isInteger(p.dy)&&passable(m,p)&&passable(m,roofTop(p))&&terrainAt(m,p.x,p.y,p.z+1)==='void'&&!blockedEdge(m,{x:p.x,y:p.y,z:p.z+1},roofTop(p));
+const roofCache=new WeakMap();
+function roofIndex(m){const links=m.climbs;if(!links)return new Map();if(roofCache.has(links))return roofCache.get(links);const index=new Map();for(const p of links)for(const q of [p,roofTop(p)]){const k=tileKey(q.x,q.y,q.z);if(!index.has(k))index.set(k,[]);index.get(k).push(p);}roofCache.set(links,index);return index;}
+export function roofNeighbors(m,p){return (roofIndex(m).get(tileKey(p.x,p.y,levelOf(p)))||[]).filter(q=>roofValid(m,q)).map(q=>({...((levelOf(p)===q.z)?roofTop(q):{x:q.x,y:q.y,z:q.z}),cost:6,kind:'roof'}));}
+export function roofEndpoint(m,p){return (m.climbs||[]).some(q=>[q,roofTop(q)].some(r=>r.x===p.x&&r.y===p.y&&r.z===levelOf(p)));}
+
 export function canStep(m,a,b){return neighbors(m,a).some(p=>p.x===b.x&&p.y===b.y&&p.z===levelOf(b));}
 export const SPECIES=['horse','goat','donkey','sheep','cow','hen','pig-foreman','pig-director'];
 export const WEAPON_IDS=['hands','knife','pistol','rifle','assault'];
 export function blankMap(name='Untitled local map'){
- return {version:2,width:W,height:H,levels:LEVELS,name,terrain:Array.from({length:H},()=>Array(W).fill('yard')),upper:[{},{}],edges:{},stairs:[],props:[],starts:[{x:3,y:4,z:0},{x:3,y:6,z:0},{x:2,y:5,z:0},{x:2,y:7,z:0}],guards:[],exits:[{x:3,y:5,z:0}]};
+ return {version:2,width:W,height:H,levels:LEVELS,name,terrain:Array.from({length:H},()=>Array(W).fill('yard')),upper:[{},{}],edges:{},stairs:[],climbs:[],props:[],starts:[{x:3,y:4,z:0},{x:3,y:6,z:0},{x:2,y:5,z:0},{x:2,y:7,z:0}],guards:[],exits:[{x:3,y:5,z:0}]};
 }
 export function stampRoom(m,x,y,w=7,h=6,z=0){
  if(!inBounds(x,y,z)||!Number.isInteger(w)||!Number.isInteger(h)||w<2||h<2||x+w>W||y+h>H)return false;
@@ -63,10 +72,12 @@ export function validateMap(raw,{connectivity=true}={}){
  if(!Array.isArray(raw.guards)||raw.guards.length>MAX_GUARDS||raw.guards.some(g=>!point(g)||!SPECIES.includes(g.species)||!WEAPON_IDS.includes(g.weapon)))return [...errors,'Use at most 46 guards (50 characters including the squad).'];
  if(!Array.isArray(raw.exits)||raw.exits.length!==1||!point(raw.exits[0]))return [...errors,'Place one valid travel marker.'];
  if(!Array.isArray(raw.stairs)||raw.stairs.length>4096||raw.stairs.some(p=>!point(p)||!Number.isInteger(p.z)||p.z>=2||(p.kind!==undefined&&!['stairs','ladder'].includes(p.kind))))return [...errors,'Invalid stairs: lower level must be 0 or 1.'];
+ if(raw.climbs!==undefined&&(!Array.isArray(raw.climbs)||raw.climbs.length>4096||raw.climbs.some(p=>!point(p)||!Number.isInteger(p.z)||p.z>=2||!Number.isInteger(p.dx)||!Number.isInteger(p.dy)||Math.abs(p.dx)+Math.abs(p.dy)!==1)))return [...errors,'Invalid roof climb: adjacent tiles and exactly one level required.'];
  if(raw.props!==undefined&&(!Array.isArray(raw.props)||raw.props.length>4096||raw.props.some(p=>!point(p)||!Object.hasOwn(PROPS,p.kind)||(p.rotated!==undefined&&typeof p.rotated!=='boolean'))))return [...errors,'Invalid environment props.'];
  if(raw.sectors){errors.push(...validateSectorPlan(raw.sectors));if(!errors.length){const plan=raw.sectors;for(let sy=0;sy<10;sy++)for(let sx=0;sx<10;sx++){const type=plan.cells[sy][sx];if(!['river-ns','bridge-ns','road-ew'].includes(type))continue;for(let y=0;y<24;y++)for(let x=0;x<24;x++){const p=plan.orientation==='ew'?{x:sy*24+y,y:sx*24+x}:{x:sx*24+x,y:sy*24+y},t=terrainAt(raw,p.x,p.y,0);if(['river-ns','bridge-ns'].includes(type)&&x>=9&&x<=14){const crossing=type==='bridge-ns'&&y>=10&&y<=13;if(crossing?!passable(raw,p):t!=='water')errors.push('River rule broken: preserve the water channel and both bridge corridors.');}else if(['road-ew','bridge-ns'].includes(type)&&y>=10&&y<=13&&!passable(raw,p))errors.push('Bridge approach road must remain open.');if(['bridge-ns','road-ew'].includes(type)&&y>=10&&y<=13){const q=plan.orientation==='ew'?{x:p.x,y:p.y+1}:{x:p.x+1,y:p.y};if(inBounds(q.x,q.y)&&blockedEdge(raw,p,q))errors.push('Bridge and approach corridors must not have crossing barriers.');}}}}}
  const propPositions=new Set();for(const p of raw.props||[])for(const q of propCells(p)){const k=tileKey(q.x,q.y,q.z);if(propPositions.has(k))errors.push('Overlapping prop footprints.');propPositions.add(k);if(!inBounds(q.x,q.y,q.z)||!floorTerrain(terrainAt(raw,q.x,q.y,q.z)))errors.push('Props need supported floor tiles across their whole footprint.');}
  for(const p of raw.props||[]){const cells=propCells(p);if(cells.length>1&&blockedEdge(raw,cells[0],cells[1]))errors.push('A prop footprint crosses a wall or fence.');}
+ const roofKeys=new Set();for(const p of raw.climbs||[]){const k=[p.x,p.y,p.z,p.dx,p.dy].join(',');if(roofKeys.has(k))errors.push('Duplicate roof climb.');roofKeys.add(k);if(!roofValid(raw,p))errors.push('Roof climbs need free endpoints, open headroom and an unobstructed upper edge.');}
  const stairKeys=new Set();for(const p of raw.stairs){const k=stairKey(p.x,p.y,p.z);if(stairKeys.has(k))errors.push('Duplicate stair connection.');stairKeys.add(k);if(!passable(raw,p)||!passable(raw,{...p,z:p.z+1}))errors.push(`Stairs at ${k} need walkable floors at both ends.`);}
  const positions=new Set();for(const p of [...raw.starts,...raw.guards]){const k=tileKey(p.x,p.y,levelOf(p));if(positions.has(k))errors.push(`Overlapping unit starts at ${k}.`);positions.add(k);if(!passable(raw,p))errors.push(`Unit start needs a walkable floor at ${k}.`);}
  if(!passable(raw,raw.exits[0]))errors.push('Travel marker needs a walkable floor.');if(errors.length||!connectivity)return [...new Set(errors)];

@@ -44,7 +44,7 @@ In the game, stand on a cyan stair marker and use **Stairs ↑ / ↓**. Transiti
 
 Version-1 drafts and JSON maps migrate into the larger ground plane; existing contents and boundary walls remain. New portable JSON files use version 2 with a 4 MB limit. Reachability checks run in a background worker before playtesting.
 
-Validation: 88 automated checks pass; the original 12-guard factory balance smoke test wins 20/20 seeds. Full 50-character maps have separate population, pathfinding and enemy-turn checks. At current visual pacing, the worst-case all-alert guard turn takes about 41 seconds despite under one second of measured simulation CPU time.
+Validation: 95 automated checks pass; the original 12-guard factory balance smoke test wins 20/20 seeds. Full 50-character maps have separate population, pathfinding and enemy-turn checks. At current visual pacing, the worst-case all-alert guard turn takes about 41 seconds despite under one second of measured simulation CPU time.
 
 ## Environment palette and sector rules
 
@@ -52,6 +52,8 @@ The editor now places all 28 supplied environment assets: eleven props, eleven w
 
 Choose **Layout rules → River north–south / two bridges** or **River east–west / two bridges**, then Generate. The 100 sectors are assembled using matching land, road and water connections. Both bridge decks and complete approach corridors must remain open. The river is straight in this first template set; winding rivers, branches and a general rule-authoring UI remain future work. Water is impassable, bridge decks walkable. Use Fit map to see the full plan.
 
-**Ladder up** connects the next floor for 3 AP, while stairs remain 2 AP. Climb buttons display the connection type and price. Downhill gun range and sight increase by one tile per level, capped at two levels. Uphill fire takes a 15-point cover penalty; stronger ordinary cover replaces this penalty rather than stacking. Solid floors and walls always retain their sight-blocking behavior.
+**Ladder up** connects the next floor for 3 AP, while stairs remain 2 AP. Climb buttons display the connection type and price. Gun range uses horizontal distance plus one extra tile per level uphill; downhill has no range penalty or bonus. Downward sight still increases by one tile per level. Uphill fire takes a 15-point cover penalty; stronger ordinary cover replaces this penalty rather than stacking. Solid floors and walls always retain their sight-blocking behavior.
 
 Window walls block walking and provide cover. Shots and sight use a central aperture (middle 70% of the edge, height 1.0–2.4 within a 3-unit floor); solid sills and outer wall portions still block rays. Closed steel/wood door poses are static barriers for testing, and the open concrete doorway is passable. Door opening/closing is not implemented in this slice.
+
+**Roof climb** marks an optional climbable edge: paint an upper roof tile, return to the lower level, then click the neighboring foothold close to that edge. The foothold must have empty space above it and the upper edge must be open. Gold R arrows mark both ends. Climbing up or down costs 6 AP and changes height by exactly one level. Use the climb buttons or click the destination on its level. Erase roof climb removes the link from either end. Roof links do not create stair holes through floors.

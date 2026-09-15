@@ -2,7 +2,7 @@ import {PROPS,propCells} from './environment.js';
 import {environmentRenderer} from './environment-renderer.js';
 import {bounds,inView,focusSector,sectorOverview} from './view.js';
 import {createWorld,currentMap,travel,travelReason} from './world.js';
-import {parseMap,levelOf,neighbors} from './maps.js';
+import {parseMap,levelOf,roofTop,neighbors} from './maps.js';
 import {edgeCells,edgePoints} from './maps.js';
 import {W,H,WEAPONS,key,alive,squad,guards,occupant,tile,walkable,createGame,pathCost,pathTo,move,stepMovement,previewAttack,attack,equip,reload,endTurn,stepEnemy,canControl} from './engine.js';
 const $=id=>document.getElementById(id),canvas=$('map'),ctx=canvas.getContext('2d'),mini=$('mini').getContext('2d');
@@ -37,6 +37,7 @@ function drawTerrain(){
    if(!visible)diamond(x,y,'#182c2899');
   }
  }
+ for(const link of s.climbs||[])for(const p of [link,roofTop(link)])if(p.z===viewLevel&&s.seen.has(key(p.x,p.y,p.z))){diamond(p.x,p.y,'#dcb86777','#ffe4a2');textLabel(p.z===link.z?'R ↑':'R ↓',p.x,p.y,'#ffe4a2',16);}
  for(const p of s.stairs)if((p.z===viewLevel||p.z+1===viewLevel)&&s.seen.has(key(p.x,p.y,viewLevel))){diamond(p.x,p.y,'#66bccb77','#a6f3ed');textLabel((p.kind==='ladder'?'L ':'')+(p.z===viewLevel?'↑':'↓'),p.x,p.y,'#effffe',16);}
  for(const exit of s.definition.exits.filter(p=>levelOf(p)===viewLevel)){if(s.seen.has(key(exit.x,exit.y,levelOf(exit)))){diamond(exit.x,exit.y,'#72bcd555','#a9e5eb');textLabel('TRAVEL',exit.x,exit.y,'#d8f6f4',8);}}
 
@@ -91,7 +92,7 @@ function updateHover(){
  const routeKey=[s.revision,u.id,u.x,u.y,u.z,hover.x,hover.y,viewLevel].join(':');if(routeCache?.state===s&&routeCache.key===routeKey)route=routeCache.path;else{route=pathTo(s,u,hover.x,hover.y,viewLevel);routeCache={state:s,key:routeKey,path:route};}$('hint').textContent=route?.length?`${hover.x}, ${hover.y} · ${route.length} tiles${s.phase==='player'?` / ${pathCost(route)} AP${pathCost(route)>u.ap?' · NOT ENOUGH AP':''}`:' / free movement'} · Click to move`:walkable(s,hover.x,hover.y,viewLevel)?'Tile occupied or already here.':'Solid obstacle · Find a doorway or go around.';
 }
 function sync(){
- $('level').value=viewLevel;const stairs=neighbors(s,selected()).filter(p=>p.z!==levelOf(selected()));for(const [id,delta]of [['up',1],['down',-1]]){const link=stairs.find(p=>p.z===levelOf(selected())+delta);$(id).disabled=!canControl(s,selected())||s.queue.length>0||!link||(s.phase==='player'&&selected().ap<link.cost);$(id).textContent=(link?.cost===3?'Ladder':link?'Stairs':'Climb')+(delta===1?' ↑':' ↓')+(link?' · '+link.cost+' AP':'');}
+ $('level').value=viewLevel;const stairs=neighbors(s,selected()).filter(p=>p.z!==levelOf(selected()));for(const [id,delta]of [['up',1],['down',-1]]){const link=stairs.find(p=>p.z===levelOf(selected())+delta);$(id).disabled=!canControl(s,selected())||s.queue.length>0||!link||(s.phase==='player'&&selected().ap<link.cost);$(id).textContent=(link?.kind==='roof'?'Roof':link?.cost===3?'Ladder':link?'Stairs':'Climb')+(delta===1?' ↑':' ↓')+(link?' · '+link.cost+' AP':'');}
  $('local-name').textContent=s.definition.name;$('recon-name').textContent=s.definition.name;document.title='Red Shift — '+s.definition.name;
  const u=selected(),w=WEAPONS[u.weapon],t=target(),p=t?previewAttack(s,u,t,burst):null,control=canControl(s,u)&&!s.queue.length;
  if(!t)targetId=null;
@@ -106,7 +107,7 @@ function sync(){
  $('burst').disabled=!control||u.weapon!=='assault';$('burst').textContent=`Burst: ${burst?'on':'off'} [B]`;$('burst').setAttribute('aria-pressed',burst);
  const contacts=guards(s).filter(g=>s.visible.has(key(g.x,g.y,levelOf(g))));$('contact-count').textContent=`${contacts.length} VISIBLE`;
  $('targets').innerHTML=contacts.map(g=>`<button data-target="${g.id}" aria-pressed="${targetId===g.id}">${g.name} · L${levelOf(g)+1} · ${g.hp}</button>`).join('');
- $('target-info').innerHTML=t?`<b>${t.name}</b> / L${levelOf(t)+1} / ${WEAPONS[t.weapon].short}<br>${p.ok?`<strong>${p.chance}%</strong> hit · ${p.cost} AP · ${p.rounds>1?'3 × ':''}${p.damage} damage${p.coverPenalty?` · ${p.heightCover&&!p.cover?'HEIGHT COVER':'COVER'} −${p.coverPenalty}%`:''}${p.rangeBonus?` · HIGH GROUND +${p.rangeBonus} range`:''}`:`${p.reason}${p.cover?' · in cover':''}`}`:'Select a visible guard to inspect a shot.';
+ $('target-info').innerHTML=t?`<b>${t.name}</b> / L${levelOf(t)+1} / ${WEAPONS[t.weapon].short}<br>${p.ok?`<strong>${p.chance}%</strong> hit · ${p.cost} AP · ${p.rounds>1?'3 × ':''}${p.damage} damage${p.coverPenalty?` · ${p.heightCover&&!p.cover?'HEIGHT COVER':'COVER'} −${p.coverPenalty}%`:''}${p.rangePenalty?` · UPHILL +${p.rangePenalty} distance`:''}`:`${p.reason}${p.cover?' · in cover':''}`}`:'Select a visible guard to inspect a shot.';
  $('attack').disabled=!control||!p?.ok;$('attack').textContent=burst&&u.weapon==='assault'?'Fire 3-round burst [F]':w.mag?'Fire weapon [F]':'Melee attack [F]';
  $('end').disabled=s.phase!=='player'||s.queue.length>0;
  $('squad').innerHTML=s.units.filter(u=>u.team==='squad').map(u=>`<button class="squad-card" data-unit="${u.id}" aria-pressed="${s.selected===u.id}" ${!alive(u)?'disabled':''}><span class="num">0${u.id+1}</span><img alt="" src="../assets/characters/${u.species}-idle.png"><div class="info"><strong>${u.name}</strong><small>${alive(u)?`L${levelOf(u)+1} · ${WEAPONS[u.weapon].short} · ${u.hp} HP`:'FALLEN'}</small><div class="bar"><i style="width:${u.hp}%"></i></div><div class="bar ap"><i style="width:${u.ap/u.maxAp*100}%"></i></div><small>${['explore','won'].includes(s.phase)?'READY':`${u.ap} / ${u.maxAp} AP`}</small></div></button>`).join('');
@@ -133,7 +134,7 @@ canvas.addEventListener('wheel',e=>{e.preventDefault();zoom(e.deltaY<0?1.1:1/1.1
 document.addEventListener('keydown',e=>{if(document.querySelector('dialog[open]'))return;if(e.ctrlKey||e.metaKey||e.altKey)return;if(['INPUT','SELECT','TEXTAREA'].includes(e.target.tagName))return;const k=e.key.toLowerCase();if('1234'.includes(k)&&k.length===1)select(Number(k)-1);else if(k===' '){e.preventDefault();endTurn(s);sync();}else if(k==='r'){reload(s,selected());sync();}else if(k==='f')tryAttack();else if(k==='b'&&selected().weapon==='assault'){burst=!burst;sync();}else if(k==='c')center();else if(k==='g')$('grid').click();else if(k==='?'||k==='h')$('manual').showModal();else if(k==='escape'){s.queue=[];sync();}else if(k==='+'||k==='=')zoom(1.2);else if(k==='-')zoom(1/1.2);else if(k.startsWith('arrow')){e.preventDefault();if(k==='arrowleft')camera.x+=50;if(k==='arrowright')camera.x-=50;if(k==='arrowup')camera.y+=50;if(k==='arrowdown')camera.y-=50;}});
 function sector(){const sx=Number($('sector-x').value)-1,sy=Number($('sector-y').value)-1;if(!Number.isInteger(sx)||!Number.isInteger(sy)||sx<0||sy<0||sx>9||sy>9){message('Choose sector coordinates from 1 to 10.');return;}focusSector(camera,width,height,sx,sy);hover=null;route=null;}
 $('sector').onclick=sector;$('level').onchange=()=>{viewLevel=Number($('level').value);hover=null;hoverActor=null;route=null;sync();};
-for(const [id,delta]of [['up',1],['down',-1]])$(id).onclick=()=>{const u=selected();if(!move(s,u,u.x,u.y,levelOf(u)+delta))message('Stand on stairs or a ladder with enough AP to climb.');sync();};
+for(const [id,delta]of [['up',1],['down',-1]])$(id).onclick=()=>{const u=selected(),link=neighbors(s,u).find(p=>p.z===levelOf(u)+delta);if(!link||!move(s,u,link.x,link.y,link.z))message('Stand at stairs, a ladder or a marked roof climb with enough AP.');sync();};
 canvas.addEventListener('dblclick',e=>{if(camera.zoom>=.2)return;const r=canvas.getBoundingClientRect(),p=pick(e.clientX-r.left,e.clientY-r.top);if(p.x<0||p.y<0||p.x>=W||p.y>=H)return;$('sector-x').value=Math.floor(p.x/24)+1;$('sector-y').value=Math.floor(p.y/24)+1;sector();});
 $('mini').onclick=e=>{const r=$('mini').getBoundingClientRect();$('sector-x').value=Math.min(10,Math.floor((e.clientX-r.left)/r.width*10)+1);$('sector-y').value=Math.min(10,Math.floor((e.clientY-r.top)/r.height*10)+1);sector();};
 function frame(now){if(!document.querySelector('dialog[open]')&&now-lastTick>(s.phase==='enemy'?110:130)){lastTick=now;if(s.phase==='enemy')stepEnemy(s);else if(s.queue.length){const before=levelOf(selected());stepMovement(s);if(levelOf(selected())!==before){viewLevel=levelOf(selected());$('level').value=viewLevel;}}if(s.revision!==lastRevision)sync();}draw(now);requestAnimationFrame(frame);}resize();sync();requestAnimationFrame(frame);

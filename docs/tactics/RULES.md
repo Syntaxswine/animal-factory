@@ -3,7 +3,7 @@
 This slice implements mechanics only.
 
 - Elevated sight uses the existing three-dimensional ray checks, plus one tile of downward sight distance per level. Solid walls and floors remain authoritative.
-- Guns get +1 range per level above their target, capped at +2. Melee range does not change. An elevated target gives a 15 percentage-point uphill cover penalty; ordinary directional cover remains 25 points and the two do not stack. Direct vertical stair shots have no imaginary platform-cover bonus.
+- Guns use horizontal distance plus 1 tile per level uphill for range and distance-based accuracy. Downhill shots use normal horizontal distance with no range bonus or penalty. Melee range does not change. An elevated target gives a 15 percentage-point uphill cover penalty; ordinary directional cover remains 25 points and the two do not stack. Direct vertical stair shots have no imaginary platform-cover bonus.
 - Stairs cost 2 AP per level, ladders 3 AP. Old untyped connections remain stairs. Both connect matching XY cells on adjacent levels. Elevators are reserved for later travel between local maps and are not implemented here.
 - Environment props have explicit footprints independent of artwork. Tables and workbenches occupy 2x1 cells, or 1x2 when mirrored. Low props provide directional cover; stacked crates block sight; pallets can be walked over. Fences and railings block crossing while leaving sight open. Wall art remains on shared tile edges.
 - Ground textures are six alternatives for walkable surfaces. Water is impassable. Bridge decks and approach roads remain walkable.
@@ -22,3 +22,11 @@ Six more source assets arrived during integration, bringing the usable palette t
 All 88 automated tests and all 28 environment asset checks pass. The original factory balance smoke test won 20/20 seeds, in 5–7 rounds with 3–4 survivors. This does not establish balance for every 50-character generated map. Browser checks confirmed sprite placement, readable window and door openings, and squad traversal across a generated bridge.
 
 Independent hostile review gates passed at 4/5 for core mechanics, editor integration, the six additional window/door assets, and the final overall review. No blocking findings remain. Evidence screenshots accompany this document.
+
+## Uphill distance correction and roof climbs
+
+Uphill gunfire adds one tile of effective horizontal distance per level; downhill has no distance penalty or bonus. Melee retains its original three-dimensional reach. Existing elevated cover and downward sight rules remain.
+
+Optional marked roof edges connect adjacent tiles exactly one level apart. Climbing costs 6 AP in either direction (twice a ladder), allowing the 7 AP guards to use these routes. Roof support, empty foothold headroom, an open upper edge, and unoccupied endpoints are required. Roof links do not cut sight holes through floors. The editor provides placement and erasure from either endpoint; JSON and world state preserve links. Multiple links can share a foothold: climb buttons choose the first route, while selecting a destination tile allows other routes.
+
+Validation: 95 automated tests pass, including actual enemy roof traversal and AP accounting. Browser playtesting confirmed editor placement and player ascent/descent. Hostile review passed at 4/5 after correcting the initial unaffordable guard climb cost.
