@@ -107,3 +107,7 @@ The firing panel shows aim alignment odds and flags center-line interceptors wit
 ## Sight lobes (2026-09-16, in progress)
 
 Flat species cones are superseded by measured-vision sight lobes: total field, binocular core, hyperbolic acuity fall-off, motion-gated peripheral detection and a detect/identify split that feeds guard suspicion. Parameters, sources, stages and acceptance checks are tracked in SIGHT.md.
+
+## Guard alertness (2026-09-16, in progress)
+
+A gunshot alerts every guard within twice the weapon's range, whoever fired; alerted listeners converge on the approximate report. The alert / at-rest state machine and the twelve authored guard personalities are planned in GUARDS.md.
