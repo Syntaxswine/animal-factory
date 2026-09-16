@@ -110,7 +110,26 @@ Flat species cones are superseded by measured-vision sight lobes: total field, b
 
 ## Guard alertness (2026-09-16, in progress)
 
-A gunshot alerts every guard within twice the weapon's range, whoever fired; alerted listeners converge on the approximate report. The alert / at-rest state machine and the twelve authored guard personalities are planned in GUARDS.md.
+A gunshot alerts every guard within twice the weapon's range, whoever fired; alerted listeners converge on the approximate report. The alert / at-rest state machine and guard personalities drawn at random from twelve archetypes are planned in GUARDS.md.
+
+## Retreat and border crossings — 2026-09-16
+
+Direction from the user: to retreat you physically walk to the edge of the map; the three tiles along the border can manually walk to the next map tile over on the overmap. This answers the open "Easy whole-squad retreat versus retry" question for every difficulty: retreat is a walk, not a button.
+
+- The overmap is a grid of local-map tiles (`world.positions`; Factory 0,0 · Freight yard 1,0 · Outer factory 2,0). Two tiles are linked when they touch. The old link list is derived from the positions, so the travel marker still works as before.
+- A squad member standing on the ground level inside the 3-tile band along an edge that has a map beyond it can cross that edge, in or out of combat, when it is controllable, not moving and (in combat) has one step of AP: the stance's cardinal move cost, plus 2 sneaking; free while exploring.
+- A crosser is off the origin map at once: guards cannot see or target it, its tile is empty, it cannot act there. It waits on the far map's border. Comrades who stay keep fighting.
+- The squad regroups when the last standing member crosses, or when the last standing member falls (the map is lost for those who stayed; the crossers still arrive). All crossers must use the same destination; the travel marker, if used meanwhile, must go to that destination and merges the two groups.
+- Crossers land on the opposite border of the next map at the row or column they left from, on the nearest free walkable tile. Arrival takes the usual 1 hour of clock. The origin map keeps its alerted guards and their last fix; return and the fight resumes.
+- Downed comrades left on the map when the last standing member crosses meet the defeat rule: stabilized are captured, bleeding die. The log names them.
+- A crosser has no body on the map it left: bullets and blasts pass through the tile it stood on (`projectiles.js`, `explosives.js` skip `away` units, the same test `alive()` makes).
+- The far border walks both ways: a waiting crosser can be returned onto the tile it left from while that tile is free, for the same step of AP in combat. Rest and training wait until the squad has regrouped.
+- Crossing mid-turn does not refill the turn: a member that crossed in combat and arrives into a live contact keeps the AP it had. A map left mid-fight, or lost after some comrades crossed, is entered fresh: its guards keep their alert and last fix, contact starts a new round with full AP, and the earlier defeat record moves to `world.defeats` (captured comrades stay captured, the dead stay dead).
+- Shared combat XP still reaches crossers (deliberate: the squad pool is shared). A waiting crosser gets each new round's AP like everyone else, so a return or a later arrival is charged from a fresh turn, not from the AP it crossed with rounds ago.
+- A return is a step: it makes a footstep (3 sneaking / 10) and walks into any fire burning on the tile.
+- Comrades abandoned when the last standing member crosses are written to `world.defeats` exactly as a lost fight records its fallen (cause `abandoned`); a comrade is recorded once, so a map lost twice lists only what the second loss cost.
+
+Checks: `tests/tactics-retreat.test.mjs` (16 cases: grid links; band, ground and AP gates; one crosser leaves a live fight; full regroup on the far border with the clock; abandonment; a lost fight after a crossing; destination commitment and marker merge; landing on a generated map; no body for a rifle round or a blast; return across the edge; downtime waits for regroup; AP carried into a live contact and overwatch cleared; re-entry of a map left mid-fight; re-entry of a lost map; a westward retreat resolves to the factory).
 
 
 ## Implemented weapon ranges and accuracy

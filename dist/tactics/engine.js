@@ -37,8 +37,9 @@ export const stanceOf=u=>Object.hasOwn(STANCES,u?.stance)?u.stance:'standing';
 export function movementNeighbors(s,u,p=u,stairs){return neighbors(s,p,stairs).filter(q=>(levelOf(q)===levelOf(p)||stanceOf(u)==='standing')&&!(levelOf(q)===levelOf(p)&&q.x!==p.x&&q.y!==p.y&&[occupant(s,q.x,p.y,levelOf(p)),occupant(s,p.x,q.y,levelOf(p))].some(v=>v&&v!==u))).map(q=>({...q,cost:levelOf(q)===levelOf(p)?(STANCES[stanceOf(u)].moveCost+(u.sneaking?2:0))*q.cost:q.cost}));}
 export const key=tileKey;
 export const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y,(levelOf(a)-levelOf(b))*3);
-export const alive=u=>u.hp>0;
+export const alive=u=>u.hp>0&&!u.away; // A unit that crossed the map edge is off this map: not a target, not an occupant, not controllable here.
 export const incapacitated=u=>u?.hp===0&&['bleeding','stable'].includes(u.casualty);
+// A physical body on this map is alive(u)||incapacitated(u) with no `away` flag; projectiles.js and explosives.js inline that test (importing engine there would be a cycle).
 export const medicalCost=u=>Math.ceil(12-9*Math.max(0,Math.min(100,Number(u.medical)||0))/100);
 export const squad=s=>s.units.filter(u=>u.team==='squad'&&alive(u));
 export const guards=s=>s.units.filter(u=>u.team==='guard'&&alive(u));
@@ -96,7 +97,8 @@ export function refresh(s){
  if(s.queue.length&&[...s.detected].some(id=>!oldDetected.has(id))){s.queue=[];log(s,'Movement stopped: new opponent spotted.');}
  else if(s.queue.length&&Object.keys(s.glimpses).some(id=>!oldGlimpses[id]&&!oldDetected.has(Number(id)))){s.queue=[];log(s,'Movement stopped: movement glimpsed.');}
  if(s.visible!==oldVisible||s.seen.size<s.visible.size)for(const k of s.visible)s.seen.add(k);
- if(!squad(s).length){if(!s.defeat){for(const u of s.units.filter(u=>u.team==='squad')){u.casualty=u.casualty==='stable'?'captured':'dead';u.bleedTurns=0;u.ap=0;u.overwatch=null;syncWeapons(u);}s.defeat={location:s.definition.name,round:s.round,captured:s.units.filter(u=>u.team==='squad'&&u.casualty==='captured').map(u=>structuredClone(u)),dead:s.units.filter(u=>u.team==='squad'&&u.casualty==='dead').map(u=>({id:u.id,name:u.name}))};log(s,s.defeat.captured.length+' captured / '+s.defeat.dead.length+' dead.');}s.phase='lost';s.queue=[];return;}
+ if(!squad(s).length){if(!s.defeat){const escaped=s.units.filter(u=>u.team==='squad'&&u.away);for(const u of s.units.filter(u=>u.team==='squad'&&!u.away)){u.casualty=u.casualty==='stable'?'captured':'dead';u.bleedTurns=0;u.ap=0;u.overwatch=null;syncWeapons(u);}const fresh=s.units.filter(u=>u.team==='squad'&&!u.recorded&&['captured','dead'].includes(u.casualty));s.defeat={location:s.definition.name,round:s.round,escaped:escaped.map(u=>({id:u.id,name:u.name})),captured:fresh.filter(u=>u.casualty==='captured').map(u=>structuredClone(u)),dead:fresh.filter(u=>u.casualty==='dead').map(u=>({id:u.id,name:u.name}))};for(const u of fresh)u.recorded=true; // a loss lists only the comrades it cost; earlier losses on the roster stay recorded once
+log(s,s.defeat.captured.length+' captured / '+s.defeat.dead.length+' dead.'+(escaped.length?' '+escaped.length+' crossed the map edge.':''));}s.phase='lost';s.queue=[];return;}
  if(!alive(s.units[s.selected]))s.selected=squad(s)[0].id;
  s.exposed={};for(const g of guards(s))if(s.detected.has(g.id)){const zones=new Set();for(const u of squad(s))if(canSee(s,u,g))for(const zone of visibleZones(s,u,g))zones.add(zone);s.exposed[g.id]=[...zones];}
  const pending=s.units.some(u=>u.casualty==='bleeding'||alive(u)&&u.burningTurns>0)||(s.fires?.length||0)>0;
@@ -111,6 +113,8 @@ export function refresh(s){
  s.revision++;
 }
 export function canControl(s,u){return u&&alive(u)&&!u.burningTurns&&u.team==='squad'&&['explore','player','won'].includes(s.phase);}
+// Downed comrades left on a map when the last standing squad member crosses its edge meet the defeat rule: stabilized are captured, bleeding die.
+export function abandonCasualties(s){const left=[];for(const u of s.units)if(u.team==='squad'&&!u.away&&incapacitated(u)){u.casualty=u.casualty==='stable'?'captured':'dead';u.bleedTurns=0;u.ap=0;u.overwatch=null;syncWeapons(u);left.push(u);}return left;}
 export function setStance(s,u,stance){
  if(!Object.hasOwn(STANCES,stance)||!canControl(s,u)||s.queue.length||stanceOf(u)===stance||(s.phase==='player'&&u.ap<2))return false;
  if(s.phase==='player')u.ap-=2;u.overwatch=null;u.stance=stance;refresh(s);log(s,u.name+' is '+stance+'.');return true;
@@ -166,7 +170,7 @@ function ignite(s,u){
  if(u.team==='guard')u.alert=true;
  s.queue=[];log(s,u.name+' is on fire / panic for 3 turns.');
 }
-function enterFire(s,u){if(s.fires?.some(p=>p.x===u.x&&p.y===u.y&&p.z===levelOf(u)))ignite(s,u);}
+export function enterFire(s,u){if(s.fires?.some(p=>p.x===u.x&&p.y===u.y&&p.z===levelOf(u)))ignite(s,u);}
 function panicRun(s,u){
  if(!alive(u)||!u.burningTurns)return;
  const heading=Math.floor(random(s)*8)*45;
@@ -263,7 +267,7 @@ export function endTurn(s){if(s.phase!=='player'||s.queue.length)return false;fo
 export function stepEnemy(s){
  if(s.phase!=='enemy')return false;
  const g=s.units[s.enemyIndex];
- if(!g){finishFireRound(s);s.phase='player';s.round++;for(const p of squad(s)){p.ap=p.burningTurns?0:p.maxAp;p.overwatch=null;settleStress(p,2);}refresh(s);log(s,`Squad turn / ${s.round}.`);return true;}
+ if(!g){finishFireRound(s);s.phase='player';s.round++;for(const p of squad(s)){p.ap=p.burningTurns?0:p.maxAp;p.overwatch=null;settleStress(p,2);}for(const p of s.units)if(p.team==='squad'&&p.away&&p.hp>0){p.ap=p.maxAp;p.away.ap=p.maxAp;}/* a comrade waiting beyond the edge gets the new turn too */refresh(s);log(s,`Squad turn / ${s.round}.`);return true;}
  if(g.team!=='guard'||!alive(g)||g.burningTurns>0||!g.alert||g.ap<1){s.enemyIndex++;return true;}
  const targets=squad(s).filter(p=>canSee(s,g,p)).sort((a,b)=>distance(g,a)-distance(g,b));
  const target=targets[0];if(target)g.lastKnown={x:target.x,y:target.y,z:levelOf(target)};
