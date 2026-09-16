@@ -1,6 +1,6 @@
 # Guard alertness and personalities — proposal and tracking record
 
-Opened 2026-09-16 on branch `tactics-guard-alertness`, stacked on `tactics-sight-lobes` (SIGHT.md). Direction from the user: guns alert guards at twice their range; guards, like mercs, get different personalities; that needs an alert / at-rest rule set first; twelve personalities, expanding what the friendly-fire reactions began.
+Opened 2026-09-16 on branch `tactics-guard-alertness`, stacked on `tactics-sight-lobes` (SIGHT.md). Direction from the user: guns alert guards at twice their range; guards, like mercs, get different personalities; that needs an alert / at-rest rule set first; twelve personalities, expanding what the friendly-fire reactions began; then, later the same day, personalities drawn at random from twelve Jungian archetypes rather than authored per guard.
 
 ## Status
 
@@ -8,7 +8,7 @@ Opened 2026-09-16 on branch `tactics-guard-alertness`, stacked on `tactics-sight
 | --- | --- | --- |
 | G1 | Gunshot alarm at twice weapon range, for squad and guard shooters | Built on this branch, tests in `tests/tactics-alarm.test.mjs` |
 | G2 | Guard alert states: rest, suspicious, alert, searching, stand-down, broken; combat can end without killing everyone; return to post | Planned, awaiting review of this document |
-| G3 | Twelve authored guard personalities driving vigilance, nerve, initiative, obedience, barks and stress | Planned |
+| G3 | Twelve Jungian archetypes drawn at random; bonds derived by wheel + affinity + friction (`tools/archetype-bonds.mjs`); traits for the state machine; barks | Designed, awaiting review |
 | G4 | Shouted alarms between guards, guard-to-guard friendly-fire reactions and grudges | Planned |
 
 Same gates as the other arcs: full suite green, 20-seed balance before and after, hostile review of at least 4/5 before the next stage.
@@ -58,35 +58,87 @@ Proposed defaults, before personality scaling: N = 12, K = 3, M = 4, R = 2, shou
 
 **Acceptance properties.** A guard cannot skip from Rest to Searching. Stand-down always ends at the post or in a higher state, never stalled. A wall blocks every sight-based transition and none of the sound-based ones. Combat ends within K+M rounds of the last identification if nobody fires. The existing bot cannot exploit "Area quiet" by standing still next to an alerted guard.
 
-## G3: twelve personalities
+## G3: twelve archetypes, drawn at random
 
-Same authored-person approach as the mercs, with the six existing traits (aggression, pride, discipline, forgiveness, loyalty, humor) plus four guard-specific ones that the state machine reads:
+Direction 2026-09-16: personalities are randomly selected from twelve archetypes, not authored per guard. Another agent suggested the Jungian twelve, each defined by a want, a fear, a way of speaking and a failure mode:
 
-- **vigilance** scales the suspicion radius, glimpse-to-suspicion chance and N. Dozy guards ignore small noises; jumpy ones investigate everything.
-- **nerve** sets the break point: HP fraction and allies-lost count at which Alert becomes Broken. Zealots never break.
-- **initiative** decides whether a guard leaves post to pursue or holds and lets the fight come to it; also the Searching radius.
-- **obedience** gates response to shouts and rallies: high follows the officer's fix, low keeps its own.
+| Archetype | Wants | Fears | Speaks | Fails by |
+| --- | --- | --- | --- | --- |
+| Innocent | safety and simple happiness | doing something wrong | plainly, trusts first | denial: ignoring what is ugly until it bites |
+| Everyman | to belong | standing out, being left behind | common sense, understatement | going along with the crowd against their own judgment |
+| Hero | to prove worth through hard action | weakness | challenges and deadlines | arrogance: picking fights that did not need fighting |
+| Caregiver | to protect others | selfishness in themselves | warmly, asks what you need | martyrdom and smothering, helping past the point of being asked |
+| Explorer | freedom and new ground | being trapped or conforming | restlessly, about the next place | never committing, wandering when staying was the task |
+| Rebel | to break what is broken | being powerless | bluntly, provokes on purpose | destroying things that worked, revolt as habit |
+| Lover | intimacy and beauty | being unwanted | sensory detail and devotion | losing self in the other, pleasing rather than telling the truth |
+| Creator | to make something that lasts | mediocrity | ideas and half-finished sketches | perfectionism, never shipping |
+| Jester | to enjoy the moment, make others laugh | boredom, being boring | jokes that carry the true thing | frivolity, joking through the moment that needed seriousness |
+| Sage | to understand | being deceived or ignorant | carefully, cites, qualifies | paralysis: studying instead of acting |
+| Magician | to transform situations | unintended consequences | systems and hidden levers | manipulation: treating people as parts |
+| Ruler | order and control | chaos, being overthrown | decisions and responsibilities | authoritarianism: control past the point of usefulness |
 
-Stress and fatigue reuse the merc meters: being shot raises stress, a kill relieves it, high stress lowers accuracy and nerve.
+### Who gets along and who is at each other's throats
 
-| # | Name | Species and weapon at the factory | Archetype | Vigilance | Nerve | Initiative | Obedience | Voice |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | Boris | pig-foreman, pistol | The shift sergeant. Twenty years on the gate. Holds post, rallies the others, counts them like tools. | 70 | 80 | 40 | 60 | "Positions. Nobody improvises." |
-| 2 | Lev | cow, rifle | The conscript. Three weeks in, jumps at pallets. Investigates everything, breaks early. | 90 | 25 | 50 | 85 | "Did you hear that? I heard that." |
-| 3 | Grigori | pig-foreman, pistol | The brute. Pursues at a run, ignores cover, holds grudges against anyone who shoots near him. | 50 | 75 | 95 | 30 | "Come out. It goes worse if I have to look." |
-| 4 | Oleg | donkey, knife | The dozer. Half asleep at rest, slow to notice, then stubborn as a gate. Knife because he lost the pistol. | 20 | 70 | 30 | 50 | "...what. What is it." |
-| 5 | Pavel | pig-foreman, flamethrower | By the book. Never leaves post unless ordered, follows Boris exactly, reads the manual aloud. | 60 | 60 | 15 | 100 | "Procedure eleven. I am applying procedure eleven." |
-| 6 | Igor | goat, pistol | The coward. Hides at the first shot, runs at half health, would surrender if the game allowed it. | 65 | 10 | 20 | 40 | "I only work here. I am not paid for this part." |
-| 7 | Anton | cow, rifle | The curious one. Investigates furthest and longest, narrates his own patrol, forgets to be afraid. | 80 | 50 | 70 | 45 | "Interesting. That crate was not there this morning." |
-| 8 | Vadim | pig-foreman, pistol | The hunter. Patient, holds cover, waits for the shot. The first guard to use overwatch when guards get it. | 75 | 65 | 35 | 35 | "Take your time. I have all of mine." |
-| 9 | Yuri | pig-foreman, pistol | The comrade. Rushes to whoever is shot or shouting. High loyalty, the strongest bonds in the roster. | 55 | 60 | 80 | 70 | "Hold on, I am coming, do not do anything clever." |
-| 10 | Sasha | donkey, knife | The zealot. Believes the posters. Charges, never retreats, never breaks. | 60 | 100 | 100 | 90 | "The Directorate sees you. I am its eyes today." |
-| 11 | Pyotr | cow, rifle | The drinker. Accuracy down, hearing down, turns to random headings, sings. Loud, so his shots carry further. | 30 | 45 | 40 | 20 | "Which way is the noise. Both. Fine." |
-| 12 | Nikolai | pig-foreman, AK-47 | The careerist officer. Stays back, shouts the alarm furthest, takes the credit, is first to stand down when it turns. | 65 | 35 | 25 | 10 | "Report. Someone report so I can report it." |
+Bonds are derived, not authored, by three rules (`tools/archetype-bonds.mjs` prints the matrix):
 
-Each entry ships with background, motivation and temperament lines in the merc format, two barks per state that a bark is worth (contact, investigating, breaking, standing down), and a bond table among the twelve (Boris trusts Pavel and Yuri, resents Nikolai; Grigori and Igor despise each other; Lev looks to Boris; Pyotr is nobody's favourite). Barks use the same log channel as merc dialogue and the same social RNG stream, so they never consume ballistic randomness.
+1. **The wheel.** Pearson's four orientations, 30° apart in this order: Innocent, Sage, Explorer (independence); Rebel, Magician, Hero (risk and mastery); Lover, Jester, Everyman (belonging); Caregiver, Ruler, Creator (stability and control). Opposite orientations sit 180° apart. Base bond = 30·cos(angle between them): +30 for the same, +26 next door, 0 at a right angle, −30 opposite.
+2. **Affinity, +15 both ways**, where wants complete each other: Innocent–Caregiver, Innocent–Ruler, Everyman–Caregiver, Everyman–Jester, Hero–Ruler, Hero–Rebel, Caregiver–Lover, Explorer–Rebel, Explorer–Sage, Creator–Magician, Creator–Sage, Jester–Lover, Sage–Magician, Ruler–Creator, Rebel–Magician.
+3. **Friction, −15 one way**, when A's failure mode is exactly what B fears: B resents A. The Rebel's habit of breaking what worked hits the Ruler's fear of chaos, the Innocent's need for safety, the Creator's lasting work and the Everyman's crowd. The Magician's manipulation hits five fears (wrongdoing, exclusion, being unwanted, selfishness, powerlessness). The Jester's frivolity hits four. The full failure-to-fear map is in the script.
 
-Where names repeat on generated 46-guard maps, the thirteenth guard onward draws a personality by seed from the same twelve, with the name suffixed as today.
+Same-archetype pairs start at +30, minus 10 for the competitive types (Hero, Ruler, Rebel, Jester, Magician: two Rulers on one shift is one Ruler too many) and plus 10 for the cooperative ones (Everyman, Caregiver, Innocent).
+
+The resulting initial bond seeds (row regards column; the merc bond scale is −100..100 and these are starting values, not ceilings):
+
+| regards → | Inno | Sage | Expl | Rebe | Magi | Hero | Love | Jest | Ever | Care | Rule | Crea |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| **Innocent** | +40 | +26 | +15 | -15 | -30 | -41 | -30 | -26 | -15 | +15 | +30 | +26 |
+| **Sage** | +11 | +30 | +41 | +15 | +15 | -15 | -41 | -45 | -41 | -15 | 0 | +30 |
+| **Explorer** | +15 | +26 | +30 | +41 | +15 | 0 | -15 | -26 | -30 | -41 | -30 | 0 |
+| **Rebel** | 0 | 0 | +41 | +20 | +26 | +30 | 0 | -15 | -41 | -45 | -41 | -15 |
+| **Magician** | -30 | +15 | +15 | +41 | +20 | +26 | +15 | 0 | -15 | -26 | -30 | -11 |
+| **Hero** | -26 | -30 | 0 | +30 | +26 | +20 | +11 | 0 | -15 | -30 | -11 | -45 |
+| **Lover** | -30 | -26 | -15 | 0 | 0 | +26 | +30 | +41 | +15 | +15 | -15 | -26 |
+| **Jester** | -26 | -30 | -26 | -15 | 0 | +15 | +41 | +20 | +41 | +15 | -15 | -15 |
+| **Everyman** | -15 | -26 | -45 | -41 | -30 | -15 | +15 | +41 | +40 | +41 | +15 | 0 |
+| **Caregiver** | +15 | -15 | -26 | -30 | -41 | -30 | +15 | 0 | +41 | +40 | +26 | +15 |
+| **Ruler** | +30 | 0 | -30 | -41 | -30 | -26 | -15 | -15 | +15 | +26 | +20 | +26 |
+| **Creator** | +26 | +30 | 0 | -30 | -11 | -30 | -26 | -15 | 0 | +15 | +41 | +30 |
+
+**Allies, both ways:** Explorer–Rebel (+41/+41), Lover–Jester, Jester–Everyman, Everyman–Caregiver (all +41/+41), Sage–Explorer (+41/+26), Rebel–Magician, Ruler–Creator, Innocent–Ruler, Sage–Creator, Rebel–Hero.
+
+**At each other's throats:** Rebel–Ruler (−41/−41), Rebel–Everyman (−41/−41), Hero–Creator (−45/−30), Rebel–Caregiver (−45/−30), Explorer–Everyman (−30/−45), Sage–Jester (−45/−30), Magician–Caregiver, Explorer–Caregiver, Sage–Everyman, Sage–Lover.
+
+**One-sided, which is where the drama is:** the Sage admires the Explorer more than the Explorer notices (+41/+26); the Magician wants the Rebel as an instrument more than the Rebel wants the Magician (+41/+26); the Creator looks up to the Ruler, who barely rates them (+41/+26); the Innocent trusts the Sage (+26), who finds the Innocent's denial tiresome (+11); the Lover is drawn to the Hero (+26), who returns +11. These asymmetric pairs are what the friendly-fire reaction turns into grudges: the one who cared more takes the hit harder.
+
+Across all 66 pairs the mean two-way sum is −7 and 32 pairs are negative in both directions, so a random four-merc squad is fractious by default. That is a knob: the wheel amplitude (30) sets how much orientation matters, the friction weight (15) how much failure modes matter. Halving the amplitude gives a mostly neutral roster with a few feuds.
+
+### What an archetype does in the guard state machine
+
+The four state-machine traits from G2 come from the archetype; Codex's six merc traits are set in the same table so the retaliation formula works unchanged.
+
+| Archetype | Vigilance | Nerve | Initiative | Obedience | Aggression | Pride | Discipline | Forgiveness | Loyalty | Humor | On the gate |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Innocent | 60 | 30 | 30 | 80 | 20 | 30 | 60 | 85 | 70 | 40 | Trusts the quiet. Slow to believe a shadow is a threat, quick to break when it is. |
+| Everyman | 50 | 45 | 30 | 85 | 35 | 35 | 60 | 60 | 75 | 50 | Does what the others do. Goes where the shout goes. |
+| Hero | 60 | 85 | 95 | 40 | 85 | 80 | 55 | 30 | 60 | 45 | Pursues at a run. First through the door, first to pick the fight. |
+| Caregiver | 65 | 55 | 60 | 60 | 30 | 40 | 70 | 80 | 95 | 35 | Runs to whoever is hit. Stands over the wounded instead of firing. |
+| Explorer | 85 | 50 | 80 | 20 | 50 | 55 | 30 | 55 | 40 | 60 | Investigates furthest and longest, then does not come back to post. |
+| Rebel | 55 | 75 | 90 | 10 | 90 | 75 | 20 | 20 | 35 | 55 | Ignores the shout, ignores the post, provokes the mercs and the officer alike. |
+| Lover | 45 | 35 | 40 | 65 | 30 | 50 | 45 | 70 | 85 | 50 | Stays close to a bonded colleague; breaks when that colleague falls. |
+| Creator | 55 | 45 | 25 | 45 | 30 | 60 | 75 | 50 | 55 | 40 | Holds post and improves it: cover, angles. Slow to leave. |
+| Jester | 40 | 40 | 55 | 30 | 45 | 45 | 25 | 65 | 60 | 95 | Barks constantly, which is noise. Dozy on watch, lively in contact. |
+| Sage | 90 | 50 | 20 | 55 | 25 | 55 | 85 | 55 | 50 | 30 | Notices everything, acts late. Long searches, patient overwatch. |
+| Magician | 70 | 60 | 65 | 25 | 55 | 65 | 60 | 35 | 40 | 45 | Flanks. Uses the alarm to move others, keeps its own fix. |
+| Ruler | 70 | 70 | 45 | 50 | 55 | 85 | 90 | 30 | 65 | 25 | Holds post, shouts furthest, expects the shout obeyed. Stands down last. |
+
+Species traits (SIGHT.md) and archetype traits stack; the archetype never changes what a species can see.
+
+### Assignment
+
+- Guards draw an archetype from the social RNG stream at map creation (never the ballistic stream), so a seed reproduces its roster. Guards may repeat archetypes; the twelve factory names stay as names.
+- A merc squad draws four distinct archetypes. The four authored mercs keep their authored bonds and gain an archetype tag for the state-machine traits: Yakov Ruler, Anya Rebel, Misha Creator, Vera Caregiver. The derived matrix already scores Yakov–Anya at −41 both ways, Anya–Misha at −15/−30 and Yakov–Vera at +26/+26, which matches the hand-written bonds in sign.
+- Initial bonds among guards, among mercs, and between a captured merc and its captors all come from the matrix; the friendly-fire reaction, the kill relief and the stress meters then move them as today.
+- Each archetype ships with two barks per state, in its speech register from the table above, on the merc dialogue channel.
 
 ## G4: shouts and guard-on-guard incidents
 
