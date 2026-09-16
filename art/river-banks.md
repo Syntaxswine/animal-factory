@@ -8,7 +8,7 @@ Preview: `dist/tactics/river-bank-art.html`. Generator: `shore-tiles.js`. This r
 
 Draw animated water beneath the bank layer. Keep water orientation and phase consistent between tiles. Adjacent tiles must agree on BOTH corners of their shared edge. A land/water boundary crosses a mixed edge at its midpoint; the entire boundary RGBA profile is identical across compatible tiles and variants. Interior contour variation fades out with zero slope at edges. The generator uses shared corner interpolation rather than fixed-width river paths, allowing wide rivers, coasts and lakes.
 
-The preview swaps variants without changing meeting points and can display a grid with shoreline crossing markers. A dropdown selects A, B or C for tile-set inspection. Export saves all 48 cells as one overlay atlas. Separate gameplay integration remains outstanding.
+The preview swaps variants without changing meeting points and can display a grid with shoreline crossing markers. A dropdown selects A, B or C for tile-set inspection. Export saves all 48 cells as one overlay atlas. The game and builder use this atlas through `river-renderer.js`. The Water brush and existing water maps choose matching banks automatically. Four shoreline quadrants keep the banks inside blocked water cells and retain open centers even in isolated pools; bridge neighbors continue the channel. Water shares one animated frame across all tiles, and reduced-motion preferences use a still frame.
 
 ## Validation
 
