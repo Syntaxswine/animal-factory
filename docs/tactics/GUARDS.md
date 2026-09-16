@@ -219,14 +219,14 @@ Direction 2026-09-16: there should also be people that mercs like working with, 
 | Event | Bonded partner (60 and up) | Trusted partner (25 to 59) |
 | --- | --- | --- |
 | A clock day together on the same local map | +5 | +2 |
-| That partner killed | −40 happiness, stress +25 | −20 happiness, stress +15 |
+| That partner killed | −75 happiness, stress +25 | −35 happiness, stress +15 |
 | That partner captured | −20 until rescued, then +15 on the rescue | −10 until rescued, then +5 |
 | That partner quits | −15 | −5 |
 | That partner stabilized by this merc | +5 (relief), on top of the bond gain | +3 |
 
 The daily bonus stacks per liked partner and offsets decay from opposing ones, so a merc who hates one squadmate but is bonded to two others holds steady: +10 − 5 a day. Deaths are settled at the moment of death, at the rung in force then, and they ignore the resting level: a feud partner's death gives relief (stress −10) and no happiness change; a cautious partner's death is stress only, as today.
 
-The grief case is the intended consequence: a merc at 30 happiness who loses a bonded partner drops to zero on the spot and, if nothing lifts the meter within 24 clock hours, walks. A separate map from the opposing partner or a casualty-free win is what lifts it. The log names the reason: "Vera has not spoken since Misha died."
+The grief case is the intended consequence: a merc below 75 happiness who loses a bonded partner drops to zero on the spot and, if nothing lifts the meter within 24 clock hours, walks; only a merc near full happiness keeps anything, and then only 25. (Direction 2026-09-16: −75 rather than a full wipe.) A separate map from the opposing partner or a casualty-free win is what lifts it. The log names the reason: "Vera has not spoken since Misha died."
 
 If the killer was a squadmate (friendly fire), the survivor's grudge against the killer uses the existing incident ledger at the dead partner's rung as a multiplier: a bonded partner killed by a comrade's burst is the fastest route to a feud in the game.
 
@@ -243,7 +243,7 @@ Guards do not quit; they are not on contract. A guard roster's opposing pairs ex
 5. Happiness never leaves 0..100; the clock rollover at midnight does not double-settle.
 6. A guard never has a happiness meter.
 7. A bonded partner on the same map adds exactly 5 per 24 clock hours, and offsets an opposing partner to a net zero.
-8. A bonded partner's death costs 40 happiness and 25 stress at once; a feud partner's death costs nothing and relieves 10 stress.
+8. A bonded partner's death costs 75 happiness and 25 stress at once; a feud partner's death costs nothing and relieves 10 stress.
 9. A bonded partner killed by a squadmate's bullet raises the survivor's grudge against that squadmate by the bonded multiplier.
 
 ## Balance record
