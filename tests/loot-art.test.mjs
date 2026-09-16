@@ -1,8 +1,20 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {deathDropArt,fallenVisible,drawDeathDrops} from '../dist/tactics/loot-art.js';
+import {deathDropArt,fallenVisible,drawDeathDrops,inventoryArt,drawLootPile} from '../dist/tactics/loot-art.js';
 import {createGame,refresh,key} from '../dist/tactics/engine.js';
 import {blankMap} from '../dist/tactics/maps.js';
+
+test('loot artwork follows remaining inventory and never leaves ghost guns after pickup',()=>{
+ const pile={items:[{type:'weapon',kind:'rifle'},{type:'ammo',kind:'rifle',count:5}]},calls=[];
+ const draw=()=>drawLootPile({drawImage:(img)=>calls.push(img.src)},src=>({src,complete:true,naturalWidth:1254}),pile,{x:0,y:0},1);
+ assert.equal(draw(),true);assert.equal(calls.length,2);
+ pile.items.splice(0,1);calls.length=0;draw();assert.deepEqual(calls,[inventoryArt(pile.items[0])]);
+ pile.items=[];calls.length=0;assert.equal(draw(),false);assert.equal(calls.length,0);
+ assert.deepEqual(deathDropArt({hp:0,weapon:'rifle',lootDropped:true}),[]);
+ assert.equal(inventoryArt({type:'weapon',kind:'knife'}),null);
+ assert.match(inventoryArt({type:'utility',kind:'medkits'}),/first-aid-kit/);
+ assert.match(inventoryArt({type:'utility',kind:'wireCutters'}),/wire-cutters/);
+});
 
 test('dead firearm users show their equipped gun and only nonempty matching ammo',()=>{
  for(const weapon of ['pistol','rifle','assault']){

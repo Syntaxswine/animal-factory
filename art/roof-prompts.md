@@ -2,7 +2,7 @@
 
 Three original 1254 × 1254 RGBA PNGs generated using the built-in image_gen tool. Reference: dist/assets/environment/wall-corrugated.png. Originals retain their generated alpha without processing.
 
-These are art assets for preview; gameplay placement, anchors, projection calibration and seamless joins remain integration work. The parapet module represents a whole enclosed rooftop, not a repeatable interior tile.
+All three are integrated as 2 x 2 walkable roof modules on existing supported floors. Calibrated crop bounds and tile-scale rendering are shared by game and editor, with roof surfaces drawn before actors. The low parapet provides 25 cover and can be stepped over. Place via Props > Roof modules; upper floor tiles and stairs or roof climbs provide access. These are complete framed modules, not seamless interior textures.
 
 ## Exact prompts
 

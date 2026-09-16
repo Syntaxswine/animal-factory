@@ -916,6 +916,76 @@
         "blocksSight": false,
         "cover": "none"
       }
+    },
+    {
+      "id": "tree-broadleaf",
+      "file": "foliage/tree-broadleaf.png",
+      "label": "tree broadleaf",
+      "kind": "prop",
+      "suggestedFootprint": [
+        1,
+        1
+      ]
+    },
+    {
+      "id": "tree-pine",
+      "file": "foliage/tree-pine.png",
+      "label": "tree pine",
+      "kind": "prop",
+      "suggestedFootprint": [
+        1,
+        1
+      ]
+    },
+    {
+      "id": "bush",
+      "file": "foliage/bush.png",
+      "label": "bush",
+      "kind": "prop",
+      "suggestedFootprint": [
+        1,
+        1
+      ]
+    },
+    {
+      "id": "reeds",
+      "file": "foliage/reeds.png",
+      "label": "reeds",
+      "kind": "prop",
+      "suggestedFootprint": [
+        1,
+        1
+      ]
+    },
+    {
+      "id": "roof-corrugated-flat",
+      "file": "roof-corrugated-flat.png",
+      "label": "roof corrugated flat",
+      "kind": "prop",
+      "suggestedFootprint": [
+        2,
+        2
+      ]
+    },
+    {
+      "id": "roof-corrugated-sloped",
+      "file": "roof-corrugated-sloped.png",
+      "label": "roof corrugated sloped",
+      "kind": "prop",
+      "suggestedFootprint": [
+        2,
+        2
+      ]
+    },
+    {
+      "id": "roof-flat-parapet",
+      "file": "roof-flat-parapet.png",
+      "label": "roof flat parapet",
+      "kind": "prop",
+      "suggestedFootprint": [
+        2,
+        2
+      ]
     }
   ]
 }

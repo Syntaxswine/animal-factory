@@ -10,7 +10,15 @@ for folder in ['facility', 'hospital', 'containers', 'loot']:
     for path in sorted((assets / folder).glob('*.png')):
         alpha = Image.open(path).convert('RGBA').getchannel('A')
         art[path.stem] = {'file': f'{folder}/{path.name}', 'crop': alpha.point(lambda a: 255 if a >= 64 else 0).getbbox()}
+for name in ['tree-broadleaf', 'tree-pine', 'bush', 'reeds']:
+    path = assets / 'foliage' / (name + '.png')
+    alpha = Image.open(path).convert('RGBA').getchannel('A')
+    art[name] = {'file': f'foliage/{path.name}', 'crop': alpha.point(lambda a: 255 if a >= 64 else 0).getbbox()}
 path = assets / 'fence-chainlink-cut.png'
+for name in ['roof-corrugated-flat', 'roof-corrugated-sloped', 'roof-flat-parapet']:
+    roof = assets / (name + '.png')
+    alpha = Image.open(roof).convert('RGBA').getchannel('A')
+    art[name] = {'file': roof.name, 'crop': alpha.point(lambda a: 255 if a >= 64 else 0).getbbox()}
 art['fence-cut'] = {'file': path.name, 'crop': Image.open(path).convert('RGBA').getchannel('A').point(lambda a: 255 if a >= 64 else 0).getbbox()}
 # Pixel anchors at each barrier's foot, plus visible post height; mapped onto either tile edge.
 for key in ['jail-bars', 'jail-door-closed']:

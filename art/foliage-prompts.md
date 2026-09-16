@@ -2,9 +2,9 @@
 
 Seven assets generated with built-in image_gen using `dist/assets/environment/ground-grass.png` as the palette and texture reference. Files: `dist/assets/environment/foliage/`. Gallery: `dist/tactics/foliage-art.html`.
 
-Plants are transparent isometric props: broadleaf tree, pine, low bush and reeds. Trees have a proposed one-tile trunk footprint with canopy overhang. World scale, anchors, cover and collision are not yet registered.
+Plants are transparent isometric props: broadleaf tree, pine, low bush and reeds. Trees use one-tile solid trunks with canopy overhang; bushes provide walkable low cover and reeds are walkable dressing. Crops, scale and gameplay rules are registered in the shared game/editor renderer.
 
-River assets are opaque top-down square textures for ground projection: open water, north/south straight channel, north/east bend. Rotations give other directions. They are first-pass terrain art, NOT verified seamless autotiles. Generated boundaries and ripple colors still vary; the bend east outlet is lower than the straight tile center. The gallery exposes these joins directly. Edge registration/blending is required before production map use. Open water is a separate fill texture, not a channel cap. No fork, source or shoreline transition set is included.
+River assets are opaque top-down square textures for ground projection: open water, north/south straight channel, north/east bend. Rotations give other directions. The straight and bend files are superseded source studies, not runtime tiles. Gameplay uses animated river-water with the connected shore-tiles-atlas. Generated boundaries and ripple colors still vary; the bend east outlet is lower than the straight tile center. The gallery exposes these joins directly. Edge registration/blending is required before production map use. Open water is a separate fill texture, not a channel cap. No fork, source or shoreline transition set is included.
 
 ## Exact prompts
 

@@ -1,6 +1,9 @@
 import {PROPS,EDGES,GROUNDS} from '../dist/tactics/environment.js';
 import {CHARACTER_SPECIES,ARMED_WEAPONS,characterArt} from '../dist/tactics/character-art.js';
-import {readFile} from 'node:fs/promises';
+import {readFile,readdir} from 'node:fs/promises';
+import {PROP_ART} from '../dist/tactics/prop-art.js';
+import {DOOR_ART} from '../dist/tactics/door-art.js';
+import {RED_HAT_SPECIES,unitArt} from '../dist/tactics/red-hats-art.js';
 import assert from 'node:assert/strict';
 import {TYPES} from '../dist/engine.js';
 const root=new URL('../dist/',import.meta.url);
@@ -25,6 +28,16 @@ const environment=JSON.parse(await readFile(new URL('assets/environment/manifest
 const artIds=[...Object.keys(PROPS),...new Set(Object.values(EDGES).map(r=>r.art).filter(Boolean)),...GROUNDS];
 assert.deepEqual(environment.assets.map(a=>a.id).sort(),artIds.sort());
 for(const a of environment.assets)await checkPNG('assets/environment/'+a.file,1254,1254,a.kind==='terrain'?2:6);
+// Validate the actual runtime overrides as well as catalog paths.
+const active=new Set(environment.assets.map(a=>(DOOR_ART[a.id]||PROP_ART[a.id])?.file||a.file));
+for(const file of active)await readFile(new URL('assets/environment/'+file,root));
+active.add('foliage/river-water.png');active.add('foliage/shore-tiles-atlas.png');
+const superseded=new Set(['door-steel-closed.png','door-wood-closed.png','doorway-concrete-open.png','foliage/river-straight.png','foliage/river-bend.png','foliage/river-banks-atlas.png']);
+for(const file of await readdir(new URL('assets/environment/',root),{recursive:true}))if(file.endsWith('.png'))assert.ok(active.has(file.replaceAll('\\','/'))||superseded.has(file.replaceAll('\\','/')),`Unattached environment sprite: ${file}`);
+for(const species of RED_HAT_SPECIES)for(const weapon of ['hands',...ARMED_WEAPONS])for(const stance of ['standing','kneeling','prone']){
+ const frame=unitArt({species,weapon,stance,outfit:'red-hats'});
+ await checkPNG(frame.src.replace('../',''),frame.width,frame.height);
+}
 console.log(`Verified tactical assets: ${CHARACTER_SPECIES.length*ARMED_WEAPONS.length} armed character sprites, ${CHARACTER_SPECIES.length*5*2} stance sprites, base character frames and strips, environment assets, machines, and entrypoints.`);
 
 for(const species of ['horse','goat','donkey','sheep','cow','hen'])await checkPNG('assets/characters/red-hats/'+species+'-idle.png',256,256);
