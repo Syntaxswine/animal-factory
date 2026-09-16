@@ -61,6 +61,8 @@ One state per guard, replacing the boolean. Transitions are the rules; personali
 
 Proposed defaults, before personality scaling: N = 12, K = 3, M = 4, R = 2, shout radius 12 (officers 20).
 
+The squad's side of "combat can end" is already built (RULES.md, "Retreat and border crossings", 2026-09-16): members walk off the map across its 3-tile border, one at a time, and the map keeps its alerted guards. G2's Searching → Stand-down path is what lets those guards return to post afterwards; until then a retreated-from map resumes the fight on return.
+
 **Combat can end.** Contact is any guard in Alert or Searching. When none remain, the phase returns to real-time exploration even with guards alive: "Area quiet." Bleeding and burning still hold combat open as today. This is the "at rest" the user asked for, and it makes stealth and disengagement real options instead of a fight to the last guard.
 
 **Posts.** A guard's start tile and heading are its post. Patrol routes are a later addition; the state machine does not depend on them.

@@ -112,6 +112,19 @@ Flat species cones are superseded by measured-vision sight lobes: total field, b
 
 A gunshot alerts every guard within twice the weapon's range, whoever fired; alerted listeners converge on the approximate report. The alert / at-rest state machine and the twelve authored guard personalities are planned in GUARDS.md.
 
+## Retreat and border crossings — 2026-09-16
+
+Direction from the user: to retreat you physically walk to the edge of the map; the three tiles along the border can manually walk to the next map tile over on the overmap. This answers the open "Easy whole-squad retreat versus retry" question for every difficulty: retreat is a walk, not a button.
+
+- The overmap is a grid of local-map tiles (`world.positions`; Factory 0,0 · Freight yard 1,0 · Outer factory 2,0). Two tiles are linked when they touch. The old link list is derived from the positions, so the travel marker still works as before.
+- A squad member standing on the ground level inside the 3-tile band along an edge that has a map beyond it can cross that edge, in or out of combat, when it is controllable, not moving and (in combat) has one step of AP: the stance's cardinal move cost, plus 2 sneaking; free while exploring.
+- A crosser is off the origin map at once: guards cannot see or target it, its tile is empty, it cannot act there. It waits on the far map's border. Comrades who stay keep fighting.
+- The squad regroups when the last standing member crosses, or when the last standing member falls (the map is lost for those who stayed; the crossers still arrive). All crossers must use the same destination; the travel marker, if used meanwhile, must go to that destination and merges the two groups.
+- Crossers land on the opposite border of the next map at the row or column they left from, on the nearest free walkable tile. Arrival takes the usual 1 hour of clock. The origin map keeps its alerted guards and their last fix; return and the fight resumes.
+- Downed comrades left on the map when the last standing member crosses meet the defeat rule: stabilized are captured, bleeding die. The log names them.
+
+Checks: `tests/tactics-retreat.test.mjs` (8 cases: grid links; band, ground and AP gates; one crosser leaves a live fight; full regroup on the far border with the clock; abandonment; a lost fight after a crossing; destination commitment and marker merge; landing on a generated map).
+
 
 ## Implemented weapon ranges and accuracy
 
