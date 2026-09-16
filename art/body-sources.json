@@ -1,0 +1,146 @@
+[
+  {
+    "species": "horse",
+    "outfit": "normal",
+    "reference": "art/source/armed/horse-rifle.png",
+    "source": "art/source/bodies/normal/horse-side.png",
+    "prompt": "Use case: identity-preserve. Asset type: transparent tactical game fallen body sprite. Reference image is exact animal identity, clothing and rendering style. Repose this horse in its normal outfit into a limp side-lying collapsed casualty, eyes closed, cheek resting on ground, legs loosely bent, both arms resting slack on ground close to torso. Feet toward screen-left, head toward screen-right, elevated three-quarter game camera, full body horizontal silhouette. Clearly collapsed, never propped up on elbows, never aiming or crawling. Remove weapon completely; hands empty. Preserve exact species, face, fur or feathers, tail, horns or ears, clothing colors and uniform details including red cap and armband when present, footwear matching reference, warm textured hand-painted rendering and dark outlines. No blood, no wounds, no gore, no damage to body or clothing. No dropped equipment, tanks, weapon, scenery, ground plane, shadow, text or extra limbs. Genuine transparent alpha background, whole body and appendages uncropped with generous margins.",
+    "generationPath": "C:\\Users\\baals\\.codex\\generated_images\\01a0a80f-a421-7db0-a88e-dc3bd0094168\\exec-a0cfe04b-9b30-48e9-a668-71d01818ea5b.png",
+    "status": "exported"
+  },
+  {
+    "species": "goat",
+    "outfit": "normal",
+    "reference": "art/source/armed/goat-rifle.png",
+    "source": "art/source/bodies/normal/goat-side.png",
+    "prompt": "Use case: identity-preserve. Asset type: transparent tactical game fallen body sprite. Reference image is exact animal identity, clothing and rendering style. Repose this goat in its normal outfit into a limp side-lying collapsed casualty, eyes closed, cheek resting on ground, legs loosely bent, both arms resting slack on ground close to torso. Feet toward screen-left, head toward screen-right, elevated three-quarter game camera, full body horizontal silhouette. Clearly collapsed, never propped up on elbows, never aiming or crawling. Remove weapon completely; hands empty. Preserve exact species, face, fur or feathers, tail, horns or ears, clothing colors and uniform details including red cap and armband when present, footwear matching reference, warm textured hand-painted rendering and dark outlines. No blood, no wounds, no gore, no damage to body or clothing. No dropped equipment, tanks, weapon, scenery, ground plane, shadow, text or extra limbs. Genuine transparent alpha background, whole body and appendages uncropped with generous margins.",
+    "generationPath": "C:\\Users\\baals\\.codex\\generated_images\\01a0a80f-a421-7db0-a88e-dc3bd0094168\\exec-e57e2f4b-5c81-4d27-8c7e-1f2b9375df63.png",
+    "status": "exported"
+  },
+  {
+    "species": "donkey",
+    "outfit": "normal",
+    "reference": "art/source/armed/donkey-rifle.png",
+    "source": "art/source/bodies/normal/donkey-side.png",
+    "prompt": "Use case: identity-preserve. Asset type: transparent tactical game fallen body sprite. Reference image is exact animal identity, clothing and rendering style. Repose this donkey in its normal outfit into a limp side-lying collapsed casualty, eyes closed, cheek resting on ground, legs loosely bent, both arms resting slack on ground close to torso. Feet toward screen-left, head toward screen-right, elevated three-quarter game camera, full body horizontal silhouette. Clearly collapsed, never propped up on elbows, never aiming or crawling. Remove weapon completely; hands empty. Preserve exact species, face, fur or feathers, tail, horns or ears, clothing colors and uniform details including red cap and armband when present, footwear matching reference, warm textured hand-painted rendering and dark outlines. No blood, no wounds, no gore, no damage to body or clothing. No dropped equipment, tanks, weapon, scenery, ground plane, shadow, text or extra limbs. Genuine transparent alpha background, whole body and appendages uncropped with generous margins.",
+    "generationPath": "C:\\Users\\baals\\.codex\\generated_images\\01a0a80f-a421-7db0-a88e-dc3bd0094168\\exec-aaa4dfe5-ad68-4212-b6c7-912641762604.png",
+    "status": "exported"
+  },
+  {
+    "species": "sheep",
+    "outfit": "normal",
+    "reference": "art/source/armed/sheep-rifle.png",
+    "source": "art/source/bodies/normal/sheep-side.png",
+    "prompt": "Use case: identity-preserve. Asset type: transparent tactical game fallen body sprite. Reference image is exact animal identity, clothing and rendering style. Repose this sheep in its normal outfit into a limp side-lying collapsed casualty, eyes closed, cheek resting on ground, legs loosely bent, both arms resting slack on ground close to torso. Feet toward screen-left, head toward screen-right, elevated three-quarter game camera, full body horizontal silhouette. Clearly collapsed, never propped up on elbows, never aiming or crawling. Remove weapon completely; hands empty. Preserve exact species, face, fur or feathers, tail, horns or ears, clothing colors and uniform details including red cap and armband when present, footwear matching reference, warm textured hand-painted rendering and dark outlines. No blood, no wounds, no gore, no damage to body or clothing. No dropped equipment, tanks, weapon, scenery, ground plane, shadow, text or extra limbs. Genuine transparent alpha background, whole body and appendages uncropped with generous margins.",
+    "generationPath": "C:\\Users\\baals\\.codex\\generated_images\\01a0a80f-a421-7db0-a88e-dc3bd0094168\\exec-3ef41b4f-c582-4fb8-abf8-18041d1b55b4.png",
+    "status": "exported"
+  },
+  {
+    "species": "cow",
+    "outfit": "normal",
+    "reference": "art/source/armed/cow-rifle.png",
+    "source": "art/source/bodies/normal/cow-side.png",
+    "prompt": "Use case: identity-preserve. Asset type: transparent tactical game fallen body sprite. Reference image is exact animal identity, clothing and rendering style. Repose this cow in its normal outfit into a limp side-lying collapsed casualty, eyes closed, cheek resting on ground, legs loosely bent, both arms resting slack on ground close to torso. Feet toward screen-left, head toward screen-right, elevated three-quarter game camera, full body horizontal silhouette. Clearly collapsed, never propped up on elbows, never aiming or crawling. Remove weapon completely; hands empty. Preserve exact species, face, fur or feathers, tail, horns or ears, clothing colors and uniform details including red cap and armband when present, footwear matching reference, warm textured hand-painted rendering and dark outlines. No blood, no wounds, no gore, no damage to body or clothing. No dropped equipment, tanks, weapon, scenery, ground plane, shadow, text or extra limbs. Genuine transparent alpha background, whole body and appendages uncropped with generous margins.",
+    "generationPath": "C:\\Users\\baals\\.codex\\generated_images\\01a0a80f-a421-7db0-a88e-dc3bd0094168\\exec-8b1b14bb-f624-4d11-8bbd-3bbb83edd3a0.png",
+    "status": "exported"
+  },
+  {
+    "species": "hen",
+    "outfit": "normal",
+    "reference": "art/source/armed/hen-rifle.png",
+    "source": "art/source/bodies/normal/hen-side.png",
+    "prompt": "Use case: identity-preserve. Asset type: transparent tactical game fallen body sprite. Reference image is exact animal identity, clothing and rendering style. Repose this hen in its normal outfit into a limp side-lying collapsed casualty, eyes closed, cheek resting on ground, legs loosely bent, both arms resting slack on ground close to torso. Feet toward screen-left, head toward screen-right, elevated three-quarter game camera, full body horizontal silhouette. Clearly collapsed, never propped up on elbows, never aiming or crawling. Remove weapon completely; hands empty. Preserve exact species, face, fur or feathers, tail, horns or ears, clothing colors and uniform details including red cap and armband when present, footwear matching reference, warm textured hand-painted rendering and dark outlines. No blood, no wounds, no gore, no damage to body or clothing. No dropped equipment, tanks, weapon, scenery, ground plane, shadow, text or extra limbs. Genuine transparent alpha background, whole body and appendages uncropped with generous margins.",
+    "generationPath": "C:\\Users\\baals\\.codex\\generated_images\\01a0a80f-a421-7db0-a88e-dc3bd0094168\\exec-6a47d6d2-e6d0-4238-b0b7-25089445eac2.png",
+    "status": "exported"
+  },
+  {
+    "species": "pig-foreman",
+    "outfit": "normal",
+    "reference": "art/source/armed/pig-foreman-rifle.png",
+    "source": "art/source/bodies/normal/pig-foreman-side.png",
+    "prompt": "Use case: identity-preserve. Asset type: transparent tactical game fallen body sprite. Reference image is exact animal identity, clothing and rendering style. Repose this pig-foreman in its normal outfit into a limp side-lying collapsed casualty, eyes closed, cheek resting on ground, legs loosely bent, both arms resting slack on ground close to torso. Feet toward screen-left, head toward screen-right, elevated three-quarter game camera, full body horizontal silhouette. Clearly collapsed, never propped up on elbows, never aiming or crawling. Remove weapon completely; hands empty. Preserve exact species, face, fur or feathers, tail, horns or ears, clothing colors and uniform details including red cap and armband when present, footwear matching reference, warm textured hand-painted rendering and dark outlines. No blood, no wounds, no gore, no damage to body or clothing. No dropped equipment, tanks, weapon, scenery, ground plane, shadow, text or extra limbs. Genuine transparent alpha background, whole body and appendages uncropped with generous margins.",
+    "generationPath": "C:\\Users\\baals\\.codex\\generated_images\\01a0a80f-a421-7db0-a88e-dc3bd0094168\\exec-2e9b6d99-e813-4a8a-ba69-d9d88a8efb61.png",
+    "status": "exported"
+  },
+  {
+    "species": "pig-director",
+    "outfit": "normal",
+    "reference": "art/source/armed/pig-director-rifle.png",
+    "source": "art/source/bodies/normal/pig-director-side.png",
+    "prompt": "Use case: identity-preserve. Asset type: transparent tactical game fallen body sprite. Reference image is exact animal identity, clothing and rendering style. Repose this pig-director in its normal outfit into a limp side-lying collapsed casualty, eyes closed, cheek resting on ground, legs loosely bent, both arms resting slack on ground close to torso. Feet toward screen-left, head toward screen-right, elevated three-quarter game camera, full body horizontal silhouette. Clearly collapsed, never propped up on elbows, never aiming or crawling. Remove weapon completely; hands empty. Preserve exact species, face, fur or feathers, tail, horns or ears, clothing colors and uniform details including red cap and armband when present, footwear matching reference, warm textured hand-painted rendering and dark outlines. No blood, no wounds, no gore, no damage to body or clothing. No dropped equipment, tanks, weapon, scenery, ground plane, shadow, text or extra limbs. Genuine transparent alpha background, whole body and appendages uncropped with generous margins.",
+    "generationPath": "C:\\Users\\baals\\.codex\\generated_images\\01a0a80f-a421-7db0-a88e-dc3bd0094168\\exec-d81a499e-5fc2-4ac6-8a05-6649a9af5660.png",
+    "status": "exported"
+  },
+  {
+    "species": "skunk",
+    "outfit": "normal",
+    "reference": "art/source/skunk/normal-rifle-standing.png",
+    "source": "art/source/bodies/normal/skunk-side.png",
+    "prompt": "Use case: identity-preserve. Asset type: transparent tactical game fallen body sprite. Reference image is exact animal identity, clothing and rendering style. Repose this skunk in its normal outfit into a limp side-lying collapsed casualty, eyes closed, cheek resting on ground, legs loosely bent, both arms resting slack on ground close to torso. Feet toward screen-left, head toward screen-right, elevated three-quarter game camera, full body horizontal silhouette. Clearly collapsed, never propped up on elbows, never aiming or crawling. Remove weapon completely; hands empty. Preserve exact species, face, fur or feathers, tail, horns or ears, clothing colors and uniform details including red cap and armband when present, footwear matching reference, warm textured hand-painted rendering and dark outlines. No blood, no wounds, no gore, no damage to body or clothing. No dropped equipment, tanks, weapon, scenery, ground plane, shadow, text or extra limbs. Genuine transparent alpha background, whole body and appendages uncropped with generous margins.",
+    "generationPath": "C:\\Users\\baals\\.codex\\generated_images\\01a0a80f-a421-7db0-a88e-dc3bd0094168\\exec-64cbaf24-1ddc-45fb-93a9-3f37c603d6da.png",
+    "status": "exported"
+  },
+  {
+    "species": "horse",
+    "outfit": "red-hats",
+    "reference": "art/source/red-hats-armed/horse-rifle-standing.png",
+    "source": "art/source/bodies/red-hats/horse-side.png",
+    "prompt": "Use case: identity-preserve. Asset type: transparent tactical game fallen body sprite. Reference image is exact animal identity, clothing and rendering style. Repose this horse in its red-hats outfit into a limp side-lying collapsed casualty, eyes closed, cheek resting on ground, legs loosely bent, both arms resting slack on ground close to torso. Feet toward screen-left, head toward screen-right, elevated three-quarter game camera, full body horizontal silhouette. Clearly collapsed, never propped up on elbows, never aiming or crawling. Remove weapon completely; hands empty. Preserve exact species, face, fur or feathers, tail, horns or ears, clothing colors and uniform details including red cap and armband when present, footwear matching reference, warm textured hand-painted rendering and dark outlines. No blood, no wounds, no gore, no damage to body or clothing. No dropped equipment, tanks, weapon, scenery, ground plane, shadow, text or extra limbs. Genuine transparent alpha background, whole body and appendages uncropped with generous margins.",
+    "generationPath": "C:\\Users\\baals\\.codex\\generated_images\\01a0a80f-a421-7db0-a88e-dc3bd0094168\\exec-b3cb5025-5964-43c6-9efe-a5ccba3d4826.png",
+    "status": "exported"
+  },
+  {
+    "species": "goat",
+    "outfit": "red-hats",
+    "reference": "art/source/red-hats-armed/goat-rifle-standing.png",
+    "source": "art/source/bodies/red-hats/goat-side.png",
+    "prompt": "Use case: identity-preserve. Asset type: transparent tactical game fallen body sprite. Reference image is exact animal identity, clothing and rendering style. Repose this goat in its red-hats outfit into a limp side-lying collapsed casualty, eyes closed, cheek resting on ground, legs loosely bent, both arms resting slack on ground close to torso. Feet toward screen-left, head toward screen-right, elevated three-quarter game camera, full body horizontal silhouette. Clearly collapsed, never propped up on elbows, never aiming or crawling. Remove weapon completely; hands empty. Preserve exact species, face, fur or feathers, tail, horns or ears, clothing colors and uniform details including red cap and armband when present, footwear matching reference, warm textured hand-painted rendering and dark outlines. No blood, no wounds, no gore, no damage to body or clothing. No dropped equipment, tanks, weapon, scenery, ground plane, shadow, text or extra limbs. Genuine transparent alpha background, whole body and appendages uncropped with generous margins.",
+    "generationPath": "C:\\Users\\baals\\.codex\\generated_images\\01a0a80f-a421-7db0-a88e-dc3bd0094168\\exec-7d6ddc0f-9d1a-46e2-842a-6f6dedb94680.png",
+    "status": "exported"
+  },
+  {
+    "species": "donkey",
+    "outfit": "red-hats",
+    "reference": "art/source/red-hats-armed/donkey-rifle-standing.png",
+    "source": "art/source/bodies/red-hats/donkey-side.png",
+    "prompt": "Use case: identity-preserve. Asset type: transparent tactical game fallen body sprite. Reference image is exact animal identity, clothing and rendering style. Repose this donkey in its red-hats outfit into a limp side-lying collapsed casualty, eyes closed, cheek resting on ground, legs loosely bent, both arms resting slack on ground close to torso. Feet toward screen-left, head toward screen-right, elevated three-quarter game camera, full body horizontal silhouette. Clearly collapsed, never propped up on elbows, never aiming or crawling. Remove weapon completely; hands empty. Preserve exact species, face, fur or feathers, tail, horns or ears, clothing colors and uniform details including red cap and armband when present, footwear matching reference, warm textured hand-painted rendering and dark outlines. No blood, no wounds, no gore, no damage to body or clothing. No dropped equipment, tanks, weapon, scenery, ground plane, shadow, text or extra limbs. Genuine transparent alpha background, whole body and appendages uncropped with generous margins.",
+    "generationPath": "C:\\Users\\baals\\.codex\\generated_images\\01a0a80f-a421-7db0-a88e-dc3bd0094168\\exec-0978a50d-6fbb-46b8-b683-0f585a01bc9d.png",
+    "status": "exported"
+  },
+  {
+    "species": "sheep",
+    "outfit": "red-hats",
+    "reference": "art/source/red-hats-armed/sheep-rifle-standing.png",
+    "source": "art/source/bodies/red-hats/sheep-side.png",
+    "prompt": "Use case: identity-preserve. Asset type: transparent tactical game fallen body sprite. Reference image is exact animal identity, clothing and rendering style. Repose this sheep in its red-hats outfit into a limp side-lying collapsed casualty, eyes closed, cheek resting on ground, legs loosely bent, both arms resting slack on ground close to torso. Feet toward screen-left, head toward screen-right, elevated three-quarter game camera, full body horizontal silhouette. Clearly collapsed, never propped up on elbows, never aiming or crawling. Remove weapon completely; hands empty. Preserve exact species, face, fur or feathers, tail, horns or ears, clothing colors and uniform details including red cap and armband when present, footwear matching reference, warm textured hand-painted rendering and dark outlines. No blood, no wounds, no gore, no damage to body or clothing. No dropped equipment, tanks, weapon, scenery, ground plane, shadow, text or extra limbs. Genuine transparent alpha background, whole body and appendages uncropped with generous margins.",
+    "generationPath": "C:\\Users\\baals\\.codex\\generated_images\\01a0a80f-a421-7db0-a88e-dc3bd0094168\\exec-c606ecfc-a731-44ec-951e-4c92f240c62a.png",
+    "status": "exported"
+  },
+  {
+    "species": "cow",
+    "outfit": "red-hats",
+    "reference": "art/source/red-hats-armed/cow-rifle-standing.png",
+    "source": "art/source/bodies/red-hats/cow-side.png",
+    "prompt": "Use case: identity-preserve. Asset type: transparent tactical game fallen body sprite. Reference image is exact animal identity, clothing and rendering style. Repose this cow in its red-hats outfit into a limp side-lying collapsed casualty, eyes closed, cheek resting on ground, legs loosely bent, both arms resting slack on ground close to torso. Feet toward screen-left, head toward screen-right, elevated three-quarter game camera, full body horizontal silhouette. Clearly collapsed, never propped up on elbows, never aiming or crawling. Remove weapon completely; hands empty. Preserve exact species, face, fur or feathers, tail, horns or ears, clothing colors and uniform details including red cap and armband when present, footwear matching reference, warm textured hand-painted rendering and dark outlines. No blood, no wounds, no gore, no damage to body or clothing. No dropped equipment, tanks, weapon, scenery, ground plane, shadow, text or extra limbs. Genuine transparent alpha background, whole body and appendages uncropped with generous margins.",
+    "generationPath": "C:\\Users\\baals\\.codex\\generated_images\\01a0a80f-a421-7db0-a88e-dc3bd0094168\\exec-c1754509-c1f5-4bb2-984b-d23d6a6dd9a7.png",
+    "status": "exported"
+  },
+  {
+    "species": "hen",
+    "outfit": "red-hats",
+    "reference": "art/source/red-hats-armed/hen-rifle-standing.png",
+    "source": "art/source/bodies/red-hats/hen-side.png",
+    "prompt": "Use case: identity-preserve. Asset type: transparent tactical game fallen body sprite. Reference image is exact animal identity, clothing and rendering style. Repose this hen in its red-hats outfit into a limp side-lying collapsed casualty, eyes closed, cheek resting on ground, legs loosely bent, both arms resting slack on ground close to torso. Feet toward screen-left, head toward screen-right, elevated three-quarter game camera, full body horizontal silhouette. Clearly collapsed, never propped up on elbows, never aiming or crawling. Remove weapon completely; hands empty. Preserve exact species, face, fur or feathers, tail, horns or ears, clothing colors and uniform details including red cap and armband when present, footwear matching reference, warm textured hand-painted rendering and dark outlines. No blood, no wounds, no gore, no damage to body or clothing. No dropped equipment, tanks, weapon, scenery, ground plane, shadow, text or extra limbs. Genuine transparent alpha background, whole body and appendages uncropped with generous margins.",
+    "generationPath": "C:\\Users\\baals\\.codex\\generated_images\\01a0a80f-a421-7db0-a88e-dc3bd0094168\\exec-43970c2a-cdc2-4d84-b6b0-388f88deb593.png",
+    "status": "exported"
+  },
+  {
+    "species": "skunk",
+    "outfit": "red-hats",
+    "reference": "art/source/skunk/red-hats-rifle-standing.png",
+    "source": "art/source/bodies/red-hats/skunk-side.png",
+    "prompt": "Use case: identity-preserve. Asset type: transparent tactical game fallen body sprite. Reference image is exact animal identity, clothing and rendering style. Repose this skunk in its red-hats outfit into a limp side-lying collapsed casualty, eyes closed, cheek resting on ground, legs loosely bent, both arms resting slack on ground close to torso. Feet toward screen-left, head toward screen-right, elevated three-quarter game camera, full body horizontal silhouette. Clearly collapsed, never propped up on elbows, never aiming or crawling. Remove weapon completely; hands empty. Preserve exact species, face, fur or feathers, tail, horns or ears, clothing colors and uniform details including red cap and armband when present, footwear matching reference, warm textured hand-painted rendering and dark outlines. No blood, no wounds, no gore, no damage to body or clothing. No dropped equipment, tanks, weapon, scenery, ground plane, shadow, text or extra limbs. Genuine transparent alpha background, whole body and appendages uncropped with generous margins.",
+    "generationPath": "C:\\Users\\baals\\.codex\\generated_images\\01a0a80f-a421-7db0-a88e-dc3bd0094168\\exec-365555f0-12a8-44f9-9dfb-63db0fadafd5.png",
+    "status": "exported"
+  }
+]
