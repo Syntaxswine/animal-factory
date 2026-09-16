@@ -14,6 +14,8 @@ Opened 2026-09-16 on branch `tactics-guard-alertness`, stacked on `tactics-sight
 
 Same gates as the other arcs: full suite green, 20-seed balance before and after, hostile review of at least 4/5 before the next stage.
 
+Integration review: G2–G5 below remain proposals, not implemented game behavior. The bond script is a design calculator and is not imported by the game. Publishing this document does not satisfy the implementation or balance gates above.
+
 ## What exists today
 
 - `alert` is a single boolean per guard. It becomes true when the squad identifies the guard, when the guard identifies a squad member, when the guard is attacked, or (G1) when a gun fires within twice its range. It never becomes false. Combat lasts until every alerted guard is dead.
@@ -151,7 +153,7 @@ Species traits (SIGHT.md) and archetype traits stack; the archetype never change
 
 Direction 2026-09-16: a bond needs rungs, not just a number, and mercs are the cleaner case because recruitment shows the friction before anyone signs. The matrix value is a **resting level**; events push a bond away from it and rest pulls it back, so feuds cool but incompatibility never disappears.
 
-Five rungs on the existing −100..100 scale, keeping Codex's four thresholds and adding a top one:
+Six rungs on the existing −100..100 scale, retaining the four existing labels and adding bonded and feud:
 
 | Rung | Range | Label | What it does for mercs | What it does for guards |
 | --- | --- | --- | --- | --- |
@@ -170,7 +172,7 @@ Five rungs on the existing −100..100 scale, keeping Codex's four thresholds an
 | An overwatch or reaction shot that hit the enemy targeting the other | +10 | the one covered, toward the coverer |
 | A kill made while the other was bleeding or downed within 6 tiles | +8 | the downed, toward the killer |
 | Left bleeding within reach while the other spent its AP elsewhere | −15 | the bleeder, toward each comrade who could have reached |
-| The other's death | stress +25 for a bonded or trusted partner; a feud partner gets relief instead | survivors |
+| The other's death | stress +25 for a bonded partner, +15 for trusted; a feud partner gets relief instead (happiness effects in G5) | survivors |
 | Rest between maps, per 8 hours | 10% of the distance back toward the resting level | every pair |
 
 A pair that starts strained can therefore climb to trusted through a good campaign, and drops back toward strained only slowly; a bonded pair that suffers one careless burst falls to cautious and recovers by resting. Rungs are crossed, and the log says so ("Anya no longer trusts Misha").
@@ -181,7 +183,7 @@ A pair that starts strained can therefore climb to trusted through a good campai
 
 ## G4: shouts and guard-on-guard incidents
 
-- An Alert guard shouts once on entering the state: guards within the shout radius that pass their obedience check take the shouter's `lastKnown` and go Alert; the rest go Suspicious toward the shouter. Nikolai's shout carries 20; Igor's is a whisper.
+- An Alert guard shouts once on entering the state: guards within the shout radius that pass their obedience check take the shouter's `lastKnown` and go Alert; the rest go Suspicious toward the shouter. Shout modifiers must follow the assigned archetype, not a fixed guard name; exact archetype radii remain to be specified.
 - Bullets already hit the first body on the ray regardless of team, so guards can shoot guards. Reuse `friendlyReaction`: stress, bond loss, grudge, a bark, and the same retaliation chance. Grigori shooting back at Pyotr in the middle of a firefight is the intended kind of chaos, bounded by the existing "ammunition-limited retaliation" rule.
 - A guard whose bonded colleague is killed gains stress and, if nerve is low, can break on the spot.
 
@@ -230,9 +232,9 @@ Direction 2026-09-16: there should also be people that mercs like working with, 
 | That partner quits | −15 | −5 |
 | That partner stabilized by this merc | +5 (relief), on top of the bond gain | +3 |
 
-The daily bonus stacks per liked partner and offsets decay from opposing ones, so a merc who hates one squadmate but is bonded to two others holds steady: +10 − 5 a day. Deaths are settled at the moment of death, at the rung in force then, and they ignore the resting level: a feud partner's death gives relief (stress −10) and no happiness change; a cautious partner's death is stress only, as today.
+The daily bonus stacks per liked partner and offsets decay from opposing ones, so a merc who hates one squadmate but is bonded to two others gains 5 happiness a day: +10 − 5. Deaths are settled at the moment of death, at the rung in force then, and they ignore the resting level: a feud partner's death gives relief (stress −10) and no happiness change; a cautious partner's death is proposed to affect stress only, with the amount still to be specified.
 
-The grief case is the intended consequence: a merc below 75 happiness who loses a bonded partner drops to zero on the spot and, if nothing lifts the meter within 24 clock hours, walks; only a merc near full happiness keeps anything, and then only 25. (Direction 2026-09-16: −75 rather than a full wipe.) A separate map from the opposing partner or a casualty-free win is what lifts it. The log names the reason: "Vera has not spoken since Misha died."
+The grief case is the intended consequence: a merc at or below 75 happiness who loses a bonded partner drops to zero on the spot and, if nothing lifts the meter within 24 clock hours, walks; a merc above 75 keeps the remainder, at most 25. (Direction 2026-09-16: −75 rather than a full wipe.) A separate map from the opposing partner or a casualty-free win is what lifts it. The log names the reason: "Vera has not spoken since Misha died."
 
 If the killer was a squadmate (friendly fire), the survivor's grudge against the killer uses the existing incident ledger at the dead partner's rung as a multiplier: a bonded partner killed by a comrade's burst is the fastest route to a feud in the game.
 
@@ -249,8 +251,15 @@ Guards do not quit; they are not on contract. A guard roster's opposing pairs ex
 5. Happiness never leaves 0..100; the clock rollover at midnight does not double-settle.
 6. A guard never has a happiness meter.
 7. A bonded partner on the same map adds exactly 5 per 24 clock hours, and offsets an opposing partner to a net zero.
-8. A bonded partner's death costs 75 happiness and 25 stress at once; a feud partner's death costs nothing and relieves 10 stress.
+8. A bonded partner's death subtracts 75 happiness and adds 25 stress at once; a feud partner's death costs no happiness and relieves 10 stress.
 9. A bonded partner killed by a squadmate's bullet raises the survivor's grudge against that squadmate by the bonded multiplier.
+
+### Open decisions before implementation
+
+- Assignment: distinguish randomly recruited mercs from the four authored starting mercs. The assignment bullets currently prescribe both retained authored bonds and matrix-derived bonds; specify which supplies each merc's initial and resting bonds.
+- Recovery: the +5 daily bonus for no opposing partner present and +10 for separation overlap. Decide whether they stack or the separation rate replaces the +5, and how either interacts with the liked-partner bonus and acceptance check 7.
+- Capture: clarify whether “−20 until rescued, then +15” is a temporary penalty plus a rescue reward or a one-time loss followed by partial recovery; likewise for the trusted values.
+- Quantify the bonded friendly-fire grudge multiplier and cautious-partner death stress before acceptance checks can be implemented.
 
 ## Balance record
 
