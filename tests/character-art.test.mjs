@@ -5,8 +5,8 @@ import {WEAPONS} from '../dist/tactics/engine.js';
 import {weaponExpansionArt,EXPANSION_WEAPONS} from '../dist/tactics/weapon-expansion-art.js';
 import {drawFlamethrower} from '../dist/tactics/flamethrower-art.js';
 
-test('finished explosive sprites suppress temporary equipment overlays',()=>{
- for(const weapon of ['grenade','launcher','rpg'])for(const stance of ['standing','kneeling','prone']){
+test('finished explosive and flamethrower sprites suppress temporary equipment overlays',()=>{
+ for(const weapon of ['grenade','launcher','rpg','flamethrower'])for(const stance of ['standing','kneeling','prone']){
   assert.ok(weaponExpansionArt('horse',weapon,stance));
   // Any canvas access would fail: the equipment is already painted into the sprite.
   assert.doesNotThrow(()=>drawFlamethrower(null,{species:'horse',weapon,stance},1));

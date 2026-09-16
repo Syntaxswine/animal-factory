@@ -4702,5 +4702,383 @@
     ],
     "width": 384,
     "weapon": "grenade"
+  },
+  {
+    "src": "../assets/characters/weapon-expansion/normal/horse-flamethrower-standing.png",
+    "contentHeight": 236,
+    "height": 256,
+    "stance": "standing",
+    "outfit": "normal",
+    "species": "horse",
+    "anchor": [
+      192,
+      244
+    ],
+    "width": 384,
+    "weapon": "flamethrower"
+  },
+  {
+    "src": "../assets/characters/weapon-expansion/normal/horse-flamethrower-kneeling.png",
+    "contentHeight": 176,
+    "height": 256,
+    "stance": "kneeling",
+    "outfit": "normal",
+    "species": "horse",
+    "anchor": [
+      192,
+      244
+    ],
+    "width": 384,
+    "weapon": "flamethrower"
+  },
+  {
+    "src": "../assets/characters/weapon-expansion/normal/horse-flamethrower-prone.png",
+    "contentHeight": 96,
+    "height": 256,
+    "stance": "prone",
+    "outfit": "normal",
+    "species": "horse",
+    "anchor": [
+      192,
+      244
+    ],
+    "width": 384,
+    "weapon": "flamethrower"
+  },
+  {
+    "src": "../assets/characters/weapon-expansion/normal/goat-flamethrower-standing.png",
+    "contentHeight": 236,
+    "height": 256,
+    "stance": "standing",
+    "outfit": "normal",
+    "species": "goat",
+    "anchor": [
+      192,
+      244
+    ],
+    "width": 384,
+    "weapon": "flamethrower"
+  },
+  {
+    "src": "../assets/characters/weapon-expansion/normal/goat-flamethrower-kneeling.png",
+    "contentHeight": 176,
+    "height": 256,
+    "stance": "kneeling",
+    "outfit": "normal",
+    "species": "goat",
+    "anchor": [
+      192,
+      244
+    ],
+    "width": 384,
+    "weapon": "flamethrower"
+  },
+  {
+    "src": "../assets/characters/weapon-expansion/normal/goat-flamethrower-prone.png",
+    "contentHeight": 96,
+    "height": 256,
+    "stance": "prone",
+    "outfit": "normal",
+    "species": "goat",
+    "anchor": [
+      192,
+      244
+    ],
+    "width": 384,
+    "weapon": "flamethrower"
+  },
+  {
+    "src": "../assets/characters/weapon-expansion/normal/donkey-flamethrower-standing.png",
+    "contentHeight": 236,
+    "height": 256,
+    "stance": "standing",
+    "outfit": "normal",
+    "species": "donkey",
+    "anchor": [
+      192,
+      244
+    ],
+    "width": 384,
+    "weapon": "flamethrower"
+  },
+  {
+    "src": "../assets/characters/weapon-expansion/normal/donkey-flamethrower-kneeling.png",
+    "contentHeight": 176,
+    "height": 256,
+    "stance": "kneeling",
+    "outfit": "normal",
+    "species": "donkey",
+    "anchor": [
+      192,
+      244
+    ],
+    "width": 384,
+    "weapon": "flamethrower"
+  },
+  {
+    "src": "../assets/characters/weapon-expansion/normal/donkey-flamethrower-prone.png",
+    "contentHeight": 96,
+    "height": 256,
+    "stance": "prone",
+    "outfit": "normal",
+    "species": "donkey",
+    "anchor": [
+      192,
+      244
+    ],
+    "width": 384,
+    "weapon": "flamethrower"
+  },
+  {
+    "src": "../assets/characters/weapon-expansion/normal/sheep-flamethrower-standing.png",
+    "contentHeight": 236,
+    "height": 256,
+    "stance": "standing",
+    "outfit": "normal",
+    "species": "sheep",
+    "anchor": [
+      192,
+      244
+    ],
+    "width": 384,
+    "weapon": "flamethrower"
+  },
+  {
+    "src": "../assets/characters/weapon-expansion/normal/sheep-flamethrower-kneeling.png",
+    "contentHeight": 176,
+    "height": 256,
+    "stance": "kneeling",
+    "outfit": "normal",
+    "species": "sheep",
+    "anchor": [
+      192,
+      244
+    ],
+    "width": 384,
+    "weapon": "flamethrower"
+  },
+  {
+    "src": "../assets/characters/weapon-expansion/normal/sheep-flamethrower-prone.png",
+    "contentHeight": 96,
+    "height": 256,
+    "stance": "prone",
+    "outfit": "normal",
+    "species": "sheep",
+    "anchor": [
+      192,
+      244
+    ],
+    "width": 384,
+    "weapon": "flamethrower"
+  },
+  {
+    "src": "../assets/characters/weapon-expansion/normal/cow-flamethrower-standing.png",
+    "contentHeight": 236,
+    "height": 256,
+    "stance": "standing",
+    "outfit": "normal",
+    "species": "cow",
+    "anchor": [
+      192,
+      244
+    ],
+    "width": 384,
+    "weapon": "flamethrower"
+  },
+  {
+    "src": "../assets/characters/weapon-expansion/normal/cow-flamethrower-kneeling.png",
+    "contentHeight": 176,
+    "height": 256,
+    "stance": "kneeling",
+    "outfit": "normal",
+    "species": "cow",
+    "anchor": [
+      192,
+      244
+    ],
+    "width": 384,
+    "weapon": "flamethrower"
+  },
+  {
+    "src": "../assets/characters/weapon-expansion/normal/cow-flamethrower-prone.png",
+    "contentHeight": 96,
+    "height": 256,
+    "stance": "prone",
+    "outfit": "normal",
+    "species": "cow",
+    "anchor": [
+      192,
+      244
+    ],
+    "width": 384,
+    "weapon": "flamethrower"
+  },
+  {
+    "src": "../assets/characters/weapon-expansion/normal/hen-flamethrower-standing.png",
+    "contentHeight": 236,
+    "height": 256,
+    "stance": "standing",
+    "outfit": "normal",
+    "species": "hen",
+    "anchor": [
+      192,
+      244
+    ],
+    "width": 384,
+    "weapon": "flamethrower"
+  },
+  {
+    "src": "../assets/characters/weapon-expansion/normal/hen-flamethrower-kneeling.png",
+    "contentHeight": 176,
+    "height": 256,
+    "stance": "kneeling",
+    "outfit": "normal",
+    "species": "hen",
+    "anchor": [
+      192,
+      244
+    ],
+    "width": 384,
+    "weapon": "flamethrower"
+  },
+  {
+    "src": "../assets/characters/weapon-expansion/normal/hen-flamethrower-prone.png",
+    "contentHeight": 96,
+    "height": 256,
+    "stance": "prone",
+    "outfit": "normal",
+    "species": "hen",
+    "anchor": [
+      192,
+      244
+    ],
+    "width": 384,
+    "weapon": "flamethrower"
+  },
+  {
+    "src": "../assets/characters/weapon-expansion/normal/pig-foreman-flamethrower-standing.png",
+    "contentHeight": 236,
+    "height": 256,
+    "stance": "standing",
+    "outfit": "normal",
+    "species": "pig-foreman",
+    "anchor": [
+      192,
+      244
+    ],
+    "width": 384,
+    "weapon": "flamethrower"
+  },
+  {
+    "src": "../assets/characters/weapon-expansion/normal/pig-foreman-flamethrower-kneeling.png",
+    "contentHeight": 176,
+    "height": 256,
+    "stance": "kneeling",
+    "outfit": "normal",
+    "species": "pig-foreman",
+    "anchor": [
+      192,
+      244
+    ],
+    "width": 384,
+    "weapon": "flamethrower"
+  },
+  {
+    "src": "../assets/characters/weapon-expansion/normal/pig-foreman-flamethrower-prone.png",
+    "contentHeight": 96,
+    "height": 256,
+    "stance": "prone",
+    "outfit": "normal",
+    "species": "pig-foreman",
+    "anchor": [
+      192,
+      244
+    ],
+    "width": 384,
+    "weapon": "flamethrower"
+  },
+  {
+    "src": "../assets/characters/weapon-expansion/normal/pig-director-flamethrower-standing.png",
+    "contentHeight": 236,
+    "height": 256,
+    "stance": "standing",
+    "outfit": "normal",
+    "species": "pig-director",
+    "anchor": [
+      192,
+      244
+    ],
+    "width": 384,
+    "weapon": "flamethrower"
+  },
+  {
+    "src": "../assets/characters/weapon-expansion/normal/pig-director-flamethrower-kneeling.png",
+    "contentHeight": 176,
+    "height": 256,
+    "stance": "kneeling",
+    "outfit": "normal",
+    "species": "pig-director",
+    "anchor": [
+      192,
+      244
+    ],
+    "width": 384,
+    "weapon": "flamethrower"
+  },
+  {
+    "src": "../assets/characters/weapon-expansion/normal/pig-director-flamethrower-prone.png",
+    "contentHeight": 96,
+    "height": 256,
+    "stance": "prone",
+    "outfit": "normal",
+    "species": "pig-director",
+    "anchor": [
+      192,
+      244
+    ],
+    "width": 384,
+    "weapon": "flamethrower"
+  },
+  {
+    "src": "../assets/characters/weapon-expansion/normal/skunk-flamethrower-standing.png",
+    "contentHeight": 236,
+    "height": 256,
+    "stance": "standing",
+    "outfit": "normal",
+    "species": "skunk",
+    "anchor": [
+      192,
+      244
+    ],
+    "width": 384,
+    "weapon": "flamethrower"
+  },
+  {
+    "src": "../assets/characters/weapon-expansion/normal/skunk-flamethrower-kneeling.png",
+    "contentHeight": 176,
+    "height": 256,
+    "stance": "kneeling",
+    "outfit": "normal",
+    "species": "skunk",
+    "anchor": [
+      192,
+      244
+    ],
+    "width": 384,
+    "weapon": "flamethrower"
+  },
+  {
+    "src": "../assets/characters/weapon-expansion/normal/skunk-flamethrower-prone.png",
+    "contentHeight": 96,
+    "height": 256,
+    "stance": "prone",
+    "outfit": "normal",
+    "species": "skunk",
+    "anchor": [
+      256,
+      244
+    ],
+    "width": 512,
+    "weapon": "flamethrower"
   }
 ]

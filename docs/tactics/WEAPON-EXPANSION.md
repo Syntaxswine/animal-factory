@@ -4,6 +4,8 @@ Seven weapons: pump-action shotgun, PPSh-style submachine gun, scoped sniper rif
 
 The collection contains 336 unique transparent PNGs: nine original animal outfits and seven Red Hats outfits, each with seven weapons in standing, kneeling, and prone poses. The pig foreman shares his existing uniform across factions; the director has no Red Hats variant.
 
+The base-uniform flamethrower addition supplies 27 more sprites (363 total): all nine animals in standing, kneeling, and prone poses, with painted projector, hose, and backpack tanks. Red Hats retain the existing overlay except for the shared foreman uniform. Flamethrower prompts, reference images, and built-in ImageGen output paths are recorded in `art/flamethrower-sources.json` and included in the main source list. Filter the gallery with `?weapon=flamethrower` to review the set.
+
 ## Sources and regeneration
 
 Images were produced with the built-in ImageGen tool, editing the existing rifle sprite for the same animal, outfit, and stance. Each call creates one sprite. Exact prompts and reference paths are in `art/weapon-expansion-sources.json`; generation output paths are recorded in `art/weapon-expansion-generation.jsonl`. Full-resolution outputs are retained under `art/source/weapon-expansion/`.
