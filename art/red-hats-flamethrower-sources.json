@@ -1,0 +1,233 @@
+[
+  {
+    "species": "horse",
+    "outfit": "red-hats",
+    "stance": "standing",
+    "reference": "art/source/red-hats-armed/horse-rifle-standing.png",
+    "weapon": "flamethrower",
+    "source": "art/source/weapon-expansion/red-hats/horse-flamethrower-standing.png",
+    "prompt": "Use case: precise-object-edit. Create a new Animal Factory Tactics flamethrower sprite using this exact Red Hats horse rifle sprite as character, uniform and standing pose reference. Replace rifle with vintage industrial flamethrower: rigid straight dark steel projector, short stout nozzle, two hand grips, thick black flexible hose visibly connected to two weathered olive cylindrical backpack tanks with brass fittings and brown harness straps. Backpack firmly follows torso orientation, horizontal when prone. Preserve exact animal identity, face, fur or feathers, red peaked cap, red armband, olive shirt, brown trousers, boots or species-specific feet, all accessories, body pose, elevated three-quarter view facing screen-right, textured hand-painted style and outlines. Adjust hands for coherent grip. Entire character, ears, tail, feet and equipment uncropped with margins. Genuine transparent alpha background. No flame jet, smoke, glow, scenery, floor, shadow, text, extra limbs or extra weapons.  ",
+    "generationPath": "C:\\Users\\baals\\.codex\\generated_images\\01a0a80f-a421-7db0-a88e-dc3bd0094168\\exec-08f3c402-75b5-4a43-90a4-996fb737551f.png",
+    "status": "exported"
+  },
+  {
+    "species": "horse",
+    "outfit": "red-hats",
+    "stance": "kneeling",
+    "reference": "art/source/red-hats-armed/horse-rifle-kneeling.png",
+    "weapon": "flamethrower",
+    "source": "art/source/weapon-expansion/red-hats/horse-flamethrower-kneeling.png",
+    "prompt": "Use case: precise-object-edit. Create a new Animal Factory Tactics flamethrower sprite using this exact Red Hats horse rifle sprite as character, uniform and kneeling pose reference. Replace rifle with vintage industrial flamethrower: rigid straight dark steel projector, short stout nozzle, two hand grips, thick black flexible hose visibly connected to two weathered olive cylindrical backpack tanks with brass fittings and brown harness straps. Backpack firmly follows torso orientation, horizontal when prone. Preserve exact animal identity, face, fur or feathers, red peaked cap, red armband, olive shirt, brown trousers, boots or species-specific feet, all accessories, body pose, elevated three-quarter view facing screen-right, textured hand-painted style and outlines. Adjust hands for coherent grip. Entire character, ears, tail, feet and equipment uncropped with margins. Genuine transparent alpha background. No flame jet, smoke, glow, scenery, floor, shadow, text, extra limbs or extra weapons.  ",
+    "generationPath": "C:\\Users\\baals\\.codex\\generated_images\\01a0a80f-a421-7db0-a88e-dc3bd0094168\\exec-4f7b6d94-d209-4ae5-a25d-dd6689a83b04.png",
+    "status": "exported"
+  },
+  {
+    "species": "horse",
+    "outfit": "red-hats",
+    "stance": "prone",
+    "reference": "art/source/red-hats-armed/horse-rifle-prone.png",
+    "weapon": "flamethrower",
+    "source": "art/source/weapon-expansion/red-hats/horse-flamethrower-prone.png",
+    "prompt": "Use case: precise-object-edit. Create a new Animal Factory Tactics flamethrower sprite using this exact Red Hats horse rifle sprite as character, uniform and prone pose reference. Replace rifle with vintage industrial flamethrower: rigid straight dark steel projector, short stout nozzle, two hand grips, thick black flexible hose visibly connected to two weathered olive cylindrical backpack tanks with brass fittings and brown harness straps. Backpack firmly follows torso orientation, horizontal when prone. Preserve exact animal identity, face, fur or feathers, red peaked cap, red armband, olive shirt, brown trousers, boots or species-specific feet, all accessories, body pose, elevated three-quarter view facing screen-right, textured hand-painted style and outlines. Adjust hands for coherent grip. Entire character, ears, tail, feet and equipment uncropped with margins. Genuine transparent alpha background. No flame jet, smoke, glow, scenery, floor, shadow, text, extra limbs or extra weapons.  ",
+    "generationPath": "C:\\Users\\baals\\.codex\\generated_images\\01a0a80f-a421-7db0-a88e-dc3bd0094168\\exec-d404e941-e71f-4f92-85ff-bac82781f2f9.png",
+    "status": "exported"
+  },
+  {
+    "species": "goat",
+    "outfit": "red-hats",
+    "stance": "standing",
+    "reference": "art/source/red-hats-armed/goat-rifle-standing.png",
+    "weapon": "flamethrower",
+    "source": "art/source/weapon-expansion/red-hats/goat-flamethrower-standing.png",
+    "prompt": "Use case: precise-object-edit. Create a new Animal Factory Tactics flamethrower sprite using this exact Red Hats goat rifle sprite as character, uniform and standing pose reference. Replace rifle with vintage industrial flamethrower: rigid straight dark steel projector, short stout nozzle, two hand grips, thick black flexible hose visibly connected to two weathered olive cylindrical backpack tanks with brass fittings and brown harness straps. Backpack firmly follows torso orientation, horizontal when prone. Preserve exact animal identity, face, fur or feathers, red peaked cap, red armband, olive shirt, brown trousers, boots or species-specific feet, all accessories, body pose, elevated three-quarter view facing screen-right, textured hand-painted style and outlines. Adjust hands for coherent grip. Entire character, ears, tail, feet and equipment uncropped with margins. Genuine transparent alpha background. No flame jet, smoke, glow, scenery, floor, shadow, text, extra limbs or extra weapons.  ",
+    "generationPath": "C:\\Users\\baals\\.codex\\generated_images\\01a0a80f-a421-7db0-a88e-dc3bd0094168\\exec-5b6bb617-5f87-4b4a-88e5-d6e55cad0428.png",
+    "status": "exported"
+  },
+  {
+    "species": "goat",
+    "outfit": "red-hats",
+    "stance": "kneeling",
+    "reference": "art/source/red-hats-armed/goat-rifle-kneeling.png",
+    "weapon": "flamethrower",
+    "source": "art/source/weapon-expansion/red-hats/goat-flamethrower-kneeling.png",
+    "prompt": "Use case: precise-object-edit. Create a new Animal Factory Tactics flamethrower sprite using this exact Red Hats goat rifle sprite as character, uniform and kneeling pose reference. Replace rifle with vintage industrial flamethrower: rigid straight dark steel projector, short stout nozzle, two hand grips, thick black flexible hose visibly connected to two weathered olive cylindrical backpack tanks with brass fittings and brown harness straps. Backpack firmly follows torso orientation, horizontal when prone. Preserve exact animal identity, face, fur or feathers, red peaked cap, red armband, olive shirt, brown trousers, boots or species-specific feet, all accessories, body pose, elevated three-quarter view facing screen-right, textured hand-painted style and outlines. Adjust hands for coherent grip. Entire character, ears, tail, feet and equipment uncropped with margins. Genuine transparent alpha background. No flame jet, smoke, glow, scenery, floor, shadow, text, extra limbs or extra weapons.  ",
+    "generationPath": "C:\\Users\\baals\\.codex\\generated_images\\01a0a80f-a421-7db0-a88e-dc3bd0094168\\exec-52422a96-33fc-4166-be89-ef58e265cbcc.png",
+    "status": "exported"
+  },
+  {
+    "species": "goat",
+    "outfit": "red-hats",
+    "stance": "prone",
+    "reference": "art/source/red-hats-armed/goat-rifle-prone.png",
+    "weapon": "flamethrower",
+    "source": "art/source/weapon-expansion/red-hats/goat-flamethrower-prone.png",
+    "prompt": "Use case: precise-object-edit. Create a new Animal Factory Tactics flamethrower sprite using this exact Red Hats goat rifle sprite as character, uniform and prone pose reference. Replace rifle with vintage industrial flamethrower: rigid straight dark steel projector, short stout nozzle, two hand grips, thick black flexible hose visibly connected to two weathered olive cylindrical backpack tanks with brass fittings and brown harness straps. Backpack firmly follows torso orientation, horizontal when prone. Preserve exact animal identity, face, fur or feathers, red peaked cap, red armband, olive shirt, brown trousers, boots or species-specific feet, all accessories, body pose, elevated three-quarter view facing screen-right, textured hand-painted style and outlines. Adjust hands for coherent grip. Entire character, ears, tail, feet and equipment uncropped with margins. Genuine transparent alpha background. No flame jet, smoke, glow, scenery, floor, shadow, text, extra limbs or extra weapons.  ",
+    "generationPath": "C:\\Users\\baals\\.codex\\generated_images\\01a0a80f-a421-7db0-a88e-dc3bd0094168\\exec-f365b5f8-a28e-4c07-b121-f6c184ef98d7.png",
+    "status": "exported"
+  },
+  {
+    "species": "donkey",
+    "outfit": "red-hats",
+    "stance": "standing",
+    "reference": "art/source/red-hats-armed/donkey-rifle-standing.png",
+    "weapon": "flamethrower",
+    "source": "art/source/weapon-expansion/red-hats/donkey-flamethrower-standing.png",
+    "prompt": "Use case: precise-object-edit. Create a new Animal Factory Tactics flamethrower sprite using this exact Red Hats donkey rifle sprite as character, uniform and standing pose reference. Replace rifle with vintage industrial flamethrower: rigid straight dark steel projector, short stout nozzle, two hand grips, thick black flexible hose visibly connected to two weathered olive cylindrical backpack tanks with brass fittings and brown harness straps. Backpack firmly follows torso orientation, horizontal when prone. Preserve exact animal identity, face, fur or feathers, red peaked cap, red armband, olive shirt, brown trousers, boots or species-specific feet, all accessories, body pose, elevated three-quarter view facing screen-right, textured hand-painted style and outlines. Adjust hands for coherent grip. Entire character, ears, tail, feet and equipment uncropped with margins. Genuine transparent alpha background. No flame jet, smoke, glow, scenery, floor, shadow, text, extra limbs or extra weapons.  ",
+    "generationPath": "C:\\Users\\baals\\.codex\\generated_images\\01a0a80f-a421-7db0-a88e-dc3bd0094168\\exec-b77b5f64-5254-4792-9f46-36ec90183162.png",
+    "status": "exported"
+  },
+  {
+    "species": "donkey",
+    "outfit": "red-hats",
+    "stance": "kneeling",
+    "reference": "art/source/red-hats-armed/donkey-rifle-kneeling.png",
+    "weapon": "flamethrower",
+    "source": "art/source/weapon-expansion/red-hats/donkey-flamethrower-kneeling.png",
+    "prompt": "Use case: precise-object-edit. Create a new Animal Factory Tactics flamethrower sprite using this exact Red Hats donkey rifle sprite as character, uniform and kneeling pose reference. Replace rifle with vintage industrial flamethrower: rigid straight dark steel projector, short stout nozzle, two hand grips, thick black flexible hose visibly connected to two weathered olive cylindrical backpack tanks with brass fittings and brown harness straps. Backpack firmly follows torso orientation, horizontal when prone. Preserve exact animal identity, face, fur or feathers, red peaked cap, red armband, olive shirt, brown trousers, boots or species-specific feet, all accessories, body pose, elevated three-quarter view facing screen-right, textured hand-painted style and outlines. Adjust hands for coherent grip. Entire character, ears, tail, feet and equipment uncropped with margins. Genuine transparent alpha background. No flame jet, smoke, glow, scenery, floor, shadow, text, extra limbs or extra weapons.  ",
+    "generationPath": "C:\\Users\\baals\\.codex\\generated_images\\01a0a80f-a421-7db0-a88e-dc3bd0094168\\exec-3f2ba04a-91e4-4bcb-9002-eef79f2807d5.png",
+    "status": "exported"
+  },
+  {
+    "species": "donkey",
+    "outfit": "red-hats",
+    "stance": "prone",
+    "reference": "art/source/red-hats-armed/donkey-rifle-prone.png",
+    "weapon": "flamethrower",
+    "source": "art/source/weapon-expansion/red-hats/donkey-flamethrower-prone.png",
+    "prompt": "Use case: precise-object-edit. Create a new Animal Factory Tactics flamethrower sprite using this exact Red Hats donkey rifle sprite as character, uniform and prone pose reference. Replace rifle with vintage industrial flamethrower: rigid straight dark steel projector, short stout nozzle, two hand grips, thick black flexible hose visibly connected to two weathered olive cylindrical backpack tanks with brass fittings and brown harness straps. Backpack firmly follows torso orientation, horizontal when prone. Preserve exact animal identity, face, fur or feathers, red peaked cap, red armband, olive shirt, brown trousers, boots or species-specific feet, all accessories, body pose, elevated three-quarter view facing screen-right, textured hand-painted style and outlines. Adjust hands for coherent grip. Entire character, ears, tail, feet and equipment uncropped with margins. Genuine transparent alpha background. No flame jet, smoke, glow, scenery, floor, shadow, text, extra limbs or extra weapons.  ",
+    "generationPath": "C:\\Users\\baals\\.codex\\generated_images\\01a0a80f-a421-7db0-a88e-dc3bd0094168\\exec-f1adfdfe-6c4a-4368-a325-4e50c4cb2e61.png",
+    "status": "exported"
+  },
+  {
+    "species": "sheep",
+    "outfit": "red-hats",
+    "stance": "standing",
+    "reference": "art/source/red-hats-armed/sheep-rifle-standing.png",
+    "weapon": "flamethrower",
+    "source": "art/source/weapon-expansion/red-hats/sheep-flamethrower-standing.png",
+    "prompt": "Use case: precise-object-edit. Create a new Animal Factory Tactics flamethrower sprite using this exact Red Hats sheep rifle sprite as character, uniform and standing pose reference. Replace rifle with vintage industrial flamethrower: rigid straight dark steel projector, short stout nozzle, two hand grips, thick black flexible hose visibly connected to two weathered olive cylindrical backpack tanks with brass fittings and brown harness straps. Backpack firmly follows torso orientation, horizontal when prone. Preserve exact animal identity, face, fur or feathers, red peaked cap, red armband, olive shirt, brown trousers, boots or species-specific feet, all accessories, body pose, elevated three-quarter view facing screen-right, textured hand-painted style and outlines. Adjust hands for coherent grip. Entire character, ears, tail, feet and equipment uncropped with margins. Genuine transparent alpha background. No flame jet, smoke, glow, scenery, floor, shadow, text, extra limbs or extra weapons.  ",
+    "generationPath": "C:\\Users\\baals\\.codex\\generated_images\\01a0a80f-a421-7db0-a88e-dc3bd0094168\\exec-2ca51297-8291-4805-aa59-85ecaa30c6c3.png",
+    "status": "exported"
+  },
+  {
+    "species": "sheep",
+    "outfit": "red-hats",
+    "stance": "kneeling",
+    "reference": "art/source/red-hats-armed/sheep-rifle-kneeling.png",
+    "weapon": "flamethrower",
+    "source": "art/source/weapon-expansion/red-hats/sheep-flamethrower-kneeling.png",
+    "prompt": "Use case: precise-object-edit. Create a new Animal Factory Tactics flamethrower sprite using this exact Red Hats sheep rifle sprite as character, uniform and kneeling pose reference. Replace rifle with vintage industrial flamethrower: rigid straight dark steel projector, short stout nozzle, two hand grips, thick black flexible hose visibly connected to two weathered olive cylindrical backpack tanks with brass fittings and brown harness straps. Backpack firmly follows torso orientation, horizontal when prone. Preserve exact animal identity, face, fur or feathers, red peaked cap, red armband, olive shirt, brown trousers, boots or species-specific feet, all accessories, body pose, elevated three-quarter view facing screen-right, textured hand-painted style and outlines. Adjust hands for coherent grip. Entire character, ears, tail, feet and equipment uncropped with margins. Genuine transparent alpha background. No flame jet, smoke, glow, scenery, floor, shadow, text, extra limbs or extra weapons.  ",
+    "generationPath": "C:\\Users\\baals\\.codex\\generated_images\\01a0a80f-a421-7db0-a88e-dc3bd0094168\\exec-126676d2-9920-4cb7-8f94-89254b18cc95.png",
+    "status": "exported"
+  },
+  {
+    "species": "sheep",
+    "outfit": "red-hats",
+    "stance": "prone",
+    "reference": "art/source/red-hats-armed/sheep-rifle-prone.png",
+    "weapon": "flamethrower",
+    "source": "art/source/weapon-expansion/red-hats/sheep-flamethrower-prone.png",
+    "prompt": "Use case: precise-object-edit. Create a new Animal Factory Tactics flamethrower sprite using this exact Red Hats sheep rifle sprite as character, uniform and prone pose reference. Replace rifle with vintage industrial flamethrower: rigid straight dark steel projector, short stout nozzle, two hand grips, thick black flexible hose visibly connected to two weathered olive cylindrical backpack tanks with brass fittings and brown harness straps. Backpack firmly follows torso orientation, horizontal when prone. Preserve exact animal identity, face, fur or feathers, red peaked cap, red armband, olive shirt, brown trousers, boots or species-specific feet, all accessories, body pose, elevated three-quarter view facing screen-right, textured hand-painted style and outlines. Adjust hands for coherent grip. Entire character, ears, tail, feet and equipment uncropped with margins. Genuine transparent alpha background. No flame jet, smoke, glow, scenery, floor, shadow, text, extra limbs or extra weapons.  ",
+    "generationPath": "C:\\Users\\baals\\.codex\\generated_images\\01a0a80f-a421-7db0-a88e-dc3bd0094168\\exec-f1563192-8a16-44f1-a9c4-34d1bedea260.png",
+    "status": "exported"
+  },
+  {
+    "species": "cow",
+    "outfit": "red-hats",
+    "stance": "standing",
+    "reference": "art/source/red-hats-armed/cow-rifle-standing.png",
+    "weapon": "flamethrower",
+    "source": "art/source/weapon-expansion/red-hats/cow-flamethrower-standing.png",
+    "prompt": "Use case: precise-object-edit. Create a new Animal Factory Tactics flamethrower sprite using this exact Red Hats cow rifle sprite as character, uniform and standing pose reference. Replace rifle with vintage industrial flamethrower: rigid straight dark steel projector, short stout nozzle, two hand grips, thick black flexible hose visibly connected to two weathered olive cylindrical backpack tanks with brass fittings and brown harness straps. Backpack firmly follows torso orientation, horizontal when prone. Preserve exact animal identity, face, fur or feathers, red peaked cap, red armband, olive shirt, brown trousers, boots or species-specific feet, all accessories, body pose, elevated three-quarter view facing screen-right, textured hand-painted style and outlines. Adjust hands for coherent grip. Entire character, ears, tail, feet and equipment uncropped with margins. Genuine transparent alpha background. No flame jet, smoke, glow, scenery, floor, shadow, text, extra limbs or extra weapons.  ",
+    "generationPath": "C:\\Users\\baals\\.codex\\generated_images\\01a0a80f-a421-7db0-a88e-dc3bd0094168\\exec-e74790d5-df51-4590-8e8d-1f0b7c47fc91.png",
+    "status": "exported"
+  },
+  {
+    "species": "cow",
+    "outfit": "red-hats",
+    "stance": "kneeling",
+    "reference": "art/source/red-hats-armed/cow-rifle-kneeling.png",
+    "weapon": "flamethrower",
+    "source": "art/source/weapon-expansion/red-hats/cow-flamethrower-kneeling.png",
+    "prompt": "Use case: precise-object-edit. Create a new Animal Factory Tactics flamethrower sprite using this exact Red Hats cow rifle sprite as character, uniform and kneeling pose reference. Replace rifle with vintage industrial flamethrower: rigid straight dark steel projector, short stout nozzle, two hand grips, thick black flexible hose visibly connected to two weathered olive cylindrical backpack tanks with brass fittings and brown harness straps. Backpack firmly follows torso orientation, horizontal when prone. Preserve exact animal identity, face, fur or feathers, red peaked cap, red armband, olive shirt, brown trousers, boots or species-specific feet, all accessories, body pose, elevated three-quarter view facing screen-right, textured hand-painted style and outlines. Adjust hands for coherent grip. Entire character, ears, tail, feet and equipment uncropped with margins. Genuine transparent alpha background. No flame jet, smoke, glow, scenery, floor, shadow, text, extra limbs or extra weapons.  ",
+    "generationPath": "C:\\Users\\baals\\.codex\\generated_images\\01a0a80f-a421-7db0-a88e-dc3bd0094168\\exec-e435e591-edac-4587-a3fa-72e1c133e490.png",
+    "status": "exported"
+  },
+  {
+    "species": "cow",
+    "outfit": "red-hats",
+    "stance": "prone",
+    "reference": "art/source/red-hats-armed/cow-rifle-prone.png",
+    "weapon": "flamethrower",
+    "source": "art/source/weapon-expansion/red-hats/cow-flamethrower-prone.png",
+    "prompt": "Use case: precise-object-edit. Create a new Animal Factory Tactics flamethrower sprite using this exact Red Hats cow rifle sprite as character, uniform and prone pose reference. Replace rifle with vintage industrial flamethrower: rigid straight dark steel projector, short stout nozzle, two hand grips, thick black flexible hose visibly connected to two weathered olive cylindrical backpack tanks with brass fittings and brown harness straps. Backpack firmly follows torso orientation, horizontal when prone. Preserve exact animal identity, face, fur or feathers, red peaked cap, red armband, olive shirt, brown trousers, boots or species-specific feet, all accessories, body pose, elevated three-quarter view facing screen-right, textured hand-painted style and outlines. Adjust hands for coherent grip. Entire character, ears, tail, feet and equipment uncropped with margins. Genuine transparent alpha background. No flame jet, smoke, glow, scenery, floor, shadow, text, extra limbs or extra weapons.  ",
+    "generationPath": "C:\\Users\\baals\\.codex\\generated_images\\01a0a80f-a421-7db0-a88e-dc3bd0094168\\exec-799d84ea-007b-425a-a004-6ee68b53e739.png",
+    "status": "exported"
+  },
+  {
+    "species": "hen",
+    "outfit": "red-hats",
+    "stance": "standing",
+    "reference": "art/source/red-hats-armed/hen-rifle-standing.png",
+    "weapon": "flamethrower",
+    "source": "art/source/weapon-expansion/red-hats/hen-flamethrower-standing.png",
+    "prompt": "Use case: precise-object-edit. Create a new Animal Factory Tactics flamethrower sprite using this exact Red Hats hen rifle sprite as character, uniform and standing pose reference. Replace rifle with vintage industrial flamethrower: rigid straight dark steel projector, short stout nozzle, two hand grips, thick black flexible hose visibly connected to two weathered olive cylindrical backpack tanks with brass fittings and brown harness straps. Backpack firmly follows torso orientation, horizontal when prone. Preserve exact animal identity, face, fur or feathers, red peaked cap, red armband, olive shirt, brown trousers, boots or species-specific feet, all accessories, body pose, elevated three-quarter view facing screen-right, textured hand-painted style and outlines. Adjust hands for coherent grip. Entire character, ears, tail, feet and equipment uncropped with margins. Genuine transparent alpha background. No flame jet, smoke, glow, scenery, floor, shadow, text, extra limbs or extra weapons. Keep feathered wing hands and bare yellow clawed feet, no boots. ",
+    "generationPath": "C:\\Users\\baals\\.codex\\generated_images\\01a0a80f-a421-7db0-a88e-dc3bd0094168\\exec-b5f2c329-7df9-4ef8-8a93-7dfe112c59f2.png",
+    "status": "exported"
+  },
+  {
+    "species": "hen",
+    "outfit": "red-hats",
+    "stance": "kneeling",
+    "reference": "art/source/red-hats-armed/hen-rifle-kneeling.png",
+    "weapon": "flamethrower",
+    "source": "art/source/weapon-expansion/red-hats/hen-flamethrower-kneeling.png",
+    "prompt": "Use case: precise-object-edit. Create a new Animal Factory Tactics flamethrower sprite using this exact Red Hats hen rifle sprite as character, uniform and kneeling pose reference. Replace rifle with vintage industrial flamethrower: rigid straight dark steel projector, short stout nozzle, two hand grips, thick black flexible hose visibly connected to two weathered olive cylindrical backpack tanks with brass fittings and brown harness straps. Backpack firmly follows torso orientation, horizontal when prone. Preserve exact animal identity, face, fur or feathers, red peaked cap, red armband, olive shirt, brown trousers, boots or species-specific feet, all accessories, body pose, elevated three-quarter view facing screen-right, textured hand-painted style and outlines. Adjust hands for coherent grip. Entire character, ears, tail, feet and equipment uncropped with margins. Genuine transparent alpha background. No flame jet, smoke, glow, scenery, floor, shadow, text, extra limbs or extra weapons. Keep feathered wing hands and bare yellow clawed feet, no boots. ",
+    "generationPath": "C:\\Users\\baals\\.codex\\generated_images\\01a0a80f-a421-7db0-a88e-dc3bd0094168\\exec-14ff5674-5e98-41cf-ae76-5ea4059edcc2.png",
+    "status": "exported"
+  },
+  {
+    "species": "hen",
+    "outfit": "red-hats",
+    "stance": "prone",
+    "reference": "art/source/red-hats-armed/hen-rifle-prone.png",
+    "weapon": "flamethrower",
+    "source": "art/source/weapon-expansion/red-hats/hen-flamethrower-prone.png",
+    "prompt": "Use case: precise-object-edit. Create a new Animal Factory Tactics flamethrower sprite using this exact Red Hats hen rifle sprite as character, uniform and prone pose reference. Replace rifle with vintage industrial flamethrower: rigid straight dark steel projector, short stout nozzle, two hand grips, thick black flexible hose visibly connected to two weathered olive cylindrical backpack tanks with brass fittings and brown harness straps. Backpack firmly follows torso orientation, horizontal when prone. Preserve exact animal identity, face, fur or feathers, red peaked cap, red armband, olive shirt, brown trousers, boots or species-specific feet, all accessories, body pose, elevated three-quarter view facing screen-right, textured hand-painted style and outlines. Adjust hands for coherent grip. Entire character, ears, tail, feet and equipment uncropped with margins. Genuine transparent alpha background. No flame jet, smoke, glow, scenery, floor, shadow, text, extra limbs or extra weapons. Keep feathered wing hands and bare yellow clawed feet, no boots. ",
+    "generationPath": "C:\\Users\\baals\\.codex\\generated_images\\01a0a80f-a421-7db0-a88e-dc3bd0094168\\exec-fdcac95b-d17e-4fd7-811a-d15e3dd0e5f5.png",
+    "status": "exported"
+  },
+  {
+    "species": "skunk",
+    "outfit": "red-hats",
+    "stance": "standing",
+    "reference": "art/source/skunk/red-hats-rifle-standing.png",
+    "weapon": "flamethrower",
+    "source": "art/source/weapon-expansion/red-hats/skunk-flamethrower-standing.png",
+    "prompt": "Use case: precise-object-edit. Create a new Animal Factory Tactics flamethrower sprite using this exact Red Hats skunk rifle sprite as character, uniform and standing pose reference. Replace rifle with vintage industrial flamethrower: rigid straight dark steel projector, short stout nozzle, two hand grips, thick black flexible hose visibly connected to two weathered olive cylindrical backpack tanks with brass fittings and brown harness straps. Backpack firmly follows torso orientation, horizontal when prone. Preserve exact animal identity, face, fur or feathers, red peaked cap, red armband, olive shirt, brown trousers, boots or species-specific feet, all accessories, body pose, elevated three-quarter view facing screen-right, textured hand-painted style and outlines. Adjust hands for coherent grip. Entire character, ears, tail, feet and equipment uncropped with margins. Genuine transparent alpha background. No flame jet, smoke, glow, scenery, floor, shadow, text, extra limbs or extra weapons.  Preserve entire large striped tail.",
+    "generationPath": "C:\\Users\\baals\\.codex\\generated_images\\01a0a80f-a421-7db0-a88e-dc3bd0094168\\exec-735552b4-2c34-4b0c-b16c-6781b17a3b06.png",
+    "status": "exported"
+  },
+  {
+    "species": "skunk",
+    "outfit": "red-hats",
+    "stance": "kneeling",
+    "reference": "art/source/skunk/red-hats-rifle-kneeling.png",
+    "weapon": "flamethrower",
+    "source": "art/source/weapon-expansion/red-hats/skunk-flamethrower-kneeling.png",
+    "prompt": "Use case: precise-object-edit. Create a new Animal Factory Tactics flamethrower sprite using this exact Red Hats skunk rifle sprite as character, uniform and kneeling pose reference. Replace rifle with vintage industrial flamethrower: rigid straight dark steel projector, short stout nozzle, two hand grips, thick black flexible hose visibly connected to two weathered olive cylindrical backpack tanks with brass fittings and brown harness straps. Backpack firmly follows torso orientation, horizontal when prone. Preserve exact animal identity, face, fur or feathers, red peaked cap, red armband, olive shirt, brown trousers, boots or species-specific feet, all accessories, body pose, elevated three-quarter view facing screen-right, textured hand-painted style and outlines. Adjust hands for coherent grip. Entire character, ears, tail, feet and equipment uncropped with margins. Genuine transparent alpha background. No flame jet, smoke, glow, scenery, floor, shadow, text, extra limbs or extra weapons.  Preserve entire large striped tail.",
+    "generationPath": "C:\\Users\\baals\\.codex\\generated_images\\01a0a80f-a421-7db0-a88e-dc3bd0094168\\exec-ed1e4bdd-b651-4a26-96e4-c5238362e581.png",
+    "status": "exported"
+  },
+  {
+    "species": "skunk",
+    "outfit": "red-hats",
+    "stance": "prone",
+    "reference": "art/source/skunk/red-hats-rifle-prone.png",
+    "weapon": "flamethrower",
+    "source": "art/source/weapon-expansion/red-hats/skunk-flamethrower-prone.png",
+    "prompt": "Use case: precise-object-edit. Create a new Animal Factory Tactics flamethrower sprite using this exact Red Hats skunk rifle sprite as character, uniform and prone pose reference. Replace rifle with vintage industrial flamethrower: rigid straight dark steel projector, short stout nozzle, two hand grips, thick black flexible hose visibly connected to two weathered olive cylindrical backpack tanks with brass fittings and brown harness straps. Backpack firmly follows torso orientation, horizontal when prone. Preserve exact animal identity, face, fur or feathers, red peaked cap, red armband, olive shirt, brown trousers, boots or species-specific feet, all accessories, body pose, elevated three-quarter view facing screen-right, textured hand-painted style and outlines. Adjust hands for coherent grip. Entire character, ears, tail, feet and equipment uncropped with margins. Genuine transparent alpha background. No flame jet, smoke, glow, scenery, floor, shadow, text, extra limbs or extra weapons.  Preserve entire large striped tail.",
+    "generationPath": "C:\\Users\\baals\\.codex\\generated_images\\01a0a80f-a421-7db0-a88e-dc3bd0094168\\exec-c06820d3-7a9f-4db0-b87c-1266220c9c6f.png",
+    "status": "exported"
+  }
+]

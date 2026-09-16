@@ -5080,5 +5080,299 @@
     ],
     "width": 512,
     "weapon": "flamethrower"
+  },
+  {
+    "src": "../assets/characters/weapon-expansion/red-hats/horse-flamethrower-standing.png",
+    "contentHeight": 236,
+    "height": 256,
+    "stance": "standing",
+    "outfit": "red-hats",
+    "species": "horse",
+    "anchor": [
+      192,
+      244
+    ],
+    "width": 384,
+    "weapon": "flamethrower"
+  },
+  {
+    "src": "../assets/characters/weapon-expansion/red-hats/horse-flamethrower-kneeling.png",
+    "contentHeight": 176,
+    "height": 256,
+    "stance": "kneeling",
+    "outfit": "red-hats",
+    "species": "horse",
+    "anchor": [
+      192,
+      244
+    ],
+    "width": 384,
+    "weapon": "flamethrower"
+  },
+  {
+    "src": "../assets/characters/weapon-expansion/red-hats/horse-flamethrower-prone.png",
+    "contentHeight": 96,
+    "height": 256,
+    "stance": "prone",
+    "outfit": "red-hats",
+    "species": "horse",
+    "anchor": [
+      192,
+      244
+    ],
+    "width": 384,
+    "weapon": "flamethrower"
+  },
+  {
+    "src": "../assets/characters/weapon-expansion/red-hats/goat-flamethrower-standing.png",
+    "contentHeight": 236,
+    "height": 256,
+    "stance": "standing",
+    "outfit": "red-hats",
+    "species": "goat",
+    "anchor": [
+      192,
+      244
+    ],
+    "width": 384,
+    "weapon": "flamethrower"
+  },
+  {
+    "src": "../assets/characters/weapon-expansion/red-hats/goat-flamethrower-kneeling.png",
+    "contentHeight": 176,
+    "height": 256,
+    "stance": "kneeling",
+    "outfit": "red-hats",
+    "species": "goat",
+    "anchor": [
+      192,
+      244
+    ],
+    "width": 384,
+    "weapon": "flamethrower"
+  },
+  {
+    "src": "../assets/characters/weapon-expansion/red-hats/goat-flamethrower-prone.png",
+    "contentHeight": 96,
+    "height": 256,
+    "stance": "prone",
+    "outfit": "red-hats",
+    "species": "goat",
+    "anchor": [
+      192,
+      244
+    ],
+    "width": 384,
+    "weapon": "flamethrower"
+  },
+  {
+    "src": "../assets/characters/weapon-expansion/red-hats/donkey-flamethrower-standing.png",
+    "contentHeight": 236,
+    "height": 256,
+    "stance": "standing",
+    "outfit": "red-hats",
+    "species": "donkey",
+    "anchor": [
+      192,
+      244
+    ],
+    "width": 384,
+    "weapon": "flamethrower"
+  },
+  {
+    "src": "../assets/characters/weapon-expansion/red-hats/donkey-flamethrower-kneeling.png",
+    "contentHeight": 176,
+    "height": 256,
+    "stance": "kneeling",
+    "outfit": "red-hats",
+    "species": "donkey",
+    "anchor": [
+      192,
+      244
+    ],
+    "width": 384,
+    "weapon": "flamethrower"
+  },
+  {
+    "src": "../assets/characters/weapon-expansion/red-hats/donkey-flamethrower-prone.png",
+    "contentHeight": 96,
+    "height": 256,
+    "stance": "prone",
+    "outfit": "red-hats",
+    "species": "donkey",
+    "anchor": [
+      192,
+      244
+    ],
+    "width": 384,
+    "weapon": "flamethrower"
+  },
+  {
+    "src": "../assets/characters/weapon-expansion/red-hats/sheep-flamethrower-standing.png",
+    "contentHeight": 236,
+    "height": 256,
+    "stance": "standing",
+    "outfit": "red-hats",
+    "species": "sheep",
+    "anchor": [
+      192,
+      244
+    ],
+    "width": 384,
+    "weapon": "flamethrower"
+  },
+  {
+    "src": "../assets/characters/weapon-expansion/red-hats/sheep-flamethrower-kneeling.png",
+    "contentHeight": 176,
+    "height": 256,
+    "stance": "kneeling",
+    "outfit": "red-hats",
+    "species": "sheep",
+    "anchor": [
+      192,
+      244
+    ],
+    "width": 384,
+    "weapon": "flamethrower"
+  },
+  {
+    "src": "../assets/characters/weapon-expansion/red-hats/sheep-flamethrower-prone.png",
+    "contentHeight": 96,
+    "height": 256,
+    "stance": "prone",
+    "outfit": "red-hats",
+    "species": "sheep",
+    "anchor": [
+      256,
+      244
+    ],
+    "width": 512,
+    "weapon": "flamethrower"
+  },
+  {
+    "src": "../assets/characters/weapon-expansion/red-hats/cow-flamethrower-standing.png",
+    "contentHeight": 236,
+    "height": 256,
+    "stance": "standing",
+    "outfit": "red-hats",
+    "species": "cow",
+    "anchor": [
+      192,
+      244
+    ],
+    "width": 384,
+    "weapon": "flamethrower"
+  },
+  {
+    "src": "../assets/characters/weapon-expansion/red-hats/cow-flamethrower-kneeling.png",
+    "contentHeight": 176,
+    "height": 256,
+    "stance": "kneeling",
+    "outfit": "red-hats",
+    "species": "cow",
+    "anchor": [
+      192,
+      244
+    ],
+    "width": 384,
+    "weapon": "flamethrower"
+  },
+  {
+    "src": "../assets/characters/weapon-expansion/red-hats/cow-flamethrower-prone.png",
+    "contentHeight": 96,
+    "height": 256,
+    "stance": "prone",
+    "outfit": "red-hats",
+    "species": "cow",
+    "anchor": [
+      256,
+      244
+    ],
+    "width": 512,
+    "weapon": "flamethrower"
+  },
+  {
+    "src": "../assets/characters/weapon-expansion/red-hats/hen-flamethrower-standing.png",
+    "contentHeight": 236,
+    "height": 256,
+    "stance": "standing",
+    "outfit": "red-hats",
+    "species": "hen",
+    "anchor": [
+      192,
+      244
+    ],
+    "width": 384,
+    "weapon": "flamethrower"
+  },
+  {
+    "src": "../assets/characters/weapon-expansion/red-hats/hen-flamethrower-kneeling.png",
+    "contentHeight": 176,
+    "height": 256,
+    "stance": "kneeling",
+    "outfit": "red-hats",
+    "species": "hen",
+    "anchor": [
+      192,
+      244
+    ],
+    "width": 384,
+    "weapon": "flamethrower"
+  },
+  {
+    "src": "../assets/characters/weapon-expansion/red-hats/hen-flamethrower-prone.png",
+    "contentHeight": 96,
+    "height": 256,
+    "stance": "prone",
+    "outfit": "red-hats",
+    "species": "hen",
+    "anchor": [
+      192,
+      244
+    ],
+    "width": 384,
+    "weapon": "flamethrower"
+  },
+  {
+    "src": "../assets/characters/weapon-expansion/red-hats/skunk-flamethrower-standing.png",
+    "contentHeight": 236,
+    "height": 256,
+    "stance": "standing",
+    "outfit": "red-hats",
+    "species": "skunk",
+    "anchor": [
+      192,
+      244
+    ],
+    "width": 384,
+    "weapon": "flamethrower"
+  },
+  {
+    "src": "../assets/characters/weapon-expansion/red-hats/skunk-flamethrower-kneeling.png",
+    "contentHeight": 176,
+    "height": 256,
+    "stance": "kneeling",
+    "outfit": "red-hats",
+    "species": "skunk",
+    "anchor": [
+      192,
+      244
+    ],
+    "width": 384,
+    "weapon": "flamethrower"
+  },
+  {
+    "src": "../assets/characters/weapon-expansion/red-hats/skunk-flamethrower-prone.png",
+    "contentHeight": 96,
+    "height": 256,
+    "stance": "prone",
+    "outfit": "red-hats",
+    "species": "skunk",
+    "anchor": [
+      192,
+      244
+    ],
+    "width": 384,
+    "weapon": "flamethrower"
   }
 ]

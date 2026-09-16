@@ -21,10 +21,9 @@ for(const species of CHARACTER_SPECIES)for(const weapon of ['hands',...ARMED_WEA
  const frame=characterArt(species,weapon,'idle',stance);
  await checkPNG(frame.src.replace('../',''),frame.width,frame.height);
 }
-assert.equal(WEAPON_EXPANSION_FRAMES.length,363,'Complete weapon expansion and base flamethrower set');
-assert.equal(new Set(WEAPON_EXPANSION_FRAMES.map(f=>f.src)).size,363,'Each combination has its own PNG');
+assert.equal(WEAPON_EXPANSION_FRAMES.length,384,'Complete weapon expansion and flamethrower set');
+assert.equal(new Set(WEAPON_EXPANSION_FRAMES.map(f=>f.src)).size,384,'Each combination has its own PNG');
 for(const outfit of ['normal','red-hats'])for(const species of outfit==='normal'?CHARACTER_SPECIES:RED_HAT_SPECIES)for(const weapon of EXPANSION_WEAPONS)for(const stance of ['standing','kneeling','prone']){
- if(weapon==='flamethrower'&&outfit==='red-hats'&&species!=='pig-foreman')continue;
  const frame=weaponExpansionArt(species,weapon,stance,outfit);
  assert.ok(frame,`Missing ${outfit}/${species}/${weapon}/${stance}`);
  await checkPNG(frame.src.replace('../',''),frame.width,frame.height);
