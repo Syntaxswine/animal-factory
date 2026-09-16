@@ -115,8 +115,10 @@ A gunshot alerts every guard within twice the weapon's range, whoever fired; ale
 
 ## Implemented weapon ranges and accuracy
 
-Unarmed/knife: 1 tile including clear diagonals on the same floor. Flamethrower: 10. Pistol/shotgun: 12. AK-47: 20. Rifle: 24. Sniper rifle: 36. Grenade launcher: 22 effective; RPG: 40 effective. Existing explosive overshoot, scatter and height advantages remain.
+Unarmed/knife: 1 tile including clear diagonals on the same floor. Flamethrower: 10. Pistol/shotgun: 12. SMG: 20. AK-47/rifle: 24. Heavy machine gun: 28. Sniper rifle: 36. Grenade launcher: 22 effective; RPG: 40 effective. Existing explosive overshoot, scatter and height advantages remain.
 
 Distance penalties scale from 3 tiles to each weapon’s range: pistol 35 points plus a constant 20-point accuracy penalty; rifle 18 with a 5-point bonus; AK 26; sniper 12 with a 10-point bonus; shotgun/flame 15; explosives 25 within effective range, dropping to 10% aim beyond it. Burst adds 10 penalty points. Head/weapon/leg and cover penalties remain. These are initial game balance values.
 
-Shotguns fire six 12-damage pellets in one 5-AP action using one shell. Every pellet follows geometry and can strike a different unit; spread thins concentration with distance. Sniper shots cost 8 AP, including for guards (sniper guards have sufficient maximum AP). Both weapons have finite ammunition, inventory support, editor selection, finished character art and Factory supply pickups.
+Shotguns fire six 27-damage pellets in one 5-AP action using one shell. Every pellet follows geometry and can strike a different unit; spread thins concentration with distance. Sniper shots cost 8 AP, including for guards (sniper guards have sufficient maximum AP). Both weapons have finite ammunition, inventory support, editor selection, finished character art and Factory supply pickups.
+
+SMGs and heavy machine guns are playable with finished character sprites, equipment icons, editor loadouts and supplies beside Misha and Vera in the Factory test. Both support three-round bursts (+2 AP, −10 aim), costing one round per emitted projectile. SMG rounds and shotgun pellets each deal 27 base damage, matching the pistol; multiple pellets can accumulate damage. They share the pistol penetration class. Armor equipment/mitigation is not yet implemented; bullets still stop at their first collision. HMG shots cost 6 AP and deal 48 base damage.

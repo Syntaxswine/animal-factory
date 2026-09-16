@@ -4,9 +4,9 @@ This audit separates implemented requests from remaining work and suggestions. I
 
 ## Corrected in this update
 
-- All requested ranges: unarmed/knife 1, flamethrower 10, pistol/shotgun 12, AK-47 20, rifle 24, grenade launcher 22 effective, sniper 36, RPG 40 effective.
+- All requested ranges: unarmed/knife 1, flamethrower 10, pistol/shotgun 12, SMG 20, AK-47/rifle 24, heavy machine gun 28, grenade launcher 22 effective, sniper 36, RPG 40 effective.
 - Diagonal melee adjacency with walls and solid corners still blocking attacks.
-- Playable shotgun and sniper rifle, finished character sprites, equipment icons, finite ammunition, inventory, supply pickups and editor support.
+- Playable shotgun, sniper rifle, SMG and heavy machine gun, finished character sprites, equipment icons, finite ammunition, inventory, supply pickups and editor support.
 - Accuracy scaled to weapon range, poor pistol accuracy, six physical shotgun pellets per shell, sniper 8-AP shots and flamethrower damage falloff (180 through 3 tiles; 45 at 10).
 
 ## Verified existing requests
@@ -22,6 +22,6 @@ This audit separates implemented requests from remaining work and suggestions. I
 
 - **Sight overlay:** the displayed sight shapes still show theoretical range through walls. Exact obstacle-clipped visibility polygons remain planned. Actual detection and shooting do obey obstacles.
 - **Structural destruction:** explosives breach wall edges and remove props, but floor slabs remain intact. Structural roof/floor collapse and destruction of decorative background industrial buildings are not implemented.
-- **Art-only weapons:** SMG and heavy-machine-gun sprites are attached to the review gallery, but neither weapon has a playable combat definition. They were not in the agreed range list.
+- **Armor:** wearable armor and armor mitigation are not implemented. Pistol rounds, SMG rounds and buckshot share a pistol penetration class, reserved for future armor resolution.
 
 Fatigue penalties, grenade bouncing/fuses, and a fully biological vision simulation were not agreed implementations in this thread. Fatigue is currently measured without AP/accuracy penalties. Partial target rendering uses sampled body bands, not exact silhouette masking.
