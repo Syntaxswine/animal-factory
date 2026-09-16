@@ -8,7 +8,7 @@ Opened 2026-09-16 on branch `tactics-sight-lobes`. Goal: replace the flat pie-sl
 | --- | --- | --- |
 | 1 | Species sight lobes, motion-gated detection, detect/identify split feeding suspicion, orienting reflex | Built on `tactics-sight-lobes`, 271 tests green, balance recorded below; awaiting hostile review |
 | 2 | Exact visibility polygon by angular sweep over wall edges; overlay clipped by occlusion | Planned |
-| 3 | Eye height by stance; per-zone target heights so cover hides zones, not whole units | Planned |
+| 3 | Eye height by stance; per-zone target heights so cover hides zones, not whole units | Implemented; validation recorded below |
 | 4 | Heading wedge under sprites; guard lobe preview on hover | Planned |
 
 Each stage needs the full suite green, the 20-seed balance run reported before and after, and a hostile review of at least 4/5 before the next stage starts, matching the existing gates in REVIEW.md.
@@ -151,3 +151,45 @@ Per seed:
 | 1965 | won r17, 2 up, 107 HP | lost r14, 2 guards left |
 | 1966 | won r15, 1 up, 90 HP | won r10, 3 up, 252 HP |
 
+
+## Stance and exposed-zone layer — 2026-09-16
+
+Built on canonical sight-lobe commit `d332ecd`. Species fields, peripheral detection and identification curves are retained. The angular-sweep visibility polygon remains a separate planned stage.
+
+- Standing / kneeling / prone eye heights are 1.3 / 0.9 / 0.35 world units, shared with the existing projectile origin model. These are game-scale dimensions, not new animal measurements.
+- Sight and bullets share wall, window, floor, low-cover and prop collision geometry. Character bodies intercept bullets but do not block vision. Exact diagonal contact with a solid tile corner now blocks both.
+- A character can be perceived when at least one sampled body region is exposed. Head, torso and legs use the existing projectile target heights; weapon aim uses the target's held-weapon height. Personal identification and a clear ray to the selected region are required to shoot it. Shared squad sight never grants an individual shooter a ray through cover.
+- Terrain visibility includes low-cover heights and stance in its cache key. Changing stance immediately refreshes visibility while preserving discovered terrain and the established AP rules.
+- Hidden aim options are disabled. Torso remains the default; the player explicitly chooses an exposed alternative. Enemy AI can choose an exposed head, legs or weapon when torso fire is blocked. Reserved overwatch retains its existing torso-shot policy.
+- Enemy artwork is clipped into sampled head/torso/leg bands using the union of identifying squad members' views. This is a readable approximation of partial exposure, not a pixel-accurate visibility mask or a model of anatomical shapes.
+
+Validation: 279 tests passed, including seven new height/cover cases, plus browser checks of disabled leg aim, selectable head aim and partial sprite rendering. An old stance fixture incorrectly combined exploration with an already-alert guard; it now creates a genuinely unalerted exploration state. The existing diagonal-wall regression caught the projectile corner gap, which was fixed in the shared collision path.
+
+Adversarial self-review covered silent cache staleness after stance changes and explosions, corner leaks shared by sight and bullets, AP loss on rejected aim, shared-sight targeting through personal cover, enemy refusal to attack exposed regions, and floors between vertically aligned units. The regression suite covers these cases. The sprite band approximation and unclipped range overlay remain explicit limitations; no independent reviewer score is claimed for this pass.
+
+### Stance-layer balance check
+
+Twenty isolated runs per version, seeds 1947–1966, against the canonical `d332ecd` baseline. Both versions: **15 wins, 5 losses, no stalls or timeouts**. Every paired run matched on outcome, actions, rounds, survivors, remaining guards and squad HP. The bot stays standing and uses torso shots, so this is a regression check, not evidence about the difficulty of deliberate stance/cover tactics.
+
+| Seed | Both outcomes | Rounds | Survivors | Squad HP |
+| --- | --- | --- | --- | --- |
+| 1947 | lost | 14 | 0 | 0 |
+| 1948 | won | 10 | 4 | 348 |
+| 1949 | lost | 16 | 0 | 0 |
+| 1950 | won | 11 | 3 | 292 |
+| 1951 | won | 14 | 2 | 146 |
+| 1952 | won | 15 | 2 | 88 |
+| 1953 | lost | 11 | 0 | 0 |
+| 1954 | won | 17 | 1 | 102 |
+| 1955 | won | 13 | 1 | 57 |
+| 1956 | won | 15 | 2 | 174 |
+| 1957 | won | 14 | 2 | 110 |
+| 1958 | won | 14 | 2 | 165 |
+| 1959 | won | 15 | 3 | 208 |
+| 1960 | won | 13 | 3 | 190 |
+| 1961 | won | 10 | 3 | 56 |
+| 1962 | won | 7 | 4 | 269 |
+| 1963 | lost | 16 | 0 | 0 |
+| 1964 | won | 9 | 3 | 243 |
+| 1965 | lost | 14 | 0 | 0 |
+| 1966 | won | 10 | 3 | 252 |
