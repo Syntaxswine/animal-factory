@@ -1,16 +1,33 @@
 # Factory income
 
-Each successful overmap journey pays every liberated factory. Clearing all guards
-and resolving casualties changes a local map to `won`, making its factory productive.
-The starting factory pays $100 per journey. Each step along the shortest route from
-the original starting location adds $100: the outer factory, two steps away, pays
-$300. The freight yard earns nothing. Rates do not change when the squad moves.
+The campaign clock starts at Day 1, 08:00. One real second advances one game minute
+during visible play, including combat and the overmap. Hidden tabs and the field
+manual pause the clock without catch-up; defeat stops it. Travel takes one hour.
+Rejected travel does not advance the clock.
+
+Clearing all guards and resolving casualties changes a local map to `won`, making
+its factory productive. The starting factory pays $100 per game hour. Each step
+along the shortest route from the original starting location adds $100 per hour:
+the outer factory, two steps away, pays $300 per hour. The freight yard earns
+nothing. Rates do not change when the squad moves. Fractional dollars accumulate
+between updates, so frame rate does not affect earnings.
 
 The overmap shows the treasury, total production, and each location's liberation
-status and potential income. Opening the overmap or attempting blocked travel
-does not advance production. Returning along an existing route does. Restart and
-reload discard the treasury along with the existing session-only campaign.
+status and potential income. Production continues during play, travel, rest and
+training using the same elapsed-time calculation. Restart and reload discard the
+clock and treasury along with the existing session-only campaign.
 Spending and offline production are not implemented.
+
+## Rest and training
+
+On a cleared map, a stationary squad can rest or train for 1, 4 or 8 hours through
+the overmap. Rest restores 10% of maximum HP per hour (rounded up for the selected
+duration, capped at maximum HP) and refills AP. Training grants 25 XP per hour to
+each available troop below level 10; every 100 XP grants a level and three skill
+points through the same progression rules as combat. Assign points on the existing
+character sheet. Training does not heal. Dead and captured troops receive neither
+healing nor XP, and unresolved casualties block downtime. Time jumps affect the
+entire campaign and continue factory production.
 
 # Sprite integration
 
