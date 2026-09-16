@@ -19,7 +19,7 @@ test('combat equip costs 3 AP, cutting costs 4 AP, and replacing cutters returns
  s.phase='player';u.ap=3;assert.ok(equip(s,u,'pistol',1));assert.ok(gridLayout(u).entries.some(e=>e.key==='wireCutters'));assert.ok(!u.slots.includes('wireCutters'));
 });
 test('equipping and stowing cutters reject full backpack without losing equipment',()=>{
- const {s,u}=setup();u.medkits=0;u.pack=u.pack.filter(i=>i.type==='weapon');for(let i=0;i<15;i++)u.pack.push({type:'ammo',kind:'test'+i,count:1,cell:i});
+ const {s,u}=setup();u.medkits=0;u.pack=u.pack.filter(i=>i.type==='weapon');for(let i=0;i<17;i++)u.pack.push({type:'ammo',kind:'test'+i,count:1,cell:i});
  let before=structuredClone(u);assert.equal(equipCutters(s,u,0),false);assert.deepEqual(u,before);
  assert.ok(equipCutters(s,u,1));u.pack.push({type:'ammo',kind:'last',count:1});before=structuredClone(u);assert.equal(stowWeapon(s,u,1),false);assert.deepEqual(u,before);
 });
