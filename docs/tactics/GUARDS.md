@@ -61,9 +61,9 @@ One state per guard, replacing the boolean. Transitions are the rules; personali
 | **Stand-down** | Walks back to post. Vigilance raised for the rest of the map (wary: suspicion radius +50%, longer investigation). | Arrives → Rest (wary). Any trigger → the corresponding state. |
 | **Broken** | Moves away from the last threat toward the nearest ally or post, does not fire unless cornered. | *R* rounds unshot → Alert if a target is known, else Stand-down. |
 
-Proposed defaults, before personality scaling: N = 12, K = 3, M = 4, R = 2, shout radius 12 (officers 20).
+Proposed defaults, before personality scaling: N = 12, K = 3, M = 4, R = 2; shout radius follows the archetype table in G4 (base 12, Ruler 20), never the officer role.
 
-The squad's side of "combat can end" is already built (RULES.md, "Retreat and border crossings", 2026-09-16): members walk off the map across its 3-tile border, one at a time, and the map keeps its alerted guards; return and the fight resumes as a fresh contact. A map the squad has left advances no rounds (`stepEnemy` runs only on the current map), so K, M and R alone would leave those guards Alert forever. G2 therefore needs a second clock: while the squad is elsewhere, the state machine settles by campaign time on the next arrival (proposal: 1 round = 10 clock minutes, so K + M = 7 rounds ≈ 70 minutes; a one-hour crossing there and back finds the guards Searching, two hours finds them Stood-down and wary). Acceptance: leave a map with all guards Alert, spend 3 clock hours away, return: every guard is at post and wary; return after 30 minutes: they are still Alert.
+The squad's side of "combat can end" is already built (RULES.md, "Retreat and border crossings", 2026-09-16): members walk off the map across its 3-tile border, one at a time, and the map keeps its alerted guards; return and the fight resumes as a fresh contact. A map the squad has left advances no rounds (`stepEnemy` runs only on the current map), so K, M and R alone would leave those guards Alert forever. G2 therefore needs a second clock: while the squad is elsewhere, the state machine settles by campaign time on the next arrival (proposal: 1 round = 10 clock minutes, so K + M = 7 rounds ≈ 70 minutes; the shortest possible return is two crossings = 120 minutes, so a squad that steps out and straight back always finds the guards Stood-down and wary, never mid-search; that is the intended price of a retreat, the guards regroup faster than the squad can). Acceptance (staged by writing the clock in a test, since the game cannot return in under 120 minutes): leave a map with all guards Alert; advance the clock 60 minutes and re-enter: the guards are Searching around `lastKnown`; advance 120 minutes instead: every guard is at post and wary.
 
 **Combat can end.** Contact is any guard in Alert or Searching. When none remain, the phase returns to real-time exploration even with guards alive: "Area quiet." Bleeding and burning still hold combat open as today. This is the "at rest" the user asked for, and it makes stealth and disengagement real options instead of a fight to the last guard.
 
@@ -248,7 +248,7 @@ Direction 2026-09-16: there should also be people that mercs like working with, 
 | --- | --- | --- |
 | A clock day together on the same local map | +5 | +2 |
 | That partner killed | −75 happiness, stress +25 | −35 happiness, stress +15 |
-| That partner captured | −20 until rescued, then +15 on the rescue | −10 until rescued, then +5 |
+| That partner captured | −20 once, at the moment of capture; +15 once on the rescue (net −5); dies in captivity: a further −55 | −10 once; +5 once on the rescue; dies in captivity: a further −25 |
 | That partner quits | −15 | −5 |
 | That partner stabilized by this merc | +5 (relief), on top of the bond gain | +3 |
 

@@ -1,6 +1,6 @@
 import {restStrain} from './personalities.js';
 import {factoryMap,generateMap,blockedEdge,tileKey,levelOf,neighbors,W,H} from './maps.js';
-import {createGame,squad,guards,alive,incapacitated,canControl,abandonCasualties,occupant,refresh,walkable,log,STANCES,stanceOf} from './engine.js';
+import {createGame,squad,guards,alive,incapacitated,canControl,abandonCasualties,occupant,refresh,walkable,log,STANCES,stanceOf,emitNoise,enterFire} from './engine.js';
 import {awardXP} from './progression.js';
 export const TRAVEL_MINUTES=60,PLAY_MINUTES_PER_SECOND=1,REST_RECOVERY_HOURS=48,MEDICAL_RECOVERY_HOURS=24,MEDIC_SKILL_REQUIRED=25;
 // The overmap is a grid of local-map tiles. Two tiles are linked when they touch; a squad walks from one to the next across the shared edge.
@@ -110,7 +110,12 @@ function arrive(world,destination,plan=arrivalPlan(world,destination)){
   if(!plan.ok)return plan;
   const previous=currentMap(world),{next,places}=plan;
   const left=abandonCasualties(previous);
-  if(left.length)log(previous,'Left behind: '+left.map(u=>u.name+' ('+u.casualty+')').join(', ')+'.');
+  if(left.length){log(previous,'Left behind: '+left.map(u=>u.name+' ('+u.casualty+')').join(', ')+'.');
+    // The run's record of the fallen (the future rescue facility reads it) gets the abandoned exactly as a lost fight would record them.
+    for(const u of left)u.recorded=true;
+    world.defeats=[...(world.defeats||[]),{map:world.current,location:previous.definition.name,round:previous.round,cause:'abandoned',escaped:[],captured:left.filter(u=>u.casualty==='captured').map(u=>structuredClone(u)),dead:left.filter(u=>u.casualty==='dead').map(u=>({id:u.id,name:u.name}))}];}
+  // Leaving a lost map (the crossers resolving their retreat) files its record with the run at once; re-entry below is the fallback.
+  if(previous.phase==='lost'&&previous.defeat){world.defeats=[...(world.defeats||[]),{...previous.defeat,map:world.current}];delete previous.defeat;previous.phase='explore';}
   const incoming=structuredClone(previous.units.filter(u=>u.team==='squad')),carried=new Map();
   for(const u of incoming){const p=places.get(u.id);if(u.away?.ap!==undefined)carried.set(u.id,u.away.ap);delete u.away;u.x=p.x;u.y=p.y;u.z=levelOf(p);u.alert=false;u.lastKnown=null;}
   // A map left mid-fight, or lost after some comrades crossed its edge, is entered fresh: its guards keep their alert and last fix, refresh() decides contact.
@@ -173,6 +178,8 @@ export function recall(world,u){
   const s=currentMap(world),{side,x,y}=u.away;
   if(s.phase==='player')u.ap-=crossingCost(s,u);
   delete u.away;u.x=x;u.y=y;u.z=0;u.overwatch=null;
+  // A return is a step like any other: it makes a footstep and walks into whatever burns on that tile.
+  emitNoise(s,u,u.sneaking?3:10);enterFire(s,u);
   log(s,`${u.name} came back across the ${side} edge.`);refresh(s);return {ok:true,state:s};
 }
 // A map lost after some comrades crossed its edge ends the fight for those who stayed; the crossers still arrive.

@@ -125,7 +125,9 @@ Direction from the user: to retreat you physically walk to the edge of the map; 
 - A crosser has no body on the map it left: bullets and blasts pass through the tile it stood on (`projectiles.js`, `explosives.js` skip `away` units, the same test `alive()` makes).
 - The far border walks both ways: a waiting crosser can be returned onto the tile it left from while that tile is free, for the same step of AP in combat. Rest and training wait until the squad has regrouped.
 - Crossing mid-turn does not refill the turn: a member that crossed in combat and arrives into a live contact keeps the AP it had. A map left mid-fight, or lost after some comrades crossed, is entered fresh: its guards keep their alert and last fix, contact starts a new round with full AP, and the earlier defeat record moves to `world.defeats` (captured comrades stay captured, the dead stay dead).
-- Shared combat XP still reaches crossers (deliberate: the squad pool is shared).
+- Shared combat XP still reaches crossers (deliberate: the squad pool is shared). A waiting crosser gets each new round's AP like everyone else, so a return or a later arrival is charged from a fresh turn, not from the AP it crossed with rounds ago.
+- A return is a step: it makes a footstep (3 sneaking / 10) and walks into any fire burning on the tile.
+- Comrades abandoned when the last standing member crosses are written to `world.defeats` exactly as a lost fight records its fallen (cause `abandoned`); a comrade is recorded once, so a map lost twice lists only what the second loss cost.
 
 Checks: `tests/tactics-retreat.test.mjs` (16 cases: grid links; band, ground and AP gates; one crosser leaves a live fight; full regroup on the far border with the clock; abandonment; a lost fight after a crossing; destination commitment and marker merge; landing on a generated map; no body for a rifle round or a blast; return across the edge; downtime waits for regroup; AP carried into a live contact and overwatch cleared; re-entry of a map left mid-fight; re-entry of a lost map; a westward retreat resolves to the factory).
 

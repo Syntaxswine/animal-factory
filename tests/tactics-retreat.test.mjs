@@ -166,3 +166,27 @@ test('a retreat from the yard westward resolves to the factory, not to a hard-co
  assert.ok(leave(w,y.units[0],'west').ok);for(const u of squad(y)){u.hp=0;u.casualty='bleeding';}refresh(y);assert.equal(y.phase,'lost');
  assert.ok(resolveRetreat(w).ok);assert.equal(w.current,'factory');assert.ok(currentMap(w).units[0].x>=W-BORDER);
 });
+
+// Round-2 review residuals (2026-09-16): a waiting crosser gets each new turn, a return is a step, the record of the fallen is exact.
+test('a comrade waiting beyond the edge gets the new round like everyone else, so a return is charged from a fresh turn',()=>{
+ const {w,s}=world(),u=s.units[0];assert.ok(leave(w,u,'east').ok);assert.equal(u.ap,u.maxAp-2);
+ assert.ok(endTurn(s));let n=0;while(s.phase==='enemy'&&n++<200)stepEnemy(s);assert.equal(s.phase,'player');
+ assert.equal(u.ap,u.maxAp);assert.equal(u.away.ap,u.maxAp);
+ assert.ok(recall(w,u).ok);assert.equal(u.ap,u.maxAp-2);
+});
+
+test('a return is a step: it walks into a fire on the tile and makes a footstep',()=>{
+ const {w,s}=world({guard:false}),u=s.units[0];assert.ok(leave(w,u,'east').ok);
+ s.fires=[{x:W-1,y:100,z:0,turns:3}];assert.ok(recall(w,u).ok);
+ assert.ok(u.burningTurns>0,'ignited on the burning tile it returned to');
+});
+
+test('abandoned comrades are written to the run record once, and a second loss on the same map lists only what it cost',()=>{
+ const {w,s}=world();s.units[1].hp=0;s.units[1].casualty='stable';refresh(s);
+ assert.ok(leave(w,s.units[0],'east').ok);assert.ok(leave(w,s.units[2],'east').ok);assert.ok(leave(w,s.units[3],'east').arrived);
+ assert.equal(w.defeats.length,1);assert.equal(w.defeats[0].cause,'abandoned');assert.deepEqual(w.defeats[0].captured.map(u=>u.name),['Anya']);assert.equal(w.defeats[0].map,'factory');
+ const y=currentMap(w);for(const u of squad(y))assert.ok(leave(w,u,'west').ok);const back=currentMap(w);assert.equal(back,s);
+ assert.ok(leave(w,back.units[0],'east').ok);for(const u of squad(back)){u.hp=0;u.casualty='bleeding';}refresh(back);
+ assert.equal(back.phase,'lost');assert.deepEqual(back.defeat.dead.map(u=>u.name).sort(),['Misha','Vera']);assert.equal(back.defeat.captured.length,0,'Anya was recorded by the abandonment, not again');
+ assert.ok(resolveRetreat(w).ok);assert.equal(w.defeats.length,2);assert.equal(w.defeats[1].dead.length,2);
+});
