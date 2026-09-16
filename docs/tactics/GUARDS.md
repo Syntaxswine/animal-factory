@@ -140,6 +140,38 @@ Species traits (SIGHT.md) and archetype traits stack; the archetype never change
 - Initial bonds among guards, among mercs, and between a captured merc and its captors all come from the matrix; the friendly-fire reaction, the kill relief and the stress meters then move them as today.
 - Each archetype ships with two barks per state, in its speech register from the table above, on the merc dialogue channel.
 
+### Levels of getting along
+
+Direction 2026-09-16: a bond needs rungs, not just a number, and mercs are the cleaner case because recruitment shows the friction before anyone signs. The matrix value is a **resting level**; events push a bond away from it and rest pulls it back, so feuds cool but incompatibility never disappears.
+
+Five rungs on the existing −100..100 scale, keeping Codex's four thresholds and adding a top one:
+
+| Rung | Range | Label | What it does for mercs | What it does for guards |
+| --- | --- | --- | --- | --- |
+| Bonded | 60 and up | bonded | Never retaliates. Stress halves when adjacent to the other. Formation orders keep the pair together. Takes a stress spike when the other is downed. | Runs to the other when hit. Shares the other's fix on a shout regardless of obedience. Breaks when the other is killed unless nerve is high. |
+| Trusted | 25 to 59 | trusted | Retaliation chance at half the formula. Adjacent transfers and stabilizing at normal cost. Friendly barks. | Answers the other's shout. Holds a flank next to them. |
+| Cautious | 0 to 24 | cautious trust | The formula as written. Neutral barks. | The formula as written. Obedience check as written. |
+| Strained | −34 to −1 | strained | Retaliation at 1.5×. Needling barks. Formation orders keep the pair apart by one tile. Transfers cost +1 AP: the handover is grudging. | Ignores the other's shout unless obedience is high. Won't stand adjacent at post. |
+| Resented | −35 to −69 | resented | Retaliation at 2×, and a near miss (a bullet passing within a tile) counts as a hit for the incident ledger. Stabilizing the other costs double medical AP. Drops out of group moves the other leads. | Never answers the shout. Investigates away from, not toward, the other. A shot that passes near the other is not corrected for. |
+| Feud | −70 and below | feud | Everything above, and at the end of a map either party may refuse the next contract while the other is on the roster: the recruitment screen says so. | If the officer (the Ruler on the map, or the highest-discipline guard) is down, the pair may fire on each other in contact, using the same ammunition-limited retaliation rule. |
+
+**What moves a bond.** Two events exist today: friendly fire (−8 and −20% of the damage fraction) and stabilizing (+20). Proposed additions, all on the social RNG stream and all logged as memories:
+
+| Event | Change | Who |
+| --- | --- | --- |
+| Survived a contact together, both alive at the end | +3 | each pair present |
+| An overwatch or reaction shot that hit the enemy targeting the other | +10 | the one covered, toward the coverer |
+| A kill made while the other was bleeding or downed within 6 tiles | +8 | the downed, toward the killer |
+| Left bleeding within reach while the other spent its AP elsewhere | −15 | the bleeder, toward each comrade who could have reached |
+| The other's death | stress +25 for a bonded or trusted partner; a feud partner gets relief instead | survivors |
+| Rest between maps, per 8 hours | 10% of the distance back toward the resting level | every pair |
+
+A pair that starts strained can therefore climb to trusted through a good campaign, and drops back toward strained only slowly; a bonded pair that suffers one careless burst falls to cautious and recovers by resting. Rungs are crossed, and the log says so ("Anya no longer trusts Misha").
+
+**Recruitment.** When replacement recruitment exists (STORY.md lists it as unbuilt), the candidate card shows the archetype in its speech register and the predicted rung with every current squad member, as labels not numbers: "would get on with Vera; would clash with Anya; Yakov would not trust her at first." A candidate in a predicted feud with anyone on the roster says so and asks a higher fee. The player is choosing the squad's temperature; the game should never hide it. For guards none of this is shown; the player learns a roster's rungs by watching who answers whose shout.
+
+**Levels of not getting along have different shapes.** Strained is verbal: barks, a grudging handover. Resented is physical: spacing, refusals, carelessness. Feud is structural: someone leaves, or someone shoots. That ladder is what makes the friendly-fire trance more than a coin flip: the same burst that a trusted comrade shrugs off is, for a resented one, the excuse they were waiting for.
+
 ## G4: shouts and guard-on-guard incidents
 
 - An Alert guard shouts once on entering the state: guards within the shout radius that pass their obedience check take the shouter's `lastKnown` and go Alert; the rest go Suspicious toward the shouter. Nikolai's shout carries 20; Igor's is a whisper.
