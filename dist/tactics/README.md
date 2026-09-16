@@ -26,7 +26,7 @@ Choose **Squad start** and a member to move one of the four starts. Choose **Gua
 
 Select individually or Shift-click cards/characters to form a group. Select all on layer gathers the current floor. Click ground for a formation order; Escape stops it. Standing/kneeling/prone costs2/4/8AP per cardinal step and diagonals cost1.5times. Sneaking adds2AP before the diagonal multiplier. Contact cancels movement.
 
-Choose a facing and Turn for free. Species cones, 75tile landscape and60tile character maxima share terrain occlusion. Click an enemy, choose torso/head/arms/legs, click again to fire; hover shows odds. Overwatch reserves one normal shot for the enemy turn. Turning, moving or changing equipment cancels it without refund.
+Choose a facing and Turn for free. Species cones, 75tile landscape and60tile character maxima share terrain occlusion. Click an enemy, choose head/weapon/torso/legs (torso is selected by default), click again to fire; hover shows odds. Overwatch reserves one normal shot for the enemy turn. Turning, moving or changing equipment cancels it without refund.
 
 Two equipped weapons swap for free. Equipping either ready slot from storage costs3AP in combat. Reload costs3AP and transfers finite compatible reserves. The backpack is a4×4grid. Rifles and assault rifles use two adjacent cells; pistols, ammo stacks and utilities one. Two ready slots each hold one rifle-sized weapon outside the backpack. The current catalog supports one weapon of each type. Drop/pick up and adjacent teammate transfers preserve loaded rounds. Nearby loot appears in the backpack panel; golden diamonds mark piles.
 
