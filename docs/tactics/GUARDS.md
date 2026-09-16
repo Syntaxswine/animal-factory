@@ -10,6 +10,7 @@ Opened 2026-09-16 on branch `tactics-guard-alertness`, stacked on `tactics-sight
 | G2 | Guard alert states: rest, suspicious, alert, searching, stand-down, broken; combat can end without killing everyone; return to post | Planned, awaiting review of this document |
 | G3 | Twelve Jungian archetypes drawn at random; bonds derived by wheel + affinity + friction (`tools/archetype-bonds.mjs`); traits for the state machine; barks | Designed, awaiting review |
 | G4 | Shouted alarms between guards, guard-to-guard friendly-fire reactions and grudges | Planned |
+| G5 | Happiness meter: opposing mercs on one local map lose 5 a day; 24 hours at zero and the merc quits | Designed, awaiting review |
 
 Same gates as the other arcs: full suite green, 20-seed balance before and after, hostile review of at least 4/5 before the next stage.
 
@@ -177,6 +178,50 @@ A pair that starts strained can therefore climb to trusted through a good campai
 - An Alert guard shouts once on entering the state: guards within the shout radius that pass their obedience check take the shouter's `lastKnown` and go Alert; the rest go Suspicious toward the shouter. Nikolai's shout carries 20; Igor's is a whisper.
 - Bullets already hit the first body on the ray regardless of team, so guards can shoot guards. Reuse `friendlyReaction`: stress, bond loss, grudge, a bark, and the same retaliation chance. Grigori shooting back at Pyotr in the middle of a firefight is the intended kind of chaos, bounded by the existing "ammunition-limited retaliation" rule.
 - A guard whose bonded colleague is killed gains stress and, if nerve is low, can break on the spot.
+
+## G5: happiness and quitting
+
+Direction 2026-09-16: personalities conflict when mercs with opposing personalities are on the same map tile; every day they spend together their happiness goes down a little, 5 out of 100; if happiness stays at zero for 24 hours the merc quits.
+
+Assumptions taken, each reversible:
+
+- "Map tile" means the same **local map** on the overmap, the unit the squad travels between. Two mercs on different local maps are apart; the same 240×240 map is together, whatever their tile distance.
+- "Opposing" means the pair's current rung is **resented or feud** (bond −35 or below). A strained pair does not decay happiness; it only bickers. Since bonds move, a pair can become opposing through friendly fire, or stop being opposing through a good campaign.
+- Decay is **per opposing partner**: a merc in two opposing pairs loses 10 a day.
+
+### The rules
+
+- Every merc has **happiness**, 0..100, starting at 100 on recruitment. It is a separate meter from stress (combat, short-term) and fatigue (rest debt). Shown on the character sheet beside them.
+- Time is the campaign clock (`world.js`): exploration minutes, one hour per travel, the hours chosen for rest and training. Happiness is settled whenever that clock advances, at **5 per 24 clock hours per opposing partner on the same local map**, pro rata, so eight hours together cost 1.67.
+- A merc whose happiness has been **exactly zero for 24 consecutive clock hours** quits at the next safe moment: the end of the current contact, or immediately if the squad is exploring. Quitting is a new roster state, `quit`, alongside captured and dead: the merc keeps its skills and history in the roster snapshot (a quit merc can be re-recruited later at a price), takes its held weapons and pack, and leaves its loot-pile claims.
+- The 24-hour timer resets the moment happiness rises above zero. A merc at zero is shown as "about to quit" with the hours remaining, so the player is never surprised.
+- The game logs the rung and the cause: "Anya has had enough of Yakov (2 days together, happiness 0)."
+
+### What raises happiness (proposals, so the meter is not a one-way ratchet)
+
+| Source | Change |
+| --- | --- |
+| A clock day on a local map with **no** opposing partner present | +5 |
+| A clock day on a different local map from every opposing partner | +10 |
+| A contact won with no squad casualty | +5 |
+| A bonded or trusted partner present on the same map, per day | +2 each |
+| Pay day, when a contract economy exists (ECONOMY.md) | +10 |
+| A partner's rung crossing upward (strained → cautious, or better) | +5 once |
+
+The separation bonus is the design lever: the player can keep two mercs who hate each other by never fielding them together, at the cost of a thinner squad on each map. That is the "cleaner with mercs" case from recruitment carried into the campaign: the friction is visible, and managing it is play.
+
+### Guards
+
+Guards do not quit; they are not on contract. A guard roster's opposing pairs express themselves through the rungs (shouts ignored, flanks not held, feuds when the officer falls), not through a meter.
+
+### Acceptance checks
+
+1. Two mercs at rung cautious on the same map for ten clock days lose nothing.
+2. Two mercs at rung resented on the same map lose exactly 5 per 24 clock hours each, pro rata across rest, travel and exploration minutes.
+3. A merc at zero for 23 hours who is separated from the opposing partner for one hour recovers above zero and the timer resets.
+4. A merc at zero for 24 hours quits at the end of the current contact, never mid-contact, and appears in the roster snapshot as `quit` with skills intact.
+5. Happiness never leaves 0..100; the clock rollover at midnight does not double-settle.
+6. A guard never has a happiness meter.
 
 ## Balance record
 
