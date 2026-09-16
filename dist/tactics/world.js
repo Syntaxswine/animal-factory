@@ -1,6 +1,6 @@
 import {restStrain} from './personalities.js';
 import {factoryMap,generateMap,blockedEdge,tileKey,levelOf,neighbors,W,H} from './maps.js';
-import {createGame,squad,guards,alive,incapacitated,canControl,abandonCasualties,refresh,walkable,log,STANCES,stanceOf} from './engine.js';
+import {createGame,squad,guards,alive,incapacitated,canControl,abandonCasualties,occupant,refresh,walkable,log,STANCES,stanceOf} from './engine.js';
 import {awardXP} from './progression.js';
 export const TRAVEL_MINUTES=60,PLAY_MINUTES_PER_SECOND=1,REST_RECOVERY_HOURS=48,MEDICAL_RECOVERY_HOURS=24,MEDIC_SKILL_REQUIRED=25;
 // The overmap is a grid of local-map tiles. Two tiles are linked when they touch; a squad walks from one to the next across the shared edge.
@@ -39,6 +39,7 @@ export function downtimeReason(world){
  const s=currentMap(world);
  if(s.phase!=='won'||guards(s).length)return 'Clear this map before resting or training.';
  if(s.queue.length)return 'Stop movement before resting or training.';
+ if(away(s).length)return 'Regroup first: comrades are waiting beyond the map edge.';
  if(!squad(s).some(u=>!u.casualty))return 'No troops available.';
  if(s.units.some(u=>u.team==='squad'&&['bleeding','stable'].includes(u.casualty)))return 'Resolve squad casualties first.';
  return '';
@@ -110,13 +111,19 @@ function arrive(world,destination,plan=arrivalPlan(world,destination)){
   const previous=currentMap(world),{next,places}=plan;
   const left=abandonCasualties(previous);
   if(left.length)log(previous,'Left behind: '+left.map(u=>u.name+' ('+u.casualty+')').join(', ')+'.');
-  const incoming=structuredClone(previous.units.filter(u=>u.team==='squad'));
-  for(const u of incoming){const p=places.get(u.id);delete u.away;u.x=p.x;u.y=p.y;u.z=levelOf(p);u.alert=false;u.lastKnown=null;}
+  const incoming=structuredClone(previous.units.filter(u=>u.team==='squad')),carried=new Map();
+  for(const u of incoming){const p=places.get(u.id);if(u.away?.ap!==undefined)carried.set(u.id,u.away.ap);delete u.away;u.x=p.x;u.y=p.y;u.z=levelOf(p);u.alert=false;u.lastKnown=null;}
+  // A map left mid-fight, or lost after some comrades crossed its edge, is entered fresh: its guards keep their alert and last fix, refresh() decides contact.
+  if(next.phase==='lost'){world.defeats=[...(world.defeats||[]),{...next.defeat,map:destination}];delete next.defeat;next.phase='explore';}
+  if(['player','enemy'].includes(next.phase)){next.phase='explore';next.enemyIndex=0;}
   next.units=[...incoming,...next.units.filter(u=>u.team==='guard')];next.selected=incoming.find(alive)?.id??previous.selected;next.queue=[];next.effect=null;
   // Failed travel takes no time. Production during transit uses previously liberated maps.
   const income=advanceTime(world,TRAVEL_MINUTES);
   world.states[destination]=next;world.current=destination;world.journeys++;world.lastIncome=income;
-  refresh(next);log(next,'Arrived from the overmap.'+(left.length?' Left behind: '+left.map(u=>u.name).join(', ')+'.':'')+(income?' Factory income +$'+income+' · Treasury $'+world.money+'.':''));return {ok:true,state:next,income,left};
+  refresh(next);
+  // Crossing mid-turn does not refill the turn: a unit that crossed in combat and arrives into contact keeps the AP it had.
+  if(next.phase==='player')for(const u of squad(next))if(carried.has(u.id))u.ap=Math.min(u.ap,carried.get(u.id));
+  log(next,'Arrived from the overmap.'+(left.length?' Left behind: '+left.map(u=>u.name).join(', ')+'.':'')+(income?' Factory income +$'+income+' · Treasury $'+world.money+'.':''));return {ok:true,state:next,income,left};
 }
 export function travel(world,destination) {
   const error=travelReason(world,destination);if(error)return {ok:false,error};
@@ -145,14 +152,33 @@ export function leave(world,u,side){
   // Flag the crosser before planning so the plan lands it on the far border; a failed plan changes nothing.
   u.away={destination,side,x:u.x,y:u.y};
   const plan=last?arrivalPlan(world,destination):null;if(plan&&!plan.ok){delete u.away;return plan;}
-  if(s.phase==='player')u.ap-=crossingCost(s,u);
+  if(s.phase==='player'){u.ap-=crossingCost(s,u);u.away.ap=u.ap;}
   u.overwatch=null;
   log(s,`${u.name} crossed the ${side} edge toward ${world.definitions[destination].name}.`);
   if(!last){refresh(s);return {ok:true,state:s,arrived:false};}
   return {arrived:true,...arrive(world,destination,plan)};
 }
+// A waiting crosser can walk back onto the tile it left from, if that tile is still free: the far border walks both ways.
+export function recallReason(world,u){
+  const s=currentMap(world);
+  if(!u||u.team!=='squad'||!u.away||u.hp<=0)return 'No one is waiting there.';
+  if(!['explore','player','won'].includes(s.phase))return 'Cannot act now.';
+  if(s.queue.length)return 'Stop movement before returning.';
+  if(!walkable(s,u.away.x,u.away.y,0)||occupant(s,u.away.x,u.away.y,0))return 'The tile it left from is blocked.';
+  if(s.phase==='player'&&u.ap<crossingCost(s,u))return 'Not enough AP.';
+  return '';
+}
+export function recall(world,u){
+  const error=recallReason(world,u);if(error)return {ok:false,error};
+  const s=currentMap(world),{side,x,y}=u.away;
+  if(s.phase==='player')u.ap-=crossingCost(s,u);
+  delete u.away;u.x=x;u.y=y;u.z=0;u.overwatch=null;
+  log(s,`${u.name} came back across the ${side} edge.`);refresh(s);return {ok:true,state:s};
+}
 // A map lost after some comrades crossed its edge ends the fight for those who stayed; the crossers still arrive.
 export function resolveRetreat(world){
   const s=currentMap(world);if(s.phase!=='lost'||!away(s).length)return {ok:false,error:'Nothing to resolve.'};
-  return arrive(world,away(s)[0].away.destination);
+  const fallen=s.defeat,result=arrive(world,away(s)[0].away.destination);
+  if(result.ok&&fallen)log(result.state,`Left on ${fallen.location}: ${fallen.dead.length} dead, ${fallen.captured.length} captured.`);
+  return result;
 }

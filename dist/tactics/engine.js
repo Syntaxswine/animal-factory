@@ -39,6 +39,8 @@ export const key=tileKey;
 export const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y,(levelOf(a)-levelOf(b))*3);
 export const alive=u=>u.hp>0&&!u.away; // A unit that crossed the map edge is off this map: not a target, not an occupant, not controllable here.
 export const incapacitated=u=>u?.hp===0&&['bleeding','stable'].includes(u.casualty);
+// A physical body on this map: standing or downed, and not crossed off the edge. projectiles.js and explosives.js inline the same test.
+export const present=u=>alive(u)||incapacitated(u)&&!u.away;
 export const medicalCost=u=>Math.ceil(12-9*Math.max(0,Math.min(100,Number(u.medical)||0))/100);
 export const squad=s=>s.units.filter(u=>u.team==='squad'&&alive(u));
 export const guards=s=>s.units.filter(u=>u.team==='guard'&&alive(u));
