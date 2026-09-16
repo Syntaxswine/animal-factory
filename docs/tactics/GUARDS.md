@@ -204,11 +204,31 @@ Assumptions taken, each reversible:
 | A clock day on a local map with **no** opposing partner present | +5 |
 | A clock day on a different local map from every opposing partner | +10 |
 | A contact won with no squad casualty | +5 |
-| A bonded or trusted partner present on the same map, per day | +2 each |
+| A bonded or trusted partner present on the same map, per day | +5 / +2 each (see below) |
 | Pay day, when a contract economy exists (ECONOMY.md) | +10 |
 | A partner's rung crossing upward (strained → cautious, or better) | +5 once |
 
 The separation bonus is the design lever: the player can keep two mercs who hate each other by never fielding them together, at the cost of a thinner squad on each map. That is the "cleaner with mercs" case from recruitment carried into the campaign: the friction is visible, and managing it is play.
+
+### People a merc likes working with
+
+Direction 2026-09-16: there should also be people that mercs like working with, giving a bonus to happiness, and mercs should feel extra upset if that merc is killed.
+
+"Likes working with" is the bonded or trusted rung, the mirror of "opposing". The same rung that governs retaliation and formation governs the meter, so the player reads one relationship, not two.
+
+| Event | Bonded partner (60 and up) | Trusted partner (25 to 59) |
+| --- | --- | --- |
+| A clock day together on the same local map | +5 | +2 |
+| That partner killed | −40 happiness, stress +25 | −20 happiness, stress +15 |
+| That partner captured | −20 until rescued, then +15 on the rescue | −10 until rescued, then +5 |
+| That partner quits | −15 | −5 |
+| That partner stabilized by this merc | +5 (relief), on top of the bond gain | +3 |
+
+The daily bonus stacks per liked partner and offsets decay from opposing ones, so a merc who hates one squadmate but is bonded to two others holds steady: +10 − 5 a day. Deaths are settled at the moment of death, at the rung in force then, and they ignore the resting level: a feud partner's death gives relief (stress −10) and no happiness change; a cautious partner's death is stress only, as today.
+
+The grief case is the intended consequence: a merc at 30 happiness who loses a bonded partner drops to zero on the spot and, if nothing lifts the meter within 24 clock hours, walks. A separate map from the opposing partner or a casualty-free win is what lifts it. The log names the reason: "Vera has not spoken since Misha died."
+
+If the killer was a squadmate (friendly fire), the survivor's grudge against the killer uses the existing incident ledger at the dead partner's rung as a multiplier: a bonded partner killed by a comrade's burst is the fastest route to a feud in the game.
 
 ### Guards
 
@@ -222,6 +242,9 @@ Guards do not quit; they are not on contract. A guard roster's opposing pairs ex
 4. A merc at zero for 24 hours quits at the end of the current contact, never mid-contact, and appears in the roster snapshot as `quit` with skills intact.
 5. Happiness never leaves 0..100; the clock rollover at midnight does not double-settle.
 6. A guard never has a happiness meter.
+7. A bonded partner on the same map adds exactly 5 per 24 clock hours, and offsets an opposing partner to a net zero.
+8. A bonded partner's death costs 40 happiness and 25 stress at once; a feud partner's death costs nothing and relieves 10 stress.
+9. A bonded partner killed by a squadmate's bullet raises the survivor's grudge against that squadmate by the bonded multiplier.
 
 ## Balance record
 
