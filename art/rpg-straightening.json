@@ -1,0 +1,30 @@
+[
+  {
+    "rel": "normal/goat-rpg-prone.png",
+    "prompt": "Precise correction of this existing Animal Factory Tactics sprite. Fix ONLY the bent RPG geometry. Rebuild the launcher as a rigid perfectly straight coaxial object: center of rear flared exhaust, long wooden sleeve, steel firing tube, rocket neck, warhead and pointed tip all lie on ONE straight ruler line. No kink, sag, curve, elbow or change of axis at any joint. Make the entire RPG axis perfectly horizontal across the image, moving the rear exhaust down to the same centerline as the front tube and rocket. Preserve this exact animal's identity, facial expression, clothing, accessories, body pose, anatomy, painterly texture, outlines and colors. Adjust hands only as needed to grip the straight tube naturally. Keep whole character and complete RPG uncropped with margins. Single sprite, genuine transparent alpha background, no glow, scenery, floor, cast shadow, text or additional objects.",
+    "generationPath": "C:/Users/baals/.codex/generated_images/01a0a80f-a421-7db0-a88e-dc3bd0094168/exec-5eec3297-b265-4e53-8456-8bd17d8f0e55.png",
+    "source": "art/source/weapon-expansion/normal/goat-rpg-prone.png",
+    "mode": "built-in imagegen edit"
+  },
+  {
+    "rel": "normal/pig-director-rpg-standing.png",
+    "prompt": "Correct this pig sprite's bent RPG by changing the weapon pose: hold the RPG COMPLETELY HORIZONTAL across his chest pointing right. Rear flared exhaust center, wooden tube center, steel tube center, olive rocket center and tip must all be at EXACTLY THE SAME HEIGHT, a straight horizontal ruler line. Redraw the entire weapon in horizontal side profile, with a symmetric olive pointed warhead coaxial with the perfectly straight tube. Adjust both arms and hands to hold this horizontal RPG. Preserve exact pig director identity, standing pose, burgundy waistcoat, gold chain, tie, cream shirt, trousers, shoes, expression, full body and painterly game art style. Transparent alpha background, full weapon and full character within frame, no text or scenery.",
+    "generationPath": "C:/Users/baals/.codex/generated_images/01a0a80f-a421-7db0-a88e-dc3bd0094168/exec-3898f641-8fcf-4a01-b484-447e71ee28bf.png",
+    "source": "art/source/weapon-expansion/normal/pig-director-rpg-standing.png",
+    "mode": "built-in imagegen edit"
+  },
+  {
+    "rel": "red-hats/hen-rpg-prone.png",
+    "prompt": "Precise correction of this existing Animal Factory Tactics sprite. Fix ONLY the bent RPG geometry. Rebuild the launcher as a rigid perfectly straight coaxial object: center of rear flared exhaust, long wooden sleeve, steel firing tube, rocket neck, warhead and pointed tip all lie on ONE straight ruler line. No kink, sag, curve, elbow or change of axis at any joint. Make the entire RPG axis perfectly horizontal across the image, moving the rear exhaust down to the same centerline as the front tube and rocket. Preserve this exact animal's identity, facial expression, clothing, accessories, body pose, anatomy, painterly texture, outlines and colors. Adjust hands only as needed to grip the straight tube naturally. Keep whole character and complete RPG uncropped with margins. Single sprite, genuine transparent alpha background, no glow, scenery, floor, cast shadow, text or additional objects.",
+    "generationPath": "C:/Users/baals/.codex/generated_images/01a0a80f-a421-7db0-a88e-dc3bd0094168/exec-52254edd-0da0-43fb-b5e3-4f40f2247881.png",
+    "source": "art/source/weapon-expansion/red-hats/hen-rpg-prone.png",
+    "mode": "built-in imagegen edit"
+  },
+  {
+    "rel": "red-hats/cow-rpg-prone.png",
+    "prompt": "Precise correction of this existing Animal Factory Tactics sprite. Fix ONLY the bent RPG geometry. Rebuild the launcher as a rigid perfectly straight coaxial object: center of rear flared exhaust, long wooden sleeve, steel firing tube, rocket neck, warhead and pointed tip all lie on ONE straight ruler line. No kink, sag, curve, elbow or change of axis at any joint. Make the entire RPG axis perfectly horizontal across the image, moving the rear exhaust down to the same centerline as the front tube and rocket. Preserve this exact animal's identity, facial expression, clothing, accessories, body pose, anatomy, painterly texture, outlines and colors. Adjust hands only as needed to grip the straight tube naturally. Keep whole character and complete RPG uncropped with margins. Single sprite, genuine transparent alpha background, no glow, scenery, floor, cast shadow, text or additional objects.",
+    "generationPath": "C:/Users/baals/.codex/generated_images/01a0a80f-a421-7db0-a88e-dc3bd0094168/exec-edf0c217-4a33-41b0-8702-e447c947b94f.png",
+    "source": "art/source/weapon-expansion/red-hats/cow-rpg-prone.png",
+    "mode": "built-in imagegen edit"
+  }
+]
