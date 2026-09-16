@@ -10,6 +10,7 @@ export function simulate(seed){const s=createGame(seed);let actions=0;
    if(targets.length){attack(s,u,targets[0].g,u.weapon==='assault');acted=true;break;}
    if(u.ammo[u.weapon]===0&&reload(s,u)){acted=true;break;}
    const nearest=guards(s).sort((a,b)=>distance(u,a)-distance(u,b))[0];
+   if(!nearest)break; // all guards down but fires or bleeding keep combat pending: end turns until it clears
    const paths=[[1,0],[-1,0],[0,1],[0,-1]].map(([dx,dy])=>pathTo(s,u,nearest.x+dx,nearest.y+dy)).filter(p=>p?.length).sort((a,b)=>pathCost(a)-pathCost(b));
    if(paths.length&&u.ap>0){const limit=['explore','won'].includes(s.phase)?Infinity:u.ap;let spent=0;const affordable=paths[0].slice(0,3).filter(p=>(spent+=p.cost)<=limit),p=affordable.at(-1);if(p&&move(s,u,p.x,p.y,p.z)){while(s.queue.length)stepMovement(s);acted=true;break;}}
   }

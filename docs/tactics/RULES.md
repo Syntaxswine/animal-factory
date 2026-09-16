@@ -103,3 +103,7 @@ Pistol, rifle and AK-47 rounds now trace continuous three-dimensional rays from 
 Stance changes body height and muzzle height. Incidental injuries use the impacted body region, not the originally selected aim zone. An aimed weapon hit retains its 90% tank chance only if it actually hits the intended weapon carrier; incidental torso hits use 25%. Each impact resolves before the next round, so a tank explosion can kill the shooter and stop the burst. AP is charged once, ammunition only for emitted rounds. Normal bullet casualties retain medical rules; additional hits on downed units kill them. Flame jets and melee retain their distinct resolution.
 
 The firing panel shows aim alignment odds and flags center-line interceptors without blocking the shot. The warning is not a guarantee against scatter. Tracers end at actual impacts and the combat log names collateral victims and friendly fire. projectiles.js provides shared impact tracing for future projectile weapons; grenade launchers and RPGs are not yet registered combat weapons.
+
+## Sight lobes (2026-09-16, in progress)
+
+Flat species cones are superseded by measured-vision sight lobes: total field, binocular core, hyperbolic acuity fall-off, motion-gated peripheral detection and a detect/identify split that feeds guard suspicion. Parameters, sources, stages and acceptance checks are tracked in SIGHT.md.
