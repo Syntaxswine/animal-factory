@@ -56,8 +56,8 @@ test('burning units cannot act, flee on three turns, then recover even after com
 });
 test('short-range flame hits are lethal for either team and survivors panic',()=>{
  const {s,a,b}=setup(1);a.weapon='flamethrower';a.ammo.flamethrower=4;b.weapon='pistol';b.pack=[];
- assert.equal(previewAttack(s,a,b).ok,false);a.x=17;b.hp=45;
- assert.equal(previewAttack(s,a,b).range,3);assert.equal(attack(s,a,b),true);assert.equal(b.hp,0);assert.equal(a.ammo.flamethrower,3);
+ assert.equal(previewAttack(s,a,b).ok,true);a.x=17;b.hp=45;
+ assert.equal(previewAttack(s,a,b).range,10);assert.equal(attack(s,a,b),true);assert.equal(b.hp,0);assert.equal(a.ammo.flamethrower,3);
  const other=setup(1,'easy');other.b.x=15;other.b.heading=180;other.b.accuracy=1000;other.s.phase='enemy';
  assert.equal(attack(other.s,other.b,other.a,false,true),true);assert.equal(other.a.casualty,'dead');
  const durable=setup(1);durable.a.x=17;durable.a.weapon='flamethrower';durable.b.weapon='pistol';durable.b.pack=[];

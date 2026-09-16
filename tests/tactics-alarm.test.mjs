@@ -13,18 +13,18 @@ function scene(weapon,listeners){
  return {s,u,target:s.units[4],listeners:s.units.slice(5)};
 }
 
-test('a pistol shot alerts guards within sixteen tiles and only makes those beyond suspicious',()=>{
- const {s,u,target,listeners:[near,far]}=scene('pistol',[30,33]);
- assert.equal(WEAPONS.pistol.range*2,16);assert.ok(!near.alert&&!far.alert);assert.ok(!canSee(s,near,u)&&!canSee(s,far,u),'no line of sight through the wall');
+test('a pistol shot alerts guards within twenty-four tiles and only makes those beyond suspicious',()=>{
+ const {s,u,target,listeners:[near,far]}=scene('pistol',[38,41]);
+ assert.equal(WEAPONS.pistol.range*2,24);assert.ok(!near.alert&&!far.alert);assert.ok(!canSee(s,near,u)&&!canSee(s,far,u),'no line of sight through the wall');
  assert.ok(previewAttack(s,u,target).ok);assert.ok(attack(s,u,target));
- assert.ok(near.alert,'fifteen tiles away hears the report as contact');assert.deepEqual(near.lastKnown,{x:18,y:30,z:0},'and converges on the approximate report');
- assert.ok(!far.alert,'eighteen tiles away is beyond twice the pistol range');assert.deepEqual(far.lastHeard,{x:18,y:30,z:0},'but the old thirty-tile suspicion still applies');
+ assert.ok(near.alert,'twenty-three tiles away hears the report as contact');assert.deepEqual(near.lastKnown,{x:18,y:30,z:0},'and converges on the approximate report');
+ assert.ok(!far.alert,'twenty-six tiles away is beyond twice the pistol range');assert.deepEqual(far.lastHeard,{x:18,y:30,z:0},'but the old thirty-tile suspicion still applies');
 });
 
-test('a rifle shot carries twenty-eight tiles',()=>{
- const {s,u,target,listeners:[near,far]}=scene('rifle',[42,46]);
- assert.equal(WEAPONS.rifle.range*2,28);assert.ok(attack(s,u,target));
- assert.ok(near.alert,'twenty-seven tiles');assert.ok(!far.alert,'thirty-one tiles');assert.equal(far.lastHeard,null,'and beyond thirty tiles nothing is heard');
+test('a rifle shot carries forty-eight tiles',()=>{
+ const {s,u,target,listeners:[near,far]}=scene('rifle',[62,64]);
+ assert.equal(WEAPONS.rifle.range*2,48);assert.ok(attack(s,u,target));
+ assert.ok(near.alert,'forty-seven tiles');assert.ok(!far.alert,'forty-nine tiles');assert.equal(far.lastHeard,null,'and beyond thirty tiles nothing is heard');
 });
 
 test('a guard firing alerts its colleagues too, and an already alert guard keeps its own fix',()=>{

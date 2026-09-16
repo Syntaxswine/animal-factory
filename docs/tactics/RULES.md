@@ -89,7 +89,7 @@ On total defeat, stabilized mercenaries become captured and all bleeding mercena
 
 ## Flamethrowers and tank fires
 
-A flamethrower costs 6 AP, reaches 3 tiles and deals 180 base damage per successful hit. Its four fuel bursts reload from finite fuel reserves. Fire kills bypass bleeding/stabilization, including on Easy; unusually durable survivors burn and panic. The Factory template supplies a flamethrower and spare fuel beside the first squad start and includes one flamethrower guard. Editor guards can also use it.
+A flamethrower costs 6 AP, reaches 10 tiles and deals 180 damage within 3 tiles, falling linearly to 45 damage at 10 tiles. Its four fuel bursts reload from finite fuel reserves. Fire kills bypass bleeding/stabilization, including on Easy; unusually durable survivors burn and panic. The Factory template supplies a flamethrower and spare fuel beside the first squad start and includes one flamethrower guard. Editor guards can also use it.
 
 A successful ranged torso hit has a 25% detonation chance when the target carries a loaded flamethrower; a hit aimed at the held flamethrower has a 90% chance. Each landed burst round gets its own check until detonation. Shots that hit nobody, head/leg impacts, empty tanks and melee do not trigger it. A bullet missing its intended target can still detonate another carrier on an incidental torso hit. A carried loaded tank remains vulnerable to torso shots even while a sidearm is selected.
 
@@ -111,3 +111,12 @@ Flat species cones are superseded by measured-vision sight lobes: total field, b
 ## Guard alertness (2026-09-16, in progress)
 
 A gunshot alerts every guard within twice the weapon's range, whoever fired; alerted listeners converge on the approximate report. The alert / at-rest state machine and the twelve authored guard personalities are planned in GUARDS.md.
+
+
+## Implemented weapon ranges and accuracy
+
+Unarmed/knife: 1 tile including clear diagonals on the same floor. Flamethrower: 10. Pistol/shotgun: 12. AK-47: 20. Rifle: 24. Sniper rifle: 36. Grenade launcher: 22 effective; RPG: 40 effective. Existing explosive overshoot, scatter and height advantages remain.
+
+Distance penalties scale from 3 tiles to each weapon’s range: pistol 35 points plus a constant 20-point accuracy penalty; rifle 18 with a 5-point bonus; AK 26; sniper 12 with a 10-point bonus; shotgun/flame 15; explosives 25 within effective range, dropping to 10% aim beyond it. Burst adds 10 penalty points. Head/weapon/leg and cover penalties remain. These are initial game balance values.
+
+Shotguns fire six 12-damage pellets in one 5-AP action using one shell. Every pellet follows geometry and can strike a different unit; spread thins concentration with distance. Sniper shots cost 8 AP, including for guards (sniper guards have sufficient maximum AP). Both weapons have finite ammunition, inventory support, editor selection, finished character art and Factory supply pickups.

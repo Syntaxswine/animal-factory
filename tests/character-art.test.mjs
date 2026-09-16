@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {characterArt,CHARACTER_SPECIES,ARMED_WEAPONS,OVERLAY_WEAPONS} from '../dist/tactics/character-art.js';
 import {WEAPONS} from '../dist/tactics/engine.js';
-import {weaponExpansionArt} from '../dist/tactics/weapon-expansion-art.js';
+import {weaponExpansionArt,EXPANSION_WEAPONS} from '../dist/tactics/weapon-expansion-art.js';
 import {drawFlamethrower} from '../dist/tactics/flamethrower-art.js';
 
 test('finished explosive sprites suppress temporary equipment overlays',()=>{
@@ -13,7 +13,7 @@ test('finished explosive sprites suppress temporary equipment overlays',()=>{
  }
 });
 test('every equipped weapon has artwork for the full cast, with a common ground baseline',()=>{
- assert.deepEqual([...ARMED_WEAPONS,...OVERLAY_WEAPONS].sort(),Object.keys(WEAPONS).filter(w=>w!=='hands').sort());
+ assert.deepEqual([...new Set([...ARMED_WEAPONS,...OVERLAY_WEAPONS,...EXPANSION_WEAPONS.filter(w=>WEAPONS[w])])].sort(),Object.keys(WEAPONS).filter(w=>w!=='hands').sort());
  for(const species of CHARACTER_SPECIES)for(const weapon of Object.keys(WEAPONS)){
   const frame=characterArt(species,weapon);
   assert.equal(frame.anchor[1],244);assert.equal(frame.height,256);assert.equal(frame.anchor[0],frame.width/2);
