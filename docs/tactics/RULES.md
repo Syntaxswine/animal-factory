@@ -85,3 +85,12 @@ The weight-only limit is superseded by a 4×4 backpack grid. Rifle/assault weapo
 ## Defeat and permanent training — current rule
 
 On total defeat, stabilized mercenaries become captured and all bleeding mercenaries die immediately. The captured roster preserves identity, progression and carried equipment in a separate snapshot within the run. Captured characters cannot act, gain XP, auto-recover or appear as corpses. The planned mid-to-late-game rescue facility and post-defeat campaign continuation are not yet playable; reloading or restarting still resets the run. Training is permanently learned, with no respecs. 182 tests passed; capture/no-respec hostile review4/5.
+
+
+## Flamethrowers and tank fires
+
+A flamethrower costs 6 AP, reaches 3 tiles and deals 180 base damage per successful hit. Its four fuel bursts reload from finite fuel reserves. Fire kills bypass bleeding/stabilization, including on Easy; unusually durable survivors burn and panic. The Factory template supplies a flamethrower and spare fuel beside the first squad start and includes one flamethrower guard. Editor guards can also use it.
+
+A successful ranged torso hit has a 25% detonation chance when the target carries a loaded flamethrower; a hit aimed at the held flamethrower has a 90% chance. Each landed burst round gets its own check until detonation. Misses, head/leg shots, empty tanks and melee do not trigger it. A carried loaded tank remains vulnerable to torso shots even while a sidearm is selected.
+
+Detonation destroys the fuel and flamethrower. The wearer and all eight neighboring cells on the same floor suffer permanent, non-healable death, including allies and downed units. All non-water, supported cells within a 5-tile circular radius burn for three rounds, including across walls. Survivors in that radius or entering burning ground ignite for three turns: actions and overwatch are disabled, and each round they flee up to three legal steps in a seeded random direction. Walls, occupancy and floor boundaries still constrain movement. Fire alone keeps turn mode active until it expires.

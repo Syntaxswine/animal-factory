@@ -7,6 +7,7 @@ import {RED_HAT_SPECIES,unitArt} from '../dist/tactics/red-hats-art.js';
 import assert from 'node:assert/strict';
 import {TYPES} from '../dist/engine.js';
 const root=new URL('../dist/',import.meta.url);
+for(const name of ['flamethrower','fuel'])assert.match(await readFile(new URL(`assets/equipment/${name}.svg`,root),'utf8'),/<svg/);
 async function checkPNG(path,width,height,channels=6){
  const data=await readFile(new URL(path,root));
  assert.equal(data.subarray(1,4).toString(),'PNG',path);
