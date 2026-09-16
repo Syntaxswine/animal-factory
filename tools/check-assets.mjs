@@ -4,6 +4,8 @@ import {readFile,readdir} from 'node:fs/promises';
 import {PROP_ART} from '../dist/tactics/prop-art.js';
 import {DOOR_ART} from '../dist/tactics/door-art.js';
 import {RED_HAT_SPECIES,unitArt} from '../dist/tactics/red-hats-art.js';
+import {EXPANSION_WEAPONS,weaponExpansionArt} from '../dist/tactics/weapon-expansion-art.js';
+import {WEAPON_EXPANSION_FRAMES} from '../dist/tactics/weapon-expansion-frames.js';
 import assert from 'node:assert/strict';
 import {TYPES} from '../dist/engine.js';
 const root=new URL('../dist/',import.meta.url);
@@ -15,8 +17,21 @@ async function checkPNG(path,width,height,channels=6){
  assert.equal(data[25],channels,`${path} has unexpected PNG channels`);
 }
 const manifest=JSON.parse(await readFile(new URL('assets/characters/manifest.json',root)));
-for(const species of CHARACTER_SPECIES)for(const weapon of ARMED_WEAPONS)await checkPNG(`assets/characters/armed/${species}-${weapon}.png`,256,256);
-for(const species of CHARACTER_SPECIES)for(const weapon of ['hands',...ARMED_WEAPONS])for(const stance of ['kneeling','prone'])await checkPNG(`assets/characters/stances/${species}-${weapon}-${stance}.png`,characterArt(species,weapon,"idle",stance).width,256);
+for(const species of CHARACTER_SPECIES)for(const weapon of ['hands',...ARMED_WEAPONS])for(const stance of ['standing','kneeling','prone']){
+ const frame=characterArt(species,weapon,'idle',stance);
+ await checkPNG(frame.src.replace('../',''),frame.width,frame.height);
+}
+assert.equal(WEAPON_EXPANSION_FRAMES.length,336,'Complete weapon expansion');
+assert.equal(new Set(WEAPON_EXPANSION_FRAMES.map(f=>f.src)).size,336,'Each combination has its own PNG');
+for(const outfit of ['normal','red-hats'])for(const species of outfit==='normal'?CHARACTER_SPECIES:RED_HAT_SPECIES)for(const weapon of EXPANSION_WEAPONS)for(const stance of ['standing','kneeling','prone']){
+ const frame=weaponExpansionArt(species,weapon,stance,outfit);
+ assert.ok(frame,`Missing ${outfit}/${species}/${weapon}/${stance}`);
+ await checkPNG(frame.src.replace('../',''),frame.width,frame.height);
+ assert.equal(unitArt({species,weapon,stance,outfit}).src,frame.src);
+ assert.equal(frame.anchor[0],frame.width/2);assert.equal(frame.anchor[1],244);
+ assert.equal(frame.contentHeight,{standing:236,kneeling:176,prone:96}[stance]);
+ if(weapon==='grenade-launcher')assert.equal(unitArt({species,weapon:'launcher',stance,outfit}).src,frame.src);
+}
 assert.equal(Object.keys(manifest.characters).length,8);
 for(const def of Object.values(manifest.characters)){
  assert.equal(def.frames.length,4);await checkPNG('assets/characters/'+def.sheet,768,256);
