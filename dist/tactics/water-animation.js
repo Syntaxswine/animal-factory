@@ -20,15 +20,47 @@ export function makePeriodic(src,w,h,size=192){
    sample(src,w,h,u+.5,v+.5,c)*(1-ax)*(1-ay);
   out[i+3]=255;
  }
- return out;
+ // Remove broad light/dark bands from the source while retaining small ripples.
+ // A circular box blur keeps the normalization periodic, including at edges.
+ const horizontal=new Float32Array(out.length),blurred=new Float32Array(out.length);
+ const radius=Math.max(2,Math.round(size/16)),span=radius*2+1;
+ for(let y=0;y<size;y++)for(let x=0;x<size;x++)for(let c=0;c<3;c++){
+  let sum=0;
+  for(let k=-radius;k<=radius;k++)sum+=out[(y*size+(x+k+size)%size)*4+c];
+  horizontal[(y*size+x)*4+c]=sum/span;
+ }
+ const mean=[0,0,0];
+ for(let y=0;y<size;y++)for(let x=0;x<size;x++)for(let c=0;c<3;c++){
+  let sum=0;
+  for(let k=-radius;k<=radius;k++)sum+=horizontal[(((y+k+size)%size)*size+x)*4+c];
+  blurred[(y*size+x)*4+c]=sum/span;
+  mean[c]+=out[(y*size+x)*4+c]/(size*size);
+ }
+ for(let i=0;i<out.length;i+=4)for(let c=0;c<3;c++)out[i+c]=mean[c]+1.35*(out[i+c]-blurred[i+c]);
+ // Break up long painted streaks before repetition. Integer rotations and
+ // periodic bends keep this mixture continuous across both tile boundaries.
+ const mixed=new Uint8ClampedArray(out.length);
+ for(let y=0;y<size;y++)for(let x=0;x<size;x++){
+  const u=x/size,v=y/size;
+  const a=u+.025*Math.sin(TAU*v)+.012*Math.cos(TAU*(2*v+u));
+  const b=v+.025*Math.sin(TAU*u+.7)+.01*Math.cos(TAU*(2*u-v));
+  const i=(y*size+x)*4;
+  for(let c=0;c<3;c++)mixed[i+c]=
+   .5*sample(out,size,size,a,b,c)+
+   .3*sample(out,size,size,b+.31,-a+.17,c)+
+   .2*sample(out,size,size,-a+.63,-b+.41,c);
+  mixed[i+3]=255;
+ }
+ return mixed;
 }
 export function waterPixel(base,size,u,v,seconds){
  u=wrap(u);v=wrap(v);
  const phase=TAU*wrap(seconds/LOOP_SECONDS);
  const du=.012*Math.sin(TAU*v+phase)+.005*Math.sin(TAU*(u+v)-phase*2);
  const dv=.009*Math.cos(TAU*u-phase)+.004*Math.sin(TAU*(u-v)+phase);
- const light=1+.025*Math.sin(TAU*(2*u+v)-phase);
- return [0,1,2].map(c=>Math.round(Math.min(255,Math.max(0,sample(base,size,size,u+du,v+dv,c)*light)))).concat(255);
+ // Let painted highlights move with the surface. A diagonal brightness wave
+ // reads as a repeated stripe even when the pixel edges match perfectly.
+ return [0,1,2].map(c=>Math.round(sample(base,size,size,u+du,v+dv,c))).concat(255);
 }
 export function renderWaterFrame(base,size,seconds,out=new Uint8ClampedArray(size*size*4)){
  // Duplicate terminal samples so opposite edges match exactly at every phase.

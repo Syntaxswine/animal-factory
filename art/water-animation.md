@@ -2,7 +2,7 @@
 
 Preview: `dist/tactics/water-art.html`. Source: existing `dist/assets/environment/foliage/river-water.png`, unchanged.
 
-This is a code-rendered animation of the existing painted asset, not new generated imagery. The preview resamples it to 192 square pixels, blends four half-period offsets using complementary sine-squared weights, and applies periodic displacement and gentle brightness variation over six seconds. Each source wrapping boundary has zero contribution at its cut. The resulting surface repeats in both directions without mirroring.
+This is a code-rendered animation of the existing painted asset, not new generated imagery. The preview resamples it to 192 square pixels, blends four half-period offsets using complementary sine-squared weights, normalizes broad brightness bands, mixes offset rotated samples, and applies periodic displacement over six seconds. Highlights now come solely from the painted texture; there is no synthetic diagonal brightness wave. Each source wrapping boundary has zero contribution at its cut. The resulting surface repeats in both directions with rotated detail blended to reduce directional repetition.
 
 `water-animation.js` exports the periodic preparation and frame renderer. Prepare once, render one shared frame, and reuse it across all open-water tiles with the same clock and UV orientation. Do not randomize per-tile animation phase: that would break continuity. Output duplicates the opposite edge samples for exact pixel agreement. The preview updates at 24 fps and supports pause, scrubbing, tile guides and an isometric projection. Reduced-motion preferences start it paused.
 
