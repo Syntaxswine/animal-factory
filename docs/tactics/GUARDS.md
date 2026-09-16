@@ -23,18 +23,24 @@ Same gates as the other arcs: full suite green, 20-seed balance before and after
 
 ## G1: the gunshot alarm (built)
 
-A firearm discharge (anything with a magazine: pistol, rifle, AK, grenade, launcher, RPG, flamethrower) alerts every non-alert guard within **twice the weapon's range**, whoever fired it. Alerted listeners get `lastKnown` set to the shooter's approximate position on the 6-tile grid, so they converge on the report rather than on the exact tile. Guards already alert keep their existing fix. Beyond that ring the old 30-tile suspicion still applies to squad shooters.
+A firearm discharge (anything with a magazine: pistol, shotgun, SMG, rifle, AK, HMG, sniper, grenade, launcher, RPG, flamethrower) alerts every non-alert guard within **twice the weapon's range**, whoever fired it. Alerted listeners get `lastKnown` set to the shooter's approximate position on the 6-tile grid, so they converge on the report rather than on the exact tile. Guards already alert keep their existing fix. Beyond that ring the old 30-tile suspicion still applies to squad shooters.
 
 | Weapon | Range | Alarm radius |
 | --- | --- | --- |
-| TT-33 pistol | 8 | 16 |
-| AK-47 | 10 | 20 |
-| Mosin-Nagant | 14 | 28 |
+| TT-33 pistol | 12 | 24 |
+| Shotgun | 12 | 24 |
+| SMG | 20 | 40 |
+| Mosin-Nagant | 24 | 48 |
+| AK-47 | 24 | 48 |
+| HMG | 28 | 56 |
+| Sniper rifle | 36 | 72 |
 | Grenade (thrown) | 10 | 20 |
 | Grenade launcher | 22 | 44 |
 | RPG | 40 | 80 |
-| Flamethrower | 3 | 6 |
+| Flamethrower | 10 | 20 |
 | Knife, fists | 1 | none |
+
+Radii follow the catalog automatically (the rule is 2 x range at fire time); this table was refreshed 2026-09-16 after the weapon-range revision on tactics-prototype (9aeb801, 5b4e0bb). With the longer ranges the old 30-tile suspicion ring only matters for the pistol, shotgun, grenade and flamethrower; every other report already alerts further than it carries suspicion.
 
 Open question for the reviewer: a thrown grenade has no muzzle report, only a blast; if the blast should carry further than 20 tiles, give explosives their own noise term in `detonate` rather than the weapon's range.
 
