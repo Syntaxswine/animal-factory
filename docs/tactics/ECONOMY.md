@@ -20,9 +20,20 @@ Spending and offline production are not implemented.
 
 ## Rest and training
 
-On a cleared map, a stationary squad can rest or train for 1, 4 or 8 hours through
-the overmap. Rest restores 10% of maximum HP per hour (rounded up for the selected
-duration, capped at maximum HP) and refills AP. Training grants 25 XP per hour to
+On a cleared map, a stationary squad can rest or train for 1, 4, 8, 24 or 48 hours
+through the overmap. Ordinary rest restores 1/48 of maximum HP per hour and refills
+AP. Fractional HP carries between rests so repeated short rests do not accelerate
+recovery. Full recovery from near-zero HP takes about two days.
+
+Medical care lets the player choose a living medic with Medical 25 or higher. It
+uses one pooled squad medkit per wounded troop to begin a 24-hour assisted-rest
+course, restoring 1/24 maximum HP per rest hour (about one day for full recovery).
+Unfinished treatment continues through later ordinary or medical rests without
+another kit. Healthy troops use no supplies; insufficient supplies reject the
+whole treatment before time or supplies are spent. Treatment hours are resting
+hours; travel and training do not heal or consume the remaining course.
+
+Training grants 25 XP per hour to
 each available troop below level 10; every 100 XP grants a level and three skill
 points through the same progression rules as combat. Assign points on the existing
 character sheet. Training does not heal. Dead and captured troops receive neither

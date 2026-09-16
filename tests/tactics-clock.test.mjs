@@ -20,8 +20,8 @@ test('production is independent of frame size and begins only after liberation',
 });
 test('rest advances the same clock, heals living troops to their cap, refills AP and produces income',()=>{
  const w=createWorld(blankMap()),s=currentMap(w),u=s.units[0];u.hp=10;u.ap=0;s.units[1].hp=0;s.units[1].casualty='dead';
- const result=spendTime(w,'rest',4);assert.ok(result.ok);assert.equal(clockLabel(w),'Day 1 · 12:00');assert.equal(w.money,400);assert.equal(u.hp,54);assert.equal(u.ap,u.maxAp);assert.equal(s.units[1].hp,0);
- spendTime(w,'rest',8);assert.equal(u.hp,u.maxHp);assert.equal(clockLabel(w),'Day 1 · 20:00');
+ const result=spendTime(w,'rest',4);assert.ok(result.ok);assert.equal(clockLabel(w),'Day 1 · 12:00');assert.equal(w.money,400);assert.equal(u.hp,19);assert.equal(u.ap,u.maxAp);assert.equal(s.units[1].hp,0);
+ spendTime(w,'rest',48);assert.equal(u.hp,u.maxHp);assert.equal(clockLabel(w),'Day 3 · 12:00');
 });
 test('training grants existing progression rewards without healing or training captured troops',()=>{
  const w=createWorld(blankMap()),s=currentMap(w),u=s.units[0];u.hp=50;u.ap=1;s.units[1].hp=0;s.units[1].casualty='captured';
