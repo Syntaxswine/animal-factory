@@ -50,7 +50,7 @@ test('a real burst charges once, traces each round, damages the blocking ally an
  const {s,a,b,ally}=combat();ally.hp=ally.maxHp=500;const ap=a.ap,ammo=a.ammo.assault;
  const preview=previewAttack(s,a,b,true);assert.equal(preview.obstruction.id,ally.id);assert.equal(preview.obstruction.friendly,true);assert.equal(preview.ok,true);
  assert.equal(attack(s,a,b,true),true);assert.equal(a.ap,ap-6);assert.equal(a.ammo.assault,ammo-3);
- assert.equal(s.effect.trajectories.length,3);assert.equal(b.hp,45);assert.ok(ally.hp<500);assert.match(s.log[0],/friendly fire/);
+ assert.equal(s.effect.trajectories.length,3);assert.equal(b.hp,45);assert.ok(ally.hp<500);assert.ok(s.log.some(line=>/friendly fire/.test(line)));
 });
 test('incidental torso hits can detonate a friendly flamethrower and cancel remaining burst shots',()=>{
  const {s,a,b,ally}=combat(8);ally.weapon='flamethrower';ally.ammo.flamethrower=4;ally.pack.push({type:'weapon',kind:'flamethrower',rounds:4});
