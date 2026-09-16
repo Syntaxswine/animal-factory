@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {blankMap} from '../dist/tactics/maps.js';
+import {createGame,attack} from '../dist/tactics/engine.js';
+import {createWorld,currentMap,spendTime} from '../dist/tactics/world.js';
+import {injuryStrain,killRelief,personalityDescription} from '../dist/tactics/personalities.js';
+function combat(){const map=blankMap();map.starts=[{x:10,y:10},{x:3,y:3},{x:3,y:5},{x:3,y:7}];map.guards=[{x:14,y:10,species:'pig-foreman',weapon:'pistol'}];const s=createGame(1,map),a=s.units[0],b=s.units[4];a.heading=0;b.heading=180;a.accuracy=b.accuracy=1000;return {s,a,b};}
+test('enemy bullets raise both meters by actual injury, and stress/fatigue stay bounded',()=>{const {s,a,b}=combat();s.phase='enemy';assert.equal(attack(s,b,a,false,true),true);const lost=a.maxHp-a.hp;assert.ok(lost>0);assert.equal(a.social.stress,10+lost/a.maxHp*35);assert.equal(a.social.fatigue,5+lost/a.maxHp*25);injuryStrain(a,10000);assert.equal(a.social.stress,100);assert.equal(a.social.fatigue,100);assert.match(personalityDescription(a).join(' '),/Fatigue: 100\/100/);});
+test('only a kill relieves the shooter, and fatigue does not disappear with the kill',()=>{const {s,a,b}=combat();a.social.stress=50;a.social.fatigue=40;a.weapon='rifle';b.hp=80;assert.equal(attack(s,a,b),true);assert.equal(a.social.stress,50);a.ap=12;assert.equal(attack(s,a,b),true);assert.equal(b.hp,0);assert.equal(a.social.stress,35);assert.equal(a.social.fatigue,40);assert.equal(s.units[1].social.stress,0);killRelief(a,s.units[1]);assert.equal(a.social.stress,35);});
+test('normal and medical rest reduce both meters while training does not',()=>{for(const activity of ['rest','medical-rest','train']){const w=createWorld(blankMap()),s=currentMap(w),u=s.units[0];u.social.stress=60;u.social.fatigue=80;u.medical=50;u.hp=1;u.medkits=4;assert.equal(spendTime(w,activity,4,0).ok,true);assert.equal(u.social.stress,activity==='train'?60:40);assert.equal(u.social.fatigue,activity==='train'?80:40);if(activity!=='train'){assert.equal(spendTime(w,activity,24,0).ok,true);assert.equal(u.social.stress,0);assert.equal(u.social.fatigue,0);}}});
