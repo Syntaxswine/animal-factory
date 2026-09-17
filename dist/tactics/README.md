@@ -4,7 +4,7 @@ Run `npm run serve:tactics`, then open http://127.0.0.1:4327/tactics/index.html.
 
 ## Local maps and overmap
 
-The initial factory has four squad members and twelve guards. The overmap connects Factory test ↔ Yard test ↔ Workshop test, each with a distinct local layout. Gather every living squad member within two tiles of the blue travel marker, finish any active encounter and stop queued movement before traveling. Open **Overmap** to select an adjacent location.
+The initial factory has four squad members and twelve guards. The overmap connects Factory test ↔ Yard test ↔ Workshop test, each with a distinct local layout. Gather every living squad member within two tiles of the blue travel marker, finish any active encounter and stop queued movement before traveling. Open **Overmap** to select an adjacent location. To retreat, or simply to leave on foot, walk a member onto the ground within three tiles of a map edge that has a map beyond it and press **Cross the … edge** under Equipment; it works in combat for one step of AP. Crossers wait on the far border; the squad regroups there when the last standing member crosses or falls. Downed comrades left behind are captured or die.
 
 Each visited map remembers its guards and explored terrain. Health, equipment, loaded ammunition and casualties follow the squad. Clearing a map leaves it walkable. The run remains in memory until restart or reload; this is not a campaign-save system yet. Opening the editor preserves your game in its existing tab.
 

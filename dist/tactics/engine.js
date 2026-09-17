@@ -8,7 +8,7 @@ export {inCone,headingTo,bearingOffset,sightOf,identifyRange,detectRange,acuity,
 import {terrainVisibility,TERRAIN_RANGE,CHARACTER_RANGE} from './visibility.js';
 export {TERRAIN_RANGE,CHARACTER_RANGE} from './visibility.js';
 import {PROPS,EDGES,propAt,propTall,propCells} from './environment.js';
-import {W,H,factoryMap,validateMap,blockedEdge,levelOf,tileKey,terrainAt,neighbors,stairSet,canStep,LEVELS,passable,sightEdge,edgeBetween,edgeCells,inBounds} from './maps.js';
+import {W,H,factoryMap,validateMap,openDoorBetween,blockedEdge,levelOf,tileKey,terrainAt,neighbors,stairSet,canStep,LEVELS,passable,sightEdge,edgeBetween,edgeCells,inBounds} from './maps.js';
 export {W,H} from './maps.js';
 export const WEAPONS={
  hands:{name:'Workers’ fists',short:'Hands',cost:3,range:1,damage:16,mag:0},
@@ -37,8 +37,9 @@ export const stanceOf=u=>Object.hasOwn(STANCES,u?.stance)?u.stance:'standing';
 export function movementNeighbors(s,u,p=u,stairs){return neighbors(s,p,stairs).filter(q=>(levelOf(q)===levelOf(p)||stanceOf(u)==='standing')&&!(levelOf(q)===levelOf(p)&&q.x!==p.x&&q.y!==p.y&&[occupant(s,q.x,p.y,levelOf(p)),occupant(s,p.x,q.y,levelOf(p))].some(v=>v&&v!==u))).map(q=>({...q,cost:levelOf(q)===levelOf(p)?(STANCES[stanceOf(u)].moveCost+(u.sneaking?2:0))*q.cost:q.cost}));}
 export const key=tileKey;
 export const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y,(levelOf(a)-levelOf(b))*3);
-export const alive=u=>u.hp>0;
+export const alive=u=>u.hp>0&&!u.away; // A unit that crossed the map edge is off this map: not a target, not an occupant, not controllable here.
 export const incapacitated=u=>u?.hp===0&&['bleeding','stable'].includes(u.casualty);
+// A physical body on this map is alive(u)||incapacitated(u) with no `away` flag; projectiles.js and explosives.js inline that test (importing engine there would be a cycle).
 export const medicalCost=u=>Math.ceil(12-9*Math.max(0,Math.min(100,Number(u.medical)||0))/100);
 export const squad=s=>s.units.filter(u=>u.team==='squad'&&alive(u));
 export const guards=s=>s.units.filter(u=>u.team==='guard'&&alive(u));
@@ -96,7 +97,8 @@ export function refresh(s){
  if(s.queue.length&&[...s.detected].some(id=>!oldDetected.has(id))){s.queue=[];log(s,'Movement stopped: new opponent spotted.');}
  else if(s.queue.length&&Object.keys(s.glimpses).some(id=>!oldGlimpses[id]&&!oldDetected.has(Number(id)))){s.queue=[];log(s,'Movement stopped: movement glimpsed.');}
  if(s.visible!==oldVisible||s.seen.size<s.visible.size)for(const k of s.visible)s.seen.add(k);
- if(!squad(s).length){if(!s.defeat){for(const u of s.units.filter(u=>u.team==='squad')){u.casualty=u.casualty==='stable'?'captured':'dead';u.bleedTurns=0;u.ap=0;u.overwatch=null;syncWeapons(u);}s.defeat={location:s.definition.name,round:s.round,captured:s.units.filter(u=>u.team==='squad'&&u.casualty==='captured').map(u=>structuredClone(u)),dead:s.units.filter(u=>u.team==='squad'&&u.casualty==='dead').map(u=>({id:u.id,name:u.name}))};log(s,s.defeat.captured.length+' captured / '+s.defeat.dead.length+' dead.');}s.phase='lost';s.queue=[];return;}
+ if(!squad(s).length){if(!s.defeat){const escaped=s.units.filter(u=>u.team==='squad'&&u.away);for(const u of s.units.filter(u=>u.team==='squad'&&!u.away)){u.casualty=u.casualty==='stable'?'captured':'dead';u.bleedTurns=0;u.ap=0;u.overwatch=null;syncWeapons(u);}const fresh=s.units.filter(u=>u.team==='squad'&&!u.recorded&&['captured','dead'].includes(u.casualty));s.defeat={location:s.definition.name,round:s.round,escaped:escaped.map(u=>({id:u.id,name:u.name})),captured:fresh.filter(u=>u.casualty==='captured').map(u=>structuredClone(u)),dead:fresh.filter(u=>u.casualty==='dead').map(u=>({id:u.id,name:u.name}))};for(const u of fresh)u.recorded=true; // a loss lists only the comrades it cost; earlier losses on the roster stay recorded once
+log(s,s.defeat.captured.length+' captured / '+s.defeat.dead.length+' dead.'+(escaped.length?' '+escaped.length+' crossed the map edge.':''));}s.phase='lost';s.queue=[];return;}
  if(!alive(s.units[s.selected]))s.selected=squad(s)[0].id;
  s.exposed={};for(const g of guards(s))if(s.detected.has(g.id)){const zones=new Set();for(const u of squad(s))if(canSee(s,u,g))for(const zone of visibleZones(s,u,g))zones.add(zone);s.exposed[g.id]=[...zones];}
  const pending=s.units.some(u=>u.casualty==='bleeding'||alive(u)&&u.burningTurns>0)||(s.fires?.length||0)>0;
@@ -111,6 +113,8 @@ export function refresh(s){
  s.revision++;
 }
 export function canControl(s,u){return u&&alive(u)&&!u.burningTurns&&u.team==='squad'&&['explore','player','won'].includes(s.phase);}
+// Downed comrades left on a map when the last standing squad member crosses its edge meet the defeat rule: stabilized are captured, bleeding die.
+export function abandonCasualties(s){const left=[];for(const u of s.units)if(u.team==='squad'&&!u.away&&incapacitated(u)){u.casualty=u.casualty==='stable'?'captured':'dead';u.bleedTurns=0;u.ap=0;u.overwatch=null;syncWeapons(u);left.push(u);}return left;}
 export function setStance(s,u,stance){
  if(!Object.hasOwn(STANCES,stance)||!canControl(s,u)||s.queue.length||stanceOf(u)===stance||(s.phase==='player'&&u.ap<2))return false;
  if(s.phase==='player')u.ap-=2;u.overwatch=null;u.stance=stance;refresh(s);log(s,u.name+' is '+stance+'.');return true;
@@ -128,7 +132,7 @@ export function stepMovement(s){
  if(!s.queue.length||!['explore','player','won'].includes(s.phase))return false;
  if(s.queue[0].group)return stepGroupMovement(s);
  let step=s.queue[0];const actor=s.units[step.id];if(step.goal&&canControl(s,actor)){const goal=step.goal,path=navigationPath(s,actor,goal.x,goal.y,goal.z);if(!path?.length){s.queue=[];log(s,'Route stopped: destination reached or no discovered route remains.');return false;}s.queue=path.map(p=>({id:actor.id,...p,goal}));}step=s.queue.shift();const u=s.units[step.id],currentStep=u&&movementNeighbors(s,u).find(p=>p.x===step.x&&p.y===step.y&&p.z===levelOf(step));if(!canControl(s,u)||!currentStep||occupant(s,step.x,step.y,levelOf(step))||(s.phase==='player'&&u.ap<currentStep.cost)){s.queue=[];return false;}
- u.heading=headingTo(u,step);u.facing=(step.x-u.x)-(step.y-u.y)>=0?1:-1;u.x=step.x;u.y=step.y;u.z=levelOf(step);u.steps++;u.overwatch=null;emitNoise(s,u,u.sneaking?3:10);if(s.phase==='player')u.ap-=currentStep.cost;enterFire(s,u);refresh(s);return true;
+ openDoorBetween(s,u,step);u.heading=headingTo(u,step);u.facing=(step.x-u.x)-(step.y-u.y)>=0?1:-1;u.x=step.x;u.y=step.y;u.z=levelOf(step);u.steps++;u.overwatch=null;emitNoise(s,u,u.sneaking?3:10);if(s.phase==='player')u.ap-=currentStep.cost;enterFire(s,u);refresh(s);return true;
 }
 export function coverAgainst(s,a,b){
  const occupied=PROPS[propAt(s,b.x,b.y,levelOf(b))?.kind];
@@ -166,7 +170,7 @@ function ignite(s,u){
  if(u.team==='guard')u.alert=true;
  s.queue=[];log(s,u.name+' is on fire / panic for 3 turns.');
 }
-function enterFire(s,u){if(s.fires?.some(p=>p.x===u.x&&p.y===u.y&&p.z===levelOf(u)))ignite(s,u);}
+export function enterFire(s,u){if(s.fires?.some(p=>p.x===u.x&&p.y===u.y&&p.z===levelOf(u)))ignite(s,u);}
 function panicRun(s,u){
  if(!alive(u)||!u.burningTurns)return;
  const heading=Math.floor(random(s)*8)*45;
@@ -174,7 +178,7 @@ function panicRun(s,u){
   const choices=movementNeighbors(s,u).filter(p=>levelOf(p)===levelOf(u)&&!occupant(s,p.x,p.y,p.z));
   if(!choices.length)break;
   choices.sort((a,b)=>Math.cos((headingTo(u,b)-heading)*Math.PI/180)-Math.cos((headingTo(u,a)-heading)*Math.PI/180));
-  const p=choices[0];u.heading=headingTo(u,p);u.facing=(p.x-u.x)-(p.y-u.y)>=0?1:-1;u.x=p.x;u.y=p.y;u.steps++;emitNoise(s,u,15);
+  const p=choices[0];openDoorBetween(s,u,p);u.heading=headingTo(u,p);u.facing=(p.x-u.x)-(p.y-u.y)>=0?1:-1;u.x=p.x;u.y=p.y;u.steps++;emitNoise(s,u,15);
  }
  u.ap=0;u.fireActedRound=s.round;
  log(s,u.name+' runs in panic / '+u.burningTurns+' turns of fire.');
@@ -265,7 +269,7 @@ export function endTurn(s){if(s.phase!=='player'||s.queue.length)return false;fo
 export function stepEnemy(s){
  if(s.phase!=='enemy')return false;
  const g=s.units[s.enemyIndex];
- if(!g){finishFireRound(s);s.phase='player';s.round++;for(const p of squad(s)){p.ap=p.burningTurns?0:p.maxAp;p.overwatch=null;settleStress(p,2);}refresh(s);log(s,`Squad turn / ${s.round}.`);return true;}
+ if(!g){finishFireRound(s);s.phase='player';s.round++;for(const p of squad(s)){p.ap=p.burningTurns?0:p.maxAp;p.overwatch=null;settleStress(p,2);}for(const p of s.units)if(p.team==='squad'&&p.away&&p.hp>0){p.ap=p.maxAp;p.away.ap=p.maxAp;}/* a comrade waiting beyond the edge gets the new turn too */refresh(s);log(s,`Squad turn / ${s.round}.`);return true;}
  if(g.team!=='guard'||!alive(g)||g.burningTurns>0||!g.alert||g.ap<1){s.enemyIndex++;return true;}
  const targets=squad(s).filter(p=>canSee(s,g,p)).sort((a,b)=>distance(g,a)-distance(g,b));
  const target=targets[0];if(target)g.lastKnown={x:target.x,y:target.y,z:levelOf(target)};
@@ -274,7 +278,7 @@ export function stepEnemy(s){
  if(target&&previewAttack(s,g,target).reason==='Not enough AP'){g.ap=0;s.enemyIndex++;return true;}
  if(WEAPONS[g.weapon].mag&&g.ammo[g.weapon]===0&&reload(s,g,true))return true;
  const dest=g.lastKnown;if(!dest){g.heading=(g.heading+45)%360;s.enemyIndex++;refresh(s);return true;}if(dest&&!inCone(g,dest)){g.heading=headingTo(g,dest);refresh(s);return true;}if(dest){let best=null;for(const q of neighbors(s,dest)){if(!WEAPONS[g.weapon].mag&&distance(q,dest)>WEAPONS[g.weapon].range)continue;const path=pathTo(s,g,q.x,q.y,q.z);if(path?.length&&(!best||pathCost(path)<pathCost(best)))best=path;}
-  if(best&&best[0].cost<=g.ap){const p=best[0];g.heading=headingTo(g,p);g.facing=(p.x-g.x)-(p.y-g.y)>=0?1:-1;g.x=p.x;g.y=p.y;g.z=levelOf(p);g.steps++;g.ap-=p.cost;enterFire(s,g);refresh(s);resolveOverwatch(s,g);return true;}}
+  if(best&&best[0].cost<=g.ap){const p=best[0];openDoorBetween(s,g,p);g.heading=headingTo(g,p);g.facing=(p.x-g.x)-(p.y-g.y)>=0?1:-1;g.x=p.x;g.y=p.y;g.z=levelOf(p);g.steps++;g.ap-=p.cost;enterFire(s,g);refresh(s);resolveOverwatch(s,g);return true;}}
  g.ap=0;s.enemyIndex++;return true;
 }
 
@@ -293,7 +297,7 @@ export function moveGroup(s,ids,leader,x,y,z=levelOf(leader)){
  for(const u of members){const gx=u.x+dx,gy=u.y+dy,candidates=[];for(let oy=-2;oy<=2;oy++)for(let ox=-2;ox<=2;ox++)candidates.push({x:gx+ox,y:gy+oy,z,d:ox*ox+oy*oy});candidates.sort((a,b)=>a.d-b.d);let found=null;for(const goal of candidates){if(reserved.has(key(goal.x,goal.y,z)))continue;const path=inBounds(goal.x,goal.y,z)?pathTo(planning,u,goal.x,goal.y,z):null;if(path&&(path.length||u.x===goal.x&&u.y===goal.y&&levelOf(u)===z)){if(s.phase==='player'&&path.length&&path[0].cost>u.ap)continue;found=goal;break;}}if(!found)return false;reserved.add(key(found.x,found.y,z));orders.push({id:u.id,goal:{x:found.x,y:found.y,z}});}
  if(orders.every(o=>{const u=s.units[o.id];return u.x===o.goal.x&&u.y===o.goal.y&&levelOf(u)===z;}))return false;for(const u of members)u.overwatch=null;s.queue=[{group:orders}];log(s,'Group movement ordered for '+orders.length+' comrades.');return true;
 }
-function stepGroupMovement(s){const order=s.queue[0];let moved=false;for(const entry of order.group){const u=s.units[entry.id],goal=entry.goal;if(!canControl(s,u)){s.queue=[];return moved;}if(u.x===goal.x&&u.y===goal.y&&levelOf(u)===goal.z)continue;const path=navigationPath(s,u,goal.x,goal.y,goal.z),step=path?.[0],valid=step&&movementNeighbors(s,u).find(p=>p.x===step.x&&p.y===step.y&&p.z===step.z);if(!valid||occupant(s,step.x,step.y,step.z)||(s.phase==='player'&&u.ap<valid.cost)){s.queue=[];log(s,'Group stopped: route blocked or a comrade lacks AP.');return moved;}u.heading=headingTo(u,step);u.facing=(step.x-u.x)-(step.y-u.y)>=0?1:-1;u.x=step.x;u.y=step.y;u.z=step.z;u.steps++;u.overwatch=null;emitNoise(s,u,u.sneaking?3:10);if(s.phase==='player')u.ap-=valid.cost;enterFire(s,u);moved=true;refresh(s);if(s.queue[0]!==order)return moved;}
+function stepGroupMovement(s){const order=s.queue[0];let moved=false;for(const entry of order.group){const u=s.units[entry.id],goal=entry.goal;if(!canControl(s,u)){s.queue=[];return moved;}if(u.x===goal.x&&u.y===goal.y&&levelOf(u)===goal.z)continue;const path=navigationPath(s,u,goal.x,goal.y,goal.z),step=path?.[0],valid=step&&movementNeighbors(s,u).find(p=>p.x===step.x&&p.y===step.y&&p.z===step.z);if(!valid||occupant(s,step.x,step.y,step.z)||(s.phase==='player'&&u.ap<valid.cost)){s.queue=[];log(s,'Group stopped: route blocked or a comrade lacks AP.');return moved;}openDoorBetween(s,u,step);u.heading=headingTo(u,step);u.facing=(step.x-u.x)-(step.y-u.y)>=0?1:-1;u.x=step.x;u.y=step.y;u.z=step.z;u.steps++;u.overwatch=null;emitNoise(s,u,u.sneaking?3:10);if(s.phase==='player')u.ap-=valid.cost;enterFire(s,u);moved=true;refresh(s);if(s.queue[0]!==order)return moved;}
  if(order.group.every(e=>{const u=s.units[e.id];return u.x===e.goal.x&&u.y===e.goal.y&&levelOf(u)===e.goal.z;}))s.queue=[];return moved;
 }
 

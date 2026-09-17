@@ -44,7 +44,9 @@ A firearm discharge (anything with a magazine: pistol, shotgun, SMG, rifle, AK, 
 
 Radii follow the catalog automatically (the rule is 2 x range at fire time); this table was refreshed 2026-09-16 after the weapon-range revision on tactics-prototype (9aeb801, 5b4e0bb). With the longer ranges the old 30-tile suspicion ring only matters for the pistol, shotgun, grenade and flamethrower; every other report already alerts further than it carries suspicion.
 
-Open question for the reviewer: a thrown grenade has no muzzle report, only a blast; if the blast should carry further than 20 tiles, give explosives their own noise term in `detonate` rather than the weapon's range.
+Open question for the reviewer: `mag` is the discriminator, so a thrown grenade (no muzzle report) alarms at 20 around the THROWER, not around the impact, and the flamethrower (mag 4, a jet with no report) alarms at 20 as well; blasts themselves make no noise at all (`explosives.js` has no noise or alarm term). If a blast should carry, give explosives their own noise term at the impact in `detonate`, and give the flamethrower a jet term, rather than reusing weapon range.
+
+Balance on the current tip (2026-09-16, after Codex's weapon revision 5b4e0bb and the retreat commit): 19/20, seed 1949 lost, identical to a clean-HEAD control worktree; the 18/2 record below is against the older sight-lobes tip 9c0dac1 and is not re-baselined here.
 
 ## G2: alert states
 
@@ -59,13 +61,15 @@ One state per guard, replacing the boolean. Transitions are the rules; personali
 | **Stand-down** | Walks back to post. Vigilance raised for the rest of the map (wary: suspicion radius +50%, longer investigation). | Arrives → Rest (wary). Any trigger → the corresponding state. |
 | **Broken** | Moves away from the last threat toward the nearest ally or post, does not fire unless cornered. | *R* rounds unshot → Alert if a target is known, else Stand-down. |
 
-Proposed defaults, before personality scaling: N = 12, K = 3, M = 4, R = 2, shout radius 12 (officers 20).
+Proposed defaults, before personality scaling: N = 12, K = 3, M = 4, R = 2; shout radius follows the archetype table in G4 (base 12, Ruler 20), never the officer role.
+
+The squad's side of "combat can end" is already built (RULES.md, "Retreat and border crossings", 2026-09-16): members walk off the map across its 3-tile border, one at a time, and the map keeps its alerted guards; return and the fight resumes as a fresh contact. A map the squad has left advances no rounds (`stepEnemy` runs only on the current map), so K, M and R alone would leave those guards Alert forever. G2 therefore needs a second clock: while the squad is elsewhere, the state machine settles by campaign time on the next arrival (proposal: 1 round = 10 clock minutes, so K + M = 7 rounds ≈ 70 minutes; the shortest possible return is two crossings = 120 minutes, so a squad that steps out and straight back always finds the guards Stood-down and wary, never mid-search; that is the intended price of a retreat, the guards regroup faster than the squad can). Acceptance (staged by writing the clock in a test, since the game cannot return in under 120 minutes): leave a map with all guards Alert; advance the clock 60 minutes and re-enter: the guards are Searching around `lastKnown`; advance 120 minutes instead: every guard is at post and wary.
 
 **Combat can end.** Contact is any guard in Alert or Searching. When none remain, the phase returns to real-time exploration even with guards alive: "Area quiet." Bleeding and burning still hold combat open as today. This is the "at rest" the user asked for, and it makes stealth and disengagement real options instead of a fight to the last guard.
 
 **Posts.** A guard's start tile and heading are its post. Patrol routes are a later addition; the state machine does not depend on them.
 
-**Acceptance properties.** A guard cannot skip from Rest to Searching. Stand-down always ends at the post or in a higher state, never stalled. A wall blocks every sight-based transition and none of the sound-based ones. Combat ends within K+M rounds of the last identification if nobody fires. The existing bot cannot exploit "Area quiet" by standing still next to an alerted guard.
+**Acceptance properties.** A guard cannot skip from Rest to Searching. Stand-down always ends at the post (or at the nearest free tile to it when the post is occupied, e.g. by a downed merc) or in a higher state, never stalled. A wall blocks every sight-based transition and none of the sound-based ones. Combat ends within K + (walk to `lastKnown`) + M rounds of the last identification if nobody fires. "Cornered" for Broken means no legal step increases the guard's distance from the last threat. The existing bot cannot exploit "Area quiet" by standing still next to an alerted guard.
 
 ## G3: twelve archetypes, drawn at random
 
@@ -144,8 +148,8 @@ Species traits (SIGHT.md) and archetype traits stack; the archetype never change
 
 ### Assignment
 
-- Guards draw an archetype from the social RNG stream at map creation (never the ballistic stream), so a seed reproduces its roster. Guards may repeat archetypes; the twelve factory names stay as names.
-- A merc squad draws four distinct archetypes. The four authored mercs keep their authored bonds and gain an archetype tag for the state-machine traits: Yakov Ruler, Anya Rebel, Misha Creator, Vera Caregiver. The derived matrix already scores Yakov–Anya at −41 both ways, Anya–Misha at −15/−30 and Yakov–Vera at +26/+26, which matches the hand-written bonds in sign.
+- Guards draw an archetype from the social RNG stream at map creation (never the ballistic stream), so a seed reproduces its roster. `s.socialSeed` is seeded lazily today (first `friendlyReaction`), so drawing at creation shifts every later social roll: the build must hold the draw off behind its knob in the old fixtures and hash-equal the old rig with the knob neutral before turning it on. Guards may repeat archetypes; the twelve factory names stay as names.
+- A merc squad draws four distinct archetypes. The four authored mercs keep their authored bonds and gain an archetype tag for the state-machine traits: Yakov Ruler, Anya Rebel, Misha Creator, Vera Caregiver. The derived matrix scores Yakov–Anya at −41 both ways, Anya–Misha at −15/−30 and Yakov–Vera at +26/+26. That does NOT match the hand-written bonds in every case: `personalities.js` authors Yakov–Anya at +5/+5. Decision (2026-09-16, for the reviewer to confirm): for the four authored mercs the authored value is the resting level and the archetype tag drives state-machine traits only; the matrix is the resting level for random draws (guards, recruits). If the boss prefers the matrix for the authored four, Yakov and Anya start resented and the demo squad has a feud from day one.
 - Initial bonds among guards, among mercs, and between a captured merc and its captors all come from the matrix; the friendly-fire reaction, the kill relief and the stress meters then move them as today.
 - Each archetype ships with two barks per state, in its speech register from the table above, on the merc dialogue channel.
 
@@ -153,7 +157,7 @@ Species traits (SIGHT.md) and archetype traits stack; the archetype never change
 
 Direction 2026-09-16: a bond needs rungs, not just a number, and mercs are the cleaner case because recruitment shows the friction before anyone signs. The matrix value is a **resting level**; events push a bond away from it and rest pulls it back, so feuds cool but incompatibility never disappears.
 
-Six rungs on the existing −100..100 scale, retaining the four existing labels and adding bonded and feud:
+Six rungs on the existing −100..100 scale, retaining the four existing labels (`personalities.js` has trusted / cautious / strained / resented today) and adding bonded at the top and feud at the bottom:
 
 | Rung | Range | Label | What it does for mercs | What it does for guards |
 | --- | --- | --- | --- | --- |
@@ -183,7 +187,22 @@ A pair that starts strained can therefore climb to trusted through a good campai
 
 ## G4: shouts and guard-on-guard incidents
 
-- An Alert guard shouts once on entering the state: guards within the shout radius that pass their obedience check take the shouter's `lastKnown` and go Alert; the rest go Suspicious toward the shouter. Shout modifiers must follow the assigned archetype, not a fixed guard name; exact archetype radii remain to be specified.
+- An Alert guard shouts once on entering the state: guards within the shout radius that pass their obedience check take the shouter's `lastKnown` and go Alert; the rest go Suspicious toward the shouter. Shout modifiers follow the assigned archetype, not a fixed guard name (names carry no traits under G3). Radius by archetype, base 12:
+
+| Archetype | Radius | Why |
+| --- | --- | --- |
+| Ruler | 20 | Expects to be obeyed and projects |
+| Hero | 16 | Challenges out loud |
+| Caregiver | 14 | Calls for the others' sake |
+| Everyman | 12 | The base |
+| Jester | 12 | Loud, but listeners go Suspicious rather than Alert: the joke is not believed |
+| Lover | 10 | Calls to the bonded partner first |
+| Creator | 10 | |
+| Innocent | 8 | Unsure it is real |
+| Sage | 8 | Reports carefully, late |
+| Explorer | 6 | Usually elsewhere |
+| Magician | 6 | Keeps its own fix and uses the shout to move others |
+| Rebel | 0 | Does not shout for anyone |
 - Bullets already hit the first body on the ray regardless of team, so guards can shoot guards. Reuse `friendlyReaction`: stress, bond loss, grudge, a bark, and the same retaliation chance. Grigori shooting back at Pyotr in the middle of a firefight is the intended kind of chaos, bounded by the existing "ammunition-limited retaliation" rule.
 - A guard whose bonded colleague is killed gains stress and, if nerve is low, can break on the spot.
 
@@ -204,16 +223,17 @@ Assumptions taken, each reversible:
 - A merc whose happiness has been **exactly zero for 24 consecutive clock hours** quits at the next safe moment: the end of the current contact, or immediately if the squad is exploring. Quitting is a new roster state, `quit`, alongside captured and dead: the merc keeps its skills and history in the roster snapshot (a quit merc can be re-recruited later at a price), takes its held weapons and pack, and leaves its loot-pile claims.
 - The 24-hour timer resets the moment happiness rises above zero. A merc at zero is shown as "about to quit" with the hours remaining, so the player is never surprised.
 - The game logs the rung and the cause: "Anya has had enough of Yakov (2 days together, happiness 0)."
+- A merc that crossed a map edge and is waiting beyond it (RULES.md, retreat) counts as on its destination map from the moment it crosses, for decay, the separation bonus and "quits at the end of the current contact" alike (it is in no contact while waiting).
 
 ### What raises happiness (proposals, so the meter is not a one-way ratchet)
 
 | Source | Change |
 | --- | --- |
-| A clock day on a local map with **no** opposing partner present | +5 |
-| A clock day on a different local map from every opposing partner | +10 |
+| A clock day with no opposing partner on this local map (including a merc that has no opposing partner at all) | +5 |
+| Instead of the +5: a clock day when the merc HAS opposing partners and every one of them is on a different local map | +10 |
 | A contact won with no squad casualty | +5 |
 | A bonded or trusted partner present on the same map, per day | +5 / +2 each (see below) |
-| Pay day, when a contract economy exists (ECONOMY.md) | +10 |
+| Pay day, if a wage or contract system is ever built (ECONOMY.md has none today; proposal only) | +10 |
 | A partner's rung crossing upward (strained → cautious, or better) | +5 once |
 
 The separation bonus is the design lever: the player can keep two mercs who hate each other by never fielding them together, at the cost of a thinner squad on each map. That is the "cleaner with mercs" case from recruitment carried into the campaign: the friction is visible, and managing it is play.
@@ -228,7 +248,7 @@ Direction 2026-09-16: there should also be people that mercs like working with, 
 | --- | --- | --- |
 | A clock day together on the same local map | +5 | +2 |
 | That partner killed | −75 happiness, stress +25 | −35 happiness, stress +15 |
-| That partner captured | −20 until rescued, then +15 on the rescue | −10 until rescued, then +5 |
+| That partner captured | −20 once, at the moment of capture; +15 once on the rescue (net −5); dies in captivity: a further −55 | −10 once; +5 once on the rescue; dies in captivity: a further −25 |
 | That partner quits | −15 | −5 |
 | That partner stabilized by this merc | +5 (relief), on top of the bond gain | +3 |
 
@@ -254,12 +274,16 @@ Guards do not quit; they are not on contract. A guard roster's opposing pairs ex
 8. A bonded partner's death subtracts 75 happiness and adds 25 stress at once; a feud partner's death costs no happiness and relieves 10 stress.
 9. A bonded partner killed by a squadmate's bullet raises the survivor's grudge against that squadmate by the bonded multiplier.
 
-### Open decisions before implementation
+### Decisions from the integration review (resolved 2026-09-16)
 
-- Assignment: distinguish randomly recruited mercs from the four authored starting mercs. The assignment bullets currently prescribe both retained authored bonds and matrix-derived bonds; specify which supplies each merc's initial and resting bonds.
-- Recovery: the +5 daily bonus for no opposing partner present and +10 for separation overlap. Decide whether they stack or the separation rate replaces the +5, and how either interacts with the liked-partner bonus and acceptance check 7.
-- Capture: clarify whether “−20 until rescued, then +15” is a temporary penalty plus a rescue reward or a one-time loss followed by partial recovery; likewise for the trusted values.
-- Quantify the bonded friendly-fire grudge multiplier and cautious-partner death stress before acceptance checks can be implemented.
+The four items the integration review left open, answered so implementation can start. The G3 assignment bullets, the G5 recovery table and the partner tables above are to be read with these.
+
+1. **Assignment.** The four authored mercs keep Codex's hand-written bonds as both their initial and their resting level toward each other; the archetype tag (Yakov Ruler, Anya Rebel, Misha Creator, Vera Caregiver) supplies only the state-machine and merc traits. Every other pair, meaning random recruit to random recruit, random recruit to authored merc, guard to guard, and captive to captor, takes the matrix value as both initial and resting level. One rule: authored beats derived wherever an authored value exists.
+2. **Recovery.** The two daily bonuses do not stack; they are one rate with two tiers. A merc with no opposing partner present on its current map gains +5 a day, including a merc with no opposing partners at all. If the merc has at least one opposing partner and every one of them is deployed on a different local map, the rate is +10 instead, because the player paid for the separation with a thinner squad. The liked-partner bonus stacks on top of either tier, and acceptance check 7 holds because the tier bonus never applies while an opposing partner is present.
+3. **Capture.** A one-time loss followed by a partial recovery. Capture subtracts 20 (bonded) or 10 (trusted) once, at the moment of capture; nothing further accrues while the partner is held. Rescue adds 15 (bonded) or 5 (trusted) once, so the net after a rescue is −5. If the captive dies in captivity the death penalty applies minus what capture already took: 55 bonded, 25 trusted.
+4. **Quantities.** A bonded partner killed by a squadmate's bullet: the survivor's incident ledger against the killer gains grudge at 2× (trusted 1.5×) and the survivor's bond toward the killer drops a further 40 (trusted 20) on top of the ordinary friendly-fire loss. A cautious partner's death adds 10 stress; strained 5; resented 0; feud relieves 10, as already stated.
+
+Shout radii by archetype are in G4. The retreat rule's consequences for G2 (a second, campaign-clock settle for maps the squad has left) and for G5 (a waiting crosser counts as on its destination map) are recorded in those sections.
 
 ## Balance record
 
