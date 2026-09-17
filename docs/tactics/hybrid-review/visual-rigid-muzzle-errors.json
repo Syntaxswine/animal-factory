@@ -1,0 +1,164 @@
+[
+  {
+    "species": "horse",
+    "stance": "standing",
+    "heading": 0,
+    "muzzleErrors": [
+      0.30285680008320637,
+      0.3537514517837272
+    ]
+  },
+  {
+    "species": "horse",
+    "stance": "standing",
+    "heading": 90,
+    "muzzleErrors": [
+      0.3028568000832064,
+      0.3537514517837272
+    ]
+  },
+  {
+    "species": "horse",
+    "stance": "kneeling",
+    "heading": 0,
+    "muzzleErrors": [
+      0.20762026006561177,
+      0.23517892827058898
+    ]
+  },
+  {
+    "species": "horse",
+    "stance": "kneeling",
+    "heading": 90,
+    "muzzleErrors": [
+      0.2076202600656118,
+      0.23517892827058903
+    ]
+  },
+  {
+    "species": "horse",
+    "stance": "prone",
+    "heading": 0,
+    "muzzleErrors": [
+      0.3509918691696604,
+      0.5058799884536522
+    ]
+  },
+  {
+    "species": "horse",
+    "stance": "prone",
+    "heading": 90,
+    "muzzleErrors": [
+      0.35099186916966046,
+      0.5058799884536523
+    ]
+  },
+  {
+    "species": "cow",
+    "stance": "standing",
+    "heading": 0,
+    "muzzleErrors": [
+      0.2749469223212727,
+      0.3679489163393628
+    ]
+  },
+  {
+    "species": "cow",
+    "stance": "standing",
+    "heading": 90,
+    "muzzleErrors": [
+      0.2749469223212727,
+      0.3679489163393628
+    ]
+  },
+  {
+    "species": "cow",
+    "stance": "kneeling",
+    "heading": 0,
+    "muzzleErrors": [
+      0.2227736315277184,
+      0.27980006148043224
+    ]
+  },
+  {
+    "species": "cow",
+    "stance": "kneeling",
+    "heading": 90,
+    "muzzleErrors": [
+      0.2227736315277184,
+      0.2798000614804323
+    ]
+  },
+  {
+    "species": "cow",
+    "stance": "prone",
+    "heading": 0,
+    "muzzleErrors": [
+      0.3606744142024435,
+      0.5381907611417275
+    ]
+  },
+  {
+    "species": "cow",
+    "stance": "prone",
+    "heading": 90,
+    "muzzleErrors": [
+      0.36067441420244367,
+      0.5381907611417276
+    ]
+  },
+  {
+    "species": "skunk",
+    "stance": "standing",
+    "heading": 0,
+    "muzzleErrors": [
+      0.4117551012967335,
+      0.3754164500280362
+    ]
+  },
+  {
+    "species": "skunk",
+    "stance": "standing",
+    "heading": 90,
+    "muzzleErrors": [
+      0.41175510129673354,
+      0.37541645002803625
+    ]
+  },
+  {
+    "species": "skunk",
+    "stance": "kneeling",
+    "heading": 0,
+    "muzzleErrors": [
+      0.2848901316760477,
+      0.3173245347314727
+    ]
+  },
+  {
+    "species": "skunk",
+    "stance": "kneeling",
+    "heading": 90,
+    "muzzleErrors": [
+      0.28489013167604776,
+      0.31732453473147276
+    ]
+  },
+  {
+    "species": "skunk",
+    "stance": "prone",
+    "heading": 0,
+    "muzzleErrors": [
+      0.6333028842515813,
+      0.520001898535346
+    ]
+  },
+  {
+    "species": "skunk",
+    "stance": "prone",
+    "heading": 90,
+    "muzzleErrors": [
+      0.6333028842515814,
+      0.5200018985353462
+    ]
+  }
+]

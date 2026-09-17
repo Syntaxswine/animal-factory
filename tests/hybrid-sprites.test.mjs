@@ -1,7 +1,15 @@
 import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';
 import {decodePNG} from '../tools/png-rgba.mjs';import {unitArt} from '../dist/tactics/red-hats-art.js';
-import {alphaBounds,spriteVertex,weaponLandmarks} from '../dist/tactics/hybrid-sprites.js';import {GAME_CAMERA,projectWorld} from '../dist/tactics/hybrid-world.js';
+import {alphaBounds,spriteVertex,rigidSpriteVertex,weaponLandmarks} from '../dist/tactics/hybrid-sprites.js';import {GAME_CAMERA,projectWorld} from '../dist/tactics/hybrid-world.js';
 import {muzzlePoint} from '../dist/tactics/hybrid-combat.js';
+test('rigid art preview preserves distances and ground anchor without heading-dependent deformation',()=>{
+ const art={anchor:[128,244]},bounds={bottom:240},scale=1.65*Math.cos(GAME_CAMERA.elevation)/236;
+ for(const stance of ['standing','kneeling','prone'])for(let heading=0;heading<360;heading+=45){
+  const unit={stance,heading},a=rigidSpriteVertex(unit,art,bounds,100,130),b=rigidSpriteVertex(unit,art,bounds,190,200),anchor=rigidSpriteVertex(unit,art,bounds,128,240);
+  assert.ok(Math.abs(Math.hypot(b[0]-a[0],b[1]-a[1])-Math.hypot(90,70)*scale)<1e-12);
+  assert.equal(anchor[1],0);assert.equal(Math.abs(anchor[0]),0);
+ }
+});
 test('opaque sprite bounds calibrate all stances and prone long axis follows eight headings',()=>{
  for(const species of ['horse','cow','skunk'])for(const outfit of ['normal','red-hats'])for(const stance of ['standing','kneeling','prone']){
   const unit={species,outfit,stance,weapon:'rifle',hp:100},art=unitArt(unit),png=decodePNG(fs.readFileSync(new URL('../dist/'+art.src.replace('../',''),import.meta.url))),b=alphaBounds(png.pixels,png.width,png.height);

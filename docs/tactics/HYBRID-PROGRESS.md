@@ -1,5 +1,14 @@
 # Hybrid migration review record
 
+## Current visual revision gate
+
+The architect rejected the earlier presentation; numeric calibration is not art
+approval. See [visual revision review](HYBRID-VISUAL-REVIEW.md) for the bounded room
+and prop sample (4/5 each), preserved-art pose assessment (4/5 evidence, 3/5 sprite
+readiness), texture repeats and directional-art requirement. Human visual approval
+and physical pose alignment remain open. Full-map propagation/default cutover
+have not advanced. Historical stage records below remain for traceability.
+
 ## User-approved dimensions
 
 The user explicitly confirmed prototype proportions on 2026-09-17, superseding the proposal's suggestion to retain old dimensions. Tile size 1; walls 2 high and .16 thick; window opening .85–1.55 high across one tile; doorway 1.65 high; standing character 1.65. Kneeling/prone prototype bounds are .7/.28 times standing height. Low cover remains .8 (not defined in the prototype). Slabs are .12 thick.

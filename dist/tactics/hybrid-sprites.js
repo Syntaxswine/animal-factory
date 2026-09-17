@@ -1,9 +1,17 @@
-import {projectWorld} from './hybrid-world.js';
+import {projectWorld,DIMENSIONS,GAME_CAMERA} from './hybrid-world.js';
 import {bodyRegions,physicalHeight,muzzlePoint} from './hybrid-combat.js';
 export function alphaBounds(pixels,width,height){
  let left=width,right=0,top=height,bottom=0;
  for(let y=0;y<height;y++)for(let x=0;x<width;x++)if(pixels[(y*width+x)*4+3]>=102){left=Math.min(left,x);right=Math.max(right,x+1);top=Math.min(top,y);bottom=Math.max(bottom,y+1);}
  return left<right?{left,right,top,bottom}:{left:0,right:width,top:0,bottom:height};
+}
+// Architect's visual preview: one uniform scale and a horizontal reflection only.
+// This intentionally exposes missing directional/aiming art instead of deforming it.
+// Existing calibrated presentation remains available for numerical comparison.
+export function rigidSpriteVertex(unit,art,bounds,px,py,camera=GAME_CAMERA){
+ const scale=DIMENSIONS.standing*Math.cos(GAME_CAMERA.elevation)/236;
+ const flip=Math.cos((unit.heading||0)*Math.PI/180+camera.azimuth)>=0?1:-1;
+ return [(px-art.anchor[0])*scale*flip,(bounds.bottom-py)*scale,0];
 }
 // Presentation only. Stance/body geometry is never changed to fit artwork.
 function baseSpriteVertex(unit,art,bounds,px,py,camera){

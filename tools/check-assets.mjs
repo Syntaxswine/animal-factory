@@ -3,6 +3,7 @@ import {CHARACTER_SPECIES,ARMED_WEAPONS,characterArt} from '../dist/tactics/char
 import {readFile,readdir} from 'node:fs/promises';
 import {PROP_ART} from '../dist/tactics/prop-art.js';
 import {DOOR_ART} from '../dist/tactics/door-art.js';
+import {ROOM_SURFACES} from '../dist/tactics/hybrid-room-art.js';
 import {RED_HAT_SPECIES,unitArt} from '../dist/tactics/red-hats-art.js';
 import {EXPANSION_WEAPONS,weaponExpansionArt} from '../dist/tactics/weapon-expansion-art.js';
 import {WEAPON_EXPANSION_FRAMES} from '../dist/tactics/weapon-expansion-frames.js';
@@ -46,6 +47,7 @@ assert.deepEqual(environment.assets.map(a=>a.id).sort(),artIds.sort());
 for(const a of environment.assets)await checkPNG('assets/environment/'+a.file,1254,1254,a.kind==='terrain'?2:6);
 // Validate the actual runtime overrides as well as catalog paths.
 const active=new Set(environment.assets.map(a=>(DOOR_ART[a.id]||PROP_ART[a.id])?.file||a.file));
+for(const {file} of Object.values(ROOM_SURFACES))active.add(file);
 for(const file of active)await readFile(new URL('assets/environment/'+file,root));
 active.add('foliage/river-water.png');active.add('foliage/shore-tiles-atlas.png');
 const superseded=new Set(['door-steel-closed.png','door-wood-closed.png','doorway-concrete-open.png','foliage/river-straight.png','foliage/river-bend.png','foliage/river-banks-atlas.png']);
