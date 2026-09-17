@@ -75,7 +75,22 @@ Constants (`engine.js`): `ALERT_ROUNDS 3, SEARCH_CELLS 4, BROKEN_ROUNDS 2, SUSPI
 
 **Acceptance properties, all tested.** A guard cannot skip from Rest to Searching (rounds do nothing to a resting guard; a glimpse or footstep makes it Suspicious; only K rounds of Alert or an Alert sweep reach Searching). Stand-down always ends at the post, beside an occupied post, or where the guard stands after three failed routes, never stalled. A wall blocks every sight-based transition and none of the sound-based ones. Combat ends within K rounds of the last identification if nobody fires; the walk to `lastKnown` and the M cells then run in real time. A broken guard runs, does not fire, and comes back Alert after R rounds unshot; cornered, it fights. The existing bot cannot exploit "Area quiet" by standing still next to an alerted guard: identification, not motion, is the trigger, and a still worker in front of an alert guard is contact on the next refresh.
 
-**Balance (headless bot, 20 factory seeds 1947–1966, per-seed timeout 150 s):** see the table at the end of this section once the runs finish.
+**Balance (headless bot, factory map, seeds 1947–1986, per-seed timeout 150 s, control = the tip 8d84afc in a detached worktree).** The bot was not changed; it does not chase a fleeing guard and does not read the new states.
+
+| Measure, 40 seeds | Control 8d84afc | G2 branch |
+| --- | --- | --- |
+| Wins / losses | 40 / 0 | 36 / 4 (1950, 1961, 1965, 1972) |
+| Stalls, timeouts | 0, 0 | 0, 0 |
+| Friendly-fire hits (log lines) | 250 | 255 |
+| Comrades downed by friendly fire | 71 | 66 |
+| Retaliation shots | 54 | 66 |
+| Fuel-tank explosions | 15 | 14 |
+| Mean surviving squad HP at the end | 185 | 164 |
+| Mean rounds | 9.9 | 9.6 |
+| Guards that broke and ran | – | 64 (1.6 a run) |
+| Alert → Searching drops | – | 145 |
+
+Reading: friendly fire is not what G2 changed (the hit count is flat), and each of the four losses is the personality system's retaliation spiral or a flamethrower burst arriving in the same round, chains the control also rolls but survives. What G2 changed is that a guard at a third of its health now runs instead of standing to be finished (1.6 a run), and comes back Alert two rounds later while the bot has moved on; searching guards re-approach from the report cells rather than converging on a stale fix. Both are the design, and they cost the squad about twenty HP a run on average. The levers, all scaled per archetype in G3: `NERVE` (higher breaks more guards), `BROKEN_ROUNDS` (longer keeps them away), `ALERT_ROUNDS` (K). Counted with a log-cap-raised copy of each tree and a 40-seed script; the balance table alone is blind to the mechanism.
 
 **Left for later.** Shouts (G4) as an Alert trigger; per-archetype scaling of N, K, M, R, NERVE and the bark lines (G3); guards returning to a patrol route rather than a fixed post.
 
