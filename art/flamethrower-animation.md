@@ -40,8 +40,37 @@ All 48 flamethrower sprites face right, with the projector as their rightmost pa
 - Browser: the real `app.js` was stepped frame by frame on a virtual clock, on a custom map with flamethrower guards, and photographed through a miss and a burn-down.
 - The engine change adds information without changing outcomes. Running the balance bot's loop on seeds 1947–1966, the whole end state (hashed without `s.effect`) matched `efe6cfe` on 20 of 20 seeds, with 13 flamethrower bursts along the way.
 
+## Burning ground
+
+Code: `dist/tactics/ground-fire.js`; draw order: `dist/tactics/paint-order.js`. Preview: the Burning ground scene in `dist/tactics/flame-art.html`. Review sheet: `art/ground-fire-review.png` (three, two and one rounds left).
+
+A burning tile is drawn in two parts, in the same outlined flame bands as the burst:
+
+- **A scorch decal**: charred ground, a slowly pulsing glow and twinkling embers. It paints on its own layer, above walkable roof modules and below everything that stands on the tile.
+- **Three clumps of flame**: one toward the back of the tile and two toward the front. Each clump is a separate object in the depth sort, so a unit standing in the fire has flames behind its legs and in front of them. Crates and fences on the tile overlap the same way. A wall hides the clumps behind it, and the clumps in front of it cover its base.
+
+Clump placement is fixed per tile. A clump's depth offset from its tile stays inside ±0.45 and is never 0. Walls and fences between tiles sort at ±0.5, so a clump never jumps past the walls around its own tile. And it never ties with a unit standing on the tile, which sorts at exactly 0.
+
+The three clump designs are one fat tongue with a side lick, a tall and a short tongue, and three small tongues. Each loops through 8 frames at 10 per second. Every flicker completes a whole number of cycles per loop, so the wrap from the last frame back to the first is seamless. Clumps start at different points in the loop, so neighbours flicker out of step.
+
+A fresh blaze lights tile by tile over about 175 ms, each tile popping up with a small overshoot. Flames shrink with each round the tile has left, and a dying fire sends up smoke from one clump design in three. Players with reduced motion enabled see still flames and no pop.
+
+**Cost.** A tank explosion lights up to 81 tiles, so every clump and scorch frame is rendered once into a small canvas and stamped with `drawImage`. Frames are rendered at the next 1.5× step at or above the screen scale (zoom × device pixels, capped at 3.375) and re-rendered only when that step changes.
+
+In a hidden preview pane on a 980×709 canvas, with the game stepped on a virtual clock, 81 burning tiles added about 3 ms to a 12–21 ms frame (five 60-frame samples each, with and without the fire).
+
+**Validation** (`tests/tactics-ground-fire.test.mjs`):
+- Across 1,250 tiles on two levels, every tile has clumps on both sides of 0, inside ±0.45 and inside the tile.
+- In the real sort order, a tile's back clump paints before a unit, a fallen body and a crate on that tile, and its front clumps paint after them. All its clumps paint after the walls and units behind the tile and before those in front. The scorch paints above a roof module and below everything else.
+- Every clump and scorch frame draws finite shapes, wound consistently, inside its sprite box, and flames shrink by round.
+- Flicker obeys the sampled-sine recurrence at every step, the wrap included.
+- The sprite cache renders once per stage, design and frame, handles growth, and drops its frames only when the scale step changes.
+- The suite catches seven deliberate breaks: a back clump moved to the front, a front clump past its tile's walls, scorch losing its paint layer, a sprite box too short, flicker 1.1× off a whole cycle (a test comparing frame 8 with frame 0 could not see this, because frames wrap before drawing), an uncapped scale step, and a cache that ignores the frame.
+- In the real game, stepped on a virtual clock: Yakov's third shot at a flamethrower guard's tanks lit 81 tiles around a wall, two crates and a fence. The ignition ripple and the split flames around Yakov were photographed frame by frame.
+
 ## Open
 
-- Burning units still show only `[FIRE n]`, and burning ground is a static flame. Both could reuse these flame and smoke shapes.
-- Tank explosions still draw a flat orange ellipse.
+- Burning units still show only `[FIRE n]`; they could carry small clumps while they panic.
+- Tank explosions still draw a flat orange ellipse, which washes over the ignition ripple for its first 650 ms.
 - The enemy turn does not wait for a burst to finish.
+- A full-size blaze covers the legs of animals standing in it. Two clumps per tile instead of three would thin it while keeping the split.

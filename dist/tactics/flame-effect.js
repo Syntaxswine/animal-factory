@@ -100,10 +100,12 @@ function addShape(ctx,shape,pass,ow){
   const w=shape.w*k+grow,bx=shape.bx,by=shape.by+shape.w*(1-k)*.4,reach=1-(1-k)*.55,tx=bx+(shape.tx-bx)*reach,ty=by+(shape.ty-by)*reach;
   const ax=tx-bx,ay=ty-by,h=Math.hypot(ax,ay);if(w<=.05||h<=.05)return;
   const ux=ax/h,uy=ay/h,nx=-uy,ny=ux,tipX=tx+ux*grow*1.4,tipY=ty+uy*grow*1.4,angle=Math.atan2(ny,nx);
+  // bulge and shoulder shape the sides: the default is a slim jet tongue, larger values a rounder campfire flame.
+  const bulge=shape.bulge??1.05,shoulder=shape.shoulder??.35;
   ctx.moveTo(tipX,tipY);
-  ctx.quadraticCurveTo(bx+nx*w*1.05+ux*h*.35,by+ny*w*1.05+uy*h*.35,bx+nx*w,by+ny*w);
+  ctx.quadraticCurveTo(bx+nx*w*bulge+ux*h*shoulder,by+ny*w*bulge+uy*h*shoulder,bx+nx*w,by+ny*w);
   ctx.arc(bx,by,w,angle,angle+Math.PI,false);
-  ctx.quadraticCurveTo(bx-nx*w*1.05+ux*h*.35,by-ny*w*1.05+uy*h*.35,tipX,tipY);
+  ctx.quadraticCurveTo(bx-nx*w*bulge+ux*h*shoulder,by-ny*w*bulge+uy*h*shoulder,tipX,tipY);
   ctx.closePath();
  }else if(shape.kind==='rod'){
   // Traced clockwise on screen like canvas arcs: under the nonzero rule an opposite winding would cut
@@ -115,7 +117,7 @@ function addShape(ctx,shape,pass,ow){
   for(const p of [shape.points[0],shape.points.at(-1)]){const w=p.w*k+grow;ctx.moveTo(p.x+w,p.y);ctx.arc(p.x,p.y,w,0,TAU);}
  }
 }
-function fillFlames(ctx,shapes,zoom){
+export function fillFlames(ctx,shapes,zoom){
  const ow=Math.max(.8,zoom*1.05);
  for(const pass of PASSES){
   ctx.beginPath();ctx.fillStyle=FLAME_PALETTE[pass.colour];
@@ -125,7 +127,7 @@ function fillFlames(ctx,shapes,zoom){
 }
 // Cartoon smoke: a few lobes filled as one union, so a cloud has a single outline. Clouds never turn
 // translucent (the outline would show through); they grow, drift and shrink away instead.
-function smokeCloud(ctx,x,y,r,zoom,soot=false,spin=0){
+export function smokeCloud(ctx,x,y,r,zoom,soot=false,spin=0){
  if(!(r>.4))return;
  const c=Math.cos(spin),s=Math.sin(spin),lobes=[[-.55,.18,.7],[.52,.22,.66],[.02,-.3,.84],[-.08,.38,.58]].map(([dx,dy,k])=>[x+(dx*c-dy*s)*r,y+(dx*s+dy*c)*r,k*r]);
  const layer=(fill,grow,shiftX,shiftY,scale)=>{ctx.fillStyle=fill;ctx.beginPath();for(const [lx,ly,lr] of lobes){const R=lr*scale+grow,cx=lx+shiftX,cy=ly+shiftY;ctx.moveTo(cx+R,cy);ctx.arc(cx,cy,R,0,TAU);}ctx.fill();};
