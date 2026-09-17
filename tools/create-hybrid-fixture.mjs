@@ -1,0 +1,14 @@
+import fs from 'node:fs';
+import {blankMap,setTerrain,stampRoom,validateMap} from '../dist/tactics/maps.js';
+const map=blankMap('Hybrid shared-map room');
+for(const row of map.terrain)row.fill('void');
+for(let y=0;y<12;y++)for(let x=0;x<12;x++)setTerrain(map,x,y,0,'yard');
+stampRoom(map,2,2,7,6);
+map.edges['s:5:7']='door-wood-closed';map.edges['s:7:7']='window-brick';
+for(let y=2;y<4;y++)for(let x=2;x<4;x++)setTerrain(map,x,y,1,'floor');
+map.props=[{x:2,y:2,z:1,kind:'roof-corrugated-flat'},{x:8,y:5,z:0,kind:'sandbags'}];
+map.starts=[{x:5,y:9,z:0},{x:5,y:5,z:0},{x:4,y:9,z:0},{x:6,y:9,z:0}];map.exits=[{x:5,y:10,z:0}];
+map.hybridNotes={purpose:'Diagnostic slice; two displayed mercs, four schema-required starts',preserveUnknownMetadata:true};
+const errors=validateMap(map);if(errors.length)throw Error(errors.join('\n'));
+fs.mkdirSync(new URL('../dist/tactics/fixtures/',import.meta.url),{recursive:true});
+fs.writeFileSync(new URL('../dist/tactics/fixtures/hybrid-room.json',import.meta.url),JSON.stringify(map));

@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Red Shift · Hybrid map slice</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#172520;color:#eee5cd;font:15px system-ui}header{padding:20px 28px;display:flex;justify-content:space-between;border-bottom:1px solid #536553}h1{font:24px Georgia;margin:0}small,p{color:#bcc9b6;line-height:1.6}a{color:#e6c17c}main{display:grid;grid-template-columns:1fr 310px;height:calc(100dvh - 96px)}#scene{position:relative;min-height:440px;overflow:hidden}canvas{display:block;touch-action:none}aside{padding:24px;background:#22332b;overflow:auto}h2{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#e6c17c;margin:26px 0 12px}label{display:block;margin:16px 0}button,select{font:inherit;color:inherit;background:#354637;border:1px solid #68745a;padding:9px;border-radius:4px}button{cursor:pointer}button:hover{background:#4a5a40}#fire{width:100%;background:#c59650;color:#19251e;font-weight:700}#result{min-height:70px;line-height:1.5;padding:14px 0}#hint{position:absolute;bottom:16px;left:20px;background:#172520dd;padding:12px;pointer-events:none}#status{font-size:12px;white-space:pre-wrap}select{width:100%}@media(max-width:750px){main{display:block;height:auto}#scene{height:65dvh}header{gap:18px}}
+</style></head><body>
+<header><div><h1>RED SHIFT / SHARED WORLD</h1><small>Map vertical slice · sprite characters · prototype proportions</small></div><a href="index.html">Back to game</a></header>
+<main><section id="scene" aria-label="Hybrid map viewer"><div id="hint">Scroll to zoom · enable diagnostic orbit to rotate</div></section><aside>
+<h2>Shared-map slice</h2><p>Two levels, a walkable roof, low cover and two mercs. The same map and structural geometry run in Node.</p>
+<label>Trace path<select id="path"><option value="door">Doorway</option><option value="window">Window</option><option value="wall">Solid wall</option><option value="roof">Down through roof</option></select></label>
+<label><input id="door" type="checkbox" checked> Close door</label>
+<label><input id="roof" type="checkbox" checked> Include roof and upper floor</label>
+<label><input id="bounds" type="checkbox"> Collision overlay</label>
+<button id="fire">Trace geometry</button><div id="result" role="status">Choose a path to inspect.</div>
+<h2>Camera</h2><label><input id="orbit" type="checkbox"> Diagnostic orbit</label><button id="reset">Reset 2:1 view</button>
+<h2>Dimensions</h2><p>1 tile · 2 wall height · 1.65 standing height. Upper floor surface at 2.12, derived from the prototype roof.</p>
+<p>This slice inspects structural intersections. Combat integration follows its review gate.</p><div id="status">Loading map and artwork…</div>
+</aside></main><script type="module" src="hybrid-viewer.js"></script></body></html>
