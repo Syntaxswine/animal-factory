@@ -1,6 +1,6 @@
 import {restStrain} from './personalities.js';
 import {factoryMap,generateMap,blockedEdge,tileKey,levelOf,neighbors,W,H} from './maps.js';
-import {createGame,squad,guards,alive,incapacitated,canControl,abandonCasualties,occupant,refresh,walkable,log,STANCES,stanceOf,emitNoise,enterFire,combatCosts} from './engine.js';
+import {createGame,squad,guards,alive,incapacitated,canControl,abandonCasualties,occupant,refresh,walkable,log,STANCES,stanceOf,emitNoise,enterFire,combatCosts,settleGuards} from './engine.js';
 import {awardXP} from './progression.js';
 export const TRAVEL_MINUTES=60,PLAY_MINUTES_PER_SECOND=1,REST_RECOVERY_HOURS=48,MEDICAL_RECOVERY_HOURS=24,MEDIC_SKILL_REQUIRED=25;
 // The overmap is a grid of local-map tiles. Two tiles are linked when they touch; a squad walks from one to the next across the shared edge.
@@ -123,7 +123,9 @@ function arrive(world,destination,plan=arrivalPlan(world,destination)){
   if(['player','enemy'].includes(next.phase)){next.phase='explore';next.enemyIndex=0;}
   next.units=[...incoming,...next.units.filter(u=>u.team==='guard')];next.selected=incoming.find(alive)?.id??previous.selected;next.queue=[];next.effect=null;next.alerted=new Set();next.engaged=false;next.freshFight=true; // entering a map is a fresh fight: full AP on contact (capped by what a crosser carried), whatever alert the guards kept
   // Failed travel takes no time. Production during transit uses previously liberated maps.
+  previous.leftAt=world.clock.minutes; // the moment this map was left: its guards settle by the clock when the squad returns
   const income=advanceTime(world,TRAVEL_MINUTES);
+  if(Number.isFinite(next.leftAt))settleGuards(next,world.clock.minutes-next.leftAt);next.leftAt=undefined;
   world.states[destination]=next;world.current=destination;world.journeys++;world.lastIncome=income;
   refresh(next);
   // Crossing mid-turn does not refill the turn: a unit that crossed in combat and arrives into contact keeps the AP it had.

@@ -1,6 +1,6 @@
 import test from 'node:test';import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {createGame,refresh,attack,attackGround,previewAttack,setOverwatch,pathTo,endTurn,stepEnemy,stepInvestigation,threatens,reachable,distance,squad,guards,reload,setStance,combatCosts,WEAPONS,THREAT_TURNS,SWEEP_TICKS,REALTIME_RETRY} from '../dist/tactics/engine.js';
+import {createGame,refresh,attack,attackGround,previewAttack,setOverwatch,pathTo,endTurn,stepEnemy,stepInvestigation,threatens,reachable,distance,squad,guards,reload,setStance,combatCosts,stateOf,WEAPONS,THREAT_TURNS,SWEEP_TICKS,REALTIME_RETRY} from '../dist/tactics/engine.js';
 import {blankMap,edgeKey,parseMap,W} from '../dist/tactics/maps.js';
 import {createWorld,currentMap,travelReason,leave,crossingCost} from '../dist/tactics/world.js';
 import {createSquadBot,stepSquadBot} from '../tools/tactics-squad-bot.mjs';
@@ -81,11 +81,14 @@ test('AP is live across the engagement: breaking contact holds it, actions other
  setStance(s,u,'standing');assert.equal(u.ap,2,'free without an alert');alertAt(g,14,30);g.x=20;refresh(s);assert.equal(s.phase,'player');assert.equal(u.ap,u.maxAp,'a fresh fight');
 });
 
-test('an alert guard that reaches its fix and finds nobody sweeps and stands down, which frees travel and the free real time',()=>{
- const {s,gs:[g]}=scene([{x:40,y:100,z:0,species:'donkey',weapon:'knife'}],{wall:false});alertAt(g,40,90);refresh(s);assert.equal(s.phase,'explore');
+test('an alert guard that reaches its fix and finds nobody sweeps, searches the cells around it, walks home and rests wary, which frees travel and the free real time',()=>{
+ const {s,gs:[g]}=scene([{x:40,y:100,z:0,species:'donkey',weapon:'knife'}],{wall:false});for(const p of squad(s)){p.y+=170;p.lastAt=p.x+','+p.y+',0';}alertAt(g,40,90);refresh(s);assert.equal(s.phase,'explore');/* the squad well out of sight of the cells the guard will search */
  let n=0;while(g.alert&&n++<80)stepInvestigation(s);
- assert.equal(g.alert,false,'stood down after the sweep');assert.ok(n>=17&&n<=19,'walked ten tiles then swept eight: '+n);assert.equal(SWEEP_TICKS,8);assert.ok(s.log.some(l=>l==='Boris gave up the search.'));assert.equal(s.alerted.size,0);assert.equal(combatCosts(s),false);
- assert.ok(Math.abs(g.x-40)<=1&&Math.abs(g.y-90)<=1,'it went to the fix');
+ assert.equal(g.alert,false,'out of Alert after the sweep');assert.equal(stateOf(g),'searching','G2: the sweep drops the guard to Searching, not straight to rest');assert.ok(n>=17&&n<=19,'walked ten tiles then swept eight: '+n);assert.equal(SWEEP_TICKS,8);
+ assert.ok(Math.abs(g.x-40)<=1&&Math.abs(g.y-90)<=1,'it went to the fix');assert.ok(s.alerted.has(g.id),'a searching guard still holds the engagement economy');assert.equal(combatCosts(s),true);
+ let j=0;while(stateOf(g)!=='rest'&&j++<400)stepInvestigation(s);
+ assert.equal(stateOf(g),'rest','checked the neighbouring cells, gave up, walked home');assert.ok(g.wary,'and is wary for the rest of the map');assert.ok(Math.abs(g.x-40)<=1&&Math.abs(g.y-100)<=1,'back at post');assert.equal(g.heading,g.post.heading);
+ assert.equal(s.alerted.size,0);assert.equal(combatCosts(s),false);
  // And with it the travel marker opens again where "Finish the active encounter" had blocked it.
  const w=createWorld(blankMap());w.definitions.yard=blankMap();const f=currentMap(w);const e=f.definition.exits[0];squad(f).forEach((p,i)=>{p.x=e.x+(i%2);p.y=e.y+Math.floor(i/2);});
  f.units.push({...g,id:f.units.length,x:100,y:100,hp:45,alert:true,lastKnown:{x:100,y:110,z:0},away:undefined});refresh(f);
@@ -148,7 +151,8 @@ test('a real-time shot that clears the map leaves nothing engaged: the won map i
 test('a guard boxed in, or facing a detour longer than its search budget, sweeps while it waits and stands down in seconds, not minutes',()=>{
  const {s,gs:[g]}=scene([{x:40,y:100,z:0,species:'donkey',weapon:'knife'}],{wall:false});
  for(let y=97;y<=103;y++)for(let x=37;x<=43;x++)if(Math.abs(x-40)===3||Math.abs(y-100)===3)s.map[y][x]='void';alertAt(g,40,60);refresh(s);assert.equal(s.phase,'explore');
- let n=0;while(g.alert&&n++<60)stepInvestigation(s);assert.equal(g.alert,false,'boxed in: sweeps, then gives up');assert.ok(n<=10,'within ten ticks, not a forty-tick retry cycle: '+n);assert.equal(s.alerted.size,0);
+ let n=0;while(g.alert&&n++<60)stepInvestigation(s);assert.equal(g.alert,false,'boxed in: sweeps, then drops to Searching');assert.ok(n<=10,'within ten ticks, not a forty-tick retry cycle: '+n);assert.equal(stateOf(g),'searching');
+ let k=0;while(stateOf(g)!=='rest'&&k++<200)stepInvestigation(s);assert.equal(stateOf(g),'rest','each unreachable cell is swept while its retry waits, then the guard rests at its post');assert.ok(k<=60,'seconds, not minutes: '+k);assert.equal(s.alerted.size,0);
 });
 
 test('a sweep counts from the last move or fix change, never from an earlier stand',()=>{
