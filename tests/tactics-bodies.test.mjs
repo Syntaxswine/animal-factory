@@ -72,6 +72,7 @@ test('review round 1: drops never fall into a closed body, bare hands are not lo
  assert.equal(rollLoot(s,{pack:[{type:'weapon',kind:'hands',rounds:0},{type:'weapon',kind:'knife',rounds:0}],ammo:{hands:0,knife:0}}).map(i=>i.kind).join(),'knife','bare hands are not an item');
  const one=createGame(100,blankMap()),rolls=Array.from({length:40},()=>rollLoot(one,{pack:[{type:'ammo',kind:'rifle',count:30}],ammo:{}})[0].count);/* forty draws from ONE stream: consecutive seeds would give one value */
  assert.ok(rolls.every(c=>c>=12&&c<=30),'40-100% of thirty, rounded up: '+rolls.join(' '));assert.ok(rolls.some(c=>c<18)&&rolls.some(c=>c>26),'the roll spans the range');assert.ok(!rolls.includes(11)&&rolls.every(c=>c>=12),'rounded up, never below forty percent');
+ const sevens=Array.from({length:40},()=>rollLoot(one,{pack:[{type:'ammo',kind:'pistol',count:7}],ammo:{}})[0].count);assert.ok(sevens.every(c=>c>=3&&c<=7),'40% of seven is 2.8: rounded UP to 3, never 2: '+sevens.join(' '));
  assert.equal(pileOpen({body:0,searched:false,items:[]}),false,'a guard id of 0 would still be a closed body');
  assert.equal(searchPreview(s,{...u,x:11,y:10},pile).reason,'Stand beside the body','two tiles off is out of reach');
  u.overwatch={weapon:'assault',heading:0};u.x=12;assert.ok(searchBody(s,u,pile));assert.equal(u.overwatch,null,'searching drops a reservation');

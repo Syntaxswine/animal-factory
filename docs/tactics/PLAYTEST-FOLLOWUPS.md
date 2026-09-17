@@ -140,6 +140,13 @@ down. Squad card reads "STABILIZED · up in N turns".
 
 ## Evidence
 
-The post-overwatch merge passed 342 tests and the asset check. Those passing tests
-validate existing features, not the pending requirements above. This handoff is a
-documentation audit; it does not implement the remaining gameplay changes.
+The post-overwatch merge passed 342 tests and the asset check; that handoff was a
+documentation audit. The four open threads were then built on
+`tactics-playtest-followups` (2026-09-17), each as its own commit with its own
+hostile review by one subagent (probes plus a mutation sandbox), advancing only at
+4/5 or better: recovery 4/5; pacing 2/5 → reworked → 4/5 → fixes; bodies 4/5 →
+fixes; bot cohesion 3/5 → 3/5 → 4/5. Final: 383 tests and the asset check pass;
+the 20-seed factory balance run wins 20/20 (the tip this branch started from,
+2c767ae, stalled on 10 of 20 seeds through a bot equip loop, fixed in the first
+commit). The balance run does not exercise the pacing rule (every factory seed
+opens in contact); `tests/tactics-pacing.test.mjs` does.

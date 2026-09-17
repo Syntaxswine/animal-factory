@@ -100,3 +100,14 @@ test('in real time a rally that waits on a blocked corridor is a tick, not a sta
  const results=[];for(let i=0;i<RALLY_PATIENCE+1;i++)results.push(stepSquadBot(t,b2));
  assert.deepEqual(results,[true,true,true,true],'patience ticks count as activity; the tick that drops the last order falls through to default behaviour');assert.equal(b2.orders.length,0);assert.equal(b2.events.filter(e=>e.type==='reassess').length,1);
 });
+
+test('rally goals are free tiles only: a radius exactly filled by the squad reads as rallied, and movers never aim at an occupied tile',()=>{
+ const {s}=scene();const [a,b,c,d]=squad(s);for(const u of squad(s))u.ap=12;
+ // Radius 1 around (20,30) in a one-wide corridor holds three tiles: 19, 20, 21. Three mercs fill it; the fourth has no free goal and the point is dropped after patience, not fought over.
+ for(let x=0;x<240;x++)for(const y of [29,31])s.map[y][x]='void';a.x=19;a.y=30;b.x=20;b.y=30;c.x=21;c.y=30;d.x=25;d.y=30;
+ const bot=createSquadBot({orders:[{type:'rally',x:20,y:30,z:0,radius:1}]});const before=[a.x,b.x,c.x].join();
+ for(let i=0;i<RALLY_PATIENCE;i++)followOrder(s,bot);
+ assert.equal(bot.orders.length,0);assert.equal(bot.events.at(-1).type,'reassess');assert.equal([a.x,b.x,c.x].join(),before,'nobody inside was pushed around');assert.equal(d.x,25,'Vera never stepped toward an occupied tile');
+ // Radius 2 gives one more free tile each side: Vera walks in and the rally completes.
+ const bot2=createSquadBot({orders:[{type:'rally',x:20,y:30,z:0,radius:2}]});let n=0;while(bot2.orders.length&&n++<20)followOrder(s,bot2);assert.equal(bot2.orders.length,0);assert.equal(d.x,22);
+});
