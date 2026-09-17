@@ -19,3 +19,14 @@ Deferred to subsequent gates: combat integration, stance/facing body calibration
 Review and verification results are recorded below as completed.
 
 Stage 1 gate: hostile review 4/5; 350 repository tests and asset checks passed; six focused geometry tests and browser acceptance passed. Screenshots: hybrid-review/stage-1.png and stage-1-bounds.png. Reviewer noted coincident roof surfaces (fixed), duplicated dimension literals (carry into integration), and stronger actual-camera checks (carry into integration).
+
+## Stage 2 — simulation integration
+
+Optional createGame geometryMode=hybrid selects the shared structural intersection backend. Existing movement/AP/attack actions remain authoritative; bullets, pellet shots, LOS and swept explosive paths use the optional backend. Body regions are stance- and facing-aware, including horizontal prone head/torso/legs/weapon volumes. Cache invalidation follows door changes, refresh after map edits, and destruction. The browser engine-replay button invokes the same deterministic diagnostic replay as Node; full events and state are compared across runtimes. The replay explicitly uses unrestricted diagnostic knowledge and is not a player observation API.
+
+Deliberate differences: window aperture is .85–1.55 instead of 1–2.4 (a ray at height 1.8 now hits the lintel); open doorways have a 1.65 lintel; upper slabs are at 2.12 per level; wall thickness .16 produces front-surface impacts rather than edge-center impacts; prone footprint rotates with world heading; standing muzzle is 1.2. Existing tile/AP/range budgets and random scatter distributions remain unchanged. Blast near-surface tolerance accounts for half the new wall thickness so a wall cannot shield its own center from destruction. Visual stance/region calibration and full catalog support remain later gates; unsupported hybrid content fails explicitly.
+
+
+Stage 2 hostile review: initial 3/5 (surface-origin blast self-occlusion, requested zone overriding physical region, and pellet aim missing prone XY); corrected and re-reviewed 4/5. Seven focused hybrid combat tests pass. Browser/Node replay and targeted boundary probes compare exact serialized outputs. Hybrid impact coordinates/distances use 1e-10 world-unit event precision to remove observed last-bit Math.hypot differences between the tested Node/Edge V8 builds. This is not a proof across every browser/platform. All legacy projectile/explosive checks and Pages module checks pass. Full-suite final result follows.
+
+Stage 2 final verification: 357 tests passed, asset checks passed, browser replay and boundary probes passed. Stage 2 gate accepted at 4/5.

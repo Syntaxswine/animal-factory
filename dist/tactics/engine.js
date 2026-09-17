@@ -1,4 +1,5 @@
 import {explosivePreview,explosiveTrajectory,detonate} from './explosives.js';
+import {floorSpacing,aimPoint,synchronizeHybrid,hybridWorld} from './hybrid-combat.js';
 import {initPersonality,friendlyReaction,helped,settleStress,injuryStrain,killRelief} from './personalities.js';
 import {initProgression,awardCombatXP,train} from './progression.js';
 import {bulletTrajectory,shotgunTrajectories,traceProjectile,eyeHeight,targetHeight} from './projectiles.js';
@@ -48,9 +49,10 @@ export const occupant=(s,x,y,z=0)=>s.units.find(u=>(alive(u)||incapacitated(u))&
 export const tile=(s,x,y,z=0)=>terrainAt(s,x,y,z);
 export const walkable=(s,x,y,z=0)=>passable(s,{x,y,z});
 export function log(s,message){s.log.unshift(message);s.log=s.log.slice(0,50);s.revision++;}
-export function createGame(seed=1947,definition=factoryMap(),detect=true,difficulty='standard'){
+export function createGame(seed=1947,definition=factoryMap(),detect=true,difficulty='standard',options={}){
  const errors=validateMap(definition);if(errors.length)throw Error(errors.join(' '));
  const s={difficulty:difficulty==='easy'?'easy':'standard',map:structuredClone(definition.terrain),upper:structuredClone(definition.upper),stairs:structuredClone(definition.stairs),climbs:structuredClone(definition.climbs||[]),props:structuredClone(definition.props||[]),sectors:structuredClone(definition.sectors),edges:{...definition.edges},definition:structuredClone(definition),units:[],phase:'explore',round:0,selected:0,visible:new Set(),seen:new Set(),detected:new Set(),glimpses:{},log:[],seed,perceptionSeed:seed,revision:0,queue:[],enemyIndex:0,contacts:{},effect:null};
+ if(options.geometryMode==='hybrid'){s.geometryMode='hybrid';hybridWorld(s);}
  const add=(team,name,species,x,y,weapon,z=0)=>s.units.push({id:s.units.length,team,name,species,x,y,z,medical:team==='squad'?[0,25,50,100][s.units.length]:0,medkits:team==='squad'?1:0,wireCutters:team==='squad',casualty:null,bleedTurns:0,sneaking:false,stealth:20,overwatch:null,lastHeard:null,stance:'standing',hp:team==='squad'?100:45,maxHp:team==='squad'?100:45,ap:team==='squad'?12:Math.max(7,WEAPONS[weapon].cost),maxAp:team==='squad'?12:Math.max(7,WEAPONS[weapon].cost),accuracy:team==='squad'?85:55,weapon,ammo:Object.fromEntries(Object.entries(WEAPONS).map(([k,v])=>[k,v.mag])),alert:false,lastKnown:null,facing:1,heading:team==='squad'?45:225,cone:sightOf({species}).field,moved:false,fired:false,lastAt:x+','+y+','+z,steps:0});
  const cast=[['Yakov','horse','assault'],['Anya','goat','rifle'],['Misha','donkey','pistol'],['Vera','sheep','knife']];
  definition.starts.forEach((p,i)=>add('squad',cast[i][0],cast[i][1],p.x,p.y,cast[i][2],levelOf(p)));
@@ -64,8 +66,8 @@ export function createGame(seed=1947,definition=factoryMap(),detect=true,difficu
 }
 // Visibility and projectiles share solid geometry, but bodies do not occlude sight.
 export function zoneVisible(s,a,b,zone='torso'){
- const origin={x:a.x,y:a.y,h:levelOf(a)*3+eyeHeight(a)},end=levelOf(b)*3+(b.hp===undefined?eyeHeight(b):targetHeight(b,zone));
- const direction={x:b.x-a.x,y:b.y-a.y,h:end-origin.h},length=Math.hypot(direction.x,direction.y,direction.h);
+ const origin={x:a.x,y:a.y,h:levelOf(a)*floorSpacing(s)+eyeHeight(a,s)},end=b.hp===undefined?{x:b.x,y:b.y,h:levelOf(b)*floorSpacing(s)+eyeHeight(b,s)}:aimPoint(s,b,zone);
+ const direction={x:end.x-a.x,y:end.y-a.y,h:end.h-origin.h},length=Math.hypot(direction.x,direction.y,direction.h);
  if(length<1e-7)return true;
  const hit=traceProjectile({...s,units:[]},null,origin,direction,length);
  return hit.kind==='range'||hit.distance>=length-1e-7;
@@ -113,6 +115,7 @@ export function notices(s,a,b){
  const seen=(hash>>>0)/4294967296<detectionChance(s,a,b);records[b.id]={stamp,seen};return seen;
 }
 export function refresh(s){
+ synchronizeHybrid(s);
  const oldDetected=s.detected,oldVisible=s.visible,oldGlimpses=s.glimpses||{};
  for(const u of s.units){const at=u.x+','+u.y+','+levelOf(u);u.moved=!!u.fired||u.lastAt!==at;u.lastAt=at;u.fired=false;}s.visible=terrainVisibility(s,squad(s));s.detected=new Set(guards(s).filter(g=>squad(s).some(p=>canSee(s,p,g))).map(g=>g.id));
  s.glimpses={};for(const g of guards(s))if(!s.detected.has(g.id)&&squad(s).some(p=>perceive(s,p,g)===1))s.glimpses[g.id]={x:g.x,y:g.y,z:levelOf(g)};

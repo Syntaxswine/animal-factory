@@ -2,6 +2,7 @@ import * as THREE from './vendor/three.module.js';
 import {parseMap} from './maps.js';
 import {createWorldModel,DIMENSIONS,GAME_CAMERA,toWorld} from './hybrid-world.js';
 import {unitArt} from './red-hats-art.js';
+import {replayHybrid} from './hybrid-replay.js';
 const $=id=>document.getElementById(id),host=$('scene');
 const source=await (await fetch('./fixtures/hybrid-room.json')).text();
 const model=createWorldModel(parseMap(source)),original=model.map;
@@ -23,14 +24,22 @@ function rebuild(){clear(structures);clear(bounds);if(traceLine){scene.remove(tr
  bounds.visible=$('bounds').checked;$('result').textContent='Geometry updated. Choose a path to inspect.';
  $('status').textContent=`${model.geometry.boxes.length} shared boxes · revision ${model.revision}\n`+(model.geometry.diagnostics.map(d=>`${d.source}: ${d.message}`).join('\n')||'All fixture content supported.');
 }
-const loader=new THREE.TextureLoader(),actors=[];
-for(const [index,p]of original.starts.slice(0,2).entries()){
- const unit={...p,species:index?'cow':'horse',outfit:index?'red-hats':'normal',weapon:'rifle',stance:'standing'},art=unitArt(unit),texture=loader.load(art.src,undefined,()=>{$('status').textContent='Failed to load '+art.src;});texture.colorSpace=THREE.SRGBColorSpace;texture.magFilter=THREE.NearestFilter;texture.minFilter=THREE.NearestFilter;texture.generateMipmaps=false;
- const scale=DIMENSIONS.standing/art.contentHeight,geometry=new THREE.PlaneGeometry(art.width*scale,art.height*scale);
+const loader=new THREE.TextureLoader(),actors=[],textures=new Map();
+function addActor(unit){
+ const art=unitArt(unit);let texture=textures.get(art.src);if(!texture){texture=loader.load(art.src,undefined,()=>{$('status').textContent='Failed to load '+art.src;});texture.colorSpace=THREE.SRGBColorSpace;texture.magFilter=THREE.NearestFilter;texture.minFilter=THREE.NearestFilter;texture.generateMipmaps=false;textures.set(art.src,texture);}
+ const scale=DIMENSIONS.standing/236,geometry=new THREE.PlaneGeometry(art.width*scale,art.height*scale);
  // Translate the art's foot anchor to the geometry origin before billboarding.
  geometry.translate((art.width/2-art.anchor[0])*scale,(art.anchor[1]-art.height/2)*scale,0);
  const mesh=new THREE.Mesh(geometry,new THREE.MeshBasicMaterial({map:texture,alphaTest:.4,side:THREE.DoubleSide}));mesh.position.fromArray(toWorld(unit));scene.add(mesh);actors.push(mesh);
 }
+for(const [index,p]of original.starts.slice(0,2).entries())addActor({...p,species:index?'cow':'horse',outfit:index?'red-hats':'normal',weapon:'rifle',stance:'standing'});
+let replayResult=null;
+$('replay').onclick=()=>{replayResult=replayHybrid(original,s=>{
+ model.update(m=>{m.terrain=structuredClone(s.map);m.upper=structuredClone(s.upper);m.edges={...s.edges};m.props=structuredClone(s.props);});rebuild();
+ for(const actor of actors){scene.remove(actor);actor.geometry.dispose();actor.material.dispose();}actors.length=0;
+ for(const unit of s.units)if(!unit.away&&unit.hp>0)addActor(unit);
+ for(const actor of actors)actor.quaternion.copy(camera.quaternion);renderer.render(scene,camera);
+ });$('door').checked=false;$('result').textContent=`Engine replay: ${replayResult.events.filter(e=>e.ok).length}/${replayResult.events.length} actions completed`;};
 const paths={door:[[5,1.2,9],[5,1.2,5]],window:[[7,1.2,9],[7,1.2,5]],wall:[[6,1.2,9],[6,1.2,5]],roof:[[3,4,3],[3,.5,3]]};
 function fire(){if(traceLine){scene.remove(traceLine);traceLine.geometry.dispose();traceLine.material.dispose();}const [start,end]=paths[$('path').value];lastHit=model.trace(start,end);
  traceLine=new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(...start),new THREE.Vector3(...(lastHit?.point||end))]),new THREE.LineBasicMaterial({color:lastHit?0xf0a05f:0x91d7b1,depthTest:false}));scene.add(traceLine);
@@ -43,5 +52,5 @@ function fire(){if(traceLine){scene.remove(traceLine);traceLine.geometry.dispose
  let drag=null;renderer.domElement.onpointerdown=e=>{if(!$('orbit').checked)return;drag=[e.clientX,e.clientY];renderer.domElement.setPointerCapture(e.pointerId);};renderer.domElement.onpointermove=e=>{if(!drag)return;azimuth-=(e.clientX-drag[0])*.007;elevation=THREE.MathUtils.clamp(elevation+(e.clientY-drag[1])*.005,.15,1.25);drag=[e.clientX,e.clientY];resize();};renderer.domElement.onpointerup=renderer.domElement.onpointercancel=()=>drag=null;
  renderer.domElement.addEventListener('wheel',e=>{e.preventDefault();zoom=THREE.MathUtils.clamp(zoom*Math.exp(-e.deltaY*.001),.6,2.5);resize();},{passive:false});
  // Read-only diagnostics for repeatable browser acceptance; no alternate action API.
- window.hybridDiagnostics=()=>({revision:model.revision,map:JSON.parse(model.serialize()),ids:structures.children.map(m=>m.userData.id),lastHit,camera:{azimuth,elevation,zoom},boxes:model.geometry.boxes.length});
+ window.hybridDiagnostics=()=>{const points=[[-.5,0,-.5],[.5,0,-.5],[.5,0,.5],[-.5,0,.5]].map(p=>new THREE.Vector3(...p).project(camera));return {revision:model.revision,map:JSON.parse(model.serialize()),ids:structures.children.map(m=>m.userData.id),lastHit,camera:{azimuth,elevation,zoom},projectionRatio:(Math.max(...points.map(p=>p.x))-Math.min(...points.map(p=>p.x)))*host.clientWidth/((Math.max(...points.map(p=>p.y))-Math.min(...points.map(p=>p.y)))*host.clientHeight),boxes:model.geometry.boxes.length,replayResult};};
  rebuild();resize();renderer.setAnimationLoop(()=>{for(const actor of actors)actor.quaternion.copy(camera.quaternion);renderer.render(scene,camera);});

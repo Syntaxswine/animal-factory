@@ -1,4 +1,6 @@
 import {woodlandDepth} from './woodland.js';
+import {isHybrid,hybridWorld,floorSpacing,physicalMuzzle} from './hybrid-combat.js';
+import {traceWorld} from './hybrid-world.js';
 import {eyeHeight} from './projectiles.js';
 import {detectRange} from './perception.js';
 import {W,H,LEVELS,levelOf,terrainAt} from './maps.js';
@@ -32,4 +34,18 @@ function clear(c,a,b){
  }
  return true;
 }
-export function terrainVisibility(s,observers){const c=scene(s),observerKey=observers.map(p=>p.x+','+p.y+','+levelOf(p)+','+p.heading+','+p.cone+','+(p.species||'')+','+eyeHeight(p)).join(';');if(c.observerKey===observerKey)return c.visible;const visible=new Set();for(const p of observers){const cacheKey=p.x+','+p.y+','+levelOf(p)+','+p.heading+','+p.cone+','+(p.species||'')+','+eyeHeight(p);let cells=c.observers.get(cacheKey);if(!cells){cells=[];for(let z=0;z<LEVELS;z++)for(let y=Math.max(0,p.y-TERRAIN_RANGE);y<=Math.min(H-1,p.y+TERRAIN_RANGE);y++)for(let x=Math.max(0,p.x-TERRAIN_RANGE);x<=Math.min(W-1,p.x+TERRAIN_RANGE);x++){const id=index(x,y,z);if(z!==levelOf(p)&&z>0&&!c.floors[id])continue;if(Math.hypot(x-p.x,y-p.y,(z-levelOf(p))*3)<=detectRange(p,{x,y},TERRAIN_RANGE)&&clear(c,p,{x,y,z})&&(!c.hasWoodland||Math.hypot(x-p.x,y-p.y,(z-levelOf(p))*3)+9*woodlandDepth(s,p,{x,y,z})<=detectRange(p,{x,y},TERRAIN_RANGE)))cells.push(z?x+','+y+','+z:x+','+y);}c.observers.set(cacheKey,cells);if(c.observers.size>12)c.observers.delete(c.observers.keys().next().value);}for(const k of cells)visible.add(k);}c.observerKey=observerKey;c.visible=visible;return visible;}
+export function terrainVisibility(s,observers){if(isHybrid(s))return hybridTerrainVisibility(s,observers);const c=scene(s),observerKey=observers.map(p=>p.x+','+p.y+','+levelOf(p)+','+p.heading+','+p.cone+','+(p.species||'')+','+eyeHeight(p)).join(';');if(c.observerKey===observerKey)return c.visible;const visible=new Set();for(const p of observers){const cacheKey=p.x+','+p.y+','+levelOf(p)+','+p.heading+','+p.cone+','+(p.species||'')+','+eyeHeight(p);let cells=c.observers.get(cacheKey);if(!cells){cells=[];for(let z=0;z<LEVELS;z++)for(let y=Math.max(0,p.y-TERRAIN_RANGE);y<=Math.min(H-1,p.y+TERRAIN_RANGE);y++)for(let x=Math.max(0,p.x-TERRAIN_RANGE);x<=Math.min(W-1,p.x+TERRAIN_RANGE);x++){const id=index(x,y,z);if(z!==levelOf(p)&&z>0&&!c.floors[id])continue;if(Math.hypot(x-p.x,y-p.y,(z-levelOf(p))*3)<=detectRange(p,{x,y},TERRAIN_RANGE)&&clear(c,p,{x,y,z})&&(!c.hasWoodland||Math.hypot(x-p.x,y-p.y,(z-levelOf(p))*3)+9*woodlandDepth(s,p,{x,y,z})<=detectRange(p,{x,y},TERRAIN_RANGE)))cells.push(z?x+','+y+','+z:x+','+y);}c.observers.set(cacheKey, cells);if(c.observers.size>12)c.observers.delete(c.observers.keys().next().value);}for(const k of cells)visible.add(k);}c.observerKey=observerKey;c.visible=visible;return visible;}
+const hybridVisibilityCache=new WeakMap();
+function hybridTerrainVisibility(s,observers){
+ const world=hybridWorld(s),signature=JSON.stringify(observers.map(p=>[p.x,p.y,p.z,p.heading,p.cone,p.species,p.stance]));
+ const old=hybridVisibilityCache.get(world);if(old?.signature===signature)return old.visible;
+ const visible=new Set(),spacing=floorSpacing(s);
+ for(const p of observers){const start=[p.x,levelOf(p)*spacing+physicalMuzzle(s,p),p.y];
+  for(let z=0;z<LEVELS;z++)for(let y=Math.max(0,p.y-TERRAIN_RANGE);y<=Math.min(H-1,p.y+TERRAIN_RANGE);y++)for(let x=Math.max(0,p.x-TERRAIN_RANGE);x<=Math.min(W-1,p.x+TERRAIN_RANGE);x++){
+   if(terrainAt(s,x,y,z)==='void'||Math.hypot(x-p.x,y-p.y,(z-levelOf(p))*3)>detectRange(p,{x,y},TERRAIN_RANGE))continue;
+   const hit=traceWorld(world,start,[x,z*spacing+physicalMuzzle(s,p),y],{filter:b=>!(b.source?.x===x&&b.source?.y===y&&b.source?.z===z)});
+   if(!hit)visible.add(z?`${x},${y},${z}`:`${x},${y}`);
+  }
+ }
+ hybridVisibilityCache.set(world,{signature,visible});return visible;
+}

@@ -1,16 +1,18 @@
 import {terrainAt,levelOf,sightEdge,W,H,LEVELS} from './maps.js';
 import {PROPS,propAt} from './environment.js';
+import {isHybrid,traceHybrid,floorSpacing,physicalHeight,physicalMuzzle,aimPoint} from './hybrid-combat.js';
 
 const EPS=1e-7;
-export const bodyHeight=u=>u.hp<=0?.3:u.stance==='prone'?.55:u.stance==='kneeling'?1.2:1.8;
-export const muzzleHeight=u=>u.stance==='prone'?.35:u.stance==='kneeling'?.9:1.3;
+export const bodyHeight=(u,s)=>physicalHeight(s,u);
+export const muzzleHeight=(u,s)=>physicalMuzzle(s,u);
 export const eyeHeight=muzzleHeight;
-export const targetHeight=(u,zone='torso')=>zone==='weapon'?muzzleHeight(u):bodyHeight(u)*(zone==='head'?.92:zone==='legs'?.28:.72);
+export const targetHeight=(u,zone='torso',s)=>aimPoint(s,u,zone).h-levelOf(u)*floorSpacing(s);
 const point=(origin,direction,t)=>({x:origin.x+direction.x*t,y:origin.y+direction.y*t,h:origin.h+direction.h*t});
 const slab=(origin,velocity,low,high)=>Math.abs(velocity)<EPS?(origin>=low&&origin<=high?[-Infinity,Infinity]:null):[Math.min((low-origin)/velocity,(high-origin)/velocity),Math.max((low-origin)/velocity,(high-origin)/velocity)];
 
 // A shot has one continuous path. Team membership never filters collision candidates.
 export function traceProjectile(state,shooter,origin,direction,reach){
+ if(isHybrid(state))return traceHybrid(state,shooter,origin,direction,reach);
  const length=Math.hypot(direction.x,direction.y,direction.h);
  if(!Number.isFinite(length)||length<EPS||!Number.isFinite(reach)||reach<=0)throw Error('Invalid projectile ray');
  const d={x:direction.x/length,y:direction.y/length,h:direction.h/length};
@@ -65,9 +67,9 @@ export function traceProjectile(state,shooter,origin,direction,reach){
 }
 
 export function bulletTrajectory(state,shooter,target,{accurate,zone='torso',chance=50,burst=false,reach},random){
- const origin={x:shooter.x,y:shooter.y,h:levelOf(shooter)*3+muzzleHeight(shooter)};
- const aimHeight=targetHeight(target,zone);
- let dx=target.x-origin.x,dy=target.y-origin.y,dh=levelOf(target)*3+aimHeight-origin.h;
+ const origin={x:shooter.x,y:shooter.y,h:levelOf(shooter)*floorSpacing(state)+muzzleHeight(shooter,state)};
+ const aim=aimPoint(state,target,zone);
+ let dx=aim.x-origin.x,dy=aim.y-origin.y,dh=aim.h-origin.h;
  if(!accurate){
   const distance=Math.max(.5,Math.hypot(dx,dy)),angle=Math.atan2(dy,dx);
   const minimum=Math.asin(Math.min(.9,.42/distance)),maximum=Math.max(minimum,.08+(1-chance/100)*.65+(burst?.12:0));
@@ -76,18 +78,18 @@ export function bulletTrajectory(state,shooter,target,{accurate,zone='torso',cha
   dh+=(random()*2-1)*distance*maximum*.45;
  }
  const result=traceProjectile(state,shooter,origin,{x:dx,y:dy,h:dh},reach);
- if(accurate&&result.unitId===target.id)result.zone=zone;
+ if(!isHybrid(state)&&accurate&&result.unitId===target.id)result.zone=zone;
  return {...result,origin,accurate};
 }
 
 // One shell emits all pellets together. Angular spread naturally thins the pattern with distance.
 export function shotgunTrajectories(state,shooter,target,{accurate,zone='torso',chance=50,reach,pellets=6},random){
- const origin={x:shooter.x,y:shooter.y,h:levelOf(shooter)*3+muzzleHeight(shooter)},range=Math.max(.1,Math.hypot(target.x-origin.x,target.y-origin.y));
- const angle=Math.atan2(target.y-origin.y,target.x-origin.x)+(accurate?0:(random()<.5?-1:1)*(.10+(1-chance/100)*.2));
- const slope=(levelOf(target)*3+targetHeight(target,zone)-origin.h)/range;
+ const origin={x:shooter.x,y:shooter.y,h:levelOf(shooter)*floorSpacing(state)+muzzleHeight(shooter,state)},aim=aimPoint(state,target,zone),range=Math.max(.1,Math.hypot(aim.x-origin.x,aim.y-origin.y));
+ const angle=Math.atan2(aim.y-origin.y,aim.x-origin.x)+(accurate?0:(random()<.5?-1:1)*(.10+(1-chance/100)*.2));
+ const slope=(aim.h-origin.h)/range;
  return Array.from({length:pellets},()=>{const phase=random()*Math.PI*2,radius=Math.sqrt(random())*.11,yaw=angle+Math.cos(phase)*radius;
   const hit=traceProjectile(state,shooter,origin,{x:Math.cos(yaw),y:Math.sin(yaw),h:slope+Math.sin(phase)*radius},reach);
-  if(accurate&&zone==='weapon'&&hit.unitId===target.id&&Math.abs(hit.h-levelOf(target)*3-targetHeight(target,'weapon'))<.15)hit.zone='weapon';
+  if(!isHybrid(state)&&accurate&&zone==='weapon'&&hit.unitId===target.id&&Math.abs(hit.h-levelOf(target)*floorSpacing(state)-targetHeight(target,'weapon',state))<.15)hit.zone='weapon';
   return {...hit,origin,accurate,pellet:true};
  });
 }

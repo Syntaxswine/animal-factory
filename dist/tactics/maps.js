@@ -1,4 +1,5 @@
 import {validatePlannedMap} from './feature-plan.js';
+import {invalidateHybrid} from './hybrid-combat.js';
 import {validateConnections} from './connections.js';
 import {GROUNDS,PROPS,EDGES,floorTerrain,propAt,propCells,propBlocks} from './environment.js';
 import {generateSectorPlan,validateSectorPlan} from './sector-rules.js';
@@ -13,7 +14,7 @@ export function setTerrain(m,x,y,z,value){if(!inBounds(x,y,z))return false;if(!z
 export const passable=(m,p)=>floorTerrain(terrainAt(m,p.x,p.y,levelOf(p)))&&!propBlocks(m,p.x,p.y,levelOf(p));
 export function edgeBetween(a,b){if(levelOf(a)!==levelOf(b)||Math.abs(a.x-b.x)+Math.abs(a.y-b.y)!==1)return null;return a.x!==b.x?edgeKey('e',Math.min(a.x,b.x),a.y,levelOf(a)):edgeKey('s',a.x,Math.min(a.y,b.y),levelOf(a));}
 export function blockedEdge(m,a,b){const k=edgeBetween(a,b);return !k||!!EDGES[m.edges?.[k]]?.solid;}
-export function openDoorBetween(m,a,b){const k=edgeBetween(a,b),next=EDGES[m.edges?.[k]]?.opensTo;if(!next)return false;m.edges[k]=next;return true;}
+export function openDoorBetween(m,a,b){const k=edgeBetween(a,b),next=EDGES[m.edges?.[k]]?.opensTo;if(!next)return false;m.edges[k]=next;invalidateHybrid(m);return true;}
 export function sightEdge(m,a,b,{height=1.3,offset=.5}={}){const k=edgeBetween(a,b);if(!k)return true;const rule=EDGES[m.edges?.[k]];if(rule?.window)return !(height>=1&&height<=2.4&&offset>=.15&&offset<=.85);return !!rule?.opaque;}
 export function edgeCells(k){const [axis,xs,ys,zs]=k.split(':'),x=Number(xs),y=Number(ys),z=Number(zs||0);return [{x,y,z},{x:x+(axis==='e'?1:0),y:y+(axis==='s'?1:0),z}];}
 export function edgePoints(k){const [axis,xs,ys,zs]=k.split(':'),x=Number(xs),y=Number(ys),z=Number(zs||0);return axis==='e'?[{x:x+.5,y:y-.5,z},{x:x+.5,y:y+.5,z}]:[{x:x-.5,y:y+.5,z},{x:x+.5,y:y+.5,z}];}
