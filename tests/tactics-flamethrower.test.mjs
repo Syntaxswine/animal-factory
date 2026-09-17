@@ -81,3 +81,17 @@ test('walking into fire cancels the route and ignition during an enemy turn stil
  attack(late.s,late.b,late.a,false,true);assert.equal(late.a.burningTurns,3);
  late.s.enemyIndex=late.s.units.length;stepEnemy(late.s);assert.equal(late.a.burningTurns,3);
 });
+test('attack events name the shooter and target and list every unit the shot put down',()=>{
+ const pick=e=>({shooter:e.shooter,target:e.target,incendiary:e.incendiary,hit:e.hit,downed:[...e.downed].sort((x,y)=>x-y)});
+ const burn=setup(1);burn.a.weapon='flamethrower';burn.a.ammo.flamethrower=4;burn.b.weapon='pistol';burn.b.pack=[];burn.a.x=17;burn.b.hp=45;
+ assert.equal(attack(burn.s,burn.a,burn.b),true);
+ assert.deepEqual(pick(burn.s.effect.sequence[0]),{shooter:burn.a.id,target:burn.b.id,incendiary:true,hit:true,downed:[burn.b.id]});
+ const scorch=setup(seedFor(()=>true,false));scorch.a.weapon='flamethrower';scorch.a.ammo.flamethrower=4;scorch.b.weapon='pistol';scorch.b.pack=[];scorch.a.x=17;
+ assert.equal(attack(scorch.s,scorch.a,scorch.b),true);
+ assert.deepEqual(pick(scorch.s.effect.sequence[0]),{shooter:scorch.a.id,target:scorch.b.id,incendiary:true,hit:false,downed:[]});
+ // A tank blast downs the wearer and the ally beside him in the same event.
+ const blast=setup(seedFor(n=>n<.1));attack(blast.s,blast.a,blast.b,false,false,'weapon');
+ assert.deepEqual(pick(blast.s.effect.sequence[0]),{shooter:blast.a.id,target:blast.b.id,incendiary:false,hit:true,downed:[1,blast.b.id]});
+ const graze=setup(seedFor(n=>n>.5));attack(graze.s,graze.a,graze.b,false,false,'torso');
+ assert.deepEqual(graze.s.effect.sequence[0].downed,[]);assert.ok(graze.b.hp>0);
+});
