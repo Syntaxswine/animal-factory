@@ -1,0 +1,11 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Horse comparison · painted low-poly model</title>
+<style>body{margin:0;background:#172520;color:#eee5cd;font:14px system-ui}header{padding:14px 20px;border-bottom:1px solid #657160}h1{font-size:21px;margin:0 0 8px}label{display:inline-block;margin:3px 18px 3px 0}select,button{background:#344a3e;color:#fff;border:1px solid #788470;padding:5px}#scene{height:calc(100vh - 178px);min-height:380px;position:relative}canvas{display:block}footer{padding:10px 20px;white-space:pre-wrap}input[type=range]{width:190px;vertical-align:middle}.note{color:#bdc5b1;margin:7px 0 0}</style>
+<header><h1>Horse worker · intact sprite / painted low-poly model</h1>
+<label>View <select id="mode"><option value="both">Side by side</option><option value="sprite">Original sprite only</option><option value="model">3D model only</option></select></label>
+<label>Pose <select id="stance"><option>standing</option><option>kneeling</option><option>prone</option></select></label>
+<label>Heading <input id="heading" type="range" min="0" max="360" step="any" value="0"> <output id="angle">0°</output></label>
+<button id="sweep">Sweep heading</button><label><input id="close" type="checkbox"> Close view</label><label><input id="bounds" type="checkbox"> Collision and muzzle overlay</label>
+<label><input id="wire" type="checkbox"> Model wireframe</label><label><input id="orbit" type="checkbox"> Diagnostic orbit</label><button id="reset">Reset camera</button>
+<p class="note">Left: existing normal-uniform horse sprite. Right: one low-poly horse, painted atlas and articulated pose rig. Comparison only; horizontal aiming, fixed gameplay camera by default.</p></header>
+<div id="scene"></div><footer id="status">Loading room and character…</footer>
+<script type="module" src="./hybrid-model-comparison.js"></script></html>

@@ -10,6 +10,7 @@ import {WEAPON_EXPANSION_FRAMES} from '../dist/tactics/weapon-expansion-frames.j
 import assert from 'node:assert/strict';
 import {TYPES} from '../dist/engine.js';
 const root=new URL('../dist/',import.meta.url);
+await checkPNG('assets/characters/lowpoly-proof/horse-worker-atlas-v1.png',1254,1254,2);
 for(const name of ['flamethrower','fuel'])assert.match(await readFile(new URL(`assets/equipment/${name}.svg`,root),'utf8'),/<svg/);
 async function checkPNG(path,width,height,channels=6){
  const data=await readFile(new URL(path,root));

@@ -2,7 +2,11 @@
 
 ## Current visual revision gate
 
-Latest: [directional experiment](HYBRID-DIRECTIONAL-EXPERIMENT.md) implements a
+Latest: the user authorized a [textured 3D horse comparison](HYBRID-MODEL-COMPARISON.md)
+and requested additional silhouette geometry. This is an isolated alternative
+proof; production integration and the graphics merge remain pending.
+
+Previous: [directional experiment](HYBRID-DIRECTIONAL-EXPERIMENT.md) implements a
 three-stance sector diagnostic (4/5), but candidate atlas art is rejected (2/5).
 An individual standing frame improves muzzle placement yet remains 3/5 for
 feasibility. The directional proof is unfinished; no next-section advancement.
