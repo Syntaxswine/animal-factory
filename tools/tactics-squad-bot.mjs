@@ -12,7 +12,7 @@ const near=(s,u,p)=>M.levelOf(u)===M.levelOf(p)&&Math.abs(u.x-p.x)+Math.abs(u.y-
 const usable=(u,k)=>!E.WEAPONS[k].mag||u.ammo[k]>0||reserve(u,k)>0;
 // A gun with an empty magazine only counts as ready when the reload it needs is affordable now (3 AP in combat, free otherwise);
 // otherwise equipping it and falling back off it are both free slot swaps and the two decisions chase each other forever.
-const ready=(s,u,k)=>!E.WEAPONS[k].mag||u.ammo[k]>0||(reserve(u,k)>0&&(['explore','won'].includes(s.phase)||u.ap>=3));
+const ready=(s,u,k)=>!E.WEAPONS[k].mag||u.ammo[k]>0||(reserve(u,k)>0&&(!E.combatCosts(s)||u.ap>=3));
 const bestHeld=u=>Math.max(...u.pack.filter(i=>i.type==='weapon').map(i=>weaponValue(i.kind,usable(u,i.kind)?1:0)),0);
 export function lootOptions(s,u,{radius=20}={}){
  const options=[];

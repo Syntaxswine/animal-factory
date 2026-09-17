@@ -187,6 +187,6 @@ test('abandoned comrades are written to the run record once, and a second loss o
  assert.equal(w.defeats.length,1);assert.equal(w.defeats[0].cause,'abandoned');assert.deepEqual(w.defeats[0].captured.map(u=>u.name),['Anya']);assert.equal(w.defeats[0].map,'factory');
  const y=currentMap(w);for(const u of squad(y))assert.ok(leave(w,u,'west').ok);const back=currentMap(w);assert.equal(back,s);
  assert.ok(leave(w,back.units[0],'east').ok);for(const u of squad(back)){u.hp=0;u.casualty='bleeding';}refresh(back);
- assert.equal(back.phase,'lost');assert.deepEqual(back.defeat.dead.map(u=>u.name).sort(),['Misha','Vera']);assert.equal(back.defeat.captured.length,0,'Anya was recorded by the abandonment, not again');
+ assert.equal(back.phase,'lost');assert.deepEqual(back.defeat.dead.map(u=>u.name).sort(),['Misha','Vera']);assert.equal(back.defeat.captured.length,0,'Anya was recorded by the abandonment, not again');assert.equal(back.units[1].casualty,'captured','a later defeat must preserve the earlier capture');
  assert.ok(resolveRetreat(w).ok);assert.equal(w.defeats.length,2);assert.equal(w.defeats[1].dead.length,2);
 });

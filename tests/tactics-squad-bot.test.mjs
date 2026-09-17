@@ -21,3 +21,5 @@ test('an empty gun whose reload is unaffordable is not an upgrade: no free-swap 
  assert.notEqual(s.phase,'player','the turn ends (or the fight does) instead of swapping guns forever');assert.ok(steps<50);assert.ok(bot.events.filter(e=>e.type==='equip'||e.type==='fallback').length<=2,JSON.stringify(bot.events));
  u.ap=3;s.phase='player';assert.equal(equipBest(s,u),true,'with the reload affordable the shotgun is the better gun again');assert.equal(u.weapon,'shotgun');
 });
+
+test('an alerted real-time merc does not equip an empty gun it cannot afford to reload',()=>{const {s,u}=scene();s.phase='explore';s.alerted=new Set([4]);u.ap=0;u.ammo.assault=0;u.pack=u.pack.filter(i=>i.type!=='weapon'||i.kind==='assault');u.weapon='hands';assert.equal(equipBest(s,u),false);assert.equal(u.weapon,'hands');});
