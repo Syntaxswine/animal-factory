@@ -1,5 +1,7 @@
 # Red Shift — mechanics direction and completion record
 
+For the six full-battle follow-ups, user decisions, implemented work and outstanding tasks, see [PLAYTEST-FOLLOWUPS.md](PLAYTEST-FOLLOWUPS.md).
+
 Latest decisions: spatial backpacks with two double-sized ready slots; no respecs; stabilized mercs captured on defeat and bleeding mercs dead. Story development now follows STORY.md: coercive workforce control, compromised corporate sponsorship, and self-government as the hardest ending. These supersede older deferrals and open questions below.
 
 The five-stage implementation order below was completed on 2026-09-15; the final section records the reviewed behavior and supersedes historical proposals.
