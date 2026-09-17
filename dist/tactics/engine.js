@@ -91,6 +91,24 @@ export function pathTo(s,u,x,y,z=levelOf(u)){
   for(const q of movementNeighbors(s,u,p,stairs)){const k=key(q.x,q.y,q.z),g=p.g+q.cost;if(occupied.has(k)||g>=(scores.get(k)??Infinity))continue;scores.set(k,g);parents.set(k,{parent:p.k,point:q});push({...q,k,g,f:g+heuristic(q)});}
  }return null;
 }
+// Tiles a unit can stand on within `budget` AP of its own movement (its stance, diagonals, stairs, doors it would open), cheapest first; the same graph as pathTo.
+export function reachable(s,u,budget){
+ const start={x:u.x,y:u.y,z:levelOf(u)},occupied=new Set(s.units.filter(p=>(alive(p)||incapacitated(p))&&p!==u).map(p=>key(p.x,p.y,levelOf(p)))),stairs=stairSet(s),costs=new Map([[key(start.x,start.y,start.z),0]]),out=[{...start,cost:0}];
+ for(let i=0;i<out.length;i++){const p=out[i];if(p.cost!==costs.get(key(p.x,p.y,p.z)))continue;for(const q of movementNeighbors(s,u,p,stairs)){const k=key(q.x,q.y,q.z),c=p.cost+q.cost;if(c>budget||occupied.has(k)||c>=(costs.get(k)??Infinity))continue;costs.set(k,c);out.push({x:q.x,y:q.y,z:q.z,cost:c});}}
+ return out.filter(p=>p.cost===costs.get(key(p.x,p.y,p.z))).sort((a,b)=>a.cost-b.cost);
+}
+// Turn mode is for opponents who can hurt you soon: an alert guard is a threat when, within this many of its own turns of walking (routes, doors and
+// walls as they are), it can stand where a squad member is inside its weapon's range with a clear line of fire (melee: on an adjacent tile). See RULES.md, Local alerts.
+export const THREAT_TURNS=2;
+export function threatens(s,g){
+ if(!alive(g)||g.burningTurns)return false;
+ const w=WEAPONS[g.weapon],melee=w.mag===0,range=melee?1:w.range,budget=THREAT_TURNS*g.maxAp,walk=budget/STANCES[stanceOf(g)].moveCost;
+ const near=squad(s).filter(p=>Math.hypot(g.x-p.x,g.y-p.y)<=range+walk+1);if(!near.length)return false;
+ for(const t of reachable(s,g,budget)){const from={...g,x:t.x,y:t.y,z:t.z};
+  for(const p of near){const d=melee?(t.z===levelOf(p)?Math.max(Math.abs(t.x-p.x),Math.abs(t.y-p.y)):Infinity):Math.hypot(t.x-p.x,t.y-p.y)+Math.max(0,levelOf(p)-t.z);
+   if(d<=range&&lineOfSight(s,from,p))return true;}} // melee too: a blade across a wall or a closed door is no threat
+ return false;
+}
 export const sightRange=(a,b)=>b?.sneaking?Math.max(8,CHARACTER_RANGE-20-(b.stealth||0)*.2-(stanceOf(b)==='prone'?10:0)):CHARACTER_RANGE;
 // 0 unseen, 1 glimpsed (a moving target inside the detect lobe), 2 identified (inside the identify lobe). Walls block both. See docs/tactics/SIGHT.md.
 export function perceive(s,a,b){const cap=sightRange(a,b),d=distance(a,b)+9*woodlandDepth(s,a,b);if(d<=identifyRange(a,b,cap))return lineOfSight(s,a,b)?2:0;if(b.moved&&d<=detectRange(a,b,cap))return lineOfSight(s,a,b)?1:0;return 0;}
@@ -131,21 +149,40 @@ log(s,s.defeat.captured.length+' captured / '+s.defeat.dead.length+' dead.'+(esc
  if(!alive(s.units[s.selected]))s.selected=squad(s)[0].id;
  s.exposed={};for(const g of guards(s))if(s.detected.has(g.id)){const zones=new Set();for(const u of squad(s))if(canSee(s,u,g))for(const zone of visibleZones(s,u,g))zones.add(zone);s.exposed[g.id]=[...zones];}
  const pending=s.units.some(u=>['bleeding','stable'].includes(u.casualty)||alive(u)&&u.burningTurns>0)||(s.fires?.length||0)>0; // a stabilized comrade is still down: the turns keep coming until it stands
- if(!guards(s).length&&!pending){if(s.phase!=='won'){log(s,'Local map cleared. Explore or gather at the travel marker.');s.queue=[];}s.phase='won';s.revision++;return;}
+ if(!guards(s).length&&!pending){if(s.phase!=='won'){log(s,'Local map cleared. Explore or gather at the travel marker.');s.queue=[];}s.phase='won';s.alerted=new Set();s.engaged=false;s.revision++;return;}
  for(const g of guards(s)){const targets=squad(s).filter(p=>notices(s,g,p));if(targets.length){g.alert=true;const p=targets.sort((a,b)=>distance(g,a)-distance(g,b))[0];g.lastKnown={x:p.x,y:p.y,z:levelOf(p)};}
   else if(!g.alert){const moving=squad(s).filter(p=>perceive(s,g,p)===1);if(moving.length){g.lastHeard=approximate(moving.sort((a,b)=>distance(g,a)-distance(g,b))[0]);g.searchSteps=12;}}}
- const contact=guards(s).some(g=>g.alert)||pending;
- if(['explore','won'].includes(s.phase)&&contact){s.phase='player';s.round++;s.queue=[];for(const u of s.units)u.ap=u.burningTurns?0:u.maxAp;log(s,'CONTACT / Squad turn. Movement costs 2 / 4 / 8 AP per tile: standing / kneeling / prone.');}
- else if((s.phase==='player'||s.phase==='enemy')&&!contact){s.phase='explore';s.queue=[];log(s,'Area clear. Real-time exploration resumed.');}
+ // Hearing or seeing something is not a fight yet: only a guard that can bring a comrade under fire within two turns, a pending casualty or fire,
+ // or the squad itself opening fire (engaged, until it ends that turn) holds turn mode.
+ const wasAlert=s.alerted||new Set(),nowAlert=new Set(guards(s).filter(g=>g.alert).map(g=>g.id));s.alerted=nowAlert;
+ const fresh=guards(s).filter(g=>nowAlert.has(g.id)&&!wasAlert.has(g.id)),heard=()=>fresh.some(g=>squad(s).some(p=>canSee(s,g,p)))?'You have been seen, but they are too far to reach you yet.':'You are pretty sure someone heard that.';
+ const threat=guards(s).some(g=>g.alert&&threatens(s,g)),contact=pending||!!s.engaged||threat;let warned=false;
+ if(['explore','won'].includes(s.phase)&&contact){s.phase='player';s.round++;s.queue=[];
+  // AP is live across the engagement: a fight that resumes while guards were already alert continues with the AP the squad has; a fresh fight gets a full turn. Guards always start theirs full.
+  const resumed=wasAlert.size>0;for(const u of s.units)if(u.burningTurns)u.ap=0;else if(u.team==='guard'||!resumed)u.ap=u.maxAp;
+  log(s,'CONTACT / Squad turn. Movement costs 2 / 4 / 8 AP per tile: standing / kneeling / prone.');
+}
+ else if((s.phase==='player'||s.phase==='enemy')&&!contact){
+  // A drop during the guard phase ends that round: the squad's next turn is a fresh one, exactly as if the guards had finished.
+  if(s.phase==='enemy')newRound(s);
+  s.phase='explore';s.queue=[];
+  if(nowAlert.size){warned=fresh.length>0;log(s,(warned?heard()+' ':'Area quiet: ')+'No one can reach you within two turns: real time resumes, alerted guards are still coming; actions other than walking still cost AP.');}
+  else{for(const u of squad(s))u.overwatch=null;log(s,'Area clear. Real-time exploration resumed.');}}
+
+ // Guards newly alerted by a report or a sighting who cannot reach the squad get their warning whatever the phase did (a shot of your own may have opened the turn).
+ if(fresh.length&&!threat&&!warned)log(s,heard());
  if(!alive(s.units[s.selected]))s.selected=squad(s)[0].id;
  s.revision++;
 }
+// AP is charged in turn mode and, in real time, whenever a guard on the map is alert or the squad has opened fire: the engagement is one economy;
+// only walking stays free in real time (both sides walk). See RULES.md, Local alerts and combat pacing.
+export const combatCosts=s=>s.phase==='player'||s.phase==='enemy'||(['explore','won'].includes(s.phase)&&((s.alerted?.size||0)>0||!!s.engaged));
 export function canControl(s,u){return u&&alive(u)&&!u.burningTurns&&u.team==='squad'&&['explore','player','won'].includes(s.phase);}
 // Downed comrades left on a map when the last standing squad member crosses its edge meet the defeat rule: stabilized are captured, bleeding die.
 export function abandonCasualties(s){const left=[];for(const u of s.units)if(u.team==='squad'&&!u.away&&incapacitated(u)){u.casualty=u.casualty==='stable'?'captured':'dead';u.bleedTurns=0;u.recoveryTurns=0;u.ap=0;u.overwatch=null;syncWeapons(u);left.push(u);}return left;}
 export function setStance(s,u,stance){
- if(!Object.hasOwn(STANCES,stance)||!canControl(s,u)||s.queue.length||stanceOf(u)===stance||(s.phase==='player'&&u.ap<2))return false;
- if(s.phase==='player')u.ap-=2;u.overwatch=null;u.stance=stance;refresh(s);log(s,u.name+' is '+stance+'.');return true;
+ if(!Object.hasOwn(STANCES,stance)||!canControl(s,u)||s.queue.length||stanceOf(u)===stance||(combatCosts(s)&&u.ap<2))return false;
+ if(combatCosts(s))u.ap-=2;u.overwatch=null;u.stance=stance;refresh(s);log(s,u.name+' is '+stance+'.');return true;
 }
 
 export function navigationState(s){const known=p=>s.seen.has(key(p.x,p.y,levelOf(p))),knowledge=new Set(s.seen);for(const p of s.climbs)if(known(p)||known({x:p.x+p.dx,y:p.y+p.dy,z:p.z+1}))for(const q of [p,{x:p.x,y:p.y,z:p.z+1},{x:p.x+p.dx,y:p.y+p.dy,z:p.z+1}])knowledge.add(key(q.x,q.y,q.z));return {...s,knowledge,edges:Object.fromEntries(Object.entries(s.edges).filter(([k])=>edgeCells(k).some(known))),props:s.props.filter(p=>propCells(p).some(known)),stairs:s.stairs.filter(p=>known(p)||known({...p,z:p.z+1})),climbs:s.climbs.filter(p=>known(p)||known({x:p.x+p.dx,y:p.y+p.dy,z:p.z+1})),units:s.units.filter(p=>p.team==='squad'||s.detected.has(p.id))};}
@@ -179,7 +216,7 @@ export function previewAttack(s,a,b,burst=false,zone='torso',token=null){
  const cover=!melee&&coverAgainst(s,a,b),heightCover=!melee&&levelOf(b)>levelOf(a)&&(a.x!==b.x||a.y!==b.y),coverPenalty=cover?25:heightCover?15:0,rangePenalty=melee?0:Math.max(0,levelOf(b)-levelOf(a)),effectiveRange=Math.max(0,w.range-rangePenalty);
  const chance=Math.max(10,Math.min(95,a.accuracy+(melee?10:0)+(w.accuracy||0)+aim.accuracy-(melee?0:Math.max(0,range+rangePenalty-3)/Math.max(1,w.range-3)*(w.rangeLoss??25))-coverPenalty-(rounds>1?10:0)));
  let reason='';
- if(a.burningTurns>0)reason='On fire: running in panic';else if(melee&&zone!=='torso')reason='Aimed shots require a firearm';else if(!visible)reason='Target not visible';else if(!inCone(a,b))reason='Outside personal sight cone';else if(range>effectiveRange)reason='Out of range';else if(!lineOfSight(s,a,b))reason='Line of fire blocked';else if(!canSee(s,a,b))reason='Not identified: face the target';else if(!melee&&!zoneVisible(s,a,b,zone))reason=AIM_ZONES[zone].label+' hidden by cover';else if(w.mag&&a.ammo[a.weapon]<rounds)reason='Reload required';else if(!['explore','won'].includes(s.phase)&&a.ap<cost)reason='Not enough AP';
+ if(a.burningTurns>0)reason='On fire: running in panic';else if(melee&&zone!=='torso')reason='Aimed shots require a firearm';else if(!visible)reason='Target not visible';else if(!inCone(a,b))reason='Outside personal sight cone';else if(range>effectiveRange)reason='Out of range';else if(!lineOfSight(s,a,b))reason='Line of fire blocked';else if(!canSee(s,a,b))reason='Not identified: face the target';else if(!melee&&!zoneVisible(s,a,b,zone))reason=AIM_ZONES[zone].label+' hidden by cover';else if(w.mag&&a.ammo[a.weapon]<rounds)reason='Reload required';else if(combatCosts(s)&&a.ap<cost)reason='Not enough AP';
  let obstruction=null;
  if(!reason&&!melee&&!w.incendiary){const path=bulletTrajectory(s,a,b,{accurate:true,zone,reach:w.range*1.5},()=>0);if(path.unitId!==b.id){const unit=s.units.find(u=>u.id===path.unitId);obstruction=unit?{kind:'unit',id:unit.id,name:unit.name,friendly:unit.team===a.team}:{kind:path.kind};}}
  return {ok:!reason,reason,cost,rounds,chance:Math.round(chance),cover,heightCover,coverPenalty,rangePenalty,damage:Math.round(weaponDamage(w,range)*aim.damage),pellets:w.pellets||1,zone,range:effectiveRange,tankChance:melee?0:tankExplosionChance(b,zone),obstruction};
@@ -234,8 +271,10 @@ export function attack(s,a,b,burst=false,byAI=false,zone='torso',reaction=false)
  a.fired=true;
  // Orienting reflex: an attack from outside the victim's field spins it toward the attacker (turning is free).
  if(!inCone(b,a)){b.heading=headingTo(b,a);b.facing=Math.cos(b.heading*Math.PI/180)-Math.sin(b.heading*Math.PI/180)>=0?1:-1;log(s,b.name+' spins toward the attack.');}
- if(b.team==='guard'){b.alert=true;b.lastKnown={x:a.x,y:a.y,z:levelOf(a)};}if(s.phase==='explore'){b.alert=true;refresh(s);} // Opening attacks always spend combat AP.
- if(!reaction&&!(b.ground&&['explore','won'].includes(s.phase)))a.ap-=p.cost;
+ if(b.team==='guard'){b.alert=true;b.lastKnown={x:a.x,y:a.y,z:levelOf(a)};}
+ // A squad attack from real time opens a turn (engaged holds it until the squad ends that turn); the shot is re-checked against the AP the turn actually has.
+ if(['explore','won'].includes(s.phase)){s.engaged=true;refresh(s);if(s.phase==='player'&&a.team==='squad'&&a.ap<p.cost){log(s,a.name+': not enough AP to fire.');return false;}}
+ if(!reaction)a.ap-=p.cost;
  const trajectories=[],explosions=[],sequence=[];
  // A stack suspends the current burst while a reply resolves; ammunition bounds chains.
  const frames=[{a,b,p,zone,left:p.rounds,weapon:a.weapon,aim:{...b},reply:false}];
@@ -281,25 +320,27 @@ export function attack(s,a,b,burst=false,byAI=false,zone='torso',reaction=false)
 
 export function groundTarget(point){return {...point,id:'ground',name:'Terrain',team:'terrain',hp:1,ground:true,weapon:'hands'};}
 export function attackGround(s,u,point){if(!WEAPONS[u?.weapon]?.blast)return false;return attack(s,u,groundTarget(point));}
-export function equip(s,u,id,slot=1){if(!canControl(s,u)||s.queue.length||!WEAPONS[id]||u.weapon===id||!(id==='hands'||u.pack.some(i=>i.type==='weapon'&&i.kind===id)))return false;const stored=id!=='hands'&&!u.slots.includes(id),cost=stored?3:0;if(s.phase==='player'&&u.ap<cost)return false;const slots=[...u.slots];if(stored)slots[slot===0?0:1]=id;const layout=gridLayout({...u,slots});if(!layout.ok)return false;if(s.phase==='player')u.ap-=cost;u.slots=slots;storeLayout(u,layout);u.weapon=id;if(id==='flamethrower')delete u.tanksExploded;u.overwatch=null;log(s,u.name+' equipped '+WEAPONS[id].name+'.');return true;}
+export function equip(s,u,id,slot=1){if(!canControl(s,u)||s.queue.length||!WEAPONS[id]||u.weapon===id||!(id==='hands'||u.pack.some(i=>i.type==='weapon'&&i.kind===id)))return false;const stored=id!=='hands'&&!u.slots.includes(id),cost=stored?3:0;if(combatCosts(s)&&u.ap<cost)return false;const slots=[...u.slots];if(stored)slots[slot===0?0:1]=id;const layout=gridLayout({...u,slots});if(!layout.ok)return false;if(combatCosts(s))u.ap-=cost;u.slots=slots;storeLayout(u,layout);u.weapon=id;if(id==='flamethrower')delete u.tanksExploded;u.overwatch=null;log(s,u.name+' equipped '+WEAPONS[id].name+'.');return true;}
 export function equipCutters(s,u,slot){
  if(!canControl(s,u)||s.queue.length||!u.wireCutters||![0,1].includes(slot)||u.slots.includes('wireCutters'))return false;
- const cost=s.phase==='player'?3:0;if(u.ap<cost)return false;
+ const cost=combatCosts(s)?3:0;if(u.ap<cost)return false;
  const slots=[...u.slots],replaced=slots[slot];slots[slot]='wireCutters';const layout=gridLayout({...u,slots});if(!layout.ok)return false;
  u.ap-=cost;u.slots=slots;storeLayout(u,layout);if(u.weapon===replaced)u.weapon='hands';u.overwatch=null;
  log(s,u.name+' equipped wire cutters in the '+(slot?'secondary':'primary')+' slot.');return true;
 }
 export function stowWeapon(s,u,slot){if(!canControl(s,u)||s.queue.length||![0,1].includes(slot)||!u.slots[slot])return false;const slots=[...u.slots],kind=slots[slot];slots[slot]=null;const layout=gridLayout({...u,slots});if(!layout.ok)return false;u.slots=slots;storeLayout(u,layout);if(u.weapon===kind)u.weapon='hands';u.overwatch=null;log(s,'Equipment moved to backpack.');return true;}
 export function arrangeInventory(s,u,key,cell){if(!canControl(s,u)||s.queue.length||!placeItem(u,key,cell))return false;log(s,'Backpack rearranged.');return true;}
-export function reload(s,u,byAI=false){if(byAI?!(s.phase==='enemy'&&u?.team==='guard'&&alive(u)&&!u.burningTurns):!canControl(s,u))return false;const w=WEAPONS[u.weapon],count=Math.min(w.mag-u.ammo[u.weapon],reserve(u,u.weapon));if(s.queue.length||!w.mag||count<=0||(!['explore','won'].includes(s.phase)&&u.ap<3))return false;if(!['explore','won'].includes(s.phase))u.ap-=3;u.overwatch=null;u.ammo[u.weapon]+=count;consumeAmmo(u,u.weapon,count);syncWeapons(u);log(s,u.name+' reloaded '+count+' rounds.');return true;}
+export function reload(s,u,byAI=false){if(byAI?!(s.phase==='enemy'&&u?.team==='guard'&&alive(u)&&!u.burningTurns):!canControl(s,u))return false;const w=WEAPONS[u.weapon],count=Math.min(w.mag-u.ammo[u.weapon],reserve(u,u.weapon));if(s.queue.length||!w.mag||count<=0||(combatCosts(s)&&u.ap<3))return false;if(combatCosts(s))u.ap-=3;u.overwatch=null;u.ammo[u.weapon]+=count;consumeAmmo(u,u.weapon,count);syncWeapons(u);log(s,u.name+' reloaded '+count+' rounds.');return true;}
 export function inventoryTransfer(s,u,index,mode,target=null){if(!canControl(s,u)||s.queue.length)return false;const near=p=>levelOf(u)===levelOf(p)&&Math.abs(u.x-p.x)+Math.abs(u.y-p.y)<=1&&(u.x===p.x&&u.y===p.y||!blockedEdge(s,u,p));if(mode==='take'){if(!s.loot.includes(target)||!near(target))return false;const item=target.items[index];if(!item||!accepts(u,item))return false;target.items.splice(index,1);receive(u,item);}else{syncWeapons(u);const item=u.pack[index];if(!item)return false;if(mode==='give'){if(!s.units.includes(target)||target===u||!alive(target)||target.team!=='squad'||!near(target)||!accepts(target,item))return false;receive(target,item);}else if(mode==='drop'){let pile=s.loot.find(p=>p.x===u.x&&p.y===u.y&&levelOf(p)===levelOf(u));if(!pile){pile={x:u.x,y:u.y,z:levelOf(u),items:[]};s.loot.push(pile);}pile.items.push(item);}else return false;u.pack.splice(index,1);if(item.type==='weapon'){u.slots=u.slots.map(k=>k===item.kind?null:k);if(u.weapon===item.kind)u.weapon='hands';u.overwatch=null;}}log(s,'Inventory updated.');return true;}
-export function endTurn(s){if(s.phase!=='player'||s.queue.length)return false;for(const u of s.units)if(u.casualty==='bleeding'&&--u.bleedTurns<=0){u.casualty='dead';log(s,u.name+' died from blood loss.');}
+export function endTurn(s){if(s.phase!=='player'||s.queue.length)return false;s.engaged=false;for(const u of s.units)if(u.casualty==='bleeding'&&--u.bleedTurns<=0){u.casualty='dead';log(s,u.name+' died from blood loss.');}
  // Only a turn that began after the stabilization counts; the third such end runs the counter out, and the comrade stands when the next squad turn begins (stepEnemy), never for the guards' volley first.
  for(const u of s.units)if(recovering(u)&&s.round>u.recoveryFrom)u.recoveryTurns--;for(const u of s.units)panicRun(s,u);s.phase='enemy';s.enemyIndex=0;for(const g of guards(s))g.ap=g.burningTurns?0:g.maxAp;log(s,'Guard turn.');return true;}
+// The bookkeeping of a new squad turn: fires burn down, recovered comrades stand, AP refills (the waiting crosser's too), stress settles.
+function newRound(s){finishFireRound(s);s.round++;for(const u of s.units)if(u.casualty==='stable'&&u.recoveryTurns<=0){u.casualty=null;u.hp=RECOVERY_HP;log(s,u.name+' is back on their feet / '+RECOVERY_HP+' HP, exhausted.');}for(const p of squad(s)){p.ap=p.burningTurns?0:p.maxAp;p.overwatch=null;settleStress(p,2);}for(const p of s.units)if(p.team==='squad'&&p.away&&p.hp>0){p.ap=p.maxAp;p.away.ap=p.maxAp;}/* a comrade waiting beyond the edge gets the new turn too */}
 export function stepEnemy(s){
  if(s.phase!=='enemy')return false;
  const g=s.units[s.enemyIndex];
- if(!g){finishFireRound(s);s.phase='player';s.round++;for(const u of s.units)if(u.casualty==='stable'&&u.recoveryTurns<=0){u.casualty=null;u.hp=RECOVERY_HP;log(s,u.name+' is back on their feet / '+RECOVERY_HP+' HP, exhausted.');}for(const p of squad(s)){p.ap=p.burningTurns?0:p.maxAp;p.overwatch=null;settleStress(p,2);}for(const p of s.units)if(p.team==='squad'&&p.away&&p.hp>0){p.ap=p.maxAp;p.away.ap=p.maxAp;}/* a comrade waiting beyond the edge gets the new turn too */refresh(s);log(s,`Squad turn / ${s.round}.`);return true;}
+ if(!g){newRound(s);s.phase='player';refresh(s);log(s,`Squad turn / ${s.round}.`);return true;}
  if(g.team!=='guard'||!alive(g)||g.burningTurns>0||!g.alert||g.ap<1){s.enemyIndex++;return true;}
  const targets=squad(s).filter(p=>notices(s,g,p)).sort((a,b)=>distance(g,a)-distance(g,b));
  const target=targets[0];if(target)g.lastKnown={x:target.x,y:target.y,z:levelOf(target)};
@@ -312,10 +353,10 @@ export function stepEnemy(s){
  g.ap=0;s.enemyIndex++;return true;
 }
 
-export function stabilizePreview(s,medic,patient){const cost=medicalCost(medic);let reason='';if(!canControl(s,medic)||s.queue.length)reason='Cannot act now';else if(!s.units.includes(patient)||patient.team!=='squad'||patient.casualty!=='bleeding'||patient.bleedTurns<=0)reason='Choose a bleeding teammate';else if(!medic.medkits)reason='No medkits remaining';else if(levelOf(medic)!==levelOf(patient)||Math.abs(medic.x-patient.x)+Math.abs(medic.y-patient.y)!==1||blockedEdge(s,medic,patient))reason='Stand beside the casualty with an open edge';else if(s.phase==='player'&&medic.ap<cost)reason='Not enough AP';return {ok:!reason,reason,cost};}
-export function stabilize(s,medic,patient){const p=stabilizePreview(s,medic,patient);if(!p.ok)return false;if(s.phase==='player')medic.ap-=p.cost;medic.medkits--;patient.casualty='stable';patient.bleedTurns=0;beginRecovery(s,patient);const thanks=helped(patient,medic);if(thanks)log(s,patient.name+': '+thanks);log(s,medic.name+' stabilized '+patient.name+'.');refresh(s);return true;}
-export function cutPreview(s,u,edge){let reason='';const cost=4;if(!canControl(s,u)||s.queue.length)reason='Cannot act now';else if(!u.wireCutters)reason='Wire cutters required';else if(!u.slots.includes('wireCutters'))reason='Equip wire cutters in a held slot';else if(s.edges[edge]!=='fence-chainlink')reason='Choose a chain-link fence';else if(!edgeCells(edge).some(p=>p.x===u.x&&p.y===u.y&&levelOf(p)===levelOf(u)))reason='Stand beside the fence';else if(s.phase==='player'&&u.ap<cost)reason='Not enough AP';return {ok:!reason,reason,cost};}
-export function cutFence(s,u,edge){const p=cutPreview(s,u,edge);if(!p.ok)return false;if(s.phase==='player')u.ap-=p.cost;s.edges[edge]='fence-cut';u.overwatch=null;log(s,u.name+' cut a passable opening in the fence.');refresh(s);return true;}
+export function stabilizePreview(s,medic,patient){const cost=medicalCost(medic);let reason='';if(!canControl(s,medic)||s.queue.length)reason='Cannot act now';else if(!s.units.includes(patient)||patient.team!=='squad'||patient.casualty!=='bleeding'||patient.bleedTurns<=0)reason='Choose a bleeding teammate';else if(!medic.medkits)reason='No medkits remaining';else if(levelOf(medic)!==levelOf(patient)||Math.abs(medic.x-patient.x)+Math.abs(medic.y-patient.y)!==1||blockedEdge(s,medic,patient))reason='Stand beside the casualty with an open edge';else if(combatCosts(s)&&medic.ap<cost)reason='Not enough AP';return {ok:!reason,reason,cost};}
+export function stabilize(s,medic,patient){const p=stabilizePreview(s,medic,patient);if(!p.ok)return false;if(combatCosts(s))medic.ap-=p.cost;medic.medkits--;patient.casualty='stable';patient.bleedTurns=0;beginRecovery(s,patient);const thanks=helped(patient,medic);if(thanks)log(s,patient.name+': '+thanks);log(s,medic.name+' stabilized '+patient.name+'.');refresh(s);return true;}
+export function cutPreview(s,u,edge){let reason='';const cost=4;if(!canControl(s,u)||s.queue.length)reason='Cannot act now';else if(!u.wireCutters)reason='Wire cutters required';else if(!u.slots.includes('wireCutters'))reason='Equip wire cutters in a held slot';else if(s.edges[edge]!=='fence-chainlink')reason='Choose a chain-link fence';else if(!edgeCells(edge).some(p=>p.x===u.x&&p.y===u.y&&levelOf(p)===levelOf(u)))reason='Stand beside the fence';else if(combatCosts(s)&&u.ap<cost)reason='Not enough AP';return {ok:!reason,reason,cost};}
+export function cutFence(s,u,edge){const p=cutPreview(s,u,edge);if(!p.ok)return false;if(combatCosts(s))u.ap-=p.cost;s.edges[edge]='fence-cut';u.overwatch=null;log(s,u.name+' cut a passable opening in the fence.');refresh(s);return true;}
 
 export function moveGroup(s,ids,leader,x,y,z=levelOf(leader)){
  const members=[...new Set(ids)].map(id=>s.units[id]);if(!members.length||!members.includes(leader)||members.some(u=>!canControl(s,u)||levelOf(u)!==levelOf(leader)))return false;
@@ -340,7 +381,62 @@ const approximate=u=>({x:Math.max(0,Math.min(W-1,Math.round(u.x/6)*6)),y:Math.ma
 // their own, better fix; the rest converge on the approximate report. Suspicion beyond that ring is unchanged (emitNoise).
 export function alarm(s,shooter,radius){for(const g of guards(s))if(g!==shooter&&!g.alert&&distance(g,shooter)<=radius){g.alert=true;g.lastKnown=approximate(shooter);}}
 export function emitNoise(s,u,radius){if(u.team!=='squad')return;for(const g of guards(s))if(!canSee(s,g,u)&&distance(g,u)<=radius){g.lastHeard=approximate(u);g.searchSteps=12;}}
-export function stepInvestigation(s){if(!['explore','won'].includes(s.phase))return false;for(const g of guards(s))if(g.lastHeard&&g.searchSteps>0){const dest=g.lastHeard;g.heading=headingTo(g,dest);const path=pathTo(s,g,dest.x,dest.y,dest.z);g.searchSteps--;if(path?.length){const p=path[0];g.x=p.x;g.y=p.y;g.z=p.z;g.steps++;}else g.searchSteps=0;if(!g.searchSteps)g.lastHeard=null;refresh(s);return true;}return false;}
+// Real-time route finding is bounded: one A* of at most REALTIME_NODES expansions per guard, only when its goal changes or its remembered
+// path is blocked. When the budget runs out the guard takes the path to the closest tile it explored and searches again from there; a goal it
+// cannot approach at all is retried every REALTIME_RETRY ticks. Goals are the walkable tiles on and around the fix, or the nearest
+// walkable tile within six of it when the fix itself (a 6-tile grid cell from a report) is void, water or off the map.
+export const REALTIME_NODES=1200,REALTIME_RETRY=40,SWEEP_TICKS=8,REALTIME_SEARCHES=3; // at most this many fresh route searches per tick; the rest of the guards wait a tick
+export function fixGoals(s,dest){const z=levelOf(dest),goals=new Set();for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){const x=dest.x+dx,y=dest.y+dy;if(inBounds(x,y,z)&&walkable(s,x,y,z))goals.add(key(x,y,z));}
+ if(!goals.size){let best=null,bd=Infinity;for(let dy=-6;dy<=6;dy++)for(let dx=-6;dx<=6;dx++){const x=dest.x+dx,y=dest.y+dy,d=Math.hypot(dx,dy);if(d<bd&&inBounds(x,y,z)&&walkable(s,x,y,z)){best=key(x,y,z);bd=d;}}if(best)goals.add(best);}return goals;}
+export function boundedRoute(s,g,goals,budget){
+ const start=key(g.x,g.y,levelOf(g));if(goals.has(start))return [];
+ const occupied=new Set(s.units.filter(p=>(alive(p)||incapacitated(p))&&p!==g).map(p=>key(p.x,p.y,levelOf(p)))),stairs=stairSet(s),scores=new Map([[start,0]]),parents=new Map(),heap=[];
+ // A* toward the nearest goal (the same admissible estimate pathTo uses), so an open-ground route costs tens of expansions, not a diamond of thousands.
+ const pts=[...goals].map(k=>{const [x,y,z=0]=k.split(',').map(Number);return [x,y,z];}),unit=STANCES[stanceOf(g)].moveCost+(g.sneaking?2:0),h=p=>Math.min(...pts.map(([x,y,z])=>{const dx=Math.abs(p.x-x),dy=Math.abs(p.y-y);return (Math.max(dx,dy)+.5*Math.min(dx,dy))*unit+2*Math.abs(p.z-z);}));
+ const less=(a,b)=>a.f<b.f||(a.f===b.f&&a.g>b.g);const push=n=>{heap.push(n);let i=heap.length-1;while(i){const p=(i-1)>>1;if(!less(heap[i],heap[p]))break;[heap[i],heap[p]]=[heap[p],heap[i]];i=p;}};
+ const pop=()=>{const first=heap[0],last=heap.pop();if(heap.length){heap[0]=last;let i=0;while(true){let c=i*2+1;if(c>=heap.length)break;if(c+1<heap.length&&less(heap[c+1],heap[c]))c++;if(!less(heap[c],heap[i]))break;[heap[i],heap[c]]=[heap[c],heap[i]];i=c;}}return first;};
+ const trace=k=>{const path=[];while(k!==start){const e=parents.get(k);path.push(e.point);k=e.parent;}return path.reverse();};
+ const first={x:g.x,y:g.y,z:levelOf(g),k:start,g:0,f:h({x:g.x,y:g.y,z:levelOf(g)})};push(first);let expanded=0,best=first,bestH=first.f;
+ while(heap.length&&expanded<budget){const p=pop();if(p.g!==scores.get(p.k))continue;expanded++;
+  if(goals.has(p.k))return trace(p.k);
+  const hp=p.f-p.g;if(hp<bestH){bestH=hp;best=p;}
+  // Lean expansion: the same legality as movementNeighbors (level changes need standing, no cutting a corner past a body) checked against the precomputed occupied set.
+  for(const n of neighbors(s,p,stairs)){const same=n.z===p.z;if(!same&&stanceOf(g)!=='standing')continue;if(same&&n.x!==p.x&&n.y!==p.y&&(occupied.has(key(n.x,p.y,p.z))||occupied.has(key(p.x,n.y,p.z))))continue;const k=key(n.x,n.y,n.z),c=p.g+(same?unit*n.cost:n.cost);if(occupied.has(k)||c>=(scores.get(k)??Infinity))continue;scores.set(k,c);const q={x:n.x,y:n.y,z:n.z,cost:same?unit*n.cost:n.cost};parents.set(k,{parent:p.k,point:q});push({...q,k,g:c,f:c+h(q)});}}
+ // Out of budget: head for the closest tile explored (partial route), or give up when nothing is closer than where the guard stands.
+ return best===first||!Number.isFinite(bestH)?null:trace(best.k);
+}
+// One real-time step toward a fix, from the guard's remembered route; null when it stands at (or beside) the fix or cannot get there now.
+function realtimeStep(s,g,dest,quota){
+ const goals=fixGoals(s,dest),goal=[...goals].sort().join('|');let r=g.route;
+ if(!r||r.goal!==goal){r=g.route={goal,path:null,wait:0};}
+ if(goals.has(key(g.x,g.y,levelOf(g))))return null;
+ if(r.path?.length){const p=r.path[0];if(movementNeighbors(s,g).some(q=>q.x===p.x&&q.y===p.y&&q.z===p.z)&&!occupant(s,p.x,p.y,p.z))return r.path.shift();r.path=null;}
+ if(r.wait>0){r.wait--;return null;}
+ if(quota.left<=0)return undefined; // no search budget left this tick: try again next tick
+ quota.left--;const path=boundedRoute(s,g,goals,REALTIME_NODES);
+ if(!path||!path.length){r.path=null;r.wait=REALTIME_RETRY;return null;}
+ r.path=path;return r.path.shift();
+}
+// Real time: every guard with something to look into takes one step per tick. Suspicious guards walk their search budget toward what they heard;
+// alert guards too far to matter close on their last fix, and refresh() opens the fight the moment one could reach the squad within two turns.
+// An alert guard that reaches its fix and identifies nobody sweeps on the spot (a quarter turn per tick) and then stands down: the alert is over.
+export function stepInvestigation(s){
+ if(!['explore','won'].includes(s.phase))return false;let acted=false;const quota={left:REALTIME_SEARCHES};
+ for(const g of guards(s)){
+  if(g.burningTurns)continue;
+  const searching=!g.alert&&g.lastHeard&&g.searchSteps>0,dest=g.alert?g.lastKnown:searching?g.lastHeard:null;
+  if(!dest){if(g.alert){g.sweep=(g.sweep??SWEEP_TICKS)-1;g.heading=(g.heading+90)%360;acted=true;if(g.sweep<=0){g.alert=false;g.sweep=undefined;g.route=undefined;}}continue;}
+  const p=realtimeStep(s,g,dest,quota);if(p===undefined)continue;
+  if(p){g.heading=headingTo(g,p);openDoorBetween(s,g,p);g.facing=(p.x-g.x)-(p.y-g.y)>=0?1:-1;g.x=p.x;g.y=p.y;g.z=levelOf(p);g.steps++;enterFire(s,g);acted=true;if(searching)g.searchSteps--;continue;}
+  const heading=headingTo(g,dest);if(g.heading!==heading){g.heading=heading;acted=true;}
+  if(g.alert){ // at the fix, or unable to get there now: sweep, then stand down
+   if(g.route?.wait>0)continue;
+   g.sweep=(g.sweep??SWEEP_TICKS)-1;g.heading=(g.heading+90)%360;acted=true;
+   if(g.sweep<=0){g.alert=false;g.lastKnown=null;g.sweep=undefined;g.route=undefined;log(s,g.name+' gave up the search.');}}
+  else if(searching){g.searchSteps=0;g.lastHeard=null;acted=true;}
+ }
+ if(acted)refresh(s);return acted;
+}
 export const overwatchRange=u=>Math.max(1,Math.min(WEAPONS[u.weapon].range,u.overwatch?.range??u.watchRange??WEAPONS[u.weapon].range));
 export const withinOverwatch=(u,b)=>Math.hypot(u.x-b.x,u.y-b.y)+Math.max(0,levelOf(b)-levelOf(u))<=overwatchRange(u);
 export function setOverwatch(s,u,range=overwatchRange(u)){if(!Number.isFinite(range)||range<1||range>WEAPONS[u.weapon].range)return false;if(!canControl(s,u)||s.phase!=='player'||s.queue.length||u.overwatch||!WEAPONS[u.weapon].mag||u.ammo[u.weapon]<1||u.ap<WEAPONS[u.weapon].cost)return false;u.ap-=WEAPONS[u.weapon].cost;u.watchRange=range;u.overwatch={weapon:u.weapon,heading:u.heading,range};log(s,u.name+' reserved one overwatch shot.');return true;}

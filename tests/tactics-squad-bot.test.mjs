@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {blankMap,edgeKey} from '../dist/tactics/maps.js';
 import {createGame,WEAPONS} from '../dist/tactics/engine.js';
 import {createSquadBot,scavenge,equipBest,lootOptions,followOrder,stepSquadBot} from '../tools/tactics-squad-bot.mjs';
-function scene(){const map=blankMap();map.guards=[{x:80,y:80,species:'cow',weapon:'rifle'}];const s=createGame(1947,map);s.phase='player';s.units[0].ap=12;return {s,u:s.units[0],bot:createSquadBot()};}
+function scene(){const map=blankMap();map.guards=[{x:20,y:12,species:'cow',weapon:'pistol'}];/* one walk inside pistol reach of the starts, so an alert keeps turn mode, yet outside the bot's own threat radius */const s=createGame(1947,map);s.phase='player';s.units[0].ap=12;return {s,u:s.units[0],bot:createSquadBot()};}
 test('scavenging seeks known compatible ammo instead of abandoning the rifle',()=>{const {s,u,bot}=scene();u.ammo.assault=0;s.loot=[{x:6,y:4,z:0,items:[{type:'ammo',kind:'assault',count:30}]}];s.seen.add('6,4');const before=u.x;assert.ok(scavenge(s,u,bot));assert.ok(u.x>before);assert.equal(u.weapon,'assault');assert.ok(u.ap<12);assert.equal(bot.events.at(-1).type,'seek-loot');});
 test('loaded HMG is collected, equipped, and paid for with normal inventory AP',()=>{const {s,u,bot}=scene();s.loot=[{x:u.x,y:u.y,items:[{type:'weapon',kind:'hmg',rounds:49}]}];s.seen.add(`${u.x},${u.y}`);assert.ok(scavenge(s,u,bot));assert.equal(u.ammo.hmg,49);assert.ok(equipBest(s,u));assert.equal(u.weapon,'hmg');assert.equal(u.ap,9);assert.equal(s.loot[0].items.length,0);});
 test('empty duplicate can be exchanged for a loaded drop without creating ammunition',()=>{const {s,u,bot}=scene();u.ammo.assault=0;s.loot=[{x:u.x,y:u.y,items:[{type:'weapon',kind:'assault',rounds:19}]}];assert.ok(scavenge(s,u,bot));assert.equal(u.ammo.assault,19);assert.equal(s.loot[0].items.length,1);assert.equal(s.loot[0].items[0].rounds,0);assert.equal(u.pack.filter(i=>i.kind==='assault').length,1);assert.ok(equipBest(s,u));assert.equal(u.weapon,'assault');});
@@ -13,11 +13,11 @@ test('overwatch orders reserve AP without consuming ammunition and lure orders w
 test('sneak orders use the actual stealth toggle and respect unavailable actors',()=>{const {s,u}=scene();const bot=createSquadBot({orders:[{type:'sneak',unit:u.id}]});assert.ok(followOrder(s,bot));assert.equal(u.sneaking,true);assert.equal(bot.orders.length,0);});
 test('normal squad behavior picks up an adjacent HMG before advancing',()=>{const {s,u,bot}=scene();s.loot=[{x:u.x,y:u.y,items:[{type:'weapon',kind:'hmg',rounds:50}]}];assert.ok(stepSquadBot(s,bot));assert.ok(u.pack.some(i=>i.kind==='hmg'));assert.equal(bot.events[0].type,'scavenge');});
 test('an empty gun whose reload is unaffordable is not an upgrade: no free-swap loop between it and the loaded fallback',()=>{
- const {s,u,bot}=scene();s.units[4].alert=true;s.units[4].x=u.x+30;
+ const {s,u,bot}=scene();s.units[4].alert=true;/* in reach: the alert holds turn mode */
  // Shotgun in the second slot with shells in reserve but none loaded; 2 AP: equip is a free swap, the reload it needs costs 3.
  u.slots=['assault','shotgun'];u.pack=u.pack.filter(i=>i.kind!=='pistol');u.pack.push({type:'weapon',kind:'shotgun',rounds:0},{type:'ammo',kind:'shotgun',count:6});u.ammo.shotgun=0;u.ap=2;
  assert.equal(equipBest(s,u),false,'the shotgun cannot be loaded this turn, so the loaded rifle stays');assert.equal(u.weapon,'assault');
  let steps=0;while(s.phase==='player'&&steps++<50)stepSquadBot(s,bot);
- assert.equal(s.phase,'enemy','the turn ends instead of swapping guns forever');assert.ok(bot.events.filter(e=>e.type==='equip'||e.type==='fallback').length<=2,JSON.stringify(bot.events));
+ assert.notEqual(s.phase,'player','the turn ends (or the fight does) instead of swapping guns forever');assert.ok(steps<50);assert.ok(bot.events.filter(e=>e.type==='equip'||e.type==='fallback').length<=2,JSON.stringify(bot.events));
  u.ap=3;s.phase='player';assert.equal(equipBest(s,u),true,'with the reload affordable the shotgun is the better gun again');assert.equal(u.weapon,'shotgun');
 });

@@ -3,10 +3,10 @@ import {createGame,refresh,attack,attackGround,endTurn,stepEnemy,stabilize,canCo
 import {blankMap,W} from '../dist/tactics/maps.js';
 import {createWorld,currentMap,leave} from '../dist/tactics/world.js';
 
-// One alert knife guard far from the squad keeps the map in turn mode without ever reaching anyone (its AP is zeroed each guard turn).
-function scene(difficulty='standard'){const m=blankMap();m.guards=[{x:10,y:10,z:0,species:'pig-foreman',weapon:'knife'}];const s=createGame(1,m,false,difficulty);s.phase='player';s.round=1;s.units[4].alert=true;return s;}
+// One alert pistol guard within reach keeps the map in turn mode without ever firing (its AP is zeroed each guard turn).
+function scene(difficulty='standard'){const m=blankMap();m.guards=[{x:10,y:10,z:0,species:'pig-foreman',weapon:'pistol'}];/* in pistol reach: alert holds turn mode; its AP is zeroed so it never fires */const s=createGame(1,m,false,difficulty);s.phase='player';s.round=1;s.units[4].alert=true;return s;}
 // The real downing path: a guard with bare hands beside the victim in the guard phase, not a hand-set casualty.
-function shoot(s,id){const u=s.units[id],g=s.units[4];u.hp=1;const at={x:g.x,y:g.y};g.x=u.x+1;g.y=u.y;g.weapon='hands';g.ap=7;s.phase='enemy';assert.ok(attack(s,g,u,false,true));g.x=at.x;g.y=at.y;g.weapon='knife';s.phase='player';refresh(s);return u;}
+function shoot(s,id){const u=s.units[id],g=s.units[4];u.hp=1;const at={x:g.x,y:g.y};g.x=u.x+1;g.y=u.y;g.weapon='hands';g.ap=7;s.phase='enemy';assert.ok(attack(s,g,u,false,true));g.x=at.x;g.y=at.y;g.weapon='pistol';s.phase='player';refresh(s);return u;}
 // One full cycle: squad turn ends, the guard turn runs to its end, the next squad turn begins.
 function next(s){assert.ok(endTurn(s));s.units[4].ap=0;for(let i=0;i<40&&s.phase==='enemy';i++)stepEnemy(s);assert.equal(s.phase,'player');}
 function medic(s,patient){const m=s.units[0];m.x=patient.x-1;m.y=patient.y;m.medical=100;m.ap=12;assert.ok(stabilize(s,m,patient));return m;}
@@ -54,7 +54,7 @@ test('a hit while recovering kills; the dead and the captured never stand up',()
 });
 
 test('a comrade left recovering when the squad crosses the edge is captured and stays captured',()=>{
- const m=blankMap('Factory');m.guards=[{x:200,y:120,z:0,species:'cow',weapon:'pistol'}];const w=createWorld(m);w.definitions.yard=blankMap('Yard');const s=currentMap(w);
+ const m=blankMap('Factory');m.guards=[{x:228,y:100,z:0,species:'cow',weapon:'pistol'}];const w=createWorld(m);w.definitions.yard=blankMap('Yard');const s=currentMap(w);
  for(const [i,u] of s.units.slice(0,4).entries()){u.x=W-1-(i%2);u.y=100+Math.floor(i/2);}guards(s)[0].alert=true;refresh(s);assert.equal(s.phase,'player');
  const down=s.units[1];down.hp=0;down.casualty='stable';beginRecovery(s,down);
  for(const id of [0,2,3]){const r=leave(w,s.units[id],'east');assert.ok(r.ok,r.error);}

@@ -7,7 +7,7 @@ is not evidence that a feature shipped. Update this file when completing work.
 | Thread | Status | Remaining work |
 | --- | --- | --- |
 | 1. Group movement and squad cohesion | Partial | Better rally completion and bounded pursuit in the automated player. |
-| 2. Local alerts and combat pacing | Pending | Two-turn threat threshold, distant investigation in real time, general alarm notice. |
+| 2. Local alerts and combat pacing | Implemented 2026-09-17 | None from this discussion; rule in RULES.md, Local alerts and combat pacing. |
 | 3. Clearer stealth opening | Implemented | Further quiet-approach playtesting; guaranteed knife takedowns were not implemented or agreed. |
 | 4. Scavenging and supply sharing | Partial | Hidden searchable body containers, randomized equipment-based loot; unloading is still a suggestion. |
 | 5. Overwatch feedback and direction | Implemented | No remaining requirement from this discussion. |
@@ -35,14 +35,24 @@ Unseen enemies can investigate in real time. Require tactical turns when an
 actively approaching opponent can get within shooting range in two turns;
 otherwise give a general warning such as “You are pretty sure someone heard that.”
 
-Existing: `stepInvestigation` supports exploration movement. Missing: the threat
-threshold and notification. `refresh` still uses any alerted guard as contact.
+Implemented 2026-09-17: `threatens()` / `reachable()` in `engine.js` decide
+contact (`refresh`), alert guards beyond the two-turn reach close in real time
+through `stepInvestigation`, and the warning is logged once per newly alerted
+guard. The headless player runs the same real-time tick.
 
-Implementation guidance proposed in the discussion: estimate actual movement/AP
-and weapon range with walls and routes, not only straight-line distance. Keep
-bleeding/fire and other timed consequences consistent across mode transitions.
-Verify distant searches remain real time, approaching threats switch in time,
-walls affect the estimate, and transitions cannot refill AP or skip casualty timers.
+The estimate walks the real movement graph for two turns of the guard's AP and
+traces the shooting rays, so walls and detours count. Bleeding, recovery and fire
+remain pending and keep turn mode regardless of guard reach. AP is live across
+the engagement: while any guard is alert, actions other than walking cost their
+combat AP even in real time, nothing refills until a guard phase ends, and any
+squad attack from real time opens a turn that holds until the squad ends it, so
+a transition cannot refill a turn and real-time fire is never free. Alert guards
+that reach their fix and see nobody stand down. Verified in
+`tests/tactics-pacing.test.mjs` (ten cases): distant searches stay real time,
+an approaching threat switches at exactly the two-turn reach, walls change the
+estimate, transitions neither refill AP nor skip casualty timers, real-time fire
+is charged, alert decays, and a tick on the 36-guard playtest map stays inside
+the frame budget.
 
 ## 3. Clearer stealth opening
 

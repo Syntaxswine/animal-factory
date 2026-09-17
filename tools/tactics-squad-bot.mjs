@@ -76,6 +76,8 @@ export function followOrder(s,bot){
 export function stepSquadBot(s,bot){
  if(['won','lost'].includes(s.phase))return false;
  if(s.phase==='enemy')return E.stepEnemy(s);
+ // Real time runs for both sides: guards investigating or closing from beyond the two-turn threshold take their tick, as the browser's frame loop gives them.
+ E.stepInvestigation(s);
  if(s.queue.length)return E.stepMovement(s);
  if(bot.orders.length){if(followOrder(s,bot))return true;return s.phase==='player'&&E.endTurn(s);}
  const team=E.squad(s),first=bot.cursor++%team.length,ordered=[...team.slice(first),...team.slice(0,first)];
