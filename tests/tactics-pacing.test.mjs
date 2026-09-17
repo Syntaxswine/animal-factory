@@ -1,8 +1,8 @@
 import test from 'node:test';import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {createGame,refresh,attack,previewAttack,endTurn,stepEnemy,stepInvestigation,threatens,reachable,distance,squad,guards,reload,setStance,combatCosts,WEAPONS,THREAT_TURNS,SWEEP_TICKS,REALTIME_RETRY} from '../dist/tactics/engine.js';
-import {blankMap,edgeKey,parseMap} from '../dist/tactics/maps.js';
-import {createWorld,currentMap,travelReason} from '../dist/tactics/world.js';
+import {createGame,refresh,attack,attackGround,previewAttack,setOverwatch,endTurn,stepEnemy,stepInvestigation,threatens,reachable,distance,squad,guards,reload,setStance,combatCosts,WEAPONS,THREAT_TURNS,SWEEP_TICKS,REALTIME_RETRY} from '../dist/tactics/engine.js';
+import {blankMap,edgeKey,parseMap,W} from '../dist/tactics/maps.js';
+import {createWorld,currentMap,travelReason,leave,crossingCost} from '../dist/tactics/world.js';
 import {createSquadBot,stepSquadBot} from '../tools/tactics-squad-bot.mjs';
 
 // Squad on the west side at (14,30); a wall along the east edge of x=20 from y=0 to y=59 (the alarm-test geometry). Guards are placed per test.
@@ -84,7 +84,7 @@ test('AP is live across the engagement: breaking contact holds it, actions other
 test('an alert guard that reaches its fix and finds nobody sweeps and stands down, which frees travel and the free real time',()=>{
  const {s,gs:[g]}=scene([{x:40,y:100,z:0,species:'donkey',weapon:'knife'}],{wall:false});alertAt(g,40,90);refresh(s);assert.equal(s.phase,'explore');
  let n=0;while(g.alert&&n++<80)stepInvestigation(s);
- assert.equal(g.alert,false,'stood down after the sweep');assert.ok(n>=10+SWEEP_TICKS-1,'walked ten tiles then swept '+n);assert.ok(s.log.some(l=>l==='Boris gave up the search.'));assert.equal(s.alerted.size,0);assert.equal(combatCosts(s),false);
+ assert.equal(g.alert,false,'stood down after the sweep');assert.ok(n>=17&&n<=19,'walked ten tiles then swept eight: '+n);assert.equal(SWEEP_TICKS,8);assert.ok(s.log.some(l=>l==='Boris gave up the search.'));assert.equal(s.alerted.size,0);assert.equal(combatCosts(s),false);
  assert.ok(Math.abs(g.x-40)<=1&&Math.abs(g.y-90)<=1,'it went to the fix');
  // And with it the travel marker opens again where "Finish the active encounter" had blocked it.
  const w=createWorld(blankMap());w.definitions.yard=blankMap();const f=currentMap(w);const e=f.definition.exits[0];squad(f).forEach((p,i)=>{p.x=e.x+(i%2);p.y=e.y+Math.floor(i/2);});
@@ -141,4 +141,36 @@ test('a real-time shot that clears the map leaves nothing engaged: the won map i
  g.hp=1;u.weapon='pistol';u.heading=0;refresh(s);assert.equal(s.phase,'explore');
  assert.ok(attack(s,u,g));assert.equal(g.hp,0);assert.equal(s.phase,'won');assert.equal(s.engaged,false,'the engagement ended with the last guard');assert.equal(combatCosts(s),false);
  u.ap=1;assert.ok(reload(s,u)||u.ammo.pistol===WEAPONS.pistol.mag,'real time on a cleared map is free again');assert.equal(u.ap,1);
+});
+
+test('a guard boxed in, or facing a detour longer than its search budget, sweeps while it waits and stands down in seconds, not minutes',()=>{
+ const {s,gs:[g]}=scene([{x:40,y:100,z:0,species:'donkey',weapon:'knife'}],{wall:false});
+ for(let y=97;y<=103;y++)for(let x=37;x<=43;x++)if(Math.abs(x-40)===3||Math.abs(y-100)===3)s.map[y][x]='void';alertAt(g,40,60);refresh(s);assert.equal(s.phase,'explore');
+ let n=0;while(g.alert&&n++<60)stepInvestigation(s);assert.equal(g.alert,false,'boxed in: sweeps, then gives up');assert.ok(n<=10,'within ten ticks, not a forty-tick retry cycle: '+n);assert.equal(s.alerted.size,0);
+});
+
+test('a sweep counts from the last move or fix change, never from an earlier stand',()=>{
+ const {s,gs:[g]}=scene([{x:40,y:100,z:0,species:'donkey',weapon:'knife'}],{wall:false});alertAt(g,40,100);refresh(s);
+ for(let i=0;i<5;i++)stepInvestigation(s);assert.ok(g.alert);assert.equal(g.sweep,3,'five quarter turns in');
+ g.lastKnown={x:40,y:88,z:0};let n=0;while(g.alert&&n++<60)stepInvestigation(s);assert.ok(n>=12+7,'twelve tiles walked then a full eight-tick sweep, not the three left over: '+n);
+});
+
+test('entering a map whose guards kept an alert from before is still a fresh fight when contact opens later',()=>{
+ const m=blankMap('Factory');m.guards=[{x:228,y:100,z:0,species:'cow',weapon:'pistol'}];const yard=blankMap('Yard');yard.guards=[{x:120,y:100,z:0,species:'cow',weapon:'knife'}];
+ const w=createWorld(m);w.definitions.yard=yard;const s=currentMap(w);squad(s).forEach((u,i)=>{u.x=W-1-(i%2);u.y=100+Math.floor(i/2);});const g=guards(s)[0];g.ammo.pistol=0;g.pack=g.pack.filter(i=>i.type!=='ammo');g.alert=true;refresh(s);assert.equal(s.phase,'player');
+ for(const u of squad(s))u.ap=4;for(const u of squad(s))assert.ok(leave(w,u,'east').ok);
+ const y=currentMap(w);const yg=guards(y)[0];assert.equal(y.phase,'explore','the yard guard is alert but 120 tiles off');
+ yg.alert=true;yg.lastKnown={x:2,y:100,z:0};refresh(y);assert.equal(y.phase,'explore');assert.equal(combatCosts(y),true);
+ yg.x=6;refresh(y);assert.equal(y.phase,'player');for(const u of squad(y))assert.equal(u.ap,u.maxAp,'a new map is a new fight: full turn, not the 2 AP the crossing left');
+});
+
+test('Area clear drops overwatch reservations; crossing an edge in alerted real time costs its step; a blast on a won map is free and never negative',()=>{
+ const {s,u,gs:[g]}=scene([{x:20,y:30,z:0,species:'donkey',weapon:'knife'}],{wall:false});alertAt(g,14,30);refresh(s);assert.equal(s.phase,'player');
+ u.ap=12;assert.ok(setOverwatch(s,u));assert.ok(u.overwatch);g.x=60;refresh(s);assert.equal(s.phase,'explore');assert.ok(u.overwatch,'a paid reservation survives a quiet drop');
+ g.alert=false;g.lastKnown=null;refresh(s);assert.ok(s.log[0].startsWith('Area clear'));assert.equal(u.overwatch,null,'and is cleared when the alert is over');
+ const m=blankMap('Factory');m.guards=[{x:150,y:100,z:0,species:'cow',weapon:'knife'}];const w=createWorld(m);w.definitions.yard=blankMap('Yard');const f=currentMap(w);squad(f).forEach((p,i)=>{p.x=W-1-(i%2);p.y=100+Math.floor(i/2);});
+ const fg=guards(f)[0];fg.alert=true;fg.lastKnown={x:200,y:100,z:0};refresh(f);assert.equal(f.phase,'explore');assert.equal(combatCosts(f),true);
+ const c=squad(f)[0];c.ap=12;assert.equal(crossingCost(f,c),2);assert.ok(leave(w,c,'east').ok);assert.equal(c.ap,10,'the step off the map is charged while a guard is alert');
+ const won=scene([{x:18,y:30,z:0,species:'donkey',weapon:'knife'}],{wall:false,lone:true});won.gs[0].hp=0;refresh(won.s);assert.equal(won.s.phase,'won');
+ won.u.weapon='grenade';won.u.ap=1;assert.ok(attackGround(won.s,won.u,{x:22,y:30,z:0}));assert.equal(won.u.ap,1,'nothing to fight: nothing charged, nothing negative');
 });

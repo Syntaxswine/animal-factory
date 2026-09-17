@@ -159,7 +159,8 @@ log(s,s.defeat.captured.length+' captured / '+s.defeat.dead.length+' dead.'+(esc
  const threat=guards(s).some(g=>g.alert&&threatens(s,g)),contact=pending||!!s.engaged||threat;let warned=false;
  if(['explore','won'].includes(s.phase)&&contact){s.phase='player';s.round++;s.queue=[];
   // AP is live across the engagement: a fight that resumes while guards were already alert continues with the AP the squad has; a fresh fight gets a full turn. Guards always start theirs full.
-  const resumed=wasAlert.size>0;for(const u of s.units)if(u.burningTurns)u.ap=0;else if(u.team==='guard'||!resumed)u.ap=u.maxAp;
+  // freshFight is set by entering a map and by Area clear, so a fight on a new map is fresh even when its guards kept an alert from before.
+  const resumed=wasAlert.size>0&&!s.freshFight;s.freshFight=false;for(const u of s.units)if(u.burningTurns)u.ap=0;else if(u.team==='guard'||!resumed)u.ap=u.maxAp;
   log(s,'CONTACT / Squad turn. Movement costs 2 / 4 / 8 AP per tile: standing / kneeling / prone.');
 }
  else if((s.phase==='player'||s.phase==='enemy')&&!contact){
@@ -167,7 +168,9 @@ log(s,s.defeat.captured.length+' captured / '+s.defeat.dead.length+' dead.'+(esc
   if(s.phase==='enemy')newRound(s);
   s.phase='explore';s.queue=[];
   if(nowAlert.size){warned=fresh.length>0;log(s,(warned?heard()+' ':'Area quiet: ')+'No one can reach you within two turns: real time resumes, alerted guards are still coming; actions other than walking still cost AP.');}
-  else{for(const u of squad(s))u.overwatch=null;log(s,'Area clear. Real-time exploration resumed.');}}
+  else{for(const u of squad(s))u.overwatch=null;s.freshFight=true;log(s,'Area clear. Real-time exploration resumed.');}}
+ // The last alerted guard stood down while the map was already in real time: the same all-clear, without a phase change.
+ else if(['explore','won'].includes(s.phase)&&wasAlert.size&&!nowAlert.size&&!s.engaged){for(const u of squad(s))u.overwatch=null;s.freshFight=true;log(s,'Area clear. The alert is over.');}
 
  // Guards newly alerted by a report or a sighting who cannot reach the squad get their warning whatever the phase did (a shot of your own may have opened the turn).
  if(fresh.length&&!threat&&!warned)log(s,heard());
@@ -274,7 +277,7 @@ export function attack(s,a,b,burst=false,byAI=false,zone='torso',reaction=false)
  if(b.team==='guard'){b.alert=true;b.lastKnown={x:a.x,y:a.y,z:levelOf(a)};}
  // A squad attack from real time opens a turn (engaged holds it until the squad ends that turn); the shot is re-checked against the AP the turn actually has.
  if(['explore','won'].includes(s.phase)){s.engaged=true;refresh(s);if(s.phase==='player'&&a.team==='squad'&&a.ap<p.cost){log(s,a.name+': not enough AP to fire.');return false;}}
- if(!reaction)a.ap-=p.cost;
+ if(!reaction&&combatCosts(s))a.ap-=p.cost; // no charge on a map with nothing left to fight (a blast on a won map)
  const trajectories=[],explosions=[],sequence=[];
  // A stack suspends the current burst while a reply resolves; ammunition bounds chains.
  const frames=[{a,b,p,zone,left:p.rounds,weapon:a.weapon,aim:{...b},reply:false}];
@@ -408,7 +411,7 @@ export function boundedRoute(s,g,goals,budget){
 // One real-time step toward a fix, from the guard's remembered route; null when it stands at (or beside) the fix or cannot get there now.
 function realtimeStep(s,g,dest,quota){
  const goals=fixGoals(s,dest),goal=[...goals].sort().join('|');let r=g.route;
- if(!r||r.goal!==goal){r=g.route={goal,path:null,wait:0};}
+ if(!r||r.goal!==goal){r=g.route={goal,path:null,wait:0};g.sweep=undefined;}
  if(goals.has(key(g.x,g.y,levelOf(g))))return null;
  if(r.path?.length){const p=r.path[0];if(movementNeighbors(s,g).some(q=>q.x===p.x&&q.y===p.y&&q.z===p.z)&&!occupant(s,p.x,p.y,p.z))return r.path.shift();r.path=null;}
  if(r.wait>0){r.wait--;return null;}
@@ -427,10 +430,9 @@ export function stepInvestigation(s){
   const searching=!g.alert&&g.lastHeard&&g.searchSteps>0,dest=g.alert?g.lastKnown:searching?g.lastHeard:null;
   if(!dest){if(g.alert){g.sweep=(g.sweep??SWEEP_TICKS)-1;g.heading=(g.heading+90)%360;acted=true;if(g.sweep<=0){g.alert=false;g.sweep=undefined;g.route=undefined;}}continue;}
   const p=realtimeStep(s,g,dest,quota);if(p===undefined)continue;
-  if(p){g.heading=headingTo(g,p);openDoorBetween(s,g,p);g.facing=(p.x-g.x)-(p.y-g.y)>=0?1:-1;g.x=p.x;g.y=p.y;g.z=levelOf(p);g.steps++;enterFire(s,g);acted=true;if(searching)g.searchSteps--;continue;}
+  if(p){g.heading=headingTo(g,p);openDoorBetween(s,g,p);g.facing=(p.x-g.x)-(p.y-g.y)>=0?1:-1;g.x=p.x;g.y=p.y;g.z=levelOf(p);g.steps++;enterFire(s,g);acted=true;g.sweep=undefined;if(searching)g.searchSteps--;continue;}
   const heading=headingTo(g,dest);if(g.heading!==heading){g.heading=heading;acted=true;}
-  if(g.alert){ // at the fix, or unable to get there now: sweep, then stand down
-   if(g.route?.wait>0)continue;
+  if(g.alert){ // at the fix, or unable to get there now (boxed in, or a detour longer than the search budget): sweep, then stand down
    g.sweep=(g.sweep??SWEEP_TICKS)-1;g.heading=(g.heading+90)%360;acted=true;
    if(g.sweep<=0){g.alert=false;g.lastKnown=null;g.sweep=undefined;g.route=undefined;log(s,g.name+' gave up the search.');}}
   else if(searching){g.searchSteps=0;g.lastHeard=null;acted=true;}

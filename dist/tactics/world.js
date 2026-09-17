@@ -121,7 +121,7 @@ function arrive(world,destination,plan=arrivalPlan(world,destination)){
   // A map left mid-fight, or lost after some comrades crossed its edge, is entered fresh: its guards keep their alert and last fix, refresh() decides contact.
   if(next.phase==='lost'){world.defeats=[...(world.defeats||[]),{...next.defeat,map:destination}];delete next.defeat;next.phase='explore';}
   if(['player','enemy'].includes(next.phase)){next.phase='explore';next.enemyIndex=0;}
-  next.units=[...incoming,...next.units.filter(u=>u.team==='guard')];next.selected=incoming.find(alive)?.id??previous.selected;next.queue=[];next.effect=null;next.alerted=new Set();next.engaged=false; // entering a map is a fresh fight: full AP on contact (capped by what a crosser carried), whatever alert the guards kept
+  next.units=[...incoming,...next.units.filter(u=>u.team==='guard')];next.selected=incoming.find(alive)?.id??previous.selected;next.queue=[];next.effect=null;next.alerted=new Set();next.engaged=false;next.freshFight=true; // entering a map is a fresh fight: full AP on contact (capped by what a crosser carried), whatever alert the guards kept
   // Failed travel takes no time. Production during transit uses previously liberated maps.
   const income=advanceTime(world,TRAVEL_MINUTES);
   world.states[destination]=next;world.current=destination;world.journeys++;world.lastIncome=income;
