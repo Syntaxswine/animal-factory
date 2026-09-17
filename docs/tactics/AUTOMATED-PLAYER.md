@@ -4,11 +4,11 @@
 
 ## Default behavior
 
-- Seek previously seen compatible ammunition within 20 tiles; replenish up to roughly two magazines.
+- Seek previously seen compatible ammunition within 20 tiles; replenish up to roughly two magazines. It values nothing inside a body until it has searched it (3 AP in combat and while any guard is alert), the same rule the player plays by; it searches a body beside it when no guard threatens, and walks to a body it has seen fall only while no guard is in sight, nearest comrade only (the first cut sent the whole squad body-hunting mid-fight and lost seeds 1947 and 1957; with this rule the 20-seed run is 20/20).
 - Collect and equip stronger loaded conventional guns, including the HMG. Respect backpack capacity and equip AP. Avoid automatically adopting explosives or flamethrowers because they require separate friendly-fire tactics.
 - Exchange an empty or depleted gun for a better-loaded copy by dropping the old weapon and collecting the replacement. No ammunition is created or magically transferred between guns.
-- Prefer reloading/upgrading over fallback to a sidearm. Immediate threats take priority over travelling to loot.
-- Alternate merc decisions, stabilize adjacent bleeding comrades when possible, and regroup when separation exceeds 12 tiles. A waiting gunner can cover regrouping with overwatch.
+- Prefer reloading/upgrading over fallback to a sidearm. Immediate threats take priority over travelling to loot. A gun with an empty magazine is only a candidate when its reload is affordable now (3 AP in combat); otherwise the free held-slot swap onto it and the fallback off it chased each other until the action cap (fixed 2026-09-17, `ready` in the bot; the 20-seed run had stalled on 10 seeds at 2c767ae).
+- Alternate merc decisions, stabilize adjacent bleeding comrades when possible, and regroup when separation exceeds 12 tiles. A waiting gunner can cover regrouping with overwatch. A merc at or under a quarter of its HP hangs back beside a healthy comrade and shoots from there instead of advancing on guards; when nobody is healthy there is nobody to hide behind and the squad fights on as normal (2026-09-17: the recovered 5 HP merc used to charge and lose seed 1947).
 - Cache legal routes. The test player searches approach goals together; every actual movement step is still checked and charged by the engine.
 
 ## Quiet approach and coordinated ambush orders
@@ -21,6 +21,7 @@ Supported orders:
 
 ```json
 [
+  {"type":"rally","x":30,"y":45,"z":0,"radius":3},
   {"type":"sneak","unit":0,"enabled":true},
   {"type":"attack","unit":0,"target":4,"weapon":"pistol","zone":"head"},
   {"type":"move","unit":0,"x":10,"y":20,"z":0},
@@ -30,7 +31,7 @@ Supported orders:
 ]
 ```
 
-Those coordinates are schema examples, not a verified route through Factory-test.json. Unit IDs 0–3 are the mercs. Guards begin at 4. Cut orders approach the edge, equip cutters, then pay the normal 4 AP cutting cost. Overwatch is reserved during combat and spends AP up front; ammunition is consumed only if it fires. Attack orders continue until their target falls. Orders pause for enemy turns when AP runs out. After the plan, default scavenging/combat behavior resumes.
+A `rally` order has no unit: it completes only when every standing member is inside its radius (default 3), and each tick moves the farthest member first, so an exhausted straggler holds the squad rather than being left a turn behind. Movers may take any free walkable tile inside the radius. A rally point nobody can reach (void, walled off, every tile in the radius occupied) is dropped with a `reassess` event once every out-of-radius member has AP and none has stepped for three ticks (a comrade blocking the only corridor clears sooner); the point is remembered as unreachable and refused if a plan re-issues it, so an infeasible plan never stalls the run or burns it to the action cap. In turn mode each patience tick ends a turn, so an unreachable rally costs three guard phases before it is dropped; in real time the ticks pass while guards move. Rally goals are level-locked while `rallied()` measures distance in three dimensions, so a rally onto a platform reached by a single stair tile can hit the patience limit before everyone has climbed. An `attack` order is leashed (default 10 tiles) to where its target stood when the order first acted (an order queued behind a rally anchors where the target has walked to by then); a target that has moved beyond the leash is reassessed (the order is dropped with a `reassess` event) instead of being chased across the map. The south-fence driver's waypoints now complete on the same rally test, not when the lead arrives. Those coordinates are schema examples, not a verified route through Factory-test.json. Unit IDs 0–3 are the mercs. Guards begin at 4. Cut orders approach the edge, equip cutters, then pay the normal 4 AP cutting cost. Overwatch is reserved during combat and spends AP up front; ammunition is consumed only if it fires. Attack orders continue until their target falls. Orders pause for enemy turns when AP runs out. After the plan, default scavenging/combat behavior resumes.
 
 ## Running
 

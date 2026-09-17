@@ -23,6 +23,8 @@ export function friendlyReaction(s,u,attacker,damage,canShoot){
 export function helped(patient,medic){if(!patient.social)return null;patient.social.bonds[medic.name]=clamp((patient.social.bonds[medic.name]||0)+20,-100,100);patient.social.stress=clamp(patient.social.stress-20);remember(patient,`${medic.name} stopped my bleeding.`);return personality(patient)?.thanks;}
 // Injury uses actual HP lost, so overkill cannot inflate either meter.
 export function injuryStrain(u,hpLost){if(!u.social||hpLost<=0)return;const fraction=hpLost/u.maxHp;u.social.stress=clamp(u.social.stress+10+fraction*35);u.social.fatigue=clamp((u.social.fatigue||0)+5+fraction*25);}
+// Being shot down is total collapse: the rest debt maxes out and only real rest (restStrain) works it off.
+export function collapse(u){if(u.social)u.social.fatigue=100;}
 export function killRelief(killer,victim){if(killer?.social&&killer.hp>0&&killer.team!==victim.team)settleStress(killer,15);}
 export function restStrain(u,hours){if(!u.social)return;settleStress(u,hours*5);u.social.fatigue=clamp((u.social.fatigue||0)-hours*10);}
 export function settleStress(u,amount){if(u.social)u.social.stress=clamp(u.social.stress-amount);}

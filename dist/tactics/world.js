@@ -1,6 +1,6 @@
 import {restStrain} from './personalities.js';
 import {factoryMap,generateMap,blockedEdge,tileKey,levelOf,neighbors,W,H} from './maps.js';
-import {createGame,squad,guards,alive,incapacitated,canControl,abandonCasualties,occupant,refresh,walkable,log,STANCES,stanceOf,emitNoise,enterFire} from './engine.js';
+import {createGame,squad,guards,alive,incapacitated,canControl,abandonCasualties,occupant,refresh,walkable,log,STANCES,stanceOf,emitNoise,enterFire,combatCosts} from './engine.js';
 import {awardXP} from './progression.js';
 export const TRAVEL_MINUTES=60,PLAY_MINUTES_PER_SECOND=1,REST_RECOVERY_HOURS=48,MEDICAL_RECOVERY_HOURS=24,MEDIC_SKILL_REQUIRED=25;
 // The overmap is a grid of local-map tiles. Two tiles are linked when they touch; a squad walks from one to the next across the shared edge.
@@ -75,7 +75,7 @@ export const away=s=>s.units.filter(u=>u.team==='squad'&&u.away);
 export const beyond=(world,id,side)=>{const p=world.positions?.[id],d=SIDES[side];if(!p||!d)return null;return Object.keys(world.positions).find(k=>k!==id&&world.positions[k].x===p.x+d.dx&&world.positions[k].y===p.y+d.dy)||null;};
 export const borderSides=u=>[u.y<BORDER&&'north',u.x>=W-BORDER&&'east',u.y>=H-BORDER&&'south',u.x<BORDER&&'west'].filter(Boolean);
 // Crossing is one more step: the stance's cardinal move cost in combat, free while exploring.
-export const crossingCost=(s,u)=>s.phase==='player'?STANCES[stanceOf(u)].moveCost+(u.sneaking?2:0):0;
+export const crossingCost=(s,u)=>combatCosts(s)?STANCES[stanceOf(u)].moveCost+(u.sneaking?2:0):0;
 export function travelReason(world,destination) {
   const s=currentMap(world);
   if(!world.definitions[destination])return 'Unknown location.';
@@ -121,7 +121,7 @@ function arrive(world,destination,plan=arrivalPlan(world,destination)){
   // A map left mid-fight, or lost after some comrades crossed its edge, is entered fresh: its guards keep their alert and last fix, refresh() decides contact.
   if(next.phase==='lost'){world.defeats=[...(world.defeats||[]),{...next.defeat,map:destination}];delete next.defeat;next.phase='explore';}
   if(['player','enemy'].includes(next.phase)){next.phase='explore';next.enemyIndex=0;}
-  next.units=[...incoming,...next.units.filter(u=>u.team==='guard')];next.selected=incoming.find(alive)?.id??previous.selected;next.queue=[];next.effect=null;
+  next.units=[...incoming,...next.units.filter(u=>u.team==='guard')];next.selected=incoming.find(alive)?.id??previous.selected;next.queue=[];next.effect=null;next.alerted=new Set();next.engaged=false;next.freshFight=true; // entering a map is a fresh fight: full AP on contact (capped by what a crosser carried), whatever alert the guards kept
   // Failed travel takes no time. Production during transit uses previously liberated maps.
   const income=advanceTime(world,TRAVEL_MINUTES);
   world.states[destination]=next;world.current=destination;world.journeys++;world.lastIncome=income;
@@ -148,7 +148,7 @@ export function leaveReason(world,u,side){
   if(!destination)return `Nothing lies beyond the ${side} edge.`;
   const waiting=away(s)[0];
   if(waiting&&waiting.away.destination!==destination)return `Comrades are already crossing to ${world.definitions[waiting.away.destination].name}; use the ${waiting.away.side} edge.`;
-  if(s.phase==='player'&&u.ap<crossingCost(s,u))return 'Not enough AP.';
+  if(combatCosts(s)&&u.ap<crossingCost(s,u))return 'Not enough AP.';
   return '';
 }
 export function leave(world,u,side){
@@ -157,7 +157,7 @@ export function leave(world,u,side){
   // Flag the crosser before planning so the plan lands it on the far border; a failed plan changes nothing.
   u.away={destination,side,x:u.x,y:u.y};
   const plan=last?arrivalPlan(world,destination):null;if(plan&&!plan.ok){delete u.away;return plan;}
-  if(s.phase==='player'){u.ap-=crossingCost(s,u);u.away.ap=u.ap;}
+  if(combatCosts(s)){u.ap-=crossingCost(s,u);u.away.ap=u.ap;}
   u.overwatch=null;
   log(s,`${u.name} crossed the ${side} edge toward ${world.definitions[destination].name}.`);
   if(!last){refresh(s);return {ok:true,state:s,arrived:false};}
@@ -170,13 +170,13 @@ export function recallReason(world,u){
   if(!['explore','player','won'].includes(s.phase))return 'Cannot act now.';
   if(s.queue.length)return 'Stop movement before returning.';
   if(!walkable(s,u.away.x,u.away.y,0)||occupant(s,u.away.x,u.away.y,0))return 'The tile it left from is blocked.';
-  if(s.phase==='player'&&u.ap<crossingCost(s,u))return 'Not enough AP.';
+  if(combatCosts(s)&&u.ap<crossingCost(s,u))return 'Not enough AP.';
   return '';
 }
 export function recall(world,u){
   const error=recallReason(world,u);if(error)return {ok:false,error};
   const s=currentMap(world),{side,x,y}=u.away;
-  if(s.phase==='player')u.ap-=crossingCost(s,u);
+  if(combatCosts(s))u.ap-=crossingCost(s,u);
   delete u.away;u.x=x;u.y=y;u.z=0;u.overwatch=null;
   // A return is a step like any other: it makes a footstep and walks into whatever burns on that tile.
   emitNoise(s,u,u.sneaking?3:10);enterFire(s,u);

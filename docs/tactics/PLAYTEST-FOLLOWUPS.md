@@ -6,12 +6,12 @@ is not evidence that a feature shipped. Update this file when completing work.
 
 | Thread | Status | Remaining work |
 | --- | --- | --- |
-| 1. Group movement and squad cohesion | Partial | Better rally completion and bounded pursuit in the automated player. |
-| 2. Local alerts and combat pacing | Pending | Two-turn threat threshold, distant investigation in real time, general alarm notice. |
+| 1. Group movement and squad cohesion | Implemented 2026-09-17 | None from this discussion (automated player only; browser formation movement unchanged). |
+| 2. Local alerts and combat pacing | Implemented 2026-09-17 | None from this discussion; rule in RULES.md, Local alerts and combat pacing. |
 | 3. Clearer stealth opening | Implemented | Further quiet-approach playtesting; guaranteed knife takedowns were not implemented or agreed. |
-| 4. Scavenging and supply sharing | Partial | Hidden searchable body containers, randomized equipment-based loot; unloading is still a suggestion. |
+| 4. Scavenging and supply sharing | Implemented 2026-09-17 | Unloading recovered guns is still an unconfirmed suggestion, not built. |
 | 5. Overwatch feedback and direction | Implemented | No remaining requirement from this discussion. |
-| 6. Casualty recovery / evacuation | Pending | Maximum fatigue on downing and three-turn recovery before movement. |
+| 6. Casualty recovery / evacuation | Implemented 2026-09-17 | None from this discussion; decisions recorded in RULES.md, Casualty recovery. |
 
 ## 1. Group movement and cohesion
 
@@ -22,11 +22,17 @@ arrives together. The bot is a test controller, not browser merc automation.
 
 The playtest recommendations were to require all surviving squad members inside
 a rally radius before advancing a waypoint, and stop chasing a relocated rear
-guard indefinitely. These are recorded recommendations, not additional user
-decisions. See [the run](playtests/2026-09-17-south-fence/README.md).
+guard indefinitely. Implemented 2026-09-17 in the automated player: a `rally`
+order (and the south-fence driver's waypoints) completes only when every standing
+member is inside the radius, moving the farthest first; an `attack` order is
+leashed to where its target stood and is reassessed when the target moves past
+the leash; a merc at a quarter of its HP or less hangs back with the group
+instead of advancing (the recovered 5 HP merc had charged and lost seed 1947).
+See [the run](playtests/2026-09-17-south-fence/README.md) and AUTOMATED-PLAYER.md.
 
-Suggested verification: an exhausted trailing merc prevents premature waypoint
-completion; a displaced target causes reassessment rather than an unlimited chase.
+Verified in `tests/tactics-cohesion.test.mjs`: an exhausted trailing merc
+prevents premature waypoint completion (order and driver); a displaced target
+causes reassessment rather than an unlimited chase; a wounded merc hangs back.
 
 ## 2. Local alerts and combat pacing
 
@@ -35,14 +41,24 @@ Unseen enemies can investigate in real time. Require tactical turns when an
 actively approaching opponent can get within shooting range in two turns;
 otherwise give a general warning such as “You are pretty sure someone heard that.”
 
-Existing: `stepInvestigation` supports exploration movement. Missing: the threat
-threshold and notification. `refresh` still uses any alerted guard as contact.
+Implemented 2026-09-17: `threatens()` / `reachable()` in `engine.js` decide
+contact (`refresh`), alert guards beyond the two-turn reach close in real time
+through `stepInvestigation`, and the warning is logged once per newly alerted
+guard. The headless player runs the same real-time tick.
 
-Implementation guidance proposed in the discussion: estimate actual movement/AP
-and weapon range with walls and routes, not only straight-line distance. Keep
-bleeding/fire and other timed consequences consistent across mode transitions.
-Verify distant searches remain real time, approaching threats switch in time,
-walls affect the estimate, and transitions cannot refill AP or skip casualty timers.
+The estimate walks the real movement graph for two turns of the guard's AP and
+traces the shooting rays, so walls and detours count. Bleeding, recovery and fire
+remain pending and keep turn mode regardless of guard reach. AP is live across
+the engagement: while any guard is alert, actions other than walking cost their
+combat AP even in real time, nothing refills until a guard phase ends, and any
+squad attack from real time opens a turn that holds until the squad ends it, so
+a transition cannot refill a turn and real-time fire is never free. Alert guards
+that reach their fix and see nobody stand down. Verified in
+`tests/tactics-pacing.test.mjs` (ten cases): distant searches stay real time,
+an approaching threat switches at exactly the two-turn reach, walls change the
+estimate, transitions neither refill AP nor skip casualty timers, real-time fire
+is charged, alert decays, and a tick on the 36-guard playtest map stays inside
+the frame budget.
 
 ## 3. Clearer stealth opening
 
@@ -62,20 +78,25 @@ User direction: the player should not know everything an enemy carries. Bodies
 are containers with randomized loot based on the enemy's equipment. Nearby mercs
 can pass equipment. Do not add an omniscient “useful loot nearby” listing.
 
-Existing: defeated guards drop their actual pack into a ground pile. Nearby loot
-can be taken and adjacent mercs can give items through `inventoryTransfer`; the
-current adjacency rule is same floor, cardinal neighbor, open intervening edge.
-The automated squad scavenges ammunition and better loaded weapons.
+Implemented 2026-09-17 (`rollLoot`, `searchBody`, `searchPreview`, `pileOpen`,
+`pileContents`, `SEARCH_COST` in `engine.js`; RULES.md "Bodies as containers"):
+a fallen guard's body is a closed container whose contents are rolled once from
+its own equipment (guns with their loaded rounds, 40–100% of each reserve stack)
+and hidden until a comrade beside it searches it for 3 AP in combat (free in
+real time). Adjacent mercs give items through `inventoryTransfer` as before; the
+adjacency rule (same floor, cardinal neighbour, open intervening edge) is now
+`adjacentTo` and shared with searching.
 
-Missing: the body-container/search state and randomized equipment-based contents.
-The assistant suggested revealing contents on search and unloading recovered guns;
-the user has not separately confirmed those exact UI steps or unloading rules.
-Do not describe those suggestions as implemented. Preserve loaded ammunition
-accounting and backpack capacity when implementing the revised scavenging system.
+Revealing contents on search is built (the search button and cursor action; the
+combat log names what was found). Unloading recovered guns is not built: the user
+has not confirmed it. Loaded ammunition accounting and backpack capacity are
+unchanged: a taken gun holds exactly the rounds it was found with.
 
-Verify contents remain hidden before discovery, inspecting again cannot reroll
-loot, drops fit the equipment, and transfers conserve items and loaded rounds.
-Teach the automated player to obey the same discovery rules.
+Verified in `tests/tactics-bodies.test.mjs`: contents hidden before discovery,
+a second search cannot reroll, drops fit the equipment (kinds carried, counts
+bounded, loaded rounds exact), transfers conserve items and loaded rounds, and
+the automated player obeys the same discovery rules (values nothing unsearched,
+searches, then takes).
 
 ## 5. Overwatch feedback and direction
 
@@ -92,27 +113,40 @@ AP reservation and cancellation rules remain. Live browser verification passed.
 ## 6. Casualty recovery instead of carrying
 
 User proposal: when injured badly enough to be downed, fatigue reaches maximum;
-after three turns the merc has recovered enough to move again. This is not yet
-implemented. The earlier carry/drag recommendation is not an accepted requirement
-for this solution.
+after three turns the merc has recovered enough to move again. Implemented
+2026-09-17 in `engine.js` (`beginRecovery`, `recovering`, `RECOVERY_TURNS`,
+`RECOVERY_HP`; `collapse` in `personalities.js`). The earlier carry/drag
+recommendation is not an accepted requirement for this solution.
 
-The assistant proposed refinements: begin the three full turns after stabilization;
-restore only enough stamina to move, leave the merc wounded/exhausted; another hit
-interrupts recovery; rest does not stop bleeding. These refinements were suggested,
-not separately confirmed. Exact movement threshold and interruption/reset behavior
-still need an explicit implementation decision, recorded here when made.
+Decisions made at implementation (the refinements had been suggested, not
+confirmed): the three turns are full squad turns beginning after the stabilization,
+so the medic's own turn does not count; on Easy the count starts at the downing.
+The comrade stands at 5 HP with fatigue left at 100 and a normal AP refill (no
+stamina/AP penalty exists to restore partially). Another hit while down kills, as
+before: interruption is death, not a reset. Rest is unavailable while anyone is
+down, so it can neither stop bleeding nor hurry recovery.
 
-Current code: stabilization stops bleeding; a stable casualty can recover to 5 HP
-when the encounter clears. There is no three-turn recovery counter. Replace or
-reconcile that existing path rather than allowing immediate encounter-end recovery
-to bypass the new delay. Do not revive permanently dead or captured mercs.
+The old encounter-end recovery path is removed: a stabilized comrade is pending
+like a bleeding one, so the map stays in turn mode until the counter runs out and
+is won afterwards. Dead and captured mercs never stand up; a comrade left
+recovering when the squad crosses the map edge is captured.
 
-Verify downing versus ordinary injury, three full turns without an off-by-one,
-stabilization timing, damage during recovery, easy-mode auto-stabilization,
-retreat, encounter completion and real-time/combat transitions.
+Verified in `tests/tactics-recovery.test.mjs`: downing versus ordinary injury
+(fatigue 100 only at the downing), three full turns without an off-by-one (turns
+N+1..N+3 after a stabilization in N), Easy auto-stabilization counting from the
+downing, a blast during recovery, retreat abandonment, encounter completion
+waiting for the comrade, and the phase never dropping to real time while one is
+down. Squad card reads "STABILIZED · up in N turns".
 
 ## Evidence
 
-The post-overwatch merge passed 342 tests and the asset check. Those passing tests
-validate existing features, not the pending requirements above. This handoff is a
-documentation audit; it does not implement the remaining gameplay changes.
+The post-overwatch merge passed 342 tests and the asset check; that handoff was a
+documentation audit. The four open threads were then built on
+`tactics-playtest-followups` (2026-09-17), each as its own commit with its own
+hostile review by one subagent (probes plus a mutation sandbox), advancing only at
+4/5 or better: recovery 4/5; pacing 2/5 → reworked → 4/5 → fixes; bodies 4/5 →
+fixes; bot cohesion 3/5 → 3/5 → 4/5. Final: 383 tests and the asset check pass;
+the 20-seed factory balance run wins 20/20 (the tip this branch started from,
+2c767ae, stalled on 10 of 20 seeds through a bot equip loop, fixed in the first
+commit). The balance run does not exercise the pacing rule (every factory seed
+opens in contact); `tests/tactics-pacing.test.mjs` does.

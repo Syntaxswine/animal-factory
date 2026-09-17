@@ -12,8 +12,8 @@ Recorded from the user's answers on 2026-09-14. These are design decisions for t
 
 | System | User direction |
 | --- | --- |
-| Easy difficulty | Fallen characters automatically revive with 5 HP. The exact revival timing is not yet decided. |
-| Harder difficulties | Downed characters need medical care within a few turns to prevent bleeding out. Surviving characters recover after battle. Six squad-turn ends to stabilize; death on timeout; stabilized survivors recover to 5 HP (implemented). |
+| Easy difficulty | Fallen characters are stabilized automatically and stand again three full squad turns later with 5 HP (decided 2026-09-17, RULES.md Casualty recovery). |
+| Harder difficulties | Downed characters need medical care within a few turns to prevent bleeding out. Surviving characters recover after battle. Six squad-turn ends to stabilize; death on timeout; stabilized survivors stand again three full squad turns after stabilization with 5 HP (implemented). |
 | Progression | Level-ups award skill points that the player assigns. |
 | Species | Species can favor particular classes through traits: fox stealth affinity is an example. HP, AP, shooting ability and sight-cone differences are all supported directions. Exact traits and values are pending. |
 | Movement | Individual control plus optional multi-selection and formation orders (implemented). |
@@ -30,7 +30,7 @@ These are implementation proposals, not additional decisions attributed to the u
 
 Use explicit states: active, downed, stabilized and dead. A downed or stabilized character cannot take normal combat actions. Medical stabilization stops the countdown; it does not silently grant a fresh combat turn. Count bleed-out once per full round, with a visible counter and a clearly explained deadline. A character downed late in a round must receive the same rescue opportunity as one downed early.
 
-Recommended Easy timing: revive at encounter end with 5 HP. This avoids repeatedly reviving into enemy fire and eliminates an unlimited mid-combat revival loop. Keep whole-squad defeat as a separate rule to decide: does Easy allow a costly retreat, or require a retry? Do not assume the current prototype's defeat rule is the final answer.
+Superseded 2026-09-17: revival at encounter end is replaced by the three-full-turn recovery counter for every difficulty (RULES.md, Casualty recovery). A downed comrade cannot loop for free: another hit while down kills, and it stands at the start of its own turn with full AP, so the player must move it out of the line of fire or lose it again. Keep whole-squad defeat as a separate rule to decide: does Easy allow a costly retreat, or require a retry? Do not assume the current prototype's defeat rule is the final answer.
 
 Superseded: the implemented harder-mode timer is six squad-turn ends to stabilize. Whether a dead character is permanently lost, and the HP restored after a successful encounter, remain open. Encounter completion must check pending casualties explicitly; merely losing sight of enemies must not trigger recovery or reset a countdown.
 
@@ -82,7 +82,7 @@ The user has explicitly deferred story work. Build edge-based walls, distinct lo
 
 3. Stealth, investigation and reactions: complete, hostile review 4/5. Sneaking adds 2 AP/cardinal step and reduces detection range; noise yields an approximate search area. One overwatch shot reserves AP now and revalidates cone/weapon/ammunition during the enemy turn; switching or turning cancels without refund. Aimed fire retained. Group movement shares noise and reservation rules. 170 tests passed, browser confirmed controls and accounting.
 
-4. Difficulty and casualties: complete, hostile review 4/5. Next-run Easy/Standard selection; Easy auto-stabilizes and recovers to 5 HP after encounter; Standard six-turn treatment deadline. Whole-squad incapacitation requires retry in both modes. Difficulty follows travel. 173 tests passed and browser verified setting changes only on Restart.
+4. Difficulty and casualties: complete, hostile review 4/5. Next-run Easy/Standard selection; Easy auto-stabilizes; recovery is the three-full-turn counter since 2026-09-17; Standard six-turn treatment deadline. Whole-squad incapacitation requires retry in both modes. Difficulty follows travel. 173 tests passed and browser verified setting changes only on Restart.
 
 5. Character sheet and progression: complete, hostile review 4/5. Shared 25 XP per defeated guard, three points per 100 XP, level cap10; five trainable skills, no free healing or AP refill. Separate horse/goat/donkey/sheep traits use existing art and appear on sheets. Training between encounters; no respec yet. 177 tests passed and browser verified species-derived stats. Stage1 default cones are superseded for these four species by their displayed trait values; guards retain120°.
 

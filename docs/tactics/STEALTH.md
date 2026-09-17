@@ -29,5 +29,6 @@ factory starts in exploration with zero alerted guards; its first guard cannot
 see a merc on the rear diagonal at 17,19, while the merc can see him.
 
 Remaining separate mechanics: knives still deal normal damage (no guaranteed
-silent one-hit takedown), nearby footsteps can trigger investigation, and the
-proposed two-turn threat threshold for leaving combat has not been implemented.
+silent one-hit takedown) and nearby footsteps can trigger investigation. The
+two-turn threat threshold for entering and leaving combat shipped 2026-09-17
+(RULES.md, "Local alerts and combat pacing").
