@@ -12,3 +12,12 @@ test('fence orders equip real cutters and spend the normal cutting AP',()=>{cons
 test('overwatch orders reserve AP without consuming ammunition and lure orders walk normally',()=>{const {s,u}=scene();s.units[4].alert=true;const bot=createSquadBot({orders:[{type:'overwatch',unit:u.id,heading:0},{type:'lure',unit:1,x:4,y:6,z:0}]});const ammo=u.ammo.assault;assert.ok(followOrder(s,bot));assert.ok(u.overwatch);assert.equal(u.ammo.assault,ammo);assert.equal(u.ap,12-WEAPONS.assault.cost);assert.ok(followOrder(s,bot));assert.equal(s.units[1].x,4);assert.ok(s.units[1].ap< s.units[1].maxAp);assert.ok(u.overwatch);});
 test('sneak orders use the actual stealth toggle and respect unavailable actors',()=>{const {s,u}=scene();const bot=createSquadBot({orders:[{type:'sneak',unit:u.id}]});assert.ok(followOrder(s,bot));assert.equal(u.sneaking,true);assert.equal(bot.orders.length,0);});
 test('normal squad behavior picks up an adjacent HMG before advancing',()=>{const {s,u,bot}=scene();s.loot=[{x:u.x,y:u.y,items:[{type:'weapon',kind:'hmg',rounds:50}]}];assert.ok(stepSquadBot(s,bot));assert.ok(u.pack.some(i=>i.kind==='hmg'));assert.equal(bot.events[0].type,'scavenge');});
+test('an empty gun whose reload is unaffordable is not an upgrade: no free-swap loop between it and the loaded fallback',()=>{
+ const {s,u,bot}=scene();s.units[4].alert=true;s.units[4].x=u.x+30;
+ // Shotgun in the second slot with shells in reserve but none loaded; 2 AP: equip is a free swap, the reload it needs costs 3.
+ u.slots=['assault','shotgun'];u.pack=u.pack.filter(i=>i.kind!=='pistol');u.pack.push({type:'weapon',kind:'shotgun',rounds:0},{type:'ammo',kind:'shotgun',count:6});u.ammo.shotgun=0;u.ap=2;
+ assert.equal(equipBest(s,u),false,'the shotgun cannot be loaded this turn, so the loaded rifle stays');assert.equal(u.weapon,'assault');
+ let steps=0;while(s.phase==='player'&&steps++<50)stepSquadBot(s,bot);
+ assert.equal(s.phase,'enemy','the turn ends instead of swapping guns forever');assert.ok(bot.events.filter(e=>e.type==='equip'||e.type==='fallback').length<=2,JSON.stringify(bot.events));
+ u.ap=3;s.phase='player';assert.equal(equipBest(s,u),true,'with the reload affordable the shotgun is the better gun again');assert.equal(u.weapon,'shotgun');
+});

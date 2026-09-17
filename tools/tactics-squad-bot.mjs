@@ -10,6 +10,9 @@ export function weaponValue(kind,rounds=1){
 }
 const near=(s,u,p)=>M.levelOf(u)===M.levelOf(p)&&Math.abs(u.x-p.x)+Math.abs(u.y-p.y)<=1&&(u.x===p.x&&u.y===p.y||!M.blockedEdge(s,u,p));
 const usable=(u,k)=>!E.WEAPONS[k].mag||u.ammo[k]>0||reserve(u,k)>0;
+// A gun with an empty magazine only counts as ready when the reload it needs is affordable now (3 AP in combat, free otherwise);
+// otherwise equipping it and falling back off it are both free slot swaps and the two decisions chase each other forever.
+const ready=(s,u,k)=>!E.WEAPONS[k].mag||u.ammo[k]>0||(reserve(u,k)>0&&(['explore','won'].includes(s.phase)||u.ap>=3));
 const bestHeld=u=>Math.max(...u.pack.filter(i=>i.type==='weapon').map(i=>weaponValue(i.kind,usable(u,i.kind)?1:0)),0);
 export function lootOptions(s,u,{radius=20}={}){
  const options=[];
@@ -29,8 +32,8 @@ export function lootOptions(s,u,{radius=20}={}){
  return options.sort((a,b)=>b.score-a.score);
 }
 export function equipBest(s,u){
- const current=weaponValue(u.weapon,usable(u,u.weapon)?1:0);
- const best=u.pack.filter(i=>i.type==='weapon'&&usable(u,i.kind)).sort((a,b)=>weaponValue(b.kind)-weaponValue(a.kind))[0];
+ const current=weaponValue(u.weapon,ready(s,u,u.weapon)?1:0);
+ const best=u.pack.filter(i=>i.type==='weapon'&&ready(s,u,i.kind)).sort((a,b)=>weaponValue(b.kind)-weaponValue(a.kind))[0];
  return !!best&&weaponValue(best.kind)>current+1&&E.equip(s,u,best.kind);
 }
 export function createSquadBot({cohesion=12,scavengeRadius=20,orders=[],quietOpening=false}={}){
@@ -90,7 +93,7 @@ export function stepSquadBot(s,bot){
   const shots=[];for(const g of visible)for(const burst of w.burstRounds?[false,true]:[false])for(const zone of ['torso','head','legs']){const p=E.previewAttack(s,u,g,burst,zone);if(p.ok&&!(p.obstruction?.kind==='unit'&&s.units.find(v=>v.id===p.obstruction.unitId)?.team==='squad'))shots.push({g,p,burst,zone,score:p.chance*Math.min(g.hp,p.damage*p.rounds)/p.cost});}
   shots.sort((a,b)=>b.score-a.score);if(shots.length){const shot=shots[0];if(E.attack(s,u,shot.g,shot.burst,false,shot.zone))return event(bot,s,u,'attack',shot.g.name);}
   if(threatened&&scavenge(s,u,bot,{travel:false}))return true;
-  if(w.mag&&!u.ammo[u.weapon]){const fallback=u.pack.filter(i=>i.type==='weapon'&&i.kind!==u.weapon&&usable(u,i.kind)).sort((a,b)=>weaponValue(b.kind)-weaponValue(a.kind))[0];if(fallback&&E.equip(s,u,fallback.kind))return event(bot,s,u,'fallback',fallback.kind);}
+  if(w.mag&&!u.ammo[u.weapon]){const fallback=u.pack.filter(i=>i.type==='weapon'&&i.kind!==u.weapon&&ready(s,u,i.kind)).sort((a,b)=>weaponValue(b.kind)-weaponValue(a.kind))[0];if(fallback&&E.equip(s,u,fallback.kind))return event(bot,s,u,'fallback',fallback.kind);}
   const laggard=team.filter(v=>v!==u).sort((a,b)=>E.distance(u,b)-E.distance(u,a))[0];
   if(laggard&&E.distance(u,laggard)>bot.cohesion){const center=team.reduce((p,v)=>({x:p.x+v.x/team.length,y:p.y+v.y/team.length}),{x:0,y:0}),anchor=team.filter(v=>v!==u).sort((a,b)=>E.distance(a,center)-E.distance(b,center))[0];if(E.distance(u,center)>bot.cohesion/3&&oneStep(s,u,M.neighbors(s,anchor),bot))return event(bot,s,u,'regroup',anchor.name);if(E.setOverwatch(s,u))return event(bot,s,u,'overwatch','cover regrouping');continue;}
   const target=visible[0]||E.guards(s).sort((a,b)=>E.distance(u,a)-E.distance(u,b))[0];

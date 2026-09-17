@@ -7,7 +7,7 @@
 - Seek previously seen compatible ammunition within 20 tiles; replenish up to roughly two magazines.
 - Collect and equip stronger loaded conventional guns, including the HMG. Respect backpack capacity and equip AP. Avoid automatically adopting explosives or flamethrowers because they require separate friendly-fire tactics.
 - Exchange an empty or depleted gun for a better-loaded copy by dropping the old weapon and collecting the replacement. No ammunition is created or magically transferred between guns.
-- Prefer reloading/upgrading over fallback to a sidearm. Immediate threats take priority over travelling to loot.
+- Prefer reloading/upgrading over fallback to a sidearm. Immediate threats take priority over travelling to loot. A gun with an empty magazine is only a candidate when its reload is affordable now (3 AP in combat); otherwise the free held-slot swap onto it and the fallback off it chased each other until the action cap (fixed 2026-09-17, `ready` in the bot; the 20-seed run had stalled on 10 seeds at 2c767ae).
 - Alternate merc decisions, stabilize adjacent bleeding comrades when possible, and regroup when separation exceeds 12 tiles. A waiting gunner can cover regrouping with overwatch.
 - Cache legal routes. The test player searches approach goals together; every actual movement step is still checked and charged by the engine.
 

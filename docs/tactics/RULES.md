@@ -60,7 +60,7 @@ Each squad member starts with reusable wire cutters and one consumable medkit. C
 
 Lethal damage incapacitates squad members instead of immediately killing them. Incapacitated characters cannot act, block their tile, and do not drop their weapons. Their six-turn timer decreases at each squad-turn end; they die at the sixth end unless stabilized. Pending casualties keep turn-based play active even after the last guard dies, preventing an exploration/travel timer bypass. An entirely incapacitated squad still loses immediately because no one can administer aid.
 
-Stabilization requires a conscious teammate on a cardinally adjacent tile at the same elevation, with no intervening barrier. It consumes one medkit. Medical skill 0–100 sets cost to ceil(12 − 9 × skill / 100), bounded to 3–12 AP. Starting skills are Yakov 0, Anya 25, Misha 50 and Vera 100. Treatment stops bleeding but leaves the patient incapacitated until the encounter is cleared, when stabilized patients recover to 5 HP. Repeated treatment, insufficient AP, missing supplies and invalid range cannot consume resources. Medical skill and remaining supplies follow the squad between maps.
+Stabilization requires a conscious teammate on a cardinally adjacent tile at the same elevation, with no intervening barrier. It consumes one medkit. Medical skill 0–100 sets cost to ceil(12 − 9 × skill / 100), bounded to 3–12 AP. Starting skills are Yakov 0, Anya 25, Misha 50 and Vera 100. Treatment stops bleeding but leaves the patient incapacitated; since 2026-09-17 it stands again three full squad turns later (see "Casualty recovery" below), not at encounter end. Repeated treatment, insufficient AP, missing supplies and invalid range cannot consume resources. Medical skill and remaining supplies follow the squad between maps.
 
 Verification: 152 tests plus syntax and asset checks pass. Tests cover lethal downing, all six turn boundaries, last-guard death, stable recovery, treatment constraints, AP/supply accounting, and fence traversal. Hostile review 4/5 includes additional travel-persistence and all-incapacitated probes. Browser checks confirmed 12 AP versus 3 AP treatment displays and no console errors. Full inventory management and picking up utility loot remain separate work.
 
@@ -131,6 +131,20 @@ Direction from the user: to retreat you physically walk to the edge of the map; 
 
 Checks: `tests/tactics-retreat.test.mjs` (16 cases: grid links; band, ground and AP gates; one crosser leaves a live fight; full regroup on the far border with the clock; abandonment; a lost fight after a crossing; destination commitment and marker merge; landing on a generated map; no body for a rifle round or a blast; return across the edge; downtime waits for regroup; AP carried into a live contact and overwatch cleared; re-entry of a map left mid-fight; re-entry of a lost map; a westward retreat resolves to the factory).
 
+
+## Casualty recovery — 2026-09-17
+
+Direction from the user (playtest follow-up 6): when injured badly enough to be downed, fatigue reaches maximum; after three turns the merc has recovered enough to move again. This replaces recovery at encounter end. Carrying or dragging casualties is not part of this rule.
+
+- Going down (bleeding on Standard, stabilized at once on Easy) sets the comrade's fatigue to 100. Only rest (`restStrain`) works it off; fatigue still carries no AP or accuracy penalty (that is a separate, undecided thread).
+- A stabilized comrade carries a recovery counter of three squad turns. Only a turn that began after the stabilization counts, so the turn the medic worked in is not one of the three. The counter ticks at each squad-turn end; when the third end runs it out, the comrade stands as the next squad turn begins, before any guard acts: casualty cleared, 5 HP, a full turn of AP (no AP penalty: "enough to move" is read as HP, not stamina). Standing at the start of its own turn, not at the end of the previous one, is what keeps a 5 HP merc from being handed to the guards' volley first (hostile review round 1). On Easy the counter starts at the downing itself.
+- A stabilized comrade is pending exactly like a bleeding one: the map stays in turn mode until it stands, so clearing the last guard no longer revives anyone on the spot and cannot shortcut the delay; the map is won when the counter runs out.
+- Another hit while down (a stray round, a blast) kills, as before: interruption is death, not a reset. The dead and the captured never stand up. Going down puts out a burning merc (a body on the ground does not panic-run); fatigue at 100 is presently visible on the character sheet only. Rest is unavailable while a comrade is down (`downtimeReason`), so rest cannot stop bleeding or hurry recovery.
+- Retreat: a comrade still recovering when the last standing member crosses the edge is captured (the abandonment rule) and its counter is cleared; the run record lists it.
+
+Decisions recorded here because PLAYTEST-FOLLOWUPS.md left them open: the movement threshold is 5 HP with a normal AP refill; interruption is lethal, never a reset; the count starts at stabilization (Easy: at the downing); the encounter-end path is removed rather than reconciled.
+
+Checks: `tests/tactics-recovery.test.mjs` (six cases: fatigue at the downing; three full turns with the medic's turn not counting; a cleared map waits for the comrade then is won; Easy counts from the downing; a blast on a recovering comrade kills and the dead and captured stay down; a comrade left recovering at a border crossing is captured). `tests/tactics-medical.test.mjs` and `tests/tactics-difficulty.test.mjs` updated from the old encounter-end rule.
 
 ## Implemented weapon ranges and accuracy
 

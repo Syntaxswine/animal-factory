@@ -11,7 +11,7 @@ is not evidence that a feature shipped. Update this file when completing work.
 | 3. Clearer stealth opening | Implemented | Further quiet-approach playtesting; guaranteed knife takedowns were not implemented or agreed. |
 | 4. Scavenging and supply sharing | Partial | Hidden searchable body containers, randomized equipment-based loot; unloading is still a suggestion. |
 | 5. Overwatch feedback and direction | Implemented | No remaining requirement from this discussion. |
-| 6. Casualty recovery / evacuation | Pending | Maximum fatigue on downing and three-turn recovery before movement. |
+| 6. Casualty recovery / evacuation | Implemented 2026-09-17 | None from this discussion; decisions recorded in RULES.md, Casualty recovery. |
 
 ## 1. Group movement and cohesion
 
@@ -92,24 +92,30 @@ AP reservation and cancellation rules remain. Live browser verification passed.
 ## 6. Casualty recovery instead of carrying
 
 User proposal: when injured badly enough to be downed, fatigue reaches maximum;
-after three turns the merc has recovered enough to move again. This is not yet
-implemented. The earlier carry/drag recommendation is not an accepted requirement
-for this solution.
+after three turns the merc has recovered enough to move again. Implemented
+2026-09-17 in `engine.js` (`beginRecovery`, `recovering`, `RECOVERY_TURNS`,
+`RECOVERY_HP`; `collapse` in `personalities.js`). The earlier carry/drag
+recommendation is not an accepted requirement for this solution.
 
-The assistant proposed refinements: begin the three full turns after stabilization;
-restore only enough stamina to move, leave the merc wounded/exhausted; another hit
-interrupts recovery; rest does not stop bleeding. These refinements were suggested,
-not separately confirmed. Exact movement threshold and interruption/reset behavior
-still need an explicit implementation decision, recorded here when made.
+Decisions made at implementation (the refinements had been suggested, not
+confirmed): the three turns are full squad turns beginning after the stabilization,
+so the medic's own turn does not count; on Easy the count starts at the downing.
+The comrade stands at 5 HP with fatigue left at 100 and a normal AP refill (no
+stamina/AP penalty exists to restore partially). Another hit while down kills, as
+before: interruption is death, not a reset. Rest is unavailable while anyone is
+down, so it can neither stop bleeding nor hurry recovery.
 
-Current code: stabilization stops bleeding; a stable casualty can recover to 5 HP
-when the encounter clears. There is no three-turn recovery counter. Replace or
-reconcile that existing path rather than allowing immediate encounter-end recovery
-to bypass the new delay. Do not revive permanently dead or captured mercs.
+The old encounter-end recovery path is removed: a stabilized comrade is pending
+like a bleeding one, so the map stays in turn mode until the counter runs out and
+is won afterwards. Dead and captured mercs never stand up; a comrade left
+recovering when the squad crosses the map edge is captured.
 
-Verify downing versus ordinary injury, three full turns without an off-by-one,
-stabilization timing, damage during recovery, easy-mode auto-stabilization,
-retreat, encounter completion and real-time/combat transitions.
+Verified in `tests/tactics-recovery.test.mjs`: downing versus ordinary injury
+(fatigue 100 only at the downing), three full turns without an off-by-one (turns
+N+1..N+3 after a stabilization in N), Easy auto-stabilization counting from the
+downing, a blast during recovery, retreat abandonment, encounter completion
+waiting for the comrade, and the phase never dropping to real time while one is
+down. Squad card reads "STABILIZED · up in N turns".
 
 ## Evidence
 
