@@ -36,9 +36,13 @@ export function equipBest(s,u){
  const best=u.pack.filter(i=>i.type==='weapon'&&ready(s,u,i.kind)).sort((a,b)=>weaponValue(b.kind)-weaponValue(a.kind))[0];
  return !!best&&weaponValue(best.kind)>current+1&&E.equip(s,u,best.kind);
 }
-export function createSquadBot({cohesion=12,scavengeRadius=20,orders=[],quietOpening=false}={}){
- return {cohesion,scavengeRadius,orders:structuredClone(orders),quietOpening,cursor:0,events:[],routes:new Map()};
+export function createSquadBot({cohesion=12,scavengeRadius=20,orders=[],quietOpening=false,rally=3,leash=10,woundedHp=.25}={}){
+ return {cohesion,scavengeRadius,orders:structuredClone(orders),quietOpening,rally,leash,woundedHp,cursor:0,events:[],routes:new Map()};
 }
+// A rally point is reached only when every standing member is inside its radius; the farthest one moves first, so nobody is left a turn behind.
+export const rallied=(s,p,radius)=>E.squad(s).every(u=>E.distance(u,p)<=radius);
+// A comrade too hurt to take another hit stays with the group and shoots from where it stands instead of advancing on guards.
+export const wounded=(bot,u)=>u.hp<=u.maxHp*bot.woundedHp;
 const event=(bot,s,u,type,detail)=>{bot.events.push({round:s.round,unit:u?.name,type,detail});return true;};
 function oneStep(s,u,goals,bot){
  const start=E.key(u.x,u.y,M.levelOf(u)),ids=new Set(goals.map(p=>E.key(p.x,p.y,M.levelOf(p))));if(ids.has(start))return false;
@@ -70,13 +74,21 @@ export function scavenge(s,u,bot,{travel=true,calm=true}={}){
 // Optional explicit plan: sneak, move, cut, overwatch, attack, lure (withdraw to a waypoint).
 // Coordinates come from the map author; there are no hidden teleport or free-AP operations.
 export function followOrder(s,bot){
- const order=bot.orders[0];if(!order)return false;const u=s.units.find(u=>u.id===order.unit&&E.canControl(s,u));if(!u){if(!E.alive(s.units[order.unit]))bot.orders.shift();return false;}
+ const order=bot.orders[0];if(!order)return false;
+ if(order.type==='rally'){const radius=order.radius??bot.rally;if(rallied(s,order,radius)){bot.orders.shift();return event(bot,s,null,'order','rally');}
+  // Farthest standing member first; a member that cannot step this turn is waited for, never left behind.
+  for(const m of E.squad(s).filter(m=>E.distance(m,order)>radius).sort((a,b)=>E.distance(b,order)-E.distance(a,order))){if(!E.canControl(s,m))continue;const goals=[order,...M.neighbors(s,order,undefined,false)].filter(q=>E.distance(q,order)<=radius);if(oneStep(s,m,goals,bot))return event(bot,s,m,'order','rally');}
+  return false;}
+ const u=s.units.find(u=>u.id===order.unit&&E.canControl(s,u));if(!u){if(!E.alive(s.units[order.unit]))bot.orders.shift();return false;}
  let done=false,acted=false;
  if(order.type==='sneak'){done=u.sneaking===(order.enabled??true);if(!done)acted=done=E.setSneaking(s,u);}
  else if(['move','lure'].includes(order.type)){done=u.x===order.x&&u.y===order.y&&M.levelOf(u)===(order.z||0);if(!done)acted=oneStep(s,u,[order],bot);}
  else if(order.type==='cut'){done=s.edges[order.edge]==='fence-cut';if(!done){const cells=M.edgeCells(order.edge);if(!cells.some(p=>p.x===u.x&&p.y===u.y&&p.z===M.levelOf(u)))acted=oneStep(s,u,cells,bot);else if(!u.slots.includes('wireCutters'))acted=E.equipCutters(s,u,1);else acted=done=E.cutFence(s,u,order.edge);}}
  else if(order.type==='overwatch'){if(u.overwatch)done=true;else{u.heading=order.heading??u.heading;E.refresh(s);acted=done=E.setOverwatch(s,u);}}
- else if(order.type==='attack'){const target=s.units[order.target];done=!target||!E.alive(target);if(!done){if(order.weapon&&u.weapon!==order.weapon)acted=E.equip(s,u,order.weapon);else{u.heading=E.headingTo(u,target);E.refresh(s);if(E.previewAttack(s,u,target,false,order.zone||'torso').ok)acted=E.attack(s,u,target,false,false,order.zone||'torso');else acted=oneStep(s,u,M.neighbors(s,target),bot);}done=!E.alive(target);}}
+ else if(order.type==='attack'){const target=s.units[order.target];done=!target||!E.alive(target);
+  // Bounded pursuit: the order is anchored where the target stood when it was given; a target that has moved past the leash is reassessed, not chased across the map.
+  if(!done){order.anchor||={x:target.x,y:target.y,z:M.levelOf(target)};const leash=order.leash??bot.leash;if(E.distance(target,order.anchor)>leash){bot.orders.shift();return event(bot,s,u,'reassess',target.name+' moved '+Math.round(E.distance(target,order.anchor))+' tiles from where the order found it');}}
+  if(!done){if(order.weapon&&u.weapon!==order.weapon)acted=E.equip(s,u,order.weapon);else{u.heading=E.headingTo(u,target);E.refresh(s);if(E.previewAttack(s,u,target,false,order.zone||'torso').ok)acted=E.attack(s,u,target,false,false,order.zone||'torso');else acted=oneStep(s,u,M.neighbors(s,target),bot);}done=!E.alive(target);}}
  if(done)bot.orders.shift();if(acted||done)return event(bot,s,u,'order',order.type);return false;
 }
 export function stepSquadBot(s,bot){
@@ -104,6 +116,7 @@ export function stepSquadBot(s,bot){
   if(w.mag&&!u.ammo[u.weapon]){const fallback=u.pack.filter(i=>i.type==='weapon'&&i.kind!==u.weapon&&ready(s,u,i.kind)).sort((a,b)=>weaponValue(b.kind)-weaponValue(a.kind))[0];if(fallback&&E.equip(s,u,fallback.kind))return event(bot,s,u,'fallback',fallback.kind);}
   const laggard=team.filter(v=>v!==u).sort((a,b)=>E.distance(u,b)-E.distance(u,a))[0];
   if(laggard&&E.distance(u,laggard)>bot.cohesion){const center=team.reduce((p,v)=>({x:p.x+v.x/team.length,y:p.y+v.y/team.length}),{x:0,y:0}),anchor=team.filter(v=>v!==u).sort((a,b)=>E.distance(a,center)-E.distance(b,center))[0];if(E.distance(u,center)>bot.cohesion/3&&oneStep(s,u,M.neighbors(s,anchor),bot))return event(bot,s,u,'regroup',anchor.name);if(E.setOverwatch(s,u))return event(bot,s,u,'overwatch','cover regrouping');continue;}
+  if(wounded(bot,u)){const others=team.filter(v=>v!==u&&!wounded(bot,v));const anchor=others.sort((a,b)=>E.distance(u,a)-E.distance(u,b))[0];if(anchor&&E.distance(u,anchor)>2&&oneStep(s,u,M.neighbors(s,anchor),bot))return event(bot,s,u,'hang-back',anchor.name);continue;}
   const target=visible[0]||E.guards(s).sort((a,b)=>E.distance(u,a)-E.distance(u,b))[0];
   if(target){if(bot.quietOpening&&!u.fired&&!u.sneaking&&E.setSneaking(s,u))return event(bot,s,u,'sneak','approach');if(oneStep(s,u,M.neighbors(s,target),bot))return event(bot,s,u,'advance',target.name);}
  }

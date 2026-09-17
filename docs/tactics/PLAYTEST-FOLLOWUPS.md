@@ -6,7 +6,7 @@ is not evidence that a feature shipped. Update this file when completing work.
 
 | Thread | Status | Remaining work |
 | --- | --- | --- |
-| 1. Group movement and squad cohesion | Partial | Better rally completion and bounded pursuit in the automated player. |
+| 1. Group movement and squad cohesion | Implemented 2026-09-17 | None from this discussion (automated player only; browser formation movement unchanged). |
 | 2. Local alerts and combat pacing | Implemented 2026-09-17 | None from this discussion; rule in RULES.md, Local alerts and combat pacing. |
 | 3. Clearer stealth opening | Implemented | Further quiet-approach playtesting; guaranteed knife takedowns were not implemented or agreed. |
 | 4. Scavenging and supply sharing | Implemented 2026-09-17 | Unloading recovered guns is still an unconfirmed suggestion, not built. |
@@ -22,11 +22,17 @@ arrives together. The bot is a test controller, not browser merc automation.
 
 The playtest recommendations were to require all surviving squad members inside
 a rally radius before advancing a waypoint, and stop chasing a relocated rear
-guard indefinitely. These are recorded recommendations, not additional user
-decisions. See [the run](playtests/2026-09-17-south-fence/README.md).
+guard indefinitely. Implemented 2026-09-17 in the automated player: a `rally`
+order (and the south-fence driver's waypoints) completes only when every standing
+member is inside the radius, moving the farthest first; an `attack` order is
+leashed to where its target stood and is reassessed when the target moves past
+the leash; a merc at a quarter of its HP or less hangs back with the group
+instead of advancing (the recovered 5 HP merc had charged and lost seed 1947).
+See [the run](playtests/2026-09-17-south-fence/README.md) and AUTOMATED-PLAYER.md.
 
-Suggested verification: an exhausted trailing merc prevents premature waypoint
-completion; a displaced target causes reassessment rather than an unlimited chase.
+Verified in `tests/tactics-cohesion.test.mjs`: an exhausted trailing merc
+prevents premature waypoint completion (order and driver); a displaced target
+causes reassessment rather than an unlimited chase; a wounded merc hangs back.
 
 ## 2. Local alerts and combat pacing
 
