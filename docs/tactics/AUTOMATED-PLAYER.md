@@ -39,4 +39,8 @@ node tools/tactics-balance.mjs --runs 1 --seed 1947 --output artifacts/scavengin
 node tools/tactics-balance.mjs --map Factory-test.json --quiet-opening --orders approach.json --max-actions 20000 --output artifacts/planned-battle.json
 ```
 
-The CLI returns a nonzero status for an unfinished or stalled run and records decisions in the output JSON. The verified smaller Factory-template smoke battle completed in 11 rounds with three survivors, 13 scavenges, and seven weapon equips; Vera collected/equipped the HMG. The full 36-guard custom map has not yet been rerun with this behavior.
+The CLI returns a nonzero status for an unfinished or stalled run and records decisions in the output JSON. The verified smaller Factory-template smoke battle completed in 11 rounds with three survivors, 13 scavenges, and seven weapon equips; Vera collected/equipped the HMG. The subsequent full-map south-fence run is recorded below.
+
+## Recorded full-map run
+
+[2026-09-17 south-fence browser playtest](playtests/2026-09-17-south-fence/README.md): all 36 guards defeated, all four mercs survived, round 139. Includes the exact map, seeded result, route/controller, stage screenshots, and observed deviations from the intended stealth/ambush plan.

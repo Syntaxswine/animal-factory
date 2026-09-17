@@ -1,0 +1,367 @@
+{
+  "stage": "south",
+  "phase": "player",
+  "round": 3,
+  "actions": 125,
+  "guards": 35,
+  "openingInitiallyAlert": true,
+  "doorsOpened": 0,
+  "fenceCut": false,
+  "squad": [
+    {
+      "name": "Yakov",
+      "hp": 110,
+      "casualty": null,
+      "x": 4,
+      "y": 12,
+      "weapon": "assault",
+      "ammo": 30
+    },
+    {
+      "name": "Anya",
+      "hp": 90,
+      "casualty": null,
+      "x": 5,
+      "y": 17,
+      "weapon": "rifle",
+      "ammo": 4
+    },
+    {
+      "name": "Misha",
+      "hp": 120,
+      "casualty": null,
+      "x": 5,
+      "y": 15,
+      "weapon": "pistol",
+      "ammo": 8
+    },
+    {
+      "name": "Vera",
+      "hp": 100,
+      "casualty": null,
+      "x": 2,
+      "y": 18,
+      "weapon": "hmg",
+      "ammo": 50
+    }
+  ],
+  "events": [
+    {
+      "action": 1,
+      "round": 1,
+      "type": "scavenge",
+      "detail": "Vera collected HMG equipment"
+    },
+    {
+      "action": 2,
+      "round": 1,
+      "type": "scavenge",
+      "detail": "Vera collected HMG equipment"
+    },
+    {
+      "action": 3,
+      "round": 1,
+      "type": "equip",
+      "detail": "Vera equipped HMG"
+    },
+    {
+      "action": 4,
+      "round": 1,
+      "type": "stage",
+      "detail": "opening"
+    },
+    {
+      "action": 8,
+      "round": 1,
+      "type": "overwatch",
+      "detail": "Yakov covers opening"
+    },
+    {
+      "action": 9,
+      "round": 1,
+      "type": "overwatch",
+      "detail": "Anya covers opening"
+    },
+    {
+      "action": 10,
+      "round": 1,
+      "type": "overwatch",
+      "detail": "Vera covers opening"
+    },
+    {
+      "action": 61,
+      "round": 2,
+      "type": "stage",
+      "detail": "south"
+    }
+  ],
+  "botEvents": [
+    {
+      "round": 1,
+      "unit": "Misha",
+      "type": "order",
+      "detail": "attack"
+    },
+    {
+      "round": 1,
+      "unit": "Misha",
+      "type": "order",
+      "detail": "attack"
+    },
+    {
+      "round": 1,
+      "unit": "Yakov",
+      "type": "scavenge",
+      "detail": "weapon shotgun"
+    },
+    {
+      "round": 1,
+      "unit": "Yakov",
+      "type": "scavenge",
+      "detail": "ammo shotgun"
+    },
+    {
+      "round": 1,
+      "unit": "Anya",
+      "type": "scavenge",
+      "detail": "weapon sniper"
+    },
+    {
+      "round": 1,
+      "unit": "Anya",
+      "type": "scavenge",
+      "detail": "ammo sniper"
+    }
+  ],
+  "log": [
+    "Group stopped: route blocked or a comrade lacks AP.",
+    "Group movement ordered for 4 comrades.",
+    "Group stopped: route blocked or a comrade lacks AP.",
+    "Group movement ordered for 4 comrades.",
+    "Group movement ordered for 4 comrades.",
+    "Squad turn / 3.",
+    "Guard turn.",
+    "Group stopped: route blocked or a comrade lacks AP.",
+    "Group movement ordered for 4 comrades.",
+    "Group movement ordered for 4 comrades.",
+    "Group stopped: route blocked or a comrade lacks AP.",
+    "Group movement ordered for 4 comrades.",
+    "Squad turn / 2.",
+    "Anya → Boris: 48 damage / down.",
+    "Boris → Anya: miss.",
+    "Guard turn.",
+    "Inventory updated.",
+    "Inventory updated.",
+    "Inventory updated.",
+    "Inventory updated.",
+    "Vera reserved one overwatch shot.",
+    "Anya reserved one overwatch shot.",
+    "Yakov reserved one overwatch shot.",
+    "Vera equipped Heavy machine gun.",
+    "Inventory updated.",
+    "Inventory updated.",
+    "Local map ready / 36 guards.",
+    "CONTACT / Squad turn. Movement costs 2 / 4 / 8 AP per tile: standing / kneeling / prone."
+  ],
+  "stopped": true,
+  "history": [
+    {
+      "stage": "opening",
+      "phase": "enemy",
+      "round": 1,
+      "actions": 20,
+      "guards": 35,
+      "openingInitiallyAlert": true,
+      "doorsOpened": 0,
+      "fenceCut": false,
+      "squad": [
+        {
+          "name": "Yakov",
+          "hp": 110,
+          "casualty": null,
+          "x": 3,
+          "y": 4,
+          "weapon": "assault",
+          "ammo": 30
+        },
+        {
+          "name": "Anya",
+          "hp": 90,
+          "casualty": null,
+          "x": 3,
+          "y": 6,
+          "weapon": "rifle",
+          "ammo": 4
+        },
+        {
+          "name": "Misha",
+          "hp": 120,
+          "casualty": null,
+          "x": 4,
+          "y": 5,
+          "weapon": "pistol",
+          "ammo": 8
+        },
+        {
+          "name": "Vera",
+          "hp": 100,
+          "casualty": null,
+          "x": 2,
+          "y": 7,
+          "weapon": "hmg",
+          "ammo": 50
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "stage": "opening",
+      "phase": "player",
+      "round": 2,
+      "actions": 60,
+      "guards": 35,
+      "openingInitiallyAlert": true,
+      "doorsOpened": 0,
+      "fenceCut": false,
+      "squad": [
+        {
+          "name": "Yakov",
+          "hp": 110,
+          "casualty": null,
+          "x": 3,
+          "y": 4,
+          "weapon": "assault",
+          "ammo": 30
+        },
+        {
+          "name": "Anya",
+          "hp": 90,
+          "casualty": null,
+          "x": 3,
+          "y": 6,
+          "weapon": "rifle",
+          "ammo": 4
+        },
+        {
+          "name": "Misha",
+          "hp": 120,
+          "casualty": null,
+          "x": 4,
+          "y": 5,
+          "weapon": "pistol",
+          "ammo": 8
+        },
+        {
+          "name": "Vera",
+          "hp": 100,
+          "casualty": null,
+          "x": 2,
+          "y": 7,
+          "weapon": "hmg",
+          "ammo": 50
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "stage": "south",
+      "phase": "enemy",
+      "round": 2,
+      "actions": 80,
+      "guards": 35,
+      "openingInitiallyAlert": true,
+      "doorsOpened": 0,
+      "fenceCut": false,
+      "squad": [
+        {
+          "name": "Yakov",
+          "hp": 110,
+          "casualty": null,
+          "x": 3,
+          "y": 8,
+          "weapon": "assault",
+          "ammo": 30
+        },
+        {
+          "name": "Anya",
+          "hp": 90,
+          "casualty": null,
+          "x": 3,
+          "y": 12,
+          "weapon": "rifle",
+          "ammo": 4
+        },
+        {
+          "name": "Misha",
+          "hp": 120,
+          "casualty": null,
+          "x": 4,
+          "y": 10,
+          "weapon": "pistol",
+          "ammo": 8
+        },
+        {
+          "name": "Vera",
+          "hp": 100,
+          "casualty": null,
+          "x": 2,
+          "y": 13,
+          "weapon": "hmg",
+          "ammo": 50
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "stage": "south",
+      "phase": "player",
+      "round": 3,
+      "actions": 120,
+      "guards": 35,
+      "openingInitiallyAlert": true,
+      "doorsOpened": 0,
+      "fenceCut": false,
+      "squad": [
+        {
+          "name": "Yakov",
+          "hp": 110,
+          "casualty": null,
+          "x": 3,
+          "y": 11,
+          "weapon": "assault",
+          "ammo": 30
+        },
+        {
+          "name": "Anya",
+          "hp": 90,
+          "casualty": null,
+          "x": 3,
+          "y": 15,
+          "weapon": "rifle",
+          "ammo": 4
+        },
+        {
+          "name": "Misha",
+          "hp": 120,
+          "casualty": null,
+          "x": 4,
+          "y": 13,
+          "weapon": "pistol",
+          "ammo": 8
+        },
+        {
+          "name": "Vera",
+          "hp": 100,
+          "casualty": null,
+          "x": 2,
+          "y": 16,
+          "weapon": "hmg",
+          "ammo": 50
+        }
+      ],
+      "stopped": false
+    }
+  ],
+  "errors": [],
+  "mapSha256": "242cb2103a88bc06f7bafb9ae38ddb26851ac4feb0a04500d92f8471e50bd384"
+}
