@@ -49,3 +49,19 @@ test('the scripted route advances a waypoint only when the whole squad has ralli
  let n=0;while(r.waypoint===0&&n++<200){stepRun(s,r);if(laggard.y>30)assert.equal(r.waypoint,0,'the lead standing on the waypoint does not complete it while a comrade is far');}
  assert.equal(r.waypoint,1,'completed once everyone is within the rally radius');assert.ok(squad(s).every(u=>distance(u,{x:10,y:5,z:0})<=3));
 });
+
+test('review round 1: an unreachable rally point is dropped, not stalled on; farthest member moves first; the threshold is a quarter',()=>{
+ const {s}=scene();for(let y=0;y<240;y++)for(let x=100;x<=104;x++)s.map[y][x]='void';/* a wall of void across the map */
+ const bot=createSquadBot({orders:[{type:'rally',x:150,y:100,z:0,radius:2}]});for(const u of squad(s))u.ap=12;
+ assert.ok(followOrder(s,bot),'the controller acts (drops the order) instead of returning false');assert.equal(bot.orders.length,0);assert.equal(bot.events.at(-1).type,'reassess');
+ const waiting=createSquadBot({orders:[{type:'rally',x:8,y:5,z:0,radius:2}]});squad(s)[3].x=2;squad(s)[3].y=20;for(const u of squad(s).slice(0,3)){u.x=8+(u.id%2);u.y=5+(u.id>>1);}squad(s)[3].ap=0;
+ assert.equal(followOrder(s,waiting),false,'out of AP is waiting, not unreachable');assert.equal(waiting.orders.length,1);
+ const order=createSquadBot({orders:[{type:'rally',x:8,y:5,z:0,radius:1}]});const a=squad(s)[2],b=squad(s)[3];a.x=8;a.y=12;a.ap=12;b.x=8;b.y=30;b.ap=12;const before=b.y;
+ assert.ok(followOrder(s,order));assert.equal(b.y,before-1,'the farthest member steps first');
+ const bot2=createSquadBot();const v=s.units[0];v.hp=Math.floor(v.maxHp*.25);assert.ok(wounded(bot2,v));v.hp=Math.floor(v.maxHp*.25)+1;assert.equal(wounded(bot2,v),false);
+});
+
+test('when every merc is wounded nobody hides behind anybody: the squad fights on and the harness does not stall',()=>{
+ const {s,g}=scene({phase:'explore'});const bot=createSquadBot();for(const u of squad(s)){u.hp=10;u.ap=12;}
+ assert.ok(stepSquadBot(s,bot),'the controller still acts');assert.ok(['advance','regroup','scavenge','seek-loot','seek-body','equip'].includes(bot.events.at(-1)?.type),JSON.stringify(bot.events.at(-1)));
+});

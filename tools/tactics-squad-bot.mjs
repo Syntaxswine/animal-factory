@@ -77,7 +77,10 @@ export function followOrder(s,bot){
  const order=bot.orders[0];if(!order)return false;
  if(order.type==='rally'){const radius=order.radius??bot.rally;if(rallied(s,order,radius)){bot.orders.shift();return event(bot,s,null,'order','rally');}
   // Farthest standing member first; a member that cannot step this turn is waited for, never left behind.
-  for(const m of E.squad(s).filter(m=>E.distance(m,order)>radius).sort((a,b)=>E.distance(b,order)-E.distance(a,order))){if(!E.canControl(s,m))continue;const goals=[order,...M.neighbors(s,order,undefined,false)].filter(q=>E.distance(q,order)<=radius);if(oneStep(s,m,goals,bot))return event(bot,s,m,'order','rally');}
+  const out=E.squad(s).filter(m=>E.distance(m,order)>radius).sort((a,b)=>E.distance(b,order)-E.distance(a,order));
+  for(const m of out){if(!E.canControl(s,m))continue;const goals=[order,...M.neighbors(s,order,undefined,false)].filter(q=>E.distance(q,order)<=radius);if(oneStep(s,m,goals,bot))return event(bot,s,m,'order','rally');}
+  // Nobody could step and nobody is merely out of AP: the point cannot be reached (void, walled off, occupied). Drop it rather than stall the run.
+  if(!out.some(m=>E.canControl(s,m)&&s.phase==='player'&&m.ap<2)){bot.orders.shift();return event(bot,s,null,'reassess','rally point unreachable');}
   return false;}
  const u=s.units.find(u=>u.id===order.unit&&E.canControl(s,u));if(!u){if(!E.alive(s.units[order.unit]))bot.orders.shift();return false;}
  let done=false,acted=false;
@@ -116,7 +119,9 @@ export function stepSquadBot(s,bot){
   if(w.mag&&!u.ammo[u.weapon]){const fallback=u.pack.filter(i=>i.type==='weapon'&&i.kind!==u.weapon&&ready(s,u,i.kind)).sort((a,b)=>weaponValue(b.kind)-weaponValue(a.kind))[0];if(fallback&&E.equip(s,u,fallback.kind))return event(bot,s,u,'fallback',fallback.kind);}
   const laggard=team.filter(v=>v!==u).sort((a,b)=>E.distance(u,b)-E.distance(u,a))[0];
   if(laggard&&E.distance(u,laggard)>bot.cohesion){const center=team.reduce((p,v)=>({x:p.x+v.x/team.length,y:p.y+v.y/team.length}),{x:0,y:0}),anchor=team.filter(v=>v!==u).sort((a,b)=>E.distance(a,center)-E.distance(b,center))[0];if(E.distance(u,center)>bot.cohesion/3&&oneStep(s,u,M.neighbors(s,anchor),bot))return event(bot,s,u,'regroup',anchor.name);if(E.setOverwatch(s,u))return event(bot,s,u,'overwatch','cover regrouping');continue;}
-  if(wounded(bot,u)){const others=team.filter(v=>v!==u&&!wounded(bot,v));const anchor=others.sort((a,b)=>E.distance(u,a)-E.distance(u,b))[0];if(anchor&&E.distance(u,anchor)>2&&oneStep(s,u,M.neighbors(s,anchor),bot))return event(bot,s,u,'hang-back',anchor.name);continue;}
+  // A wounded merc hangs back beside a healthy comrade; when nobody is healthy there is nobody to hide behind, and the squad fights on as normal.
+  const healthy=team.filter(v=>v!==u&&!wounded(bot,v));
+  if(wounded(bot,u)&&healthy.length){const anchor=healthy.sort((a,b)=>E.distance(u,a)-E.distance(u,b))[0];if(E.distance(u,anchor)>2&&oneStep(s,u,M.neighbors(s,anchor),bot))return event(bot,s,u,'hang-back',anchor.name);continue;}
   const target=visible[0]||E.guards(s).sort((a,b)=>E.distance(u,a)-E.distance(u,b))[0];
   if(target){if(bot.quietOpening&&!u.fired&&!u.sneaking&&E.setSneaking(s,u))return event(bot,s,u,'sneak','approach');if(oneStep(s,u,M.neighbors(s,target),bot))return event(bot,s,u,'advance',target.name);}
  }
