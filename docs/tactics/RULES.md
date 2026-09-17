@@ -132,6 +132,18 @@ Direction from the user: to retreat you physically walk to the edge of the map; 
 Checks: `tests/tactics-retreat.test.mjs` (16 cases: grid links; band, ground and AP gates; one crosser leaves a live fight; full regroup on the far border with the clock; abandonment; a lost fight after a crossing; destination commitment and marker merge; landing on a generated map; no body for a rifle round or a blast; return across the edge; downtime waits for regroup; AP carried into a live contact and overwatch cleared; re-entry of a map left mid-fight; re-entry of a lost map; a westward retreat resolves to the factory).
 
 
+## Bodies as containers — 2026-09-17
+
+Direction from the user (playtest follow-up 4): the player should not know everything an enemy carries; bodies are containers with randomized loot based on the enemy's equipment; nearby mercs can pass equipment; no omniscient "useful loot nearby" listing.
+
+- When a guard falls, its body becomes a closed container (`s.loot` entry with `body` = the guard's id, `searched: false`). Its contents are rolled once, at the fall, from what the guard actually carried: every gun with exactly the rounds it had loaded, and 40–100% of each reserve ammunition stack (the rest spilled, spent or ruined). Nothing the guard did not carry ever appears. The roll uses its own random stream (`lootSeed`), so a body never moves a bullet; the same seed gives the same body.
+- Until a comrade searches it, the body shows and offers nothing: no loot sprite, no contents in the inventory panel, no take. Searching needs a squad member on the body's tile or a cardinal neighbour with no barrier between (the transfer reach), costs 3 AP in combat and while any guard on the map is alert (the engagement economy of the pacing rule), nothing in calm real time, clears overwatch, and logs what was found. Searching again does nothing: contents are fixed at the fall, never rerolled.
+- Supply piles authored on the map and items comrades drop are open as before. Taking from an open pile and handing items to an adjacent comrade remain free and conserve items and loaded rounds. Backpack capacity rules are unchanged.
+- The headless player obeys the same rule: it values nothing in an unsearched body, searches a body beside it when no guard threatens, walks to a body it has seen fall only while no guard is in sight and only as the nearest comrade, then scavenges what it finds.
+- Not built: unloading recovered guns (the follow-up records it as a suggestion the user has not confirmed).
+
+Checks: `tests/tactics-bodies.test.mjs` (a fall makes a closed container with equipment-only contents and the loaded rounds exact, nothing visible or takeable before the search, no reroll on a second search; adjacency, AP and wall gates, free in real time, the taken gun keeps its rounds; determinism per seed and no combat randomness spent; hand-overs conserve items and rounds, supply and dropped piles stay open; the bot values nothing unsearched, searches, then takes).
+
 ## Local alerts and combat pacing — 2026-09-17
 
 Direction from the user (playtest follow-up 2): hearing a sound alone should not lock the whole map into turns; unseen enemies investigate in real time; tactical turns are required when an actively approaching opponent can get within shooting range in two turns; otherwise a general warning.

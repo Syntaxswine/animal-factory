@@ -4,7 +4,7 @@
 
 ## Default behavior
 
-- Seek previously seen compatible ammunition within 20 tiles; replenish up to roughly two magazines.
+- Seek previously seen compatible ammunition within 20 tiles; replenish up to roughly two magazines. It values nothing inside a body until it has searched it (3 AP in combat and while any guard is alert), the same rule the player plays by; it searches a body beside it when no guard threatens, and walks to a body it has seen fall only while no guard is in sight, nearest comrade only (the first cut sent the whole squad body-hunting mid-fight and lost seeds 1947 and 1957; with this rule the 20-seed run is 20/20).
 - Collect and equip stronger loaded conventional guns, including the HMG. Respect backpack capacity and equip AP. Avoid automatically adopting explosives or flamethrowers because they require separate friendly-fire tactics.
 - Exchange an empty or depleted gun for a better-loaded copy by dropping the old weapon and collecting the replacement. No ammunition is created or magically transferred between guns.
 - Prefer reloading/upgrading over fallback to a sidearm. Immediate threats take priority over travelling to loot. A gun with an empty magazine is only a candidate when its reload is affordable now (3 AP in combat); otherwise the free held-slot swap onto it and the fallback off it chased each other until the action cap (fixed 2026-09-17, `ready` in the bot; the 20-seed run had stalled on 10 seeds at 2c767ae).

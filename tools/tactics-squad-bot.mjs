@@ -17,7 +17,7 @@ const bestHeld=u=>Math.max(...u.pack.filter(i=>i.type==='weapon').map(i=>weaponV
 export function lootOptions(s,u,{radius=20}={}){
  const options=[];
  for(const pile of s.loot||[]){if(!s.seen.has(E.key(pile.x,pile.y,M.levelOf(pile)))||E.distance(u,pile)>radius)continue;
-  for(const [index,item] of pile.items.entries()){
+  for(const [index,item] of E.pileContents(pile).entries()){
    const own=u.pack.find(i=>i.type==='weapon'&&i.kind===item.kind);let value=0,replace=null;
    if(item.type==='ammo'&&own&&item.count>0&&accepts(u,item)){
     const supply=(u.ammo[item.kind]||0)+reserve(u,item.kind),desired=E.WEAPONS[item.kind].mag*2;
@@ -51,13 +51,19 @@ function oneStep(s,u,goals,bot){
  }
  const q=cached.path[0];return E.move(s,u,q.x,q.y,q.z)&&E.stepMovement(s);
 }
-export function scavenge(s,u,bot,{travel=true}={}){
+export function scavenge(s,u,bot,{travel=true,calm=true}={}){
  if(!E.canControl(s,u)||s.queue.length)return false;
  for(const choice of lootOptions(s,u,{radius:bot.scavengeRadius})){
   if(near(s,u,choice.pile)){
    if(choice.replace!==null&&!E.inventoryTransfer(s,u,choice.replace,'drop'))continue;
    if(E.inventoryTransfer(s,u,choice.index,'take',choice.pile))return event(bot,s,u,'scavenge',choice.item.type+' '+choice.item.kind);
   }else if(travel){const goals=[choice.pile,...M.neighbors(s,choice.pile,undefined,false)].filter(q=>near(s,q,choice.pile));if(oneStep(s,u,goals,bot))return event(bot,s,u,'seek-loot',choice.item.kind);}
+ }
+ // The player does not know what a body holds until someone searches it: the same rule for the test player. A body beside it is searched when no
+ // guard threatens; bodies it has seen fall are walked to only while no guard is in sight (calm), and only by the nearest comrade, not the whole squad.
+ for(const pile of (s.loot||[]).filter(p=>p.body!==undefined&&!p.searched&&s.seen.has(E.key(p.x,p.y,M.levelOf(p)))&&E.distance(u,p)<=bot.scavengeRadius).sort((a,b)=>E.distance(u,a)-E.distance(u,b))){
+  if(near(s,u,pile)){if(E.searchBody(s,u,pile))return event(bot,s,u,'search',s.units[pile.body]?.name);}
+  else if(travel&&calm&&!E.squad(s).some(v=>v!==u&&E.distance(v,pile)<E.distance(u,pile))){const goals=[pile,...M.neighbors(s,pile,undefined,false)].filter(q=>near(s,q,pile));if(oneStep(s,u,goals,bot))return event(bot,s,u,'seek-body',s.units[pile.body]?.name);}
  }
  return false;
 }
@@ -85,7 +91,7 @@ export function stepSquadBot(s,bot){
   for(const patient of s.units.filter(v=>v.casualty==='bleeding'))if(E.stabilizePreview(s,u,patient).ok&&E.stabilize(s,u,patient))return event(bot,s,u,'stabilize',patient.name);
   const visible=E.guards(s).filter(g=>s.detected.has(g.id)).sort((a,b)=>E.distance(u,a)-E.distance(u,b));
   const threatened=visible.some(g=>E.distance(u,g)<=E.WEAPONS[g.weapon].range&&E.lineOfSight(s,g,u));
-  if(!threatened&&scavenge(s,u,bot))return true;
+  if(!threatened&&scavenge(s,u,bot,{calm:!visible.length}))return true;
   const opening=bot.quietOpening&&!bot.events.some(e=>e.type==='attack'),firstTarget=visible[0];
   const quietWeapon=opening&&firstTarget?(E.distance(u,firstTarget)<=1.5&&u.pack.some(i=>i.kind==='knife')?'knife':E.guards(s).every(g=>g===firstTarget||E.distance(u,g)>E.WEAPONS.pistol.range*2)&&u.pack.some(i=>i.kind==='pistol')?'pistol':null):null;
   if(quietWeapon&&u.weapon!==quietWeapon&&E.equip(s,u,quietWeapon))return event(bot,s,u,'equip',quietWeapon);

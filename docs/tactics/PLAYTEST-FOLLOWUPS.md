@@ -9,7 +9,7 @@ is not evidence that a feature shipped. Update this file when completing work.
 | 1. Group movement and squad cohesion | Partial | Better rally completion and bounded pursuit in the automated player. |
 | 2. Local alerts and combat pacing | Implemented 2026-09-17 | None from this discussion; rule in RULES.md, Local alerts and combat pacing. |
 | 3. Clearer stealth opening | Implemented | Further quiet-approach playtesting; guaranteed knife takedowns were not implemented or agreed. |
-| 4. Scavenging and supply sharing | Partial | Hidden searchable body containers, randomized equipment-based loot; unloading is still a suggestion. |
+| 4. Scavenging and supply sharing | Implemented 2026-09-17 | Unloading recovered guns is still an unconfirmed suggestion, not built. |
 | 5. Overwatch feedback and direction | Implemented | No remaining requirement from this discussion. |
 | 6. Casualty recovery / evacuation | Implemented 2026-09-17 | None from this discussion; decisions recorded in RULES.md, Casualty recovery. |
 
@@ -72,20 +72,25 @@ User direction: the player should not know everything an enemy carries. Bodies
 are containers with randomized loot based on the enemy's equipment. Nearby mercs
 can pass equipment. Do not add an omniscient “useful loot nearby” listing.
 
-Existing: defeated guards drop their actual pack into a ground pile. Nearby loot
-can be taken and adjacent mercs can give items through `inventoryTransfer`; the
-current adjacency rule is same floor, cardinal neighbor, open intervening edge.
-The automated squad scavenges ammunition and better loaded weapons.
+Implemented 2026-09-17 (`rollLoot`, `searchBody`, `searchPreview`, `pileOpen`,
+`pileContents`, `SEARCH_COST` in `engine.js`; RULES.md "Bodies as containers"):
+a fallen guard's body is a closed container whose contents are rolled once from
+its own equipment (guns with their loaded rounds, 40–100% of each reserve stack)
+and hidden until a comrade beside it searches it for 3 AP in combat (free in
+real time). Adjacent mercs give items through `inventoryTransfer` as before; the
+adjacency rule (same floor, cardinal neighbour, open intervening edge) is now
+`adjacentTo` and shared with searching.
 
-Missing: the body-container/search state and randomized equipment-based contents.
-The assistant suggested revealing contents on search and unloading recovered guns;
-the user has not separately confirmed those exact UI steps or unloading rules.
-Do not describe those suggestions as implemented. Preserve loaded ammunition
-accounting and backpack capacity when implementing the revised scavenging system.
+Revealing contents on search is built (the search button and cursor action; the
+combat log names what was found). Unloading recovered guns is not built: the user
+has not confirmed it. Loaded ammunition accounting and backpack capacity are
+unchanged: a taken gun holds exactly the rounds it was found with.
 
-Verify contents remain hidden before discovery, inspecting again cannot reroll
-loot, drops fit the equipment, and transfers conserve items and loaded rounds.
-Teach the automated player to obey the same discovery rules.
+Verified in `tests/tactics-bodies.test.mjs`: contents hidden before discovery,
+a second search cannot reroll, drops fit the equipment (kinds carried, counts
+bounded, loaded rounds exact), transfers conserve items and loaded rounds, and
+the automated player obeys the same discovery rules (values nothing unsearched,
+searches, then takes).
 
 ## 5. Overwatch feedback and direction
 
