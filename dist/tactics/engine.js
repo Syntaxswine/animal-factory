@@ -277,7 +277,7 @@ export function attack(s,a,b,burst=false,byAI=false,zone='torso',reaction=false)
  a.fired=true;
  // Orienting reflex: an attack from outside the victim's field spins it toward the attacker (turning is free).
  if(!inCone(b,a)){b.heading=headingTo(b,a);b.facing=Math.cos(b.heading*Math.PI/180)-Math.sin(b.heading*Math.PI/180)>=0?1:-1;log(s,b.name+' spins toward the attack.');}
- if(b.team==='guard'){b.alert=true;b.lastKnown={x:a.x,y:a.y,z:levelOf(a)};}
+ if(b.team==='guard')targeted(s,b,a);
  // A squad attack from real time opens a turn (engaged holds it until the squad ends that turn); the shot is re-checked against the AP the turn actually has.
  if(['explore','won'].includes(s.phase)){s.engaged=true;refresh(s);if(s.phase==='player'&&a.team==='squad'&&a.ap<p.cost){log(s,a.name+': not enough AP to fire.');return false;}}
  if(!reaction&&combatCosts(s))a.ap-=p.cost; // no charge on a map with nothing left to fight (a blast on a won map)
@@ -304,7 +304,7 @@ export function attack(s,a,b,burst=false,byAI=false,zone='torso',reaction=false)
   const reacted=new Set();
   for(const {unit:victim,damage:amount,zone:pelletZone}of impacts){
   const hitZone=w.blast?'torso':pelletZone||shot?.zone||f.zone;
-  if(victim.team==='guard'){victim.alert=true;victim.lastKnown={x:shooter.x,y:shooter.y,z:levelOf(shooter)};}
+  if(victim.team==='guard')targeted(s,victim,shooter);
   const tankChance=w.mag?tankExplosionChance(victim,hitZone):0,standing=s.units.filter(alive);
   if(tankChance>0&&random(s)<tankChance){const blast=explodeTanks(s,victim,shooter);explosions.push(blast);event.explosions.push(blast);}
   else {combatDamage(s,victim,amount,!!w.incendiary||incapacitated(victim),shooter);if(w.incendiary)ignite(s,victim);}
@@ -375,7 +375,9 @@ export function stepEnemy(s){
  if(!dest){if(stateOf(g)==='searching')setState(s,g,'standdown');else g.heading=(g.heading+45)%360;g.ap=0;s.enemyIndex++;refresh(s);return true;}
  if(stateOf(g)==='searching'&&atFix(s,g,dest)){g.search.index++;if(!searchGoal(g))setState(s,g,'standdown');g.ap=0;s.enemyIndex++;refresh(s);return true;}
  if(!inCone(g,dest)){g.heading=headingTo(g,dest);refresh(s);return true;}
- let best=null;for(const q of neighbors(s,dest)){if(!WEAPONS[g.weapon].mag&&distance(q,dest)>WEAPONS[g.weapon].range)continue;const path=pathTo(s,g,q.x,q.y,q.z);if(path?.length&&(!best||pathCost(path)<pathCost(best)))best=path;}
+ let best=null;
+ if(stateOf(g)==='searching'){const path=boundedRoute(s,g,fixGoals(s,dest),REALTIME_NODES);if(path?.length)best=path;} // a searcher has no shot to line up: the bounded router is enough
+ else for(const q of neighbors(s,dest)){if(!WEAPONS[g.weapon].mag&&distance(q,dest)>WEAPONS[g.weapon].range)continue;const path=pathTo(s,g,q.x,q.y,q.z);if(path?.length&&(!best||pathCost(path)<pathCost(best)))best=path;}
  if(best&&best[0].cost<=g.ap){const p=best[0];stepTo(s,g,p);g.ap-=p.cost;refresh(s);resolveOverwatch(s,g);return true;}
  g.ap=0;s.enemyIndex++;return true;
 }
@@ -457,6 +459,9 @@ function reconcile(s,g){const st=stateOf(g);if(st!==g.state){g.state=st;g.route=
 function identified(s,g,p){const fix={x:p.x,y:p.y,z:levelOf(p)};g.seenRound=s.round;g.unseen=0;const st=stateOf(g);if(st==='broken'){g.lastKnown=fix;g.threat=fix;return;}if(st==='alert')g.lastKnown=fix;else setState(s,g,'alert',fix);}
 // A footstep or a peripheral glimpse: a resting, standing-down or suspicious guard goes (or stays) Suspicious toward it; a searching guard re-centres its search on it.
 function suspect(s,g,fix){const st=stateOf(g);if(st==='alert'||st==='broken')return;setState(s,g,st==='searching'?'searching':'suspicious',fix);}
+// Shot at, hit or miss: a broken guard learns where the shooter is and keeps running; anyone else is Alert toward the shooter. A colleague's bullet tells it nothing (G4).
+function targeted(s,b,a){if(!a||a.team===b.team)return;const fix={x:a.x,y:a.y,z:levelOf(a)};const st=stateOf(b);if(st==='broken'){b.threat=fix;b.lastKnown=fix;}else if(st==='alert')b.lastKnown=fix;else setState(s,b,'alert',fix);}
+const onFire=(s,q)=>!!s.fires?.some(f=>f.x===q.x&&f.y===q.y&&f.z===levelOf(q));
 // A hit that leaves the guard standing: at or below NERVE of its health its nerve breaks for BROKEN_ROUNDS; otherwise it is Alert toward the shooter.
 function struck(s,u,source){const fix=source&&source.team!==u.team&&Number.isFinite(source.x)?{x:source.x,y:source.y,z:levelOf(source)}:null;u.hitRound=s.round;const st=stateOf(u);
  if(u.hp<=u.maxHp*NERVE&&!u.burningTurns)setState(s,u,'broken',fix);
@@ -469,7 +474,7 @@ function settleRound(s){for(const g of guards(s)){const st=stateOf(g);
  else if(st==='broken'&&g.hitRound!==s.round&&--g.brokenRounds<=0)setState(s,g,g.lastKnown?'alert':'standdown');}}
 // The step away from the last threat that ends nearest an ally or the post; null when cornered (no legal step increases the distance).
 function fleeStep(s,g){const threat=g.threat||g.lastKnown;if(!threat)return null;const d0=distance(g,threat);
- const options=movementNeighbors(s,g).filter(q=>levelOf(q)===levelOf(g)&&!occupant(s,q.x,q.y,levelOf(q))&&distance(q,threat)>d0+1e-9);if(!options.length)return null;
+ const options=movementNeighbors(s,g).filter(q=>levelOf(q)===levelOf(g)&&!occupant(s,q.x,q.y,levelOf(q))&&!onFire(s,q)&&distance(q,threat)>d0+1e-9);if(!options.length)return null;
  const allies=guards(s).filter(o=>o!==g),refuge=q=>Math.min(g.post?distance(q,g.post):Infinity,...allies.map(o=>distance(q,o)));
  return options.sort((a,b)=>refuge(a)-refuge(b)||distance(b,threat)-distance(a,threat))[0];}
 function stepTo(s,g,p){g.heading=headingTo(g,p);openDoorBetween(s,g,p);g.facing=(p.x-g.x)-(p.y-g.y)>=0?1:-1;g.x=p.x;g.y=p.y;g.z=levelOf(p);g.steps++;enterFire(s,g);}
@@ -484,6 +489,7 @@ function placeAt(s,g,p){const z=levelOf(p),start={x:p.x,y:p.y,z};if(!inBounds(st
 // A map the squad has left advances no rounds; on re-entry its guards settle by the campaign clock, one round per ROUND_MINUTES:
 // K rounds take an alert or broken guard to its fix and Searching, M more take it home and wary; suspicion and a stand-down resolve within a round.
 export function settleGuards(s,minutes){const rounds=Math.floor(minutes/ROUND_MINUTES);if(rounds<=0)return;
+ if(s.fires?.length)s.fires=s.fires.filter(f=>(f.turns-=rounds)>0);for(const g of guards(s))if(g.burningTurns)g.burningTurns=Math.max(0,g.burningTurns-rounds); // fires burn down by the same clock
  for(const g of guards(s)){const st=stateOf(g);if(st==='rest')continue;
   const home=()=>{if(g.post)placeAt(s,g,g.post);setState(s,g,'rest');g.wary=true;if(g.post)g.heading=g.post.heading;};
   if(st==='suspicious'||st==='standdown'){home();continue;}
@@ -537,7 +543,7 @@ export function stepInvestigation(s){
  if(!['explore','won'].includes(s.phase))return false;let acted=false;const quota={left:REALTIME_SEARCHES};
  for(const g of guards(s)){
   if(g.burningTurns)continue;const st=stateOf(g);if(st==='rest')continue;
-  if(st==='broken'){const p=fleeStep(s,g);if(p)stepTo(s,g,p);else{const seen=squad(s).find(q=>notices(s,g,q));if(seen){identified(s,g,seen);g.state='alert';g.alert=true;g.seenRound=s.round;bark(s,g,g.name+' is cornered and turns to fight.');acted=true;continue;}}
+  if(st==='broken'){const p=fleeStep(s,g);if(p)stepTo(s,g,p);else{const seen=squad(s).find(q=>notices(s,g,q));if(seen){setState(s,g,'alert');identified(s,g,seen);bark(s,g,g.name+' is cornered and turns to fight.');acted=true;continue;}}
    acted=true;if(++g.brokenTicks>=BROKEN_ROUNDS*REALTIME_ROUND_TICKS)setState(s,g,g.lastKnown?'alert':'standdown');continue;}
   const dest=st==='suspicious'?g.lastHeard:st==='alert'?g.lastKnown:st==='searching'?searchGoal(g):g.post;
   const spent=st==='suspicious'&&g.searchSteps<=0; // the step budget ran out short of the sound: sweep where it stands

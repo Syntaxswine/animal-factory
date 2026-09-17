@@ -1,6 +1,7 @@
 import test from 'node:test';import assert from 'node:assert/strict';
-import {createGame,refresh,attack,endTurn,stepEnemy,stepInvestigation,emitNoise,alarm,threatens,distance,squad,guards,stateOf,setState,settleGuards,searchGoal,ALERT_ROUNDS,BROKEN_ROUNDS,SUSPICION_STEPS,SUSPICION_SWEEP,WARY_STEPS,WARY_HEARING,NERVE,ROUND_MINUTES,SEARCH_CELLS} from '../dist/tactics/engine.js';
-import {blankMap,edgeKey,W} from '../dist/tactics/maps.js';
+import fs from 'node:fs';
+import {createGame,refresh,attack,endTurn,stepEnemy,stepInvestigation,emitNoise,alarm,threatens,distance,squad,guards,stateOf,setState,settleGuards,searchGoal,ALERT_ROUNDS,BROKEN_ROUNDS,SUSPICION_STEPS,SUSPICION_SWEEP,WARY_STEPS,WARY_HEARING,NERVE,ROUND_MINUTES,SEARCH_CELLS,REALTIME_ROUND_TICKS,REALTIME_RETRY,STANDOFF_TRIES} from '../dist/tactics/engine.js';
+import {blankMap,edgeKey,parseMap,W} from '../dist/tactics/maps.js';
 import {createWorld,currentMap,leave,TRAVEL_MINUTES} from '../dist/tactics/world.js';
 
 // GUARDS.md G2. Squad on the west side at (14,30); optionally a wall along the east edge of x=20 from y=0 to y=59 (the alarm-test
@@ -131,4 +132,61 @@ test('the shortest there-and-back across a border is two hours, so a squad that 
  const y=currentMap(w);for(const u of squad(y))assert.ok(leave(w,u,'west').ok);assert.equal(w.current,'factory');
  assert.equal(w.clock.minutes,t0+2*TRAVEL_MINUTES);const f=currentMap(w),fg=guards(f)[0];
  assert.equal(stateOf(fg),'rest');assert.ok(fg.wary);assert.equal(fg.x,120);assert.equal(fg.y,100);assert.equal(f.phase,'explore','no contact on return');assert.equal(f.leftAt,undefined);
+});
+
+test('a shot that misses a broken guard does not cure it: it learns where the shooter is and keeps running (review D1)',()=>{
+ let picked=null;
+ for(let seed=1;seed<80&&!picked;seed++){const w=scene([{x:28,y:30,z:0,species:'donkey',weapon:'knife'}],{wall:false,seed});const {s,u,gs:[g]}=w;s.units.slice(1,4).forEach(p=>p.hp=0);
+  g.hp=10;setState(s,g,'broken',{x:18,y:30,z:0});teleport(u,18,30);u.heading=0;u.weapon='pistol';refresh(s);s.phase='explore';u.ap=12;const before=s.log.length;const ok=attack(s,u,g,false,false,'head');if(ok&&g.hp===10)picked=w;}
+ assert.ok(picked,'some seed misses');const {s,u,gs:[g]}=picked;
+ assert.equal(stateOf(g),'broken');assert.equal(g.alert,false);assert.equal(g.brokenRounds,BROKEN_ROUNDS);assert.deepEqual(g.threat,{x:18,y:30,z:0},'the miss told it where the shooter is');
+ assert.equal(s.phase,'player','the squad opened fire: engaged, not the guard');assert.ok(endTurn(s));guardPhase(s);assert.equal(stateOf(g),'broken');
+});
+
+test('exactly K rounds on the clock is the boundary between Alert and Searching; a burning map burns out first (review D3, M13)',()=>{
+ const make=()=>{const {s,gs:[g]}=scene([{x:40,y:100,z:0,species:'donkey',weapon:'knife'}],{wall:false});for(const p of squad(s))teleport(p,p.x,p.y+170);alertAt(g,40,90);refresh(s);return {s,g};};
+ let {s,g}=make();settleGuards(s,ROUND_MINUTES*(ALERT_ROUNDS-1));assert.equal(stateOf(g),'alert');
+ ({s,g}=make());settleGuards(s,ROUND_MINUTES*ALERT_ROUNDS);assert.equal(stateOf(g),'searching','K rounds: at its fix, searching');assert.equal(g.search.cells.length-g.search.index,SEARCH_CELLS);
+ ({s,g}=make());settleGuards(s,ROUND_MINUTES*(ALERT_ROUNDS+SEARCH_CELLS));assert.equal(stateOf(g),'rest','K + M rounds: home');
+ ({s,g}=make());g.burningTurns=3;s.fires=[{x:5,y:5,z:0,turns:3}];settleGuards(s,120);refresh(s);
+ assert.equal(g.burningTurns,0);assert.deepEqual(s.fires,[]);assert.equal(stateOf(g),'rest');assert.equal(s.phase,'explore','nothing pending on return');
+});
+
+test('in real time a broken guard with a known fix comes back Alert after R rounds of ticks (M14)',()=>{
+ const {s,u,gs:[g]}=scene([{x:30,y:30,z:0,species:'donkey',weapon:'knife'}],{wall:false});s.units.slice(1,4).forEach(p=>p.hp=0);teleport(u,25,30);u.heading=180;refresh(s);
+ setState(s,g,'broken',{x:25,y:30,z:0});g.lastKnown={x:25,y:30,z:0};assert.equal(s.phase,'explore');
+ let n=0;while(stateOf(g)==='broken'&&n++<40)stepInvestigation(s);
+ assert.equal(n,BROKEN_ROUNDS*REALTIME_ROUND_TICKS,'R rounds of ticks');assert.equal(stateOf(g),'alert','a known fix: Alert again');assert.ok(distance(g,{x:25,y:30,z:0})>5,'and it ran meanwhile');
+});
+
+test('a broken guard never steps into ground fire (review D4)',()=>{
+ // A fire line east of the guard holds turn mode open (fires are pending), so this runs on the turn clock: the guard flees north or south along the line, never onto it.
+ const {s,u,gs:[g]}=scene([{x:30,y:30,z:0,species:'donkey',weapon:'knife'}],{wall:false});s.units.slice(1,4).forEach(p=>p.hp=0);teleport(u,25,30);u.heading=180;
+ s.fires=[];for(let y=22;y<=38;y++)s.fires.push({x:32,y,z:0,turns:3});for(let y=22;y<=38;y++)s.fires.push({x:31,y,z:0,turns:3});refresh(s);
+ setState(s,g,'broken',{x:25,y:30,z:0});g.lastKnown={x:25,y:30,z:0};assert.equal(s.phase,'player','the fires hold the turn');
+ round(s);
+ assert.ok(!g.burningTurns,'never walked into the fire line');assert.ok(g.x<31,'stayed west of the fire: '+g.x+','+g.y);assert.ok(distance(g,{x:25,y:30,z:0})>5,'but did run: '+g.x+','+g.y);assert.equal(stateOf(g),'broken');
+});
+
+test('a footstep re-centres a searching guard on the sound; the nerve and wary-step numbers are what the doc says (M17, M06, M23)',()=>{
+ const {s,u,gs:[g]}=scene([{x:24,y:30,z:0,species:'donkey',weapon:'knife'}]);
+ setState(s,g,'searching',{x:36,y:36,z:0});assert.deepEqual(g.search.cells[0],{x:36,y:36,z:0});
+ emitNoise(s,u,12);assert.equal(stateOf(g),'searching');assert.deepEqual(g.search.cells[0],{x:12,y:30,z:0},'the search now starts at the heard cell');assert.equal(g.search.index,0);
+ assert.equal(NERVE,1/3);assert.equal(SUSPICION_STEPS,12);assert.equal(WARY_STEPS,1.5);g.wary=true;setState(s,g,'suspicious',{x:12,y:30,z:0});assert.equal(g.searchSteps,18);
+ // A hit that leaves 16 of 45 does not break; 15 does.
+ for(const [hp,expect] of [[42,'alert'],[41,'broken']]){let done=false;
+  for(let seed=1;seed<80&&!done;seed++){const {s:t,u:v,gs:[c]}=scene([{x:30,y:30,z:0,species:'donkey',weapon:'knife'}],{wall:false,seed});t.units.slice(1,4).forEach(p=>p.hp=0);
+   c.heading=180;c.hp=hp;teleport(v,25,30);v.heading=0;refresh(t);t.phase='player';v.ap=12;if(attack(t,v,c)&&c.hp===hp-26){assert.equal(stateOf(c),expect,hp+' - 26 = '+(hp-26));done=true;}}
+  assert.ok(done,'a 26-damage hit was found for hp '+hp);}
+});
+
+test('a walled-in stand-down rests within the retry budget, never stalls (M21); a searching guard phase on the south-fence map is bounded (review D2)',()=>{
+ const {s,gs:[g]}=scene([{x:40,y:100,z:0,species:'donkey',weapon:'knife'}],{wall:false});for(const p of squad(s))teleport(p,p.x,p.y+170);
+ for(let y=57;y<=63;y++)for(let x=57;x<=63;x++)if(Math.abs(x-60)===3||Math.abs(y-60)===3)s.map[y][x]='void';teleport(g,60,60);setState(s,g,'standdown');refresh(s);
+ const n=run(s,g,'rest',600);assert.equal(stateOf(g),'rest');assert.ok(n<=REALTIME_RETRY*STANDOFF_TRIES+10,'ticks: '+n);assert.ok(g.wary);assert.ok(Math.abs(g.x-60)<=2&&Math.abs(g.y-60)<=2,'inside the pocket: '+g.x+','+g.y);
+ const m=parseMap(fs.readFileSync(new URL('../docs/tactics/playtests/2026-09-17-south-fence/map.json',import.meta.url),'utf8'));const t=createGame(1,m,false);
+ const gs=guards(t);assert.ok(gs.length>=30);const holder=gs[0];for(const p of squad(t))teleport(p,holder.x+(p.id%2)+1,holder.y+Math.floor(p.id/2));holder.heading=0;holder.ammo[holder.weapon]=0;holder.pack=holder.pack.filter(i=>i.type!=='ammo');alertAt(holder,holder.x+1,holder.y);
+ for(const q of gs.slice(1))setState(t,q,'searching',{x:squad(t)[0].x,y:squad(t)[0].y,z:0});refresh(t);
+ const t0=performance.now();t.phase='player';t.queue=[];assert.ok(endTurn(t));for(let i=0;i<400&&t.phase==='enemy';i++)stepEnemy(t);const ms=performance.now()-t0;
+ assert.ok(ms<20000,'bound loose because node runs test files in parallel; the defect was 104 s: one guard phase with '+(gs.length-1)+' searchers: '+Math.round(ms)+' ms');
 });
