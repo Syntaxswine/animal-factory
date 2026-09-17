@@ -1,5 +1,7 @@
 # Textured 3D horse versus sprite: architect comparison
 
+Follow-up: [horse refinement and motion proof](HYBRID-HORSE-MOTION-REVIEW.md). The discussion below records the initial comparison; evidence images now reflect the refined model. The original images remain available at commit 043002f.
+
 The user requested a bounded comparison and prefers simple geometry with a richer painted skin, in the spirit of late-1990s games. Their follow-up requested more polygons. The revised horse now has **5,316 triangles / 57 mesh parts**, up from the initial 1,892 / 47, with fuller neck and muzzle, more skull contour rings, rounded shoulder caps, curled glove fingers, and a shorter shaped rifle stock.
 
 Preview: http://127.0.0.1:4389/tactics/hybrid-model-comparison.html

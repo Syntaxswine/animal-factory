@@ -11,7 +11,7 @@ export function solveLimb(a,b,upper,lower,bend){
  const normal=V(bend).addScaledVector(axis,-V(bend).dot(axis)).normalize();
  return start.addScaledVector(axis,along).addScaledVector(normal,height).toArray();
 }
-function atlasUV(geometry,panel){const uv=geometry.attributes.uv,colors=[];for(let i=0;i<uv.count;i++){uv.setXY(i,(panel%4+.025+uv.getX(i)*.95)/4,1-(Math.floor(panel/4)+.025+(1-uv.getY(i))*.95)/4);const value=[0,13].includes(panel)?1.5:panel===1?1.2:1;colors.push(value,value,value);}geometry.setAttribute('color',new THREE.Float32BufferAttribute(colors,3));return geometry;}
+function atlasUV(geometry,panel){const uv=geometry.attributes.uv,colors=[];for(let i=0;i<uv.count;i++){uv.setXY(i,(panel%4+.025+uv.getX(i)*.95)/4,1-(Math.floor(panel/4)+.025+(1-uv.getY(i))*.95)/4);const value=[0,13].includes(panel)?1.5:panel===1?1.3:[3,4,5].includes(panel)?1.65:[2,15].includes(panel)?1.25:1;colors.push(value,value,value);}geometry.setAttribute('color',new THREE.Float32BufferAttribute(colors,3));return geometry;}
 function loft(rings,panel){const pos=[],uv=[],indices=[],n=12;
  for(let i=0;i<rings.length;i++){const [x,y,ry,rz]=rings[i];for(let j=0;j<n;j++){const a=j/n*Math.PI*2;pos.push(x,y+Math.cos(a)*ry,Math.sin(a)*rz);uv.push(j/(n-1),i/(rings.length-1));}}
  for(let i=0;i<rings.length-1;i++)for(let j=0;j<n;j++){const a=i*n+j,b=i*n+(j+1)%n,c=(i+1)*n+j,d=(i+1)*n+(j+1)%n;indices.push(a,b,c,b,d,c);}
@@ -28,9 +28,9 @@ export function createHorseModel(texture=null){
  function box(size,panel,parent=body,name=''){return add(atlasUV(new THREE.BoxGeometry(...size),panel),parent,material,name);}
  function segment(name,r1,r2,panel){const bone=new THREE.Bone();bone.name=name;body.add(bone);bones[name]=bone;const mesh=add(atlasUV(new THREE.CylinderGeometry(r2,r1,1,12,2),panel),bone,material,name);return {bone,mesh};}
  function placeSegment(segment,a,b){const delta=V(b).sub(V(a));segment.bone.position.copy(V(a).add(V(b)).multiplyScalar(.5));segment.bone.quaternion.setFromUnitVectors(Y,delta.clone().normalize());segment.mesh.scale.y=delta.length();}
- const torso=segment('spine',.175,.205,3);torso.mesh.scale.x=.69;
- const pelvis=ellipsoid([.14,.15,.18],3,body,'pelvis');
- function clothingPatch(front,panel){const p=[],uv=[],ix=[];for(const [row,y]of [-.16,.15].entries())for(let j=0;j<5;j++){const z=(j/4-.5)*.28,r=.175+.03*(y/.44+.5),x=Math.sqrt(Math.max(0,r*r-z*z))*.69+.004;p.push(front*x,y,z);uv.push(j/4,row);}for(let j=0;j<4;j++)ix.push(j,j+1,j+5,j+1,j+6,j+5);const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(p,3));g.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2));g.setIndex(ix);g.computeVertexNormals();return add(atlasUV(g,panel),torso.bone,material,front===1?'overall bib':'overall back');}
+ const torso=segment('spine',.205,.240,3);torso.mesh.scale.x=.80;
+ const pelvis=ellipsoid([.17,.15,.205],3,body,'pelvis');
+ function clothingPatch(front,panel){const p=[],uv=[],ix=[];for(const [row,y]of [-.16,.15].entries())for(let j=0;j<5;j++){const z=(j/4-.5)*.34,r=.205+.035*(y/.50+.5),x=Math.sqrt(Math.max(0,r*r-z*z))*.80+.006;p.push(front*x,y,z);uv.push(j/4,row);}for(let j=0;j<4;j++)ix.push(j,j+1,j+5,j+1,j+6,j+5);const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(p,3));g.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2));g.setIndex(ix);g.computeVertexNormals();return add(atlasUV(g,panel),torso.bone,material,front===1?'overall bib':'overall back');}
  clothingPatch(1,4);clothingPatch(-1,5);
  const scarf=ellipsoid([.13,.045,.15],10,body,'neckerchief');
  const neck=segment('neck',.115,.105,0);neck.mesh.scale.z=.94;
@@ -54,8 +54,8 @@ export function createHorseModel(texture=null){
   const thigh=segment('thigh'+side,.105,.085,3),shin=segment('shin'+side,.079,.064,3),boot=add(loft([[-.115,0,.06,.058],[-.045,0,.06,.07],[.075,-.018,.042,.070],[.115,-.027,.030,.054]],7),body,material,'boot'+side);
   const sole=add(loft([[-.117,-.049,.011,.058],[.075,-.049,.011,.071],[.117,-.049,.009,.054]],14),boot,material,'sole'+side);
   const upper=segment('upper arm'+side,.095,.068,2),cuff=segment('rolled cuff'+side,.078,.080,15),forearm=segment('forearm'+side,.062,.043,13),hand=ellipsoid([.065,.044,.042],7,body,'glove'+side);
-  const elbow=ellipsoid([.065,.065,.065],13,body,'elbow'+side),knee=ellipsoid([.082,.082,.082],3,body,'knee'+side);
-  const shoulderCap=ellipsoid([.102,.096,.105],2,body,'shoulder sleeve'+side);
+  const elbow=ellipsoid([.065,.065,.065],13,body,'elbow'+side),knee=ellipsoid([.085,.09117509,.085],3,body,'knee'+side);
+  const shoulderCap=ellipsoid([.090,.068,.098],2,body,'shoulder sleeve'+side);
   for(let finger=0;finger<3;finger++){const knuckle=ellipsoid([.017,.027,.023],7,hand,'curled glove finger');knuckle.position.set((finger-1)*.030,.022,.022);}
   const thumb=ellipsoid([.031,.017,.021],7,hand,'glove thumb');thumb.position.set(.023,.025,-.029);thumb.rotation.y=-.4;
   limbs.push({side,thigh,shin,boot,upper,cuff,forearm,hand,elbow,knee,shoulderCap});hands.push(hand);contacts.push(boot);
@@ -72,25 +72,29 @@ export function createHorseModel(texture=null){
  const sight=box([.013,.024,.012],9,rifle,'front sight');sight.position.set(.54,.019,0);
  const guard=add(atlasUV(new THREE.TorusGeometry(.031,.006,4,8),9),rifle,material,'trigger guard');guard.position.set(.09,-.05,0);
  for(const x of [.13,.31]){const grip=new THREE.Object3D();grip.position.set(x,-.047,0);rifle.add(grip);grips.push(grip);}
- function pose(stance='standing',heading=0,position=[0,0,0]){
-  const prone=stance==='prone',kneeling=stance==='kneeling';
+ function pose(stance='standing',heading=0,position=[0,0,0],motion={}){
+  const prone=stance==='prone',k=motion.kneel??(stance==='kneeling'?1:0),mix=(a,b)=>V(a).lerp(V(b),k).toArray(),offset=prone?-.04:-.17,recoil=motion.recoil||0;
   root.position.fromArray(position);root.rotation.y=-heading*Math.PI/180;
-  const hip=prone?[-.22,.15,0]:kneeling?[-.06,.43,0]:[-.03,.72,0],shoulder=prone?[.22,.26,0]:kneeling?[.035,.86,0]:[0,1.159,0];
+  const hip=prone?[-.22,.18,offset]:mix([-.03,.72,offset],[-.06,.43,offset]),shoulder=prone?[.22,.27,offset]:mix([0,1.235,offset],[.035,.93,offset]);
+  hip[1]-=motion.bob||0;shoulder[1]-=motion.bob||0;
   placeSegment(torso,hip,shoulder);pelvis.position.fromArray(hip);
-  const headBase=prone?[.45,.19,-.12]:kneeling?[.055,DIMENSIONS.kneeling-.35,-.10]:[-.015,DIMENSIONS.standing-.35,-.10];head.position.fromArray(headBase);
-  placeSegment(neck,shoulder,[headBase[0]-.015,headBase[1]+.135,headBase[2]]);scarf.position.fromArray(shoulder);scarf.position.y+=.025;
+  const headBase=prone?[.45,.19,-.20]:mix([-.015,DIMENSIONS.standing-.35,-.19],[.055,DIMENSIONS.kneeling-.35,-.19]);headBase[1]-=motion.bob||0;head.position.fromArray(headBase);
+  placeSegment(neck,shoulder,[headBase[0]-.015,headBase[1]+.135,headBase[2]]);scarf.position.fromArray(shoulder);scarf.position.y+=.012;
   for(const ear of ears)ear.rotation.z=prone?Math.acos((DIMENSIONS.prone-headBase[1]-.245)/.105):0;
-  placeSegment(mane,[shoulder[0]-.065,shoulder[1]+.025,headBase[2]],[headBase[0]-.090,headBase[1]+.21,headBase[2]]);
-  placeSegment(tail,[hip[0]-.115,hip[1]+.03,0],prone?[hip[0]-.29,.08,0]:[hip[0]-.22,Math.max(.16,hip[1]-.32),0]);
-  rifle.position.set(prone?.41:0,prone?.35:kneeling?.9:1.2,0);
+  placeSegment(mane,[shoulder[0]-.085,shoulder[1]+.025,headBase[2]],[headBase[0]-.090,headBase[1]+.21,headBase[2]]);
+  placeSegment(tail,[hip[0]-.14,hip[1]+.03,offset],prone?[hip[0]-.29,.08,offset]:[hip[0]-.22,Math.max(.16,hip[1]-.32),offset]);
+  rifle.rotation.z=motion.readyPitch||0;
+  const pivot=new THREE.Vector3(-.075,-.036,0),pivotDelta=pivot.clone().sub(pivot.clone().applyQuaternion(rifle.quaternion));
+  rifle.position.set((prone?.41:0)-recoil,prone?.35:1.2-.3*k,0);rifle.position.add(pivotDelta);
   const joints={};
-  for(const l of limbs){const {side}=l,hipJoint=[hip[0],hip[1],side*.11],ankle=prone?[-.85,.07,side*.15]:kneeling?side===1?[.23,.07,.14]:[-.40,.07,-.14]:[.025,.07,side*.14];
-   const knee=solveLimb(hipJoint,ankle,.34,.34,prone?[0,.2,side]:[1,0,0]);placeSegment(l.thigh,hipJoint,knee);placeSegment(l.shin,knee,ankle);l.knee.position.fromArray(knee);l.boot.position.set(ankle[0]+.045,.06,ankle[2]);
-   const sh=[shoulder[0],shoulder[1]-.035,side*.19],grip=grips[side===-1?1:0].position.clone().add(rifle.position).toArray(),elbow=solveLimb(sh,grip,.28,.28,[0,-.8,side*.6]);
-   l.shoulderCap.position.fromArray(sh);placeSegment(l.upper,sh,elbow);const cuffStart=V(sh).lerp(V(elbow),.82).toArray();placeSegment(l.cuff,cuffStart,elbow);placeSegment(l.forearm,elbow,grip);l.elbow.position.fromArray(elbow);l.hand.position.fromArray(grip);
+  for(const l of limbs){const {side}=l,hipJoint=[hip[0],hip[1],offset+side*.12],stand=[.025,.07,offset+side*.15],down=side===1?[.23,.07,offset+.15]:[-.40,.07,offset-.15],ankle=prone?[-.85,.07,offset+side*.15]:mix(stand,down);
+   if(motion.feet){ankle[0]+=motion.feet[side].x;ankle[1]+=motion.feet[side].lift;}
+   const knee=solveLimb(hipJoint,ankle,.34,.34,prone?[0,.2,side]:[1,0,0]);placeSegment(l.thigh,hipJoint,knee);placeSegment(l.shin,knee,ankle);l.knee.position.fromArray(knee);l.boot.position.set(ankle[0]+.045,ankle[1]-.01,ankle[2]);
+   const sh=[shoulder[0],shoulder[1]-.035,offset+side*.19],grip=grips[side===-1?1:0].position.clone().applyQuaternion(rifle.quaternion).add(rifle.position).toArray(),elbow=solveLimb(sh,grip,.28,.28,[0,-.8,side*.6]);
+   l.shoulderCap.position.fromArray(sh);placeSegment(l.upper,sh,elbow);const cuffStart=V(sh).lerp(V(elbow),.82).toArray();placeSegment(l.cuff,cuffStart,elbow);placeSegment(l.forearm,elbow,grip);l.elbow.position.fromArray(elbow);l.hand.position.fromArray(grip);l.hand.quaternion.copy(rifle.quaternion);
    joints[side]={hip:hipJoint,knee,ankle,shoulder:sh,elbow,grip};
   }
-  root.userData={stance,heading,joints};root.updateMatrixWorld(true);
+  root.userData={stance,heading,joints,motion};root.updateMatrixWorld(true);
  }
  function vertex(mesh,index){return new THREE.Vector3().fromBufferAttribute(mesh.geometry.attributes.position,index).applyMatrix4(mesh.matrixWorld).toArray();}
  function diagnostics(){root.updateMatrixWorld(true);const bounds=new THREE.Box3();for(const p of parts)for(let i=0;i<p.geometry.attributes.position.count;i++)bounds.expandByPoint(new THREE.Vector3().fromBufferAttribute(p.geometry.attributes.position,i).applyMatrix4(p.matrixWorld));const triangles=parts.reduce((n,p)=>n+(p.geometry.index?.count||p.geometry.attributes.position.count)/3,0);

@@ -2,9 +2,11 @@
 
 ## Current visual revision gate
 
-Latest: the user authorized a [textured 3D horse comparison](HYBRID-MODEL-COMPARISON.md)
-and requested additional silhouette geometry. This is an isolated alternative
-proof; production integration and the graphics merge remain pending.
+Latest: the [horse refinement and motion proof](HYBRID-HORSE-MOTION-REVIEW.md)
+implements walk → kneel → aim → fire → stand with planted support and measured
+discharge geometry. Hostile review: 4/5 for the bounded proof, 3/5 production.
+The [initial 3D comparison](HYBRID-MODEL-COMPARISON.md) remains historical context;
+production integration and the graphics merge remain pending.
 
 Previous: [directional experiment](HYBRID-DIRECTIONAL-EXPERIMENT.md) implements a
 three-stance sector diagnostic (4/5), but candidate atlas art is rejected (2/5).
