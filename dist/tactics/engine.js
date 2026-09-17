@@ -244,7 +244,7 @@ export function attack(s,a,b,burst=false,byAI=false,zone='torso',reaction=false)
   const shot=pellets?pellets[0]:w.blast?explosiveTrajectory(s,shooter,f.aim,w,f.p,()=>random(s)):ballistic?bulletTrajectory(s,shooter,f.aim,{accurate,zone:f.zone,chance:f.p.chance,burst:f.p.rounds>1,reach:w.range*1.5},()=>random(s)):null;
   if(shot)trajectories.push(...(pellets||[shot]));
   const victim=ballistic?s.units.find(u=>u.id===shot.unitId):accurate&&alive(target)?target:null;
-  const event={ax:shooter.x,ay:shooter.y,bx:f.aim.x,by:f.aim.y,az:levelOf(shooter),bz:levelOf(f.aim),hit:!!victim,incendiary:!!w.incendiary,trajectories:pellets||(shot?[shot]:[]),explosions:[],reply:f.reply};sequence.push(event);
+  const event={shooter:shooter.id,target:target.id,ax:shooter.x,ay:shooter.y,bx:f.aim.x,by:f.aim.y,az:levelOf(shooter),bz:levelOf(f.aim),hit:!!victim,incendiary:!!w.incendiary,trajectories:pellets||(shot?[shot]:[]),explosions:[],downed:[],reply:f.reply};sequence.push(event);
   const blastResult=w.blast?detonate(s,shot,w):null;
   if(blastResult){event.explosions.push(blastResult.blast);explosions.push(blastResult.blast);event.hit=blastResult.hits.length>0;log(s,`${shooter.name}: ${w.short} detonated / ${blastResult.blast.destroyed} structures destroyed.`);}
   if(!victim&&!blastResult&&!pellets){log(s,`${shooter.name} → ${target.name}: miss${f.reply?' / retaliation':''}.`);continue;}
@@ -255,9 +255,11 @@ export function attack(s,a,b,burst=false,byAI=false,zone='torso',reaction=false)
   for(const {unit:victim,damage:amount,zone:pelletZone}of impacts){
   const hitZone=w.blast?'torso':pelletZone||shot?.zone||f.zone;
   if(victim.team==='guard'){victim.alert=true;victim.lastKnown={x:shooter.x,y:shooter.y,z:levelOf(shooter)};}
-  const tankChance=w.mag?tankExplosionChance(victim,hitZone):0;
+  const tankChance=w.mag?tankExplosionChance(victim,hitZone):0,standing=s.units.filter(alive);
   if(tankChance>0&&random(s)<tankChance){const blast=explodeTanks(s,victim,shooter);explosions.push(blast);event.explosions.push(blast);}
   else {combatDamage(s,victim,amount,!!w.incendiary||incapacitated(victim),shooter);if(w.incendiary)ignite(s,victim);}
+  // Units this impact put down (a tank blast can take neighbours too), so the renderer can time their fall.
+  for(const u of standing)if(!alive(u)&&!event.downed.includes(u.id))event.downed.push(u.id);
   const friendly=victim.team===shooter.team;
   log(s,`${shooter.name} → ${victim.name}: ${amount} damage${friendly?' / friendly fire':''}${f.reply?' / retaliation':''}${!alive(victim)?' / down':''}.`);
   if(friendly&&victim!==shooter&&victim.team==='squad'&&alive(victim)&&!reacted.has(victim.id)){reacted.add(victim.id);
