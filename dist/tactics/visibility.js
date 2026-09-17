@@ -38,14 +38,16 @@ export function terrainVisibility(s,observers){if(isHybrid(s))return hybridTerra
 const hybridVisibilityCache=new WeakMap();
 function hybridTerrainVisibility(s,observers){
  const world=hybridWorld(s),signature=JSON.stringify(observers.map(p=>[p.x,p.y,p.z,p.heading,p.cone,p.species,p.stance]));
- const old=hybridVisibilityCache.get(world);if(old?.signature===signature)return old.visible;
+ const old=hybridVisibilityCache.get(world);if(old?.signature===signature)return old.visible;const perObserver=old?.perObserver||new Map();
  const visible=new Set(),spacing=floorSpacing(s);
- for(const p of observers){const start=[p.x,levelOf(p)*spacing+physicalMuzzle(s,p),p.y];
+ for(const p of observers){const observerKey=JSON.stringify([p.x,p.y,p.z,p.heading,p.cone,p.species,p.stance]);if(perObserver.has(observerKey)){for(const cell of perObserver.get(observerKey))visible.add(cell);continue;}const cells=[],start=[p.x,levelOf(p)*spacing+physicalMuzzle(s,p),p.y];
   for(let z=0;z<LEVELS;z++)for(let y=Math.max(0,p.y-TERRAIN_RANGE);y<=Math.min(H-1,p.y+TERRAIN_RANGE);y++)for(let x=Math.max(0,p.x-TERRAIN_RANGE);x<=Math.min(W-1,p.x+TERRAIN_RANGE);x++){
-   if(terrainAt(s,x,y,z)==='void'||Math.hypot(x-p.x,y-p.y,(z-levelOf(p))*3)>detectRange(p,{x,y},TERRAIN_RANGE))continue;
-   const hit=traceWorld(world,start,[x,z*spacing+physicalMuzzle(s,p),y],{filter:b=>!(b.source?.x===x&&b.source?.y===y&&b.source?.z===z)});
-   if(!hit)visible.add(z?`${x},${y},${z}`:`${x},${y}`);
+   if(terrainAt(s,x,y,z)==='void'||Math.hypot(x-p.x,y-p.y,(z-levelOf(p))*spacing)>detectRange(p,{x,y},TERRAIN_RANGE))continue;
+   if(world.hasWoodland&&Math.hypot(x-p.x,y-p.y,(z-levelOf(p))*spacing)+9*woodlandDepth(s,p,{x,y,z})>detectRange(p,{x,y},TERRAIN_RANGE))continue;
+   const hit=traceWorld(world,start,[x,z*spacing+physicalMuzzle(s,p),y],{filter:b=>b.blocksSight!==false&&!(b.source?.x===x&&b.source?.y===y&&b.source?.z===z)});
+   if(!hit)cells.push(z?`${x},${y},${z}`:`${x},${y}`);
   }
+  perObserver.set(observerKey,cells);for(const cell of cells)visible.add(cell);if(perObserver.size>12)perObserver.delete(perObserver.keys().next().value);
  }
- hybridVisibilityCache.set(world,{signature,visible});return visible;
+ hybridVisibilityCache.set(world,{signature,visible,perObserver});return visible;
 }

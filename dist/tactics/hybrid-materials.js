@@ -17,15 +17,28 @@ export function surfacePixels(kind,size=128){
   else if(kind==='wood'){const grain=((Math.floor(u*48)+Math.floor(v*7))%7)*2;color=[120+grain,95+grain,62+grain];}
   else if(kind==='grass')color=[92,109,72];
   else if(kind==='sand')color=[151,139,102];
+  else if(kind==='foliage')color=[48,93,48];
+  else if(kind==='water')color=[47,91,118];
+  else if(kind==='linen')color=[193,204,180];
+  else if(kind==='screen')color=[43,133,130];
+  else if(kind==='dark-metal')color=[48,55,54];
+  else if(kind==='rust')color=[144,81,48];
+  else if(kind==='red')color=[187,46,35];
+  else if(kind==='olive')color=[80,89,47];
+  else if(kind==='asphalt')color=[61,66,63];
   else color=[127,128,113];
   const i=(y*size+x)*4;for(let c=0;c<3;c++)data[i+c]=color[c]+noise;data[i+3]=255;
  }
  return {data,width:size,height:size};
 }
 export function materialKind(box){
+ if(['foliage','water','linen','screen','dark-metal','rust','red','olive','metal','wood','sand'].includes(box.material))return box.material;
+ if(box.material==='woodland')return 'foliage';
+ if(box.material==='ground-asphalt'||box.material==='bridge')return 'asphalt';
+ if(box.material==='ground-dirt'||box.material==='ground-gravel')return 'sand';
  if(box.kind==='stairs')return 'metal';
  if(/brick|^wall$/.test(box.material))return 'brick';
- if(/corrugated|steel/.test(box.material)||box.kind==='roof')return 'metal';
+ if(/corrugated|steel/.test(box.material))return 'metal';
  if(/wood|crate|door/.test(box.material))return 'wood';
  if(box.material==='yard'||box.material==='ground-grass')return 'grass';
  if(box.kind==='cover')return 'sand';return 'concrete';

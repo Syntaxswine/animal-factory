@@ -43,3 +43,35 @@ Visual suite covers 72 combinations (horse/cow/skunk, all stances, eight heading
 Stage 3 hostile review: initial 3/5 for upright weapon/muzzle mismatch. Corrected with a bounded mesh warp around measured rifle barrel landmarks. The physical muzzle is now an explicit UV grid vertex so interpolation cannot move the painted tip off the source point (a kneeling-skunk interpolation error found by browser checks was fixed this way). Independent re-review 4/5, conditional on final checks. This approves rifle calibration only; other weapon silhouettes require explicit handling in stage 4. The artwork warp is a deliberate visual compromise, not replacement directional artwork.
 
 Stage 3 final gates: all 72 rendered calibration cases passed the .05-tile muzzle error limit, 360 repository tests passed, and asset checks passed. Hostile review 4/5.
+
+## Stage 4 — editor and full-map integration
+
+Implementation is available for validation at `tactics/index.html?renderer=hybrid` and `tactics/editor.html?renderer=hybrid`. Both use `HybridRenderer` and the same geometry adapter; campaign creation, restart and travel preserve the geometry option. Existing buttons/actions, AP, seeded combat and saved-map schema remain authoritative. No new command API or map version was introduced. Above-level geometry is hidden in this validation renderer; lower levels remain solid. The layer legend reflects this behavior.
+
+The full environment catalog has explicit geometry families: open-legged furniture, crates and open containers, lab/medical equipment, trunk/canopy foliage, small equipment, roof details and ladders. All 63 prop/edge entries appear in `hybrid-review/stage-4-environment-catalog.png`. These are simple box-based silhouettes, not final sculpted models. Water is a static blue surface; barrels are blocky; sloped roofs use eight stepped underside strips that rise to the saved walkable roof datum. Roof tops remain walkable at the canonical floor height. A parapet is .4 high; it does not change tile movement rules. Transparent fences/bars preserve their existing movement-blocking but sight/shot-transparent policy, including gaps and cut fences.
+
+New deliberate collision differences: shots can pass between furniture legs and through gaps around tree trunks/canopies; full-cell legacy cover did not expose those gaps. Roof parapets and sloped undersides, ladder rails/rungs and stair treads are real ray obstructions. These visible parts and intersection volumes share descriptors and stable IDs. Woodland attenuation remains a separate perception policy. The physical 2.12 floor spacing now also determines hybrid terrain-visibility distance; legacy mode remains unchanged. Prototype wall, opening and character dimensions remain as recorded above.
+
+Travel/stair/roof-climb markers, guard heading/start labels, sight cones, overlays, picking and playtesting are retained. Hybrid flame effects project the physical muzzle instead of legacy sprite pixels. Weapon calibration explicitly excludes non-guns, uses authored flamethrower nozzles, and measures firearm barrel tips. Pig-director loadouts without dedicated expansion artwork retain composed equipment overlays with explicit anchors; generic firearm overlays are a documented fallback. `hybrid-catalog-browser.mjs` exercises 702 species/weapon/stance/uniform combinations and eight headings where a muzzle exists. The numeric checks verify anchor mapping, not anatomical or artistic accuracy; the horse source contact sheet provides visual evidence across all weapons. Rifle presentation has the earlier 72-case rendered review.
+
+Instanced structures are grouped by material and 16-tile chunks; unchanged chunks survive edits and replaced instance buffers are disposed. One shared box geometry and a finite material palette bound structural allocations. Invisible actor geometry is disposed; pose textures use an LRU cap of 64 (active actors cannot exceed the map's 50-unit limit). Character textures have no mipmaps, and the existing maximum 512×256 source dimensions bound 64 RGBA poses to approximately 32 MiB before driver overhead. The 90-pose browser sweep reached exactly 64 cached poses, one active actor, 65 GPU textures including its surface, and two geometries. Explicit disposal clears textures, actor resources, chunks and scene references.
+
+Verification: the real Factory-test 240×240 map loads in both game and editor without unsupported-content diagnostics. Browser tests use actual camera dragging, unit movement, pointer wall painting and twelve undo/redo cycles. A separate editor workflow covers prop placement/erasing, undo/redo, upper parapet roof placement, ladder placement, exact JSON export/import and the hybrid playtest iframe. Headless campaign travel/return preserves mode and squad health. Shared-room browser/Node deterministic replays and boundary probes still pass after catalog changes.
+
+Recorded same-machine measurements (Windows, Node 24.15.0, headless Edge; exact browser version in JSON; 1440×1000 viewport):
+
+| Workload | Legacy | Hybrid |
+| --- | ---: | ---: |
+| Full-map game load | 1.151 s | 1.082 s |
+| Full-map editor import/load | 1.866 s | 2.087 s |
+| Active camera p95 frame interval, game/editor | 16.8 / 16.8 ms | 16.8 / 16.8 ms |
+| Maximum of 12 editor undo responses | 114 ms | 172 ms |
+| Retained game/editor JS heap after explicit GC | 10.8 / 8.2 MiB | 31.9 / 50.1 MiB |
+| Node create with visibility, three trials | 269–346 ms | 689–824 ms |
+| Node 1,000 geometry queries, three trials | 19–27 ms | 29–41 ms |
+
+These are local measurements, not guarantees for other hardware. Browser load includes network-idle waiting; editor import includes a fixed settling wait. Edit response includes Playwright/UI dispatch and rendering. Active camera frame intervals include browser scheduling; `drawTimes` separately record CPU render submission/canvas copy, not isolated GPU time. Uncollected editor heap peaked at 193 MiB in the recorded run and fell to 50 MiB after GC. Source JSON files and repeatable tools are in `hybrid-review` and `tools`. An earlier full-rebuild implementation reached 552 ms on undo; unchanged-chunk reuse reduced the recorded maximum to 172 ms.
+
+Review status: initial hostile review 2/5, followed by implementation approximately 4/5 after fixes; **overall Stage 4 remains 3/5 pending performance-budget agreement**. Proposed limits sent to the user: load ≤4 s, active-view p95 frame interval ≤33 ms, editor response ≤500 ms, retained JS heap ≤200 MiB, and 1,000 geometry queries ≤50 ms on this machine. They are not yet agreed. Stage 5/default cutover, old-renderer removal and deployed Pages publication have not started. Integration remains on the separate sprite-migration branch for the coordinator.
+
+Stage 4 final verification: 362 repository tests and asset checks passed; shared-room browser replay/boundary regressions passed; editor interaction/export/playtest and 702-case catalog/cache checks passed; the Pages distribution builds with all 83 app files and local assets. Overall gate remains pending the user’s budget agreement; no default switch or deployment was performed.

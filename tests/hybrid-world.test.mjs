@@ -23,7 +23,7 @@ test('door transaction, window boundaries, lintel and roof hit actual shared sur
  model.update(m=>{m.upper=[{},{}];m.props=m.props.filter(p=>!p.kind.startsWith('roof'));});assert.equal(model.trace([3,4,3],[3,.5,3]),null);
 });
 test('unsupported content has explicit diagnostics and stair opening is preserved',()=>{
- const m=fixture();m.props.push({x:1,y:1,z:0,kind:'tree-pine'});m.edges['e:1:1']='fence-chainlink';m.terrain[0][0]='water';m.stairs=[{x:2,y:2,z:0}];m.props=m.props.filter(p=>!p.kind.startsWith('roof'));
+ const m=fixture();m.props.push({x:1,y:1,z:0,kind:'unknown-prop'});m.edges['e:1:1']='unknown-edge';m.terrain[0][0]='unknown-terrain';m.stairs=[{x:2,y:2,z:0}];m.props=m.props.filter(p=>!p.kind.startsWith('roof'));
  const w=buildWorld(m);assert.equal(w.diagnostics.length,3);assert.equal(traceWorld(w,[2,3,2],[2,.5,2]),null);assert.ok(w.boxes.some(b=>b.kind==='stairs'));
 });
 test('negative boundary edges and diagonal chunk traversal agree with brute force',()=>{

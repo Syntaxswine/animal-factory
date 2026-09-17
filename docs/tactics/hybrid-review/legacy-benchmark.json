@@ -1,0 +1,24 @@
+{
+  "mode": "legacy",
+  "map": "Factory test",
+  "node": "v24.15.0",
+  "platform": "win32",
+  "date": "2026-09-17T18:00:52.937Z",
+  "samples": [
+    {
+      "createMs": 269.45629999999994,
+      "thousandQueriesMs": 21.614800000000002,
+      "heapDeltaBytes": 12064784
+    },
+    {
+      "createMs": 346.4677,
+      "thousandQueriesMs": 26.726499999999987,
+      "heapDeltaBytes": 9852624
+    },
+    {
+      "createMs": 296.4023000000001,
+      "thousandQueriesMs": 19.289399999999887,
+      "heapDeltaBytes": 946248
+    }
+  ]
+}

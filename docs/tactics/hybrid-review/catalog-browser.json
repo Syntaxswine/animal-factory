@@ -1,0 +1,22 @@
+{
+  "cases": 702,
+  "maxError": 1.1102230246251565e-16,
+  "stats": {
+    "meshes": 225,
+    "actors": 1,
+    "cachedPoses": 64,
+    "textures": 65,
+    "geometries": 2,
+    "calls": 8,
+    "triangles": 23552,
+    "diagnostics": [],
+    "unsupported": []
+  },
+  "maxCached": 64,
+  "maxActors": 1,
+  "limit": 64,
+  "disposed": {
+    "textures": 0,
+    "actors": 0
+  }
+}

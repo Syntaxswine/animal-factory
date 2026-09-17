@@ -1,0 +1,24 @@
+{
+  "mode": "hybrid",
+  "map": "Factory test",
+  "node": "v24.15.0",
+  "platform": "win32",
+  "date": "2026-09-17T18:02:19.465Z",
+  "samples": [
+    {
+      "createMs": 770.7275,
+      "thousandQueriesMs": 41.251300000000015,
+      "heapDeltaBytes": 45854256
+    },
+    {
+      "createMs": 824.4448,
+      "thousandQueriesMs": 32.233799999999974,
+      "heapDeltaBytes": 87293936
+    },
+    {
+      "createMs": 689.0274999999999,
+      "thousandQueriesMs": 28.502500000000055,
+      "heapDeltaBytes": 40617376
+    }
+  ]
+}
