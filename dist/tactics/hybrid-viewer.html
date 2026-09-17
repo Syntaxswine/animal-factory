@@ -6,6 +6,8 @@
 <header><div><h1>RED SHIFT / SHARED WORLD</h1><small>Map vertical slice · sprite characters · prototype proportions</small></div><a href="index.html">Back to game</a></header>
 <main><section id="scene" aria-label="Hybrid map viewer"><div id="hint">Scroll to zoom · enable diagnostic orbit to rotate</div></section><aside>
 <h2>Shared-map slice</h2><p>Two levels, a walkable roof, low cover and two mercs. The same map and structural geometry run in Node.</p>
+<label><input id="gallery" type="checkbox"> Material comparison buildings</label>
+<label><input id="cutaway" type="checkbox"> Diagnostic cutaway (collision retained)</label>
 <label>Trace path<select id="path"><option value="door">Doorway</option><option value="window">Window</option><option value="wall">Solid wall</option><option value="roof">Down through roof</option></select></label>
 <label><input id="door" type="checkbox" checked> Close door</label>
 <label><input id="roof" type="checkbox" checked> Include roof and upper floor</label>
@@ -13,6 +15,10 @@
 <button id="fire">Trace geometry</button><div id="result" role="status">Choose a path to inspect.</div>
 <button id="replay">Run engine replay</button>
 <h2>Camera</h2><label><input id="orbit" type="checkbox"> Diagnostic orbit</label><button id="reset">Reset 2:1 view</button>
+<h2>Sprite calibration</h2><label>Animal<select id="species"><option>horse</option><option>cow</option><option>goat</option><option>skunk</option></select></label><label>Stance<select id="stance"><option>standing</option><option>kneeling</option><option>prone</option></select></label><label>Facing<select id="heading"><option value="0">East</option><option value="45">Southeast</option><option value="90">South</option><option value="135">Southwest</option><option value="180">West</option><option value="225">Northwest</option><option value="270">North</option><option value="315">Northeast</option></select></label>
 <h2>Dimensions</h2><p>1 tile · 2 wall height · 1.65 standing height. Upper floor surface at 2.12, derived from the prototype roof.</p>
+<label>Occlusion check<select id="occlusion"><option value="none">Calibration / open ground</option><option value="wall">Behind foreground wall</option><option value="roof">Under full roof</option></select></label>
+<p>Overlay: white anchor, pink muzzle, orange head, green torso, blue legs, yellow weapon. Prone cards follow world facing; body regions remain approximations.</p>
 <p>This slice inspects structural intersections. Combat integration follows its review gate.</p><div id="status">Loading map and artwork…</div>
 </aside></main><script type="module" src="hybrid-viewer.js"></script></body></html>
+

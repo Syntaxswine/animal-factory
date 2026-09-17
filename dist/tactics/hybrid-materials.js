@@ -1,0 +1,43 @@
+// Flat procedural surfaces: no baked architectural perspective or stretched wall art.
+// Pure UV mapping is shared with numeric material-density checks.
+export const MATERIAL_DENSITY=Object.freeze({brickWidth:.5,brickCourse:.2,texturePeriod:1});
+export function surfaceUV(position,normal){
+ if(Math.abs(normal[1])>.5)return [position[0],position[2]];
+ return [Math.abs(normal[0])>.5?position[2]:position[0],position[1]];
+}
+export function surfacePixels(kind,size=128){
+ const data=new Uint8Array(size*size*4);
+ for(let y=0;y<size;y++)for(let x=0;x<size;x++){
+  const u=x/size,v=y/size,noise=((x*73+y*97+(x*y)%31)%17)-8;
+  let color;
+  if(kind==='brick'){
+   const course=Math.floor(v/MATERIAL_DENSITY.brickCourse),a=(u+(course%2)*.25)%.5,b=v%.2;
+   color=a<.018||b<.015?[111,107,88]:[151+course%3*7,101+course%2*5,73];
+  }else if(kind==='metal'){const rib=(Math.floor(u*16)%4===0)?-25:0;color=[111+rib,125+rib,117+rib];}
+  else if(kind==='wood'){const grain=((Math.floor(u*48)+Math.floor(v*7))%7)*2;color=[120+grain,95+grain,62+grain];}
+  else if(kind==='grass')color=[92,109,72];
+  else if(kind==='sand')color=[151,139,102];
+  else color=[127,128,113];
+  const i=(y*size+x)*4;for(let c=0;c<3;c++)data[i+c]=color[c]+noise;data[i+3]=255;
+ }
+ return {data,width:size,height:size};
+}
+export function materialKind(box){
+ if(box.kind==='stairs')return 'metal';
+ if(/brick|^wall$/.test(box.material))return 'brick';
+ if(/corrugated|steel/.test(box.material)||box.kind==='roof')return 'metal';
+ if(/wood|crate|door/.test(box.material))return 'wood';
+ if(box.material==='yard'||box.material==='ground-grass')return 'grass';
+ if(box.kind==='cover')return 'sand';return 'concrete';
+}
+export function materialGallery(map){
+ const m=structuredClone(map);
+ for(let y=0;y<12;y++)for(let x=12;x<18;x++)m.terrain[y][x]='yard';
+ for(let y=2;y<6;y++)for(let x=2;x<6;x++)m.upper[0][`${x},${y}`]='floor';
+ for(let y=2;y<6;y++){m.edges[`e:1:${y}:1`]='wall-brick';m.edges[`e:5:${y}:1`]='wall-brick';}
+ for(let x=2;x<6;x++){m.edges[`s:${x}:1:1`]='wall-brick';m.edges[`s:${x}:5:1`]='wall-brick';}
+ m.edges['s:4:5:1']='window-brick';m.stairs=[{x:4,y:4,z:0,kind:'stairs'}];
+ for(let y=2;y<7;y++){m.edges[`e:10:${y}`]='wall-corrugated';m.edges[`e:15:${y}`]='wall-corrugated';}
+ for(let x=11;x<16;x++){m.edges[`s:${x}:1`]='wall-corrugated';m.edges[`s:${x}:6`]='wall-corrugated';}
+ m.edges['s:13:6']='doorway-concrete-open';return m;
+}

@@ -32,12 +32,12 @@ test('upper floors, stair holes, door updates and destruction invalidate the sha
  const before=hybridWorld(s);detonate(s,{x:6,y:7.6,h:1,z:0},{blast:3,damage:220});assert.notEqual(hybridWorld(s),before);
 });
 test('grenades retain a swept parabola, roofs intercept arcs, and scatter stays seeded',()=>{
- const s=scene(),a=s.units[0];a.x=3;a.y=3;const target={x:3,y:5,z:0,ground:true};
+ const s=scene(),a=s.units[0];a.x=3;a.y=2;a.heading=90;const target={x:3,y:5,z:0,ground:true};
  const hit=explosiveTrajectory(s,a,target,{arc:true,range:10},{chance:100},()=>.1);assert.equal(hit.kind,'floor');assert.ok(hit.path.length>2);assert.ok(hit.h>=2);
  const run=()=>{let n=12;return bulletTrajectory(s,a,s.units[1],{accurate:false,chance:40,reach:15},()=>((n=(Math.imul(n,1664525)+1013904223)>>>0)/2**32));};assert.deepEqual(run(),run());
 });
 test('roof underside blast leaves the impact face and still shields actors above it',()=>{
- const s=scene(),a=s.units[0],b=s.units[1];a.x=3;a.y=3;b.x=3;b.y=3;b.z=1;s.units=[a,b];
+ const s=scene(),a=s.units[0],b=s.units[1];a.x=3;a.y=2;a.heading=90;b.x=3;b.y=2;b.z=1;s.units=[a,b];
  const hit=explosiveTrajectory(s,a,{x:3,y:5,z:0,ground:true},{arc:true,range:10},{chance:100},()=>.1);
  assert.deepEqual(hit.normal,[0,-1,0]);const blast=detonate(s,hit,{blast:4,damage:100});
  assert.ok(blast.hits.some(h=>h.unit===a));assert.ok(!blast.hits.some(h=>h.unit===b));
@@ -49,3 +49,4 @@ test('requested aim cannot override a nearer physical region and pellets aim at 
  const hit=bulletTrajectory(s,a,b,{accurate:true,zone:'legs',reach:10},()=>0);assert.equal(hit.unitId,b.id);assert.equal(hit.zone,'torso');
  b.heading=0;const pellets=shotgunTrajectories(s,a,b,{accurate:true,zone:'head',reach:10,pellets:1},()=>0);assert.equal(pellets[0].zone,'head');
 });
+

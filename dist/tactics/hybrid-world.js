@@ -52,7 +52,11 @@ export function buildWorld(map){
   const roof=p.kind.startsWith('roof'),height=roof?D.slab:PROPS[p.kind].tall?D.wall:D.lowCover;
   box(id,roof?'roof':'cover',p.kind,[p.x+(w-1)/2,(p.z||0)*DIMENSIONS.floorSpacing+(roof?-D.slab/2:height/2),p.y+(d-1)/2],[w,height,d],{prop:id});
  }
- for(const p of map.stairs||[])diagnostics.push({source:`stairs:${p.x},${p.y},${p.z}`,kind:p.kind||'stairs',message:'Stair opening supported; stair mesh deferred'});
+ for(const p of map.stairs||[]){
+  const base=p.z*D.floorSpacing;
+  // Open steel treads preserve a visible opening, with the same volumes for rays.
+  for(let i=0;i<8;i++)box(`stairs:${p.x},${p.y},${p.z}:tread:${i}`,'stairs','metal',[p.x-.5+(i+.5)/8,base+(i+1)*D.floorSpacing/8-.025,p.y],[.1,.05,.8],{x:p.x,y:p.y,z:p.z});
+ }
  const index=new Map();
  for(const b of boxes)for(let x=Math.floor(b.min[0]/chunk);x<=Math.floor(b.max[0]/chunk);x++)for(let z=Math.floor(b.min[2]/chunk);z<=Math.floor(b.max[2]/chunk);z++){
   const key=`${x},${z}`;if(!index.has(key))index.set(key,[]);index.get(key).push(b);

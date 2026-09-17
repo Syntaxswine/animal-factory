@@ -7,7 +7,7 @@ export function probeHybridBoundaries(map){
  a.x=5;a.y=6.5;b.x=5;b.y=5;b.heading=90;b.stance='prone';
  const bullet=bulletTrajectory(s,a,b,{accurate:true,zone:'legs',reach:10},()=>0);
  b.heading=0;const pellets=shotgunTrajectories(s,a,b,{accurate:true,zone:'head',reach:10,pellets:1},()=>0);
- a.x=3;a.y=3;b.x=3;b.y=3;b.z=1;b.stance='standing';
+ a.x=3;a.y=2;a.heading=90;b.x=3;b.y=2;b.z=1;b.stance='standing';
  const roof=explosiveTrajectory(s,a,{x:3,y:5,z:0,ground:true},{arc:true,range:10},{chance:100},()=>.1);
  const victims=detonate(s,roof,{blast:4,damage:100}).hits.map(h=>({id:h.unit.id,damage:h.damage}));
  return {bullet,pellets,roof,victims};
@@ -24,3 +24,4 @@ export function replayHybrid(map,present=()=>{}){
  record('attack 0 4 torso',()=>attack(s,a,target,false,false,'torso'));
  return {events,state:JSON.parse(JSON.stringify(s,(_key,value)=>value instanceof Set?[...value].sort():value))};
 }
+

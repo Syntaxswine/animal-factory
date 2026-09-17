@@ -1,4 +1,4 @@
-import {floorSpacing,isHybrid,invalidateHybrid,aimPoint} from './hybrid-combat.js';
+import {floorSpacing,isHybrid,invalidateHybrid,aimPoint,muzzlePoint} from './hybrid-combat.js';
 import {DIMENSIONS} from './hybrid-world.js';
 import {traceProjectile,muzzleHeight} from './projectiles.js';
 import {levelOf,inBounds,terrainAt,edgePoints,tileKey,W,H} from './maps.js';
@@ -21,7 +21,7 @@ export function explosivePreview(s,a,target,w){
 // Parabolas are swept in short 3D segments through the same exact wall/floor/body
 // collision geometry as bullets. Rockets sweep one continuous ray.
 export function explosiveTrajectory(s,a,target,w,p,random){
- const origin={x:a.x,y:a.y,h:levelOf(a)*floorSpacing(s)+muzzleHeight(a,s)},accurate=random()*100<p.chance;
+ const origin=muzzlePoint(s,a),accurate=random()*100<p.chance;
  let x=target.x,y=target.y;
  if(!accurate){const angle=random()*Math.PI*2,spread=(p.beyond?Math.max(4,Math.hypot(x-a.x,y-a.y)*.3):1+Math.hypot(x-a.x,y-a.y)*.12)*(.35+random()*.65);x+=Math.cos(angle)*spread;y+=Math.sin(angle)*spread;}
  const end={x,y,h:levelOf(target)*floorSpacing(s)+(w.arc?.08:target.ground?.08:1)},distance=Math.hypot(x-origin.x,y-origin.y);
@@ -58,6 +58,7 @@ export function detonate(s,impact,w){
  for(const u of s.units){if(u.away||!(u.hp>0||['bleeding','stable'].includes(u.casualty)))continue;/* away: crossed the map edge, no body here */const point=isHybrid(s)?aimPoint(s,u):{x:u.x,y:u.y,h:levelOf(u)*floorSpacing(s)+.8},dist=Math.hypot(u.x-impact.x,u.y-impact.y,point.h-impact.h);if(dist<radius&&blastClear(s,impact,point))hits.push({unit:u,damage:Math.max(1,Math.round(w.damage*(1-dist/radius)))});}
  return {hits,blast:{x:impact.x,y:impact.y,z:impact.z,radius,destroyed}};
 }
+
 
 
 

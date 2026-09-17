@@ -30,3 +30,16 @@ Deliberate differences: window aperture is .85–1.55 instead of 1–2.4 (a ray 
 Stage 2 hostile review: initial 3/5 (surface-origin blast self-occlusion, requested zone overriding physical region, and pellet aim missing prone XY); corrected and re-reviewed 4/5. Seven focused hybrid combat tests pass. Browser/Node replay and targeted boundary probes compare exact serialized outputs. Hybrid impact coordinates/distances use 1e-10 world-unit event precision to remove observed last-bit Math.hypot differences between the tested Node/Edge V8 builds. This is not a proof across every browser/platform. All legacy projectile/explosive checks and Pages module checks pass. Full-suite final result follows.
 
 Stage 2 final verification: 357 tests passed, asset checks passed, browser replay and boundary probes passed. Stage 2 gate accepted at 4/5.
+
+## Stage 3 — visual/material validation
+
+Procedural flat surface textures use world-space UVs: bricks are .5 wide and .2 per course, independent of wall lengths/heights. The material gallery includes one- and two-storey buildings, corners, window lintels, open metal stair treads, and roof edges. Roof modules reuse floor surfaces; no coplanar duplicates. Tread boxes are shared visual/collision descriptors (open risers). Diagnostic cutaway hides meshes only, preserving collision.
+
+Sprite alpha bounds are measured from the reused assets. Standing and kneeling opaque height follows physical height; prone cards follow the projected world body axis and fit its oriented bounds, avoiding horizontal poses for vertical projected headings. This is a bounded silhouette approximation, not new directional artwork or exact anatomical registration. Debug anchors, region centers and muzzle tips make it inspectable. The physical muzzle now starts at the held-weapon region tip, so close geometry and roof-edge clearance can differ from the previous body-center source. Roof regression shooter was moved one tile inward to continue exercising an underside impact after this deliberate source change; original expectations for underside shielding remain unchanged.
+
+Visual suite covers 72 combinations (horse/cow/skunk, all stances, eight headings, both uniforms), three zooms, foreground wall/full roof occlusion, and a material comparison. Nearest magnification preserves sprite pixels; surfaces use mipmaps and anisotropy. Screenshots are in hybrid-review/stage-3*.png.
+
+
+Stage 3 hostile review: initial 3/5 for upright weapon/muzzle mismatch. Corrected with a bounded mesh warp around measured rifle barrel landmarks. The physical muzzle is now an explicit UV grid vertex so interpolation cannot move the painted tip off the source point (a kneeling-skunk interpolation error found by browser checks was fixed this way). Independent re-review 4/5, conditional on final checks. This approves rifle calibration only; other weapon silhouettes require explicit handling in stage 4. The artwork warp is a deliberate visual compromise, not replacement directional artwork.
+
+Stage 3 final gates: all 72 rendered calibration cases passed the .05-tile muzzle error limit, 360 repository tests passed, and asset checks passed. Hostile review 4/5.

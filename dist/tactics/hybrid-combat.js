@@ -5,6 +5,12 @@ export const isHybrid=s=>s?.geometryMode==='hybrid';
 export const floorSpacing=s=>isHybrid(s)?DIMENSIONS.floorSpacing:3;
 export const physicalHeight=(s,u)=>isHybrid(s)?u.hp<=0?.3:DIMENSIONS[u.stance]||DIMENSIONS.standing:u.hp<=0?.3:u.stance==='prone'?.55:u.stance==='kneeling'?1.2:1.8;
 export const physicalMuzzle=(s,u)=>isHybrid(s)?u.stance==='prone'?.35:u.stance==='kneeling'?.9:1.2:u.stance==='prone'?.35:u.stance==='kneeling'?.9:1.3;
+export function muzzlePoint(s,u){
+ const h=(u.z||0)*floorSpacing(s)+physicalMuzzle(s,u);
+ if(!isHybrid(s))return {x:u.x,y:u.y,h};
+ const body=bodyRegions(s,u),weapon=body.regions.find(r=>r.zone==='weapon'),offset=weapon.max[0];
+ return {x:u.x+Math.cos(body.heading)*offset,y:u.y+Math.sin(body.heading)*offset,h};
+}
 // Explicit invalidation at simulation mutations. Shallow state views share their map key.
 export function invalidateHybrid(s){caches.delete(s.map||s.terrain);}
 const geometrySignature=s=>JSON.stringify([s.map||s.terrain,s.upper,s.edges,s.props,s.stairs]);

@@ -26,7 +26,8 @@ try{
  const map=JSON.parse(fs.readFileSync(new URL('../dist/tactics/fixtures/hybrid-room.json',import.meta.url),'utf8'));
  const browserBoundaries=await page.evaluate(async map=>(await import('./hybrid-replay.js')).probeHybridBoundaries(map),map);
  assert.deepEqual(browserBoundaries,probeHybridBoundaries(map));assert.equal(browserBoundaries.bullet.zone,'torso');assert.equal(browserBoundaries.pellets[0].zone,'head');assert.deepEqual(browserBoundaries.victims.map(v=>v.id),[0]);
- await page.screenshot({path:fileURLToPath(new URL('../docs/tactics/hybrid-review/stage-2.png',import.meta.url))});
- await page.locator('#bounds').check();await page.screenshot({path:fileURLToPath(new URL('../docs/tactics/hybrid-review/stage-2-bounds.png',import.meta.url))});
+ await page.screenshot({path:fileURLToPath(new URL('../docs/tactics/hybrid-review/stage-3.png',import.meta.url))});
+ await page.locator('#bounds').check();await page.screenshot({path:fileURLToPath(new URL('../docs/tactics/hybrid-review/stage-3-bounds.png',import.meta.url))});
  assert.deepEqual(errors,[]);console.log('Hybrid browser gates passed: shared mesh/collision door and roof updates, window aperture, camera independence, local assets.');
 }finally{await browser.close();}
+

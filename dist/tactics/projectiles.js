@@ -1,6 +1,6 @@
 import {terrainAt,levelOf,sightEdge,W,H,LEVELS} from './maps.js';
 import {PROPS,propAt} from './environment.js';
-import {isHybrid,traceHybrid,floorSpacing,physicalHeight,physicalMuzzle,aimPoint} from './hybrid-combat.js';
+import {isHybrid,traceHybrid,floorSpacing,physicalHeight,physicalMuzzle,aimPoint,muzzlePoint} from './hybrid-combat.js';
 
 const EPS=1e-7;
 export const bodyHeight=(u,s)=>physicalHeight(s,u);
@@ -67,7 +67,7 @@ export function traceProjectile(state,shooter,origin,direction,reach){
 }
 
 export function bulletTrajectory(state,shooter,target,{accurate,zone='torso',chance=50,burst=false,reach},random){
- const origin={x:shooter.x,y:shooter.y,h:levelOf(shooter)*floorSpacing(state)+muzzleHeight(shooter,state)};
+ const origin=muzzlePoint(state,shooter);
  const aim=aimPoint(state,target,zone);
  let dx=aim.x-origin.x,dy=aim.y-origin.y,dh=aim.h-origin.h;
  if(!accurate){
@@ -84,7 +84,7 @@ export function bulletTrajectory(state,shooter,target,{accurate,zone='torso',cha
 
 // One shell emits all pellets together. Angular spread naturally thins the pattern with distance.
 export function shotgunTrajectories(state,shooter,target,{accurate,zone='torso',chance=50,reach,pellets=6},random){
- const origin={x:shooter.x,y:shooter.y,h:levelOf(shooter)*floorSpacing(state)+muzzleHeight(shooter,state)},aim=aimPoint(state,target,zone),range=Math.max(.1,Math.hypot(aim.x-origin.x,aim.y-origin.y));
+ const origin=muzzlePoint(state,shooter),aim=aimPoint(state,target,zone),range=Math.max(.1,Math.hypot(aim.x-origin.x,aim.y-origin.y));
  const angle=Math.atan2(aim.y-origin.y,aim.x-origin.x)+(accurate?0:(random()<.5?-1:1)*(.10+(1-chance/100)*.2));
  const slope=(aim.h-origin.h)/range;
  return Array.from({length:pellets},()=>{const phase=random()*Math.PI*2,radius=Math.sqrt(random())*.11,yaw=angle+Math.cos(phase)*radius;
@@ -93,3 +93,4 @@ export function shotgunTrajectories(state,shooter,target,{accurate,zone='torso',
   return {...hit,origin,accurate,pellet:true};
  });
 }
+
