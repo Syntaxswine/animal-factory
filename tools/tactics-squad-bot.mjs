@@ -89,7 +89,8 @@ export function followOrder(s,bot){
   // Nobody could step and nobody is merely out of AP. A comrade in the only corridor clears in a tick or two, so the order waits RALLY_PATIENCE such
   // ticks; a point that stays unreachable (void, walled off, occupied for good) is then dropped rather than stalling the run.
   if(!out.some(m=>E.canControl(s,m)&&s.phase==='player'&&m.ap<2)){order.stuck=(order.stuck||0)+1;if(order.stuck>=RALLY_PATIENCE){bot.orders.shift();bot.unreachable.add(pointKey);event(bot,s,null,'reassess','rally point unreachable');return false;/* no progress to report: the turn may end */}}
-  return false;}
+  // A patience tick in real time is a tick spent waiting (guards move meanwhile); in turn mode it is a turn to end.
+  return s.phase!=='player'&&(order.stuck||0)>0;}
  const u=s.units.find(u=>u.id===order.unit&&E.canControl(s,u));if(!u){if(!E.alive(s.units[order.unit]))bot.orders.shift();return false;}
  let done=false,acted=false;
  if(order.type==='sneak'){done=u.sneaking===(order.enabled??true);if(!done)acted=done=E.setSneaking(s,u);}
@@ -108,7 +109,7 @@ export function stepSquadBot(s,bot){
  // Real time runs for both sides: guards investigating or closing from beyond the two-turn threshold take their tick, as the browser's frame loop gives them.
  E.stepInvestigation(s);
  if(s.queue.length)return E.stepMovement(s);
- if(bot.orders.length){if(followOrder(s,bot))return true;return s.phase==='player'&&E.endTurn(s);}
+ if(bot.orders.length){if(followOrder(s,bot))return true;if(bot.orders.length)return s.phase==='player'&&E.endTurn(s);/* the plan just ran out (last order done or dropped): default behaviour takes over this very step */}
  const team=E.squad(s),first=bot.cursor++%team.length,ordered=[...team.slice(first),...team.slice(0,first)];
  for(const u of ordered){if(!E.canControl(s,u)||u.overwatch)continue;
   for(const patient of s.units.filter(v=>v.casualty==='bleeding'))if(E.stabilizePreview(s,u,patient).ok&&E.stabilize(s,u,patient))return event(bot,s,u,'stabilize',patient.name);

@@ -89,3 +89,14 @@ test('review round 2: a rally in a corridor accepts any free tile inside the rad
  assert.equal(b2.events.filter(e=>e.type==='reassess').length,1,'one reassess after the patience ticks, then the point is refused silently');assert.equal(b2.unreachable.size,1);
  b2.orders=[{type:'rally',x:150,y:100,z:0,radius:2}];assert.equal(followOrder(t,b2),false,'a refused order returns false so the controller ends the turn');assert.equal(b2.orders.length,0);
 });
+
+test('in real time a rally that waits on a blocked corridor is a tick, not a stall, and an emptied plan hands over to default behaviour at once',()=>{
+ const {s}=scene({phase:'explore'});for(let x=0;x<240;x++)if(x!==20)s.map[10][x]='void';
+ const [a,b,c,d]=squad(s);a.x=20;a.y=14;b.x=21;b.y=14;c.x=20;c.y=10;d.x=20;d.y=4;/* Misha stands in the gap inside the radius? no: radius 1 around (20,14) excludes him, and he has a free tile to move to */
+ const bot=createSquadBot({orders:[{type:'rally',x:20,y:14,z:0,radius:1}]});
+ let n=0;while(bot.orders.length&&n++<60)assert.ok(stepSquadBot(s,bot),'every tick reports activity: waiting or moving, never a stall');
+ assert.equal(bot.orders.length,0);assert.ok(!bot.events.some(e=>e.type==='reassess'),'the corridor cleared: '+JSON.stringify(bot.events.filter(e=>e.type==='reassess')));
+ const {s:t}=scene({phase:'explore'});for(let y=0;y<240;y++)for(let x=100;x<=104;x++)t.map[y][x]='void';const b2=createSquadBot({orders:[{type:'rally',x:150,y:100,z:0,radius:2}]});t.units[4].x=60;t.units[4].y=60;/* the guard on the squad's side of the void, so default behaviour has somewhere to go */
+ const results=[];for(let i=0;i<RALLY_PATIENCE+1;i++)results.push(stepSquadBot(t,b2));
+ assert.deepEqual(results,[true,true,true,true],'patience ticks count as activity; the tick that drops the last order falls through to default behaviour');assert.equal(b2.orders.length,0);assert.equal(b2.events.filter(e=>e.type==='reassess').length,1);
+});
