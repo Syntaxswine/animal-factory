@@ -70,8 +70,8 @@ test('review round 1: drops never fall into a closed body, bare hands are not lo
  const stack=u.pack.findIndex(i=>i.type==='ammo'&&i.kind==='pistol');assert.ok(inventoryTransfer(s,u,stack,'drop'));
  assert.equal(pile.items.some(i=>i.kind==='pistol'),false,'the closed body did not swallow the drop');const open=s.loot.find(p=>p!==pile&&p.x===13&&p.y===10);assert.ok(open&&pileOpen(open)&&open.items[0].kind==='pistol','it lies in an open pile on the same tile');
  assert.equal(rollLoot(s,{pack:[{type:'weapon',kind:'hands',rounds:0},{type:'weapon',kind:'knife',rounds:0}],ammo:{hands:0,knife:0}}).map(i=>i.kind).join(),'knife','bare hands are not an item');
- const rolls=Array.from({length:40},(_,i)=>rollLoot(createGame(100+i,blankMap()),{pack:[{type:'ammo',kind:'rifle',count:30}],ammo:{}})[0].count);
- assert.ok(rolls.every(c=>c>=12&&c<=30),'40-100% of thirty, rounded up: '+rolls.join(' '));assert.ok(rolls.some(c=>c<30)&&rolls.some(c=>c>20),'the roll varies');
+ const one=createGame(100,blankMap()),rolls=Array.from({length:40},()=>rollLoot(one,{pack:[{type:'ammo',kind:'rifle',count:30}],ammo:{}})[0].count);/* forty draws from ONE stream: consecutive seeds would give one value */
+ assert.ok(rolls.every(c=>c>=12&&c<=30),'40-100% of thirty, rounded up: '+rolls.join(' '));assert.ok(rolls.some(c=>c<18)&&rolls.some(c=>c>26),'the roll spans the range');assert.ok(!rolls.includes(11)&&rolls.every(c=>c>=12),'rounded up, never below forty percent');
  assert.equal(pileOpen({body:0,searched:false,items:[]}),false,'a guard id of 0 would still be a closed body');
  assert.equal(searchPreview(s,{...u,x:11,y:10},pile).reason,'Stand beside the body','two tiles off is out of reach');
  u.overwatch={weapon:'assault',heading:0};u.x=12;assert.ok(searchBody(s,u,pile));assert.equal(u.overwatch,null,'searching drops a reservation');
@@ -88,7 +88,7 @@ test('the roll counts the rounds a gun has left after the fight, not its magazin
 test('the bot walks to a body only when no guard is in sight and only as the nearest comrade',()=>{
  const {s,u,pile}=fallen();for(const v of s.units.slice(0,4))v.ap=12;const bot=createSquadBot();
  pile.items=[{type:'ammo',kind:'assault',count:20}];u.ammo.assault=0;const far=s.units[1];far.x=2;far.y=6;
- assert.equal(scavenge(s,far,bot,{calm:false}),false,'a guard in sight: nobody goes body-hunting');
+ assert.equal(scavenge(s,u,bot,{calm:false}),false,'a guard in sight: even the nearest comrade does not go body-hunting');assert.equal(bot.events.length,0);
  assert.equal(scavenge(s,far,bot,{calm:true}),false,'calm, but Yakov is nearer to the body: Anya stays');
  assert.ok(scavenge(s,u,bot,{calm:true}));assert.equal(bot.events.at(-1).type,'seek-body');
 });

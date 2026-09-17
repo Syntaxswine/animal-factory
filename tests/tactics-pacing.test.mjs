@@ -1,6 +1,6 @@
 import test from 'node:test';import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {createGame,refresh,attack,attackGround,previewAttack,setOverwatch,endTurn,stepEnemy,stepInvestigation,threatens,reachable,distance,squad,guards,reload,setStance,combatCosts,WEAPONS,THREAT_TURNS,SWEEP_TICKS,REALTIME_RETRY} from '../dist/tactics/engine.js';
+import {createGame,refresh,attack,attackGround,previewAttack,setOverwatch,pathTo,endTurn,stepEnemy,stepInvestigation,threatens,reachable,distance,squad,guards,reload,setStance,combatCosts,WEAPONS,THREAT_TURNS,SWEEP_TICKS,REALTIME_RETRY} from '../dist/tactics/engine.js';
 import {blankMap,edgeKey,parseMap,W} from '../dist/tactics/maps.js';
 import {createWorld,currentMap,travelReason,leave,crossingCost} from '../dist/tactics/world.js';
 import {createSquadBot,stepSquadBot} from '../tools/tactics-squad-bot.mjs';
@@ -128,9 +128,11 @@ test('one real-time tick on the thirty-six-guard playtest map, every guard alert
  // The squad hides in the far corner; every guard is alert on the squad's start, a route across the whole map away.
  const corner=[];for(let y=239;y>=200&&corner.length<4;y--)for(let x=239;x>=200&&corner.length<4;x--)if(s.map[y][x]==='yard'&&!corner.some(c=>c.x===x&&c.y===y))corner.push({x,y});
  squad(s).forEach((p,i)=>{p.x=corner[i].x;p.y=corner[i].y;});for(const g of guards(s))alertAt(g,start.x,start.y);refresh(s);assert.equal(s.phase,'explore',s.log[0]);
+ // Reference measured in the same run, so machine load scales both sides: ONE unbounded pathTo from the farthest guard to the fix (~250 ms standalone).
+ // The old code did nine of these per alert guard per tick, 36 guards: 26-117 s. Standalone the ticks measure ~90 ms worst / ~50 ms mean.
+ const far=guards(s).sort((a,b)=>distance(b,start)-distance(a,start))[0];const t0=performance.now();pathTo(s,far,start.x,start.y,0);const ref=performance.now()-t0;
  const ticks=[];for(let i=0;i<14;i++){const t=performance.now();stepInvestigation(s);ticks.push(performance.now()-t);}
- // Standalone this measures ~85-100 ms worst and ~60 ms mean (36 alert guards, three partial routes extended per tick); the bounds are loose because the suite runs its files in parallel. The old code took 26-117 s per tick here.
- assert.ok(Math.max(...ticks)<400,'worst tick: '+ticks.map(t=>t.toFixed(0)).join(' '));const mean=ticks.reduce((a,b)=>a+b,0)/ticks.length;assert.ok(mean<200,'mean tick with partial routes extended three at a time: '+mean.toFixed(0));
+ assert.ok(Math.max(...ticks)<Math.max(400,1.5*ref),'worst tick vs one unbounded search ('+ref.toFixed(0)+' ms): '+ticks.map(t=>t.toFixed(0)).join(' '));const mean=ticks.reduce((a,b)=>a+b,0)/ticks.length;assert.ok(mean<Math.max(200,ref),'mean tick with partial routes extended three at a time: '+mean.toFixed(0)+' vs ref '+ref.toFixed(0));
  assert.ok(guards(s).every(g=>g.route),'after fourteen ticks every guard holds a route: '+guards(s).filter(g=>!g.route).length+' without');assert.ok(guards(s).every(g=>g.steps>0),'and every guard has moved');
  // An unreachable fix costs a bounded search once, then waits REALTIME_RETRY ticks before trying again.
  const g=guards(s).find(g=>g.alert);g.lastKnown={x:-6,y:-6,z:0};for(let y=0;y<3;y++)for(let x=0;x<3;x++)s.map[y][x]='void';const t1=performance.now();stepInvestigation(s);stepInvestigation(s);assert.ok(performance.now()-t1<400);assert.ok(g.route?.wait>0&&g.route.wait<=REALTIME_RETRY);

@@ -1,7 +1,7 @@
 import test from 'node:test';import assert from 'node:assert/strict';
 import {blankMap} from '../dist/tactics/maps.js';
 import {createGame,refresh,distance,squad,endTurn,stepEnemy} from '../dist/tactics/engine.js';
-import {createSquadBot,followOrder,stepSquadBot,rallied,wounded} from '../tools/tactics-squad-bot.mjs';
+import {createSquadBot,followOrder,stepSquadBot,rallied,wounded,RALLY_PATIENCE} from '../tools/tactics-squad-bot.mjs';
 import {createRun,stepRun} from '../tools/south-fence-driver.mjs';
 
 // Squad at the blank-map starts; one alert pistol guard within two-turn reach holds turn mode without ever firing (no rounds, no reserve).
@@ -53,7 +53,7 @@ test('the scripted route advances a waypoint only when the whole squad has ralli
 test('review round 1: an unreachable rally point is dropped, not stalled on; farthest member moves first; the threshold is a quarter',()=>{
  const {s}=scene();for(let y=0;y<240;y++)for(let x=100;x<=104;x++)s.map[y][x]='void';/* a wall of void across the map */
  const bot=createSquadBot({orders:[{type:'rally',x:150,y:100,z:0,radius:2}]});for(const u of squad(s))u.ap=12;
- assert.ok(followOrder(s,bot),'the controller acts (drops the order) instead of returning false');assert.equal(bot.orders.length,0);assert.equal(bot.events.at(-1).type,'reassess');
+ assert.equal(followOrder(s,bot),false,'first tick: patience');assert.equal(followOrder(s,bot),false);assert.equal(bot.orders.length,1);assert.equal(followOrder(s,bot),false,'third tick: the order is dropped (no progress to report, so the turn may end)');assert.equal(bot.orders.length,0);assert.equal(bot.events.at(-1).type,'reassess');
  const waiting=createSquadBot({orders:[{type:'rally',x:8,y:5,z:0,radius:2}]});squad(s)[3].x=2;squad(s)[3].y=20;for(const u of squad(s).slice(0,3)){u.x=8+(u.id%2);u.y=5+(u.id>>1);}squad(s)[3].ap=0;
  assert.equal(followOrder(s,waiting),false,'out of AP is waiting, not unreachable');assert.equal(waiting.orders.length,1);
  const order=createSquadBot({orders:[{type:'rally',x:8,y:5,z:0,radius:1}]});const a=squad(s)[2],b=squad(s)[3];a.x=8;a.y=12;a.ap=12;b.x=8;b.y=30;b.ap=12;const before=b.y;
@@ -64,4 +64,28 @@ test('review round 1: an unreachable rally point is dropped, not stalled on; far
 test('when every merc is wounded nobody hides behind anybody: the squad fights on and the harness does not stall',()=>{
  const {s,g}=scene({phase:'explore'});const bot=createSquadBot();for(const u of squad(s)){u.hp=10;u.ap=12;}
  assert.ok(stepSquadBot(s,bot),'the controller still acts');assert.ok(['advance','regroup','scavenge','seek-loot','seek-body','equip'].includes(bot.events.at(-1)?.type),JSON.stringify(bot.events.at(-1)));
+});
+
+test('a comrade standing in the only corridor is waited for, not mistaken for an unreachable rally point',()=>{
+ const {s}=scene();for(let x=0;x<240;x++)if(x!==20)s.map[10][x]='void';/* one gap at (20,10) */
+ const bot=createSquadBot({orders:[{type:'rally',x:20,y:14,z:0,radius:1}]});const [a,b,c,d]=squad(s);
+ a.x=20;a.y=14;b.x=21;b.y=14;c.x=20;c.y=10;c.ap=0;/* Misha is stuck in the gap with no AP */d.x=20;d.y=4;d.ap=12;/* Vera must pass through the gap */
+ assert.equal(RALLY_PATIENCE,3);
+ for(let i=0;i<5;i++)assert.equal(followOrder(s,bot),false,'tick '+i+': Misha is out of AP, so the rally waits regardless of patience');
+ assert.equal(bot.orders.length,1,'the order is still there');
+ c.ap=12;let n=0;while(bot.orders.length&&n++<80){if(!followOrder(s,bot)){assert.ok(endTurn(s));for(let i=0;i<40&&s.phase==='enemy';i++)stepEnemy(s);}}
+ assert.equal(bot.orders.length,0,'and completes once the corridor clears');assert.ok(!bot.events.some(e=>e.type==='reassess'));
+});
+
+test('review round 2: a rally in a corridor accepts any free tile inside the radius, and a point once found unreachable is refused, not looped on',()=>{
+ const {s}=scene();for(let x=0;x<240;x++)for(const y of [29,31])s.map[y][x]='void';/* a one-wide corridor along y=30 */
+ const [a,b,c,d]=squad(s);a.x=39;a.y=30;b.x=40;b.y=30;c.x=41;c.y=30;d.x=32;d.y=30;for(const u of squad(s))u.ap=12;
+ const bot=createSquadBot({orders:[{type:'rally',x:40,y:30,z:0,radius:2}]});
+ let n=0;while(bot.orders.length&&n++<40){if(!followOrder(s,bot)){assert.ok(endTurn(s));for(let i=0;i<40&&s.phase==='enemy';i++)stepEnemy(s);}}
+ assert.equal(bot.orders.length,0,'completed');assert.ok(!bot.events.some(e=>e.type==='reassess'),'38,30 is inside the radius: Vera rallies there instead of the order being dropped');assert.equal(d.x,38);
+ // An unreachable point re-issued every tick is refused without an event, so the turn ends instead of looping to the action cap.
+ const {s:t}=scene();for(let y=0;y<240;y++)for(let x=100;x<=104;x++)t.map[y][x]='void';const b2=createSquadBot();for(const u of squad(t))u.ap=12;
+ for(let i=0;i<8;i++){if(!b2.orders.length)b2.orders=[{type:'rally',x:150,y:100,z:0,radius:2}];followOrder(t,b2);}
+ assert.equal(b2.events.filter(e=>e.type==='reassess').length,1,'one reassess after the patience ticks, then the point is refused silently');assert.equal(b2.unreachable.size,1);
+ b2.orders=[{type:'rally',x:150,y:100,z:0,radius:2}];assert.equal(followOrder(t,b2),false,'a refused order returns false so the controller ends the turn');assert.equal(b2.orders.length,0);
 });

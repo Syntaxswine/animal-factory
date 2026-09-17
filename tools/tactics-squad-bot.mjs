@@ -37,9 +37,12 @@ export function equipBest(s,u){
  return !!best&&weaponValue(best.kind)>current+1&&E.equip(s,u,best.kind);
 }
 export function createSquadBot({cohesion=12,scavengeRadius=20,orders=[],quietOpening=false,rally=3,leash=10,woundedHp=.25}={}){
- return {cohesion,scavengeRadius,orders:structuredClone(orders),quietOpening,rally,leash,woundedHp,cursor:0,events:[],routes:new Map()};
+ return {cohesion,scavengeRadius,orders:structuredClone(orders),quietOpening,rally,leash,woundedHp,cursor:0,events:[],routes:new Map(),unreachable:new Set()};
 }
+// Every free, walkable tile inside a rally radius: the goals a mover may take (rallied() accepts the same set).
+const rallyGoals=(s,p,radius)=>{const out=[];const r=Math.ceil(radius);for(let dy=-r;dy<=r;dy++)for(let dx=-r;dx<=r;dx++){const q={x:p.x+dx,y:p.y+dy,z:M.levelOf(p)};if(E.distance(q,p)<=radius&&M.inBounds(q.x,q.y,q.z)&&E.walkable(s,q.x,q.y,q.z)&&!E.occupant(s,q.x,q.y,q.z))out.push(q);}return out;};
 // A rally point is reached only when every standing member is inside its radius; the farthest one moves first, so nobody is left a turn behind.
+export const RALLY_PATIENCE=3;
 export const rallied=(s,p,radius)=>E.squad(s).every(u=>E.distance(u,p)<=radius);
 // A comrade too hurt to take another hit stays with the group and shoots from where it stands instead of advancing on guards.
 export const wounded=(bot,u)=>u.hp<=u.maxHp*bot.woundedHp;
@@ -75,12 +78,17 @@ export function scavenge(s,u,bot,{travel=true,calm=true}={}){
 // Coordinates come from the map author; there are no hidden teleport or free-AP operations.
 export function followOrder(s,bot){
  const order=bot.orders[0];if(!order)return false;
- if(order.type==='rally'){const radius=order.radius??bot.rally;if(rallied(s,order,radius)){bot.orders.shift();return event(bot,s,null,'order','rally');}
+ if(order.type==='rally'){const radius=order.radius??bot.rally,pointKey=E.key(order.x,order.y,M.levelOf(order));
+  // A point already found unreachable is refused outright, so a plan that keeps re-issuing it cannot burn a run to the action cap.
+  if(bot.unreachable.has(pointKey)){bot.orders.shift();return false;}
+  if(rallied(s,order,radius)){bot.orders.shift();return event(bot,s,null,'order','rally');}
   // Farthest standing member first; a member that cannot step this turn is waited for, never left behind.
   const out=E.squad(s).filter(m=>E.distance(m,order)>radius).sort((a,b)=>E.distance(b,order)-E.distance(a,order));
-  for(const m of out){if(!E.canControl(s,m))continue;const goals=[order,...M.neighbors(s,order,undefined,false)].filter(q=>E.distance(q,order)<=radius);if(oneStep(s,m,goals,bot))return event(bot,s,m,'order','rally');}
-  // Nobody could step and nobody is merely out of AP: the point cannot be reached (void, walled off, occupied). Drop it rather than stall the run.
-  if(!out.some(m=>E.canControl(s,m)&&s.phase==='player'&&m.ap<2)){bot.orders.shift();return event(bot,s,null,'reassess','rally point unreachable');}
+  const goals=rallyGoals(s,order,radius);
+  for(const m of out){if(!E.canControl(s,m))continue;if(goals.length&&oneStep(s,m,goals,bot)){order.stuck=0;return event(bot,s,m,'order','rally');}}
+  // Nobody could step and nobody is merely out of AP. A comrade in the only corridor clears in a tick or two, so the order waits RALLY_PATIENCE such
+  // ticks; a point that stays unreachable (void, walled off, occupied for good) is then dropped rather than stalling the run.
+  if(!out.some(m=>E.canControl(s,m)&&s.phase==='player'&&m.ap<2)){order.stuck=(order.stuck||0)+1;if(order.stuck>=RALLY_PATIENCE){bot.orders.shift();bot.unreachable.add(pointKey);event(bot,s,null,'reassess','rally point unreachable');return false;/* no progress to report: the turn may end */}}
   return false;}
  const u=s.units.find(u=>u.id===order.unit&&E.canControl(s,u));if(!u){if(!E.alive(s.units[order.unit]))bot.orders.shift();return false;}
  let done=false,acted=false;
