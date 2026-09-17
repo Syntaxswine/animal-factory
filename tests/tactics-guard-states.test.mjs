@@ -190,3 +190,20 @@ test('a walled-in stand-down rests within the retry budget, never stalls (M21); 
  const t0=performance.now();t.phase='player';t.queue=[];assert.ok(endTurn(t));for(let i=0;i<400&&t.phase==='enemy';i++)stepEnemy(t);const ms=performance.now()-t0;
  assert.ok(ms<20000,'bound loose because node runs test files in parallel; the defect was 104 s: one guard phase with '+(gs.length-1)+' searchers: '+Math.round(ms)+' ms');
 });
+
+test('the real-time Broken timeout chooses by the fix: a known target brings Alert, none brings Stand-down (review M14, worker out of sight)',()=>{
+ for(const [fix,expect] of [[{x:25,y:30,z:0},'alert'],[null,'standdown']]){
+  const {s,u,gs:[g]}=scene([{x:30,y:30,z:0,species:'donkey',weapon:'knife'}],{wall:false});s.units.slice(1,4).forEach(p=>p.hp=0);teleport(u,200,200);refresh(s);
+  setState(s,g,'broken',{x:25,y:30,z:0});g.lastKnown=fix;assert.equal(s.phase,'explore');
+  let n=0;while(stateOf(g)==='broken'&&n++<40)stepInvestigation(s);
+  assert.equal(n,BROKEN_ROUNDS*REALTIME_ROUND_TICKS);assert.equal(stateOf(g),expect,'fix '+JSON.stringify(fix));assert.equal(g.alert,expect==='alert');}
+});
+
+test('cornered in turn mode, a broken guard strikes at what it can see: the worker in front of it loses health (review M33)',()=>{
+ let struck=false;
+ for(let seed=1;seed<80&&!struck;seed++){const {s,u,gs:[g]}=scene([{x:30,y:30,z:0,species:'donkey',weapon:'knife'}],{wall:false,seed});s.units.slice(1,4).forEach(p=>p.hp=0);
+  for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++)if((dx||dy)&&!(dx===-1&&dy===0))s.map[30+dy][30+dx]='void';
+  g.heading=180;teleport(u,29,30);u.heading=0;refresh(s);setState(s,g,'broken',{x:29,y:30,z:0});g.lastKnown={x:29,y:30,z:0};
+  const hp=u.hp;round(s);assert.equal(g.x,30);assert.equal(g.y,30);assert.equal(stateOf(g),'broken');if(u.hp<hp)struck=true;}
+ assert.ok(struck,'over eighty seeds a cornered knife lands at least once');
+});
