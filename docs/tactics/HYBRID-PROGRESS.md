@@ -2,6 +2,11 @@
 
 ## Current visual revision gate
 
+Latest: [directional experiment](HYBRID-DIRECTIONAL-EXPERIMENT.md) implements a
+three-stance sector diagnostic (4/5), but candidate atlas art is rejected (2/5).
+An individual standing frame improves muzzle placement yet remains 3/5 for
+feasibility. The directional proof is unfinished; no next-section advancement.
+
 The architect rejected the earlier presentation; numeric calibration is not art
 approval. See [visual revision review](HYBRID-VISUAL-REVIEW.md) for the bounded room
 and prop sample (4/5 each), preserved-art pose assessment (4/5 evidence, 3/5 sprite

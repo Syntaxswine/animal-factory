@@ -1,0 +1,14 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Directional sprite proof — candidate assessment</title>
+<style>body{margin:24px;background:#172520;color:#eee5cd;font:16px system-ui}h1{font-size:24px}a{color:#afd7cd}label{display:inline-block;margin:8px 24px 8px 0}canvas{display:block;max-width:100%;background:#1c3028;border:1px solid #526357}#status{white-space:pre-wrap;color:#ffd69d}button{padding:6px 12px}input[type=range]{width:280px}p{max-width:1050px}</style>
+<h1>Directional sprite proof: horse · normal uniform · rifle</h1>
+<p>Candidate artwork — alignment gate has not passed. This diagnostic covers 22.5°–67.5° through the end-on view, in all three stances. It does not change game headings or collision geometry.</p>
+<label>Aiming angle <input id="heading" type="range" min="22.5" max="67.5" step="any" value="45"> <output id="angle">45°</output></label>
+<button id="play">Sweep angles</button>
+<label><input id="overlays" type="checkbox" checked> Physical body and muzzle overlays</label>
+<label><input id="close" type="checkbox"> Close view</label>
+<canvas id="proof" width="1380" height="680"></canvas>
+<p id="status">Loading candidate assets…</p>
+<p>White cross: fixed world ground anchor. Magenta circle: physical muzzle and 0.05-tile tolerance. Cyan point: manually identified painted muzzle (estimated ±3 source pixels per axis). Reported intervals include that uncertainty; they are not certified measurements. The supplied images drift from the requested registration and are not a passing calibration.</p>
+<p><a href="./hybrid-viewer.html?visual=room&props=sample">Return to approved environment review</a></p>
+<script type="module" src="./hybrid-directional-viewer.js"></script></html>

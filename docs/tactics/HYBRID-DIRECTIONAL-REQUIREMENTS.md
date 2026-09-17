@@ -1,5 +1,9 @@
 # Directional proof requirements — 17 September 2026
 
+The first implementation attempt and its rejected artwork are recorded in
+[the directional experiment](HYBRID-DIRECTIONAL-EXPERIMENT.md). The proof remains
+unfinished; a functioning diagnostic is not a passing directional solution.
+
 Source: coordinator's `REVIEW-2026-09-17.md` in the separate
 `animal-factory-tactics-retreat-review` worktree, supplied by the user.
 The coordinator approves the room material/prop direction through f8217c6.
@@ -15,7 +19,7 @@ facings are not enough to establish the existing 0.05-tile muzzle requirement.
 The physical forward muzzle offset is 0.57 tiles upright and 0.98 prone.
 
 For N evenly spaced directions, the maximum ground-plane discrepancy between an
-exact heading and its nearest frame is `2 * offset * sin(PI / N)`. Orthographic
+exact heading and its nearest frame is `2 * offset * sin(PI / (2 * N))`. Orthographic
 projection cannot enlarge that discrepancy. Eight directions can therefore miss
 by about 0.222 tiles upright or 0.382 prone before any artwork error. This is
 not solved by proving only the eight central headings.
@@ -52,7 +56,9 @@ Independent hostile review confirmed these criteria and the continuous-angle
 gap. No directional implementation or production approval is claimed by this
 guide. A restricted-facing alternative requires explicit acceptance and must
 address firing, AI, sight cones, overwatch and prone collision together; a UI-only
-snap silently changes or misrepresents gameplay. The user has been asked to choose
-directional artwork or a concrete restricted-facing proposal before that work.
+snap silently changes or misrepresents gameplay. The user supplied the architect's
+approval to proceed with the bounded directional-art proof. This does not approve
+a gameplay facing restriction. The formula above corrects the denominator in
+9b98f4a; its quoted numerical estimates and sampled results were already correct.
 
 Water animation and representative full-map performance remain later gates.

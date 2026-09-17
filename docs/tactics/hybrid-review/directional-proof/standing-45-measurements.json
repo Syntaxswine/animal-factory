@@ -1,0 +1,52 @@
+{
+  "status": "endpoint improved; direction, body registration, style and adjacent-frame continuity not approved",
+  "estimatedUncertaintyPixelsPerAxis": 3,
+  "samples": [
+    {
+      "file": "standing-45-first.png",
+      "width": 1254,
+      "height": 1254,
+      "muzzle": [
+        603,
+        495
+      ],
+      "scale": 0.0016206323345673704,
+      "anchor": [
+        627,
+        1028.671875
+      ],
+      "target": [
+        627.0000000000001,
+        563.2791585559773
+      ],
+      "error": 0.11729217771305142,
+      "estimatedInterval": [
+        0.11041641703155478,
+        0.12416793839454807
+      ]
+    },
+    {
+      "file": "standing-45-corrected.png",
+      "width": 1254,
+      "height": 1254,
+      "muzzle": [
+        628,
+        576
+      ],
+      "scale": 0.0016206323345673704,
+      "anchor": [
+        627,
+        1028.671875
+      ],
+      "target": [
+        627.0000000000001,
+        563.2791585559773
+      ],
+      "error": 0.02067940874561142,
+      "estimatedInterval": [
+        0.01380364806411478,
+        0.02755516942710806
+      ]
+    }
+  ]
+}
