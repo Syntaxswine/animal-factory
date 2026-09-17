@@ -5,9 +5,11 @@
 The architect rejected the earlier presentation; numeric calibration is not art
 approval. See [visual revision review](HYBRID-VISUAL-REVIEW.md) for the bounded room
 and prop sample (4/5 each), preserved-art pose assessment (4/5 evidence, 3/5 sprite
-readiness), texture repeats and directional-art requirement. Human visual approval
-and physical pose alignment remain open. Full-map propagation/default cutover
-have not advanced. Historical stage records below remain for traceability.
+readiness), texture repeats and directional-art requirement. The coordinator's
+17 September review now approves the environment direction. Physical sprite
+alignment remains open; a directional proof precedes full-map propagation.
+See [directional requirements](HYBRID-DIRECTIONAL-REQUIREMENTS.md). Default cutover
+has not advanced. Historical stage records below remain for traceability.
 
 ## User-approved dimensions
 

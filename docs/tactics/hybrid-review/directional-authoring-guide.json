@@ -1,0 +1,588 @@
+{
+  "camera": {
+    "azimuth": 0.7853981633974483,
+    "elevation": 0.5235987755982988
+  },
+  "frame": {
+    "width": 384,
+    "height": 320,
+    "anchor": [
+      192,
+      256
+    ],
+    "worldUnitsPerPixel": 0.006054838628153914
+  },
+  "tolerance": 0.05,
+  "records": [
+    {
+      "stance": "standing",
+      "heading": 0,
+      "frame": {
+        "width": 384,
+        "height": 320,
+        "anchor": [
+          192,
+          256
+        ],
+        "worldUnitsPerPixel": 0.006054838628153914
+      },
+      "muzzlePixel": [
+        258.5667394341804,
+        117.64700608072656
+      ],
+      "muzzleWorld": {
+        "x": 0.5700000000000001,
+        "y": 0,
+        "h": 1.2
+      }
+    },
+    {
+      "stance": "standing",
+      "heading": 45,
+      "frame": {
+        "width": 384,
+        "height": 320,
+        "anchor": [
+          192,
+          256
+        ],
+        "worldUnitsPerPixel": 0.006054838628153914
+      },
+      "muzzlePixel": [
+        192.00000000000003,
+        131.43342921902325
+      ],
+      "muzzleWorld": {
+        "x": 0.40305086527633216,
+        "y": 0.4030508652763321,
+        "h": 1.2
+      }
+    },
+    {
+      "stance": "standing",
+      "heading": 90,
+      "frame": {
+        "width": 384,
+        "height": 320,
+        "anchor": [
+          192,
+          256
+        ],
+        "worldUnitsPerPixel": 0.006054838628153914
+      },
+      "muzzlePixel": [
+        125.43326056581957,
+        117.64700608072656
+      ],
+      "muzzleWorld": {
+        "x": 3.490243377569957e-17,
+        "y": 0.5700000000000001,
+        "h": 1.2
+      }
+    },
+    {
+      "stance": "standing",
+      "heading": 135,
+      "frame": {
+        "width": 384,
+        "height": 320,
+        "anchor": [
+          192,
+          256
+        ],
+        "worldUnitsPerPixel": 0.006054838628153914
+      },
+      "muzzlePixel": [
+        97.8604142892261,
+        84.36363636363635
+      ],
+      "muzzleWorld": {
+        "x": -0.4030508652763321,
+        "y": 0.40305086527633216,
+        "h": 1.2
+      }
+    },
+    {
+      "stance": "standing",
+      "heading": 180,
+      "frame": {
+        "width": 384,
+        "height": 320,
+        "anchor": [
+          192,
+          256
+        ],
+        "worldUnitsPerPixel": 0.006054838628153914
+      },
+      "muzzlePixel": [
+        125.43326056581955,
+        51.080266646546136
+      ],
+      "muzzleWorld": {
+        "x": -0.5700000000000001,
+        "y": 6.980486755139914e-17,
+        "h": 1.2
+      }
+    },
+    {
+      "stance": "standing",
+      "heading": 225,
+      "frame": {
+        "width": 384,
+        "height": 320,
+        "anchor": [
+          192,
+          256
+        ],
+        "worldUnitsPerPixel": 0.006054838628153914
+      },
+      "muzzlePixel": [
+        191.99999999999997,
+        37.29384350824941
+      ],
+      "muzzleWorld": {
+        "x": -0.4030508652763322,
+        "y": -0.4030508652763321,
+        "h": 1.2
+      }
+    },
+    {
+      "stance": "standing",
+      "heading": 270,
+      "frame": {
+        "width": 384,
+        "height": 320,
+        "anchor": [
+          192,
+          256
+        ],
+        "worldUnitsPerPixel": 0.006054838628153914
+      },
+      "muzzlePixel": [
+        258.5667394341804,
+        51.08026664654611
+      ],
+      "muzzleWorld": {
+        "x": -1.047073013270987e-16,
+        "y": -0.5700000000000001,
+        "h": 1.2
+      }
+    },
+    {
+      "stance": "standing",
+      "heading": 315,
+      "frame": {
+        "width": 384,
+        "height": 320,
+        "anchor": [
+          192,
+          256
+        ],
+        "worldUnitsPerPixel": 0.006054838628153914
+      },
+      "muzzlePixel": [
+        286.1395857107739,
+        84.36363636363635
+      ],
+      "muzzleWorld": {
+        "x": 0.40305086527633205,
+        "y": -0.4030508652763322,
+        "h": 1.2
+      }
+    },
+    {
+      "stance": "kneeling",
+      "heading": 0,
+      "frame": {
+        "width": 384,
+        "height": 320,
+        "anchor": [
+          192,
+          256
+        ],
+        "worldUnitsPerPixel": 0.006054838628153914
+      },
+      "muzzlePixel": [
+        258.5667394341804,
+        160.55609698981746
+      ],
+      "muzzleWorld": {
+        "x": 0.5700000000000001,
+        "y": 0,
+        "h": 0.9
+      }
+    },
+    {
+      "stance": "kneeling",
+      "heading": 45,
+      "frame": {
+        "width": 384,
+        "height": 320,
+        "anchor": [
+          192,
+          256
+        ],
+        "worldUnitsPerPixel": 0.006054838628153914
+      },
+      "muzzlePixel": [
+        192.00000000000003,
+        174.3425201281142
+      ],
+      "muzzleWorld": {
+        "x": 0.40305086527633216,
+        "y": 0.4030508652763321,
+        "h": 0.9
+      }
+    },
+    {
+      "stance": "kneeling",
+      "heading": 90,
+      "frame": {
+        "width": 384,
+        "height": 320,
+        "anchor": [
+          192,
+          256
+        ],
+        "worldUnitsPerPixel": 0.006054838628153914
+      },
+      "muzzlePixel": [
+        125.43326056581957,
+        160.55609698981746
+      ],
+      "muzzleWorld": {
+        "x": 3.490243377569957e-17,
+        "y": 0.5700000000000001,
+        "h": 0.9
+      }
+    },
+    {
+      "stance": "kneeling",
+      "heading": 135,
+      "frame": {
+        "width": 384,
+        "height": 320,
+        "anchor": [
+          192,
+          256
+        ],
+        "worldUnitsPerPixel": 0.006054838628153914
+      },
+      "muzzlePixel": [
+        97.8604142892261,
+        127.27272727272725
+      ],
+      "muzzleWorld": {
+        "x": -0.4030508652763321,
+        "y": 0.40305086527633216,
+        "h": 0.9
+      }
+    },
+    {
+      "stance": "kneeling",
+      "heading": 180,
+      "frame": {
+        "width": 384,
+        "height": 320,
+        "anchor": [
+          192,
+          256
+        ],
+        "worldUnitsPerPixel": 0.006054838628153914
+      },
+      "muzzlePixel": [
+        125.43326056581955,
+        93.98935755563704
+      ],
+      "muzzleWorld": {
+        "x": -0.5700000000000001,
+        "y": 6.980486755139914e-17,
+        "h": 0.9
+      }
+    },
+    {
+      "stance": "kneeling",
+      "heading": 225,
+      "frame": {
+        "width": 384,
+        "height": 320,
+        "anchor": [
+          192,
+          256
+        ],
+        "worldUnitsPerPixel": 0.006054838628153914
+      },
+      "muzzlePixel": [
+        191.99999999999997,
+        80.20293441734032
+      ],
+      "muzzleWorld": {
+        "x": -0.4030508652763322,
+        "y": -0.4030508652763321,
+        "h": 0.9
+      }
+    },
+    {
+      "stance": "kneeling",
+      "heading": 270,
+      "frame": {
+        "width": 384,
+        "height": 320,
+        "anchor": [
+          192,
+          256
+        ],
+        "worldUnitsPerPixel": 0.006054838628153914
+      },
+      "muzzlePixel": [
+        258.5667394341804,
+        93.98935755563704
+      ],
+      "muzzleWorld": {
+        "x": -1.047073013270987e-16,
+        "y": -0.5700000000000001,
+        "h": 0.9
+      }
+    },
+    {
+      "stance": "kneeling",
+      "heading": 315,
+      "frame": {
+        "width": 384,
+        "height": 320,
+        "anchor": [
+          192,
+          256
+        ],
+        "worldUnitsPerPixel": 0.006054838628153914
+      },
+      "muzzlePixel": [
+        286.1395857107739,
+        127.27272727272725
+      ],
+      "muzzleWorld": {
+        "x": 0.40305086527633205,
+        "y": -0.4030508652763322,
+        "h": 0.9
+      }
+    },
+    {
+      "stance": "prone",
+      "heading": 0,
+      "frame": {
+        "width": 384,
+        "height": 320,
+        "anchor": [
+          192,
+          256
+        ],
+        "worldUnitsPerPixel": 0.006054838628153914
+      },
+      "muzzlePixel": [
+        306.448078325433,
+        263.16343310211045
+      ],
+      "muzzleWorld": {
+        "x": 0.98,
+        "y": 0,
+        "h": 0.35
+      }
+    },
+    {
+      "stance": "prone",
+      "heading": 45,
+      "frame": {
+        "width": 384,
+        "height": 320,
+        "anchor": [
+          192,
+          256
+        ],
+        "worldUnitsPerPixel": 0.006054838628153914
+      },
+      "muzzlePixel": [
+        192.00000000000003,
+        286.86640621707676
+      ],
+      "muzzleWorld": {
+        "x": 0.6929646455628166,
+        "y": 0.6929646455628165,
+        "h": 0.35
+      }
+    },
+    {
+      "stance": "prone",
+      "heading": 90,
+      "frame": {
+        "width": 384,
+        "height": 320,
+        "anchor": [
+          192,
+          256
+        ],
+        "worldUnitsPerPixel": 0.006054838628153914
+      },
+      "muzzlePixel": [
+        77.551921674567,
+        263.16343310211045
+      ],
+      "muzzleWorld": {
+        "x": 6.000769315822031e-17,
+        "y": 0.98,
+        "h": 0.35
+      }
+    },
+    {
+      "stance": "prone",
+      "heading": 135,
+      "frame": {
+        "width": 384,
+        "height": 320,
+        "anchor": [
+          192,
+          256
+        ],
+        "worldUnitsPerPixel": 0.006054838628153914
+      },
+      "muzzlePixel": [
+        30.145975444634388,
+        205.93939393939394
+      ],
+      "muzzleWorld": {
+        "x": -0.6929646455628165,
+        "y": 0.6929646455628166,
+        "h": 0.35
+      }
+    },
+    {
+      "stance": "prone",
+      "heading": 180,
+      "frame": {
+        "width": 384,
+        "height": 320,
+        "anchor": [
+          192,
+          256
+        ],
+        "worldUnitsPerPixel": 0.006054838628153914
+      },
+      "muzzlePixel": [
+        77.55192167456697,
+        148.71535477667746
+      ],
+      "muzzleWorld": {
+        "x": -0.98,
+        "y": 1.2001538631644062e-16,
+        "h": 0.35
+      }
+    },
+    {
+      "stance": "prone",
+      "heading": 225,
+      "frame": {
+        "width": 384,
+        "height": 320,
+        "anchor": [
+          192,
+          256
+        ],
+        "worldUnitsPerPixel": 0.006054838628153914
+      },
+      "muzzlePixel": [
+        191.99999999999997,
+        125.01238166171115
+      ],
+      "muzzleWorld": {
+        "x": -0.6929646455628167,
+        "y": -0.6929646455628165,
+        "h": 0.35
+      }
+    },
+    {
+      "stance": "prone",
+      "heading": 270,
+      "frame": {
+        "width": 384,
+        "height": 320,
+        "anchor": [
+          192,
+          256
+        ],
+        "worldUnitsPerPixel": 0.006054838628153914
+      },
+      "muzzlePixel": [
+        306.44807832543296,
+        148.71535477667743
+      ],
+      "muzzleWorld": {
+        "x": -1.8002307947466092e-16,
+        "y": -0.98,
+        "h": 0.35
+      }
+    },
+    {
+      "stance": "prone",
+      "heading": 315,
+      "frame": {
+        "width": 384,
+        "height": 320,
+        "anchor": [
+          192,
+          256
+        ],
+        "worldUnitsPerPixel": 0.006054838628153914
+      },
+      "muzzlePixel": [
+        353.85402455536564,
+        205.9393939393939
+      ],
+      "muzzleWorld": {
+        "x": 0.6929646455628163,
+        "y": -0.6929646455628167,
+        "h": 0.35
+      }
+    }
+  ],
+  "quantization": [
+    {
+      "count": 8,
+      "maxProjectedMuzzleError": {
+        "standing": 0.2192057195666328,
+        "kneeling": 0.2192057195666328,
+        "prone": 0.3768800090794739
+      }
+    },
+    {
+      "count": 16,
+      "maxProjectedMuzzleError": {
+        "standing": 0.11084654998375314,
+        "kneeling": 0.11084654998375314,
+        "prone": 0.1905782789194352
+      }
+    },
+    {
+      "count": 32,
+      "maxProjectedMuzzleError": {
+        "standing": 0.055638881486811176,
+        "kneeling": 0.055638881486811176,
+        "prone": 0.09565983132820155
+      }
+    },
+    {
+      "count": 64,
+      "maxProjectedMuzzleError": {
+        "standing": 0.02784644759394445,
+        "kneeling": 0.02784644759394445,
+        "prone": 0.04787634849485174
+      }
+    },
+    {
+      "count": 128,
+      "maxProjectedMuzzleError": {
+        "standing": 0.013926601405661064,
+        "kneeling": 0.013926601405661064,
+        "prone": 0.023943981364118953
+      }
+    }
+  ]
+}

@@ -19,9 +19,12 @@ cannot represent eight headings. Directional armed poses with ground/weapon
 anchors are needed, or an explicitly approved interim facing constraint. Do not
 restore conspicuous deformation to conceal the mismatch.
 
-Human visual approval remains outstanding. The architect's
-[handoff](HYBRID-VISUAL-HANDOFF.md) requires approved direction before full-map
-application. No full-map expansion or default cutover is approved by these scores.
+The coordinator's 17 September review approves the material and prop direction
+for continued development. Production sprite approval remains outstanding. Its
+next handoff requires a directional solution proof before carrying the approved
+environment treatment into the opt-in map/editor. See
+[directional requirements](HYBRID-DIRECTIONAL-REQUIREMENTS.md). No default cutover
+is approved by the environment decision.
 Earlier numeric stage-3 success is not visual approval. Performance-budget
 agreement remains outstanding; water animation remains a tracked regression.
 
