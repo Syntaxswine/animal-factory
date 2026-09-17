@@ -26,7 +26,7 @@ test('animated poses retain limb lengths, ground clearance and planted walking c
 });
 test('discharge uses physical muzzle before recoil and timestamp evaluation is repeatable',()=>{
  const m=createHorseModel();try{for(const heading of [0,22.5,137.2,315]){
-  const shot=horseSequence(SHOT_TIME);assert.equal(shot.motion.recoil,0);assert.ok(Math.abs(shot.motion.readyPitch)<1e-10);
+  const shot=horseSequence(SHOT_TIME);assert.equal(shot.motion.recoil,0);assert.ok(shot.motion.carry===0);
   m.pose('kneeling',heading,[4,0,7],shot.motion);const before=m.diagnostics(),p=muzzlePoint({geometryMode:'hybrid'},{x:4,y:7,z:0,hp:100,stance:'kneeling',heading});
   assert.ok(distance(before.tip,[p.x,p.h,p.y])<1e-6);
   const a=heading*Math.PI/180;assert.ok(new Vector3(...before.tip).sub(new Vector3(...before.barrelRear)).normalize().distanceTo(new Vector3(Math.cos(a),0,Math.sin(a)))<1e-6);

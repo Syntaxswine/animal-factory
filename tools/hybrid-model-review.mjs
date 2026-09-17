@@ -11,6 +11,7 @@ const {chromium}=createRequire(import.meta.url)(process.env.PLAYWRIGHT_PATH||'pl
 try{
  const page=await browser.newPage({viewport:{width:1440,height:1000}}),errors=[],poses=[];page.on('pageerror',e=>errors.push(e.message));page.on('response',r=>{if(r.status()>=400&&!r.url().endsWith('favicon.ico'))errors.push(r.url());});
  await page.goto('http://127.0.0.1:4389/tactics/hybrid-model-comparison.html',{waitUntil:'networkidle'});
+ await page.locator('#hold').selectOption('aim');
  const heading=async h=>{await page.locator('#heading').evaluate((e,h)=>{e.value=String(h);e.dispatchEvent(new Event('input'));},h);};
  for(const stance of ['standing','kneeling','prone']){await page.locator('#stance').selectOption(stance);await heading(0);
   for(const mode of ['both','sprite','model']){await page.locator('#mode').selectOption(mode);for(const close of [false,true]){await page.locator('#close').setChecked(close);await page.screenshot({path:fileURLToPath(new URL(`${stance}-${mode}-${close?'close':'native'}.png`,directory))});}}

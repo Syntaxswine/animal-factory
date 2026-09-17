@@ -27,3 +27,12 @@ test('pose rig preserves limb lengths and actual gloves intersect the rifle cont
  assert.ok(d.triangles<6000);assert.ok(d.meshes<60);
  }}finally{model.dispose();}
 });
+
+test('relaxed carry lowers elbows while retaining hand contact and upright bounds',()=>{
+ const model=createHorseModel();try{for(const stance of ['standing','kneeling'])for(const heading of [0,22.5,90,137.2,225,315]){
+  model.pose(stance,heading);const aim=model.diagnostics();model.pose(stance,heading,[0,0,0],{carry:1});const carry=model.diagnostics();
+  assert.ok(Math.abs(carry.max[1]-DIMENSIONS[stance])<1e-6);assert.ok(Math.abs(carry.min[1])<1e-6);
+  for(const side of [-1,1])assert.ok(carry.joints[side].elbow[1]<aim.joints[side].elbow[1]);
+  for(const [glove,weapon]of [['glove-1','foreend'],['glove1','receiver']])assert.ok(new Box3().setFromObject(model.parts.find(p=>p.name===glove)).intersectsBox(new Box3().setFromObject(model.parts.find(p=>p.name===weapon))));
+ }}finally{model.dispose();}
+});

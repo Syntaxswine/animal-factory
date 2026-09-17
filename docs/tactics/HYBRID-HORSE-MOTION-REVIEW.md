@@ -4,6 +4,14 @@ The architect recommended refining this horse and testing walk → kneel → aim
 
 Preview: http://127.0.0.1:4389/tactics/hybrid-model-comparison.html — select **Play sequence**. Close view changes only the camera scale. Heading remains adjustable; the action follows that heading. There is no gameplay damage or action scheduling.
 
+## Relaxed-carry correction
+
+The user marked the desired diagonal rifle line and lowered elbows, then confirmed that this should be the relaxed carry pose, with shouldering reserved for aiming. The comparison now defaults to **Relaxed carry** and offers **Shouldered aim**. Prone retains its supported aiming pose. [Matched carry screenshot](hybrid-review/horse-motion/relaxed-carry-close.png).
+
+The rifle rotates across the torso and lowers from the shoulder while both hands remain attached through IK. The sequence carries during walking/kneeling, raises to aim during 4.7–5.6 seconds, retains physical discharge alignment, and returns to carry during standing. The same mesh and prototype dimensions are retained. Five focused tests pass, including the new carry checks across headings/stances; refreshed native/close recordings and browser controls/resource checks pass. Packaging still contains 93 app files. The earlier 373-test full-suite result below belongs to the preceding refinement revision.
+
+Hostile review of the carry correction: **4/5**. The reviewer independently passed all five focused tests and verified sequence → static → Shouldered aim after fixing restoration of the Rifle selector. Production limitations below remain unchanged.
+
 ## Visual refinement
 
 The torso is broader and deeper, the shoulders are higher to shorten the exposed neck, sleeve caps are less spherical, and the body sits laterally behind the firing shoulder so the rifle is shouldered instead of spanning the collar. The same atlas is retained, with brighter clothing panel vertex colors for clearer cloth and highlights. The rear knee surface reaches the ground in the kneeling pose. No new species or texture catalog was introduced.
@@ -17,7 +25,7 @@ Historical baseline: [043002f comparison](https://github.com/Syntaxswine/animal-
 - 0–3 s: walk two tiles with world-space planted-foot intervals.
 - 3–3.5 s: settle the feet one at a time.
 - 3.5–4.7 s: kneel while the front foot supports the body and the rear foot steps back.
-- 4.7–6 s: raise the rifle from low ready and establish level aim.
+- 4.7–6 s: raise the rifle from relaxed carry and establish level aim.
 - 6 s: discharge; a brief flash/tracer uses the measured barrel tip and axis.
 - After the flash: recoil and recover, then hold.
 - 7–8.5 s: stand with the front foot anchored; hold standing through 10 s.
@@ -42,7 +50,7 @@ Browser verification plays both full recordings, checks eight timestamps per vie
 
 ## Remaining limits and decision
 
-Upper-body weight transfer and recoil remain stiff. This is still a procedural rigid-part rig, not an authored skinned animation asset. There is no general shoulder contact or weapon/body collision solver. The motion does not establish vertical target aiming, uneven terrain support, combat timing, pathfinding, other weapons/species, or many-unit performance. Raising the rifle from low ready is an animation, not vertical target aiming.
+Upper-body weight transfer and recoil remain stiff. This is still a procedural rigid-part rig, not an authored skinned animation asset. There is no general shoulder contact or weapon/body collision solver. The motion does not establish vertical target aiming, uneven terrain support, combat timing, pathfinding, other weapons/species, or many-unit performance. Raising the rifle from relaxed carry is an animation, not vertical target aiming.
 
 The static model still costs roughly 56 more draw calls than the sprite in this isolated room. The new animation does not solve batching. Canonical gameplay, tile rules, and renderer cutover remain unchanged.
 

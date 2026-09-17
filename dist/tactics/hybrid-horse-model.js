@@ -83,14 +83,15 @@ export function createHorseModel(texture=null){
   for(const ear of ears)ear.rotation.z=prone?Math.acos((DIMENSIONS.prone-headBase[1]-.245)/.105):0;
   placeSegment(mane,[shoulder[0]-.085,shoulder[1]+.025,headBase[2]],[headBase[0]-.090,headBase[1]+.21,headBase[2]]);
   placeSegment(tail,[hip[0]-.14,hip[1]+.03,offset],prone?[hip[0]-.29,.08,offset]:[hip[0]-.22,Math.max(.16,hip[1]-.32),offset]);
-  rifle.rotation.z=motion.readyPitch||0;
+  const carry=prone?0:THREE.MathUtils.clamp(motion.carry||0,0,1);
+  rifle.rotation.set(0,carry*1.0,(motion.readyPitch||0)+carry*.30);
   const pivot=new THREE.Vector3(-.075,-.036,0),pivotDelta=pivot.clone().sub(pivot.clone().applyQuaternion(rifle.quaternion));
-  rifle.position.set((prone?.41:0)-recoil,prone?.35:1.2-.3*k,0);rifle.position.add(pivotDelta);
+  rifle.position.set((prone?.41:0)-recoil,prone?.35:1.2-.3*k,0);rifle.position.add(pivotDelta).lerp(new THREE.Vector3(.10,1.2-.3*k-.24,.10),carry);
   const joints={};
   for(const l of limbs){const {side}=l,hipJoint=[hip[0],hip[1],offset+side*.12],stand=[.025,.07,offset+side*.15],down=side===1?[.23,.07,offset+.15]:[-.40,.07,offset-.15],ankle=prone?[-.85,.07,offset+side*.15]:mix(stand,down);
    if(motion.feet){ankle[0]+=motion.feet[side].x;ankle[1]+=motion.feet[side].lift;}
    const knee=solveLimb(hipJoint,ankle,.34,.34,prone?[0,.2,side]:[1,0,0]);placeSegment(l.thigh,hipJoint,knee);placeSegment(l.shin,knee,ankle);l.knee.position.fromArray(knee);l.boot.position.set(ankle[0]+.045,ankle[1]-.01,ankle[2]);
-   const sh=[shoulder[0],shoulder[1]-.035,offset+side*.19],grip=grips[side===-1?1:0].position.clone().applyQuaternion(rifle.quaternion).add(rifle.position).toArray(),elbow=solveLimb(sh,grip,.28,.28,[0,-.8,side*.6]);
+   const sh=[shoulder[0],shoulder[1]-.035,offset+side*.19],grip=grips[side===-1?1:0].position.clone().applyQuaternion(rifle.quaternion).add(rifle.position).toArray(),elbow=solveLimb(sh,grip,.28,.28,[0,-1,side*(.6-.4*carry)]);
    l.shoulderCap.position.fromArray(sh);placeSegment(l.upper,sh,elbow);const cuffStart=V(sh).lerp(V(elbow),.82).toArray();placeSegment(l.cuff,cuffStart,elbow);placeSegment(l.forearm,elbow,grip);l.elbow.position.fromArray(elbow);l.hand.position.fromArray(grip);l.hand.quaternion.copy(rifle.quaternion);
    joints[side]={hip:hipJoint,knee,ankle,shoulder:sh,elbow,grip};
   }

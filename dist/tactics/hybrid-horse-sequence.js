@@ -20,5 +20,5 @@ export function horseSequence(time){
   feet[side]={x,lift,planted};
  }
  const recoilTime=t-SHOT_TIME-.045,recoil=recoilTime>0&&recoilTime<.45?.045*Math.sin(Math.PI*recoilTime/.45)*Math.exp(-3*recoilTime):0;
- return {time:t,phase,distance:distance-.205*kneel,stance:kneel>.5?'kneeling':'standing',flash:t>=SHOT_TIME&&t<SHOT_TIME+.045,shotVisible:t>=SHOT_TIME&&t<SHOT_TIME+.14,motion:{kneel,feet,bob:t<3?.012*Math.sin(distance/.5*Math.PI*2)**2:0,readyPitch:-.20*(1-smooth((t-4.7)/.9)),recoil}};
+ return {time:t,phase,distance:distance-.205*kneel,stance:kneel>.5?'kneeling':'standing',flash:t>=SHOT_TIME&&t<SHOT_TIME+.045,shotVisible:t>=SHOT_TIME&&t<SHOT_TIME+.14,motion:{kneel,feet,bob:t<3?.012*Math.sin(distance/.5*Math.PI*2)**2:0,carry:1-smooth((t-4.7)/.9)+smooth((t-7)/1.5),recoil}};
 }
