@@ -1,4 +1,6 @@
 import {restStrain,driftBonds} from './personalities.js';
+import {settleHappiness} from './happiness.js';
+import {quitMerc} from './engine.js';
 import {factoryMap,generateMap,blockedEdge,tileKey,levelOf,neighbors,W,H} from './maps.js';
 import {createGame,squad,guards,alive,incapacitated,canControl,abandonCasualties,occupant,refresh,walkable,log,STANCES,stanceOf,emitNoise,enterFire,combatCosts,settleGuards} from './engine.js';
 import {awardXP} from './progression.js';
@@ -33,8 +35,13 @@ export function advanceTime(world,minutes){
 }
 export function tickWorld(world,elapsedMs,{paused=false}={}){
  if(paused||currentMap(world).phase==='lost'||!Number.isFinite(elapsedMs)||elapsedMs<=0)return 0;
- return advanceTime(world,elapsedMs/1000*PLAY_MINUTES_PER_SECOND);
+ const minutes=elapsedMs/1000*PLAY_MINUTES_PER_SECOND,income=advanceTime(world,minutes);settleMorale(world,currentMap(world),minutes);return income;
 }
+// G5: happiness is settled whenever the campaign clock advances (exploration, downtime, travel). A waiting crosser counts as on its destination.
+// A merc whose meter has been at zero for a day quits here if the map is calm; otherwise the engine lets it go when the contact ends.
+export function settleMorale(world,s,minutes,mapOf=u=>u.away?u.away.destination:world.current){if(!s.rules?.social)return [];
+ const {lines,quitting}=settleHappiness(s.units.filter(u=>u.team==='squad'),minutes,world.clock.minutes,mapOf);for(const line of lines)log(s,line);
+ if(['explore','won'].includes(s.phase))for(const u of quitting)quitMerc(s,u);return lines;}
 export function downtimeReason(world){
  const s=currentMap(world);
  if(s.phase!=='won'||guards(s).length)return 'Clear this map before resting or training.';
@@ -63,7 +70,7 @@ export function spendTime(world,activity,hours,medicId=null){
  let healed=0;
  const crossings=[];for(const u of troops){u.overwatch=null;if(activity!=='train'){restStrain(u,hours);if(s.rules?.social)crossings.push(...driftBonds(u,hours));const assisted=Math.min(hours,u.medicalRestHours||0),before=u.hp;recoverHealth(u,assisted/MEDICAL_RECOVERY_HOURS+(hours-assisted)/REST_RECOVERY_HOURS);u.medicalRestHours=u.hp===u.maxHp?0:Math.max(0,(u.medicalRestHours||0)-assisted);healed+=u.hp-before;u.ap=u.maxAp;}else if(u.level<10)awardXP(u,25*hours);}
  const message=activity==='train'?`Squad trained for ${hours} hour${hours===1?'':'s'}; +${25*hours} XP per eligible troop.`:`Squad rested for ${hours} hour${hours===1?'':'s'}; restored ${healed} HP total.`+(treatment?` ${treatment.medic.name} provided care; used ${treatment.kitsNeeded} medkits.`:'');
- refresh(s);log(s,message);for(const line of crossings)log(s,line);return {ok:true,income,message};
+ settleMorale(world,s,hours*60);refresh(s);log(s,message);for(const line of crossings)log(s,line);return {ok:true,income,message};
 }
 function recoverHealth(u,fraction){
  if(u.hp>=u.maxHp){u.restHealing=0;return;}
@@ -124,7 +131,7 @@ function arrive(world,destination,plan=arrivalPlan(world,destination)){
   next.units=[...incoming,...next.units.filter(u=>u.team==='guard')];next.selected=incoming.find(alive)?.id??previous.selected;next.queue=[];next.effect=null;next.alerted=new Set();next.engaged=false;next.freshFight=true; // entering a map is a fresh fight: full AP on contact (capped by what a crosser carried), whatever alert the guards kept
   // Failed travel takes no time. Production during transit uses previously liberated maps.
   previous.leftAt=world.clock.minutes; // the moment this map was left: its guards settle by the clock when the squad returns
-  const income=advanceTime(world,TRAVEL_MINUTES);
+  const income=advanceTime(world,TRAVEL_MINUTES);settleMorale(world,next,TRAVEL_MINUTES,()=>destination); // the hour on the road, everyone together on the destination
   if(Number.isFinite(next.leftAt))settleGuards(next,world.clock.minutes-next.leftAt);next.leftAt=undefined;
   world.states[destination]=next;world.current=destination;world.journeys++;world.lastIncome=income;
   refresh(next);

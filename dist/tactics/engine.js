@@ -1,5 +1,6 @@
 import {explosivePreview,explosiveTrajectory,detonate} from './explosives.js';
 import {initPersonality,initGuardSocial,socialRoll,friendlyReaction,helped,settleStress,injuryStrain,killRelief,collapse} from './personalities.js';
+import {partnerLost,stabilizedPartner,cleanWin,onContract} from './happiness.js';
 import {initProgression,awardCombatXP,train} from './progression.js';
 import {bulletTrajectory,shotgunTrajectories,traceProjectile,eyeHeight,targetHeight} from './projectiles.js';
 import {gridLayout,storeLayout,placeItem,initInventory,reserve,consumeAmmo,syncWeapons,accepts,receive} from './inventory.js';
@@ -40,7 +41,7 @@ export const stanceOf=u=>Object.hasOwn(STANCES,u?.stance)?u.stance:'standing';
 export function movementNeighbors(s,u,p=u,stairs){return neighbors(s,p,stairs).filter(q=>(levelOf(q)===levelOf(p)||stanceOf(u)==='standing')&&!(levelOf(q)===levelOf(p)&&q.x!==p.x&&q.y!==p.y&&[occupant(s,q.x,p.y,levelOf(p)),occupant(s,p.x,q.y,levelOf(p))].some(v=>v&&v!==u))).map(q=>({...q,cost:levelOf(q)===levelOf(p)?(STANCES[stanceOf(u)].moveCost+(u.sneaking?2:0))*q.cost:q.cost}));}
 export const key=tileKey;
 export const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y,(levelOf(a)-levelOf(b))*3);
-export const alive=u=>u.hp>0&&!u.away; // A unit that crossed the map edge is off this map: not a target, not an occupant, not controllable here.
+export const alive=u=>u.hp>0&&!u.away&&u.casualty!=='quit'; // A unit that crossed the map edge is off this map: not a target, not an occupant, not controllable here; a merc that quit (G5) has left the squad.
 export const incapacitated=u=>u?.hp===0&&['bleeding','stable'].includes(u.casualty);
 // A stabilized casualty gets back up after three full squad turns (turns that begin after the stabilization), at 5 HP, still exhausted. See RULES.md, Casualty recovery.
 export const RECOVERY_TURNS=3,RECOVERY_HP=5;
@@ -68,7 +69,7 @@ export function createGame(seed=1947,definition=factoryMap(),detect=true,difficu
  // G3 behind its knob: the campaign (createWorld) draws an archetype per guard from a hash of the seed and the guard's index; plain createGame leaves the G2 base numbers.
  let rosterSeed=(options.rosterSeed??seed)>>>0;for(const c of String(definition.name||''))rosterSeed=Math.imul(rosterSeed^c.charCodeAt(0),16777619)>>>0;
  s.rules={social:!!options.social,rosterSeed};if(s.rules.social)for(const [i,g] of guards(s).entries()){g.archetype=drawArchetype(rosterSeed,i);g.traits={...ARCHETYPES[g.archetype].traits};initGuardSocial(g);}
- for(const u of s.units){initInventory(u,WEAPONS);if(u.team==='squad'){initProgression(u);initPersonality(u);}}s.loot=definition.starts.map((p,i)=>({...p,items:[{type:'ammo',kind:i%2?'rifle':'pistol',count:i%2?5:8}]}));
+ for(const u of s.units){initInventory(u,WEAPONS);if(u.team==='squad'){initProgression(u);initPersonality(u,s.rules.social);}}s.loot=definition.starts.map((p,i)=>({...p,items:[{type:'ammo',kind:i%2?'rifle':'pistol',count:i%2?5:8}]}));
  if(definition.name==='Factory test')for(const [i,kind]of ['shotgun','sniper','smg','hmg'].entries())s.loot[i].items.push({type:'weapon',kind,rounds:WEAPONS[kind].mag},{type:'ammo',kind,count:12});
  if(definition.name==='Factory test')for(const [i,kind]of ['grenade','launcher','rpg'].entries())s.loot[i+1].items.push({type:'weapon',kind,rounds:WEAPONS[kind].mag},{type:'ammo',kind,count:kind==='grenade'?6:3});
  if(definition.name==='Factory test')s.loot[0].items.push({type:'weapon',kind:'flamethrower',rounds:4},{type:'ammo',kind:'flamethrower',count:4});
@@ -153,12 +154,12 @@ function refreshNow(s){
  if(s.queue.length&&[...s.detected].some(id=>!oldDetected.has(id))){s.queue=[];log(s,'Movement stopped: new opponent spotted.');}
  else if(s.queue.length&&Object.keys(s.glimpses).some(id=>!oldGlimpses[id]&&!oldDetected.has(Number(id)))){s.queue=[];log(s,'Movement stopped: movement glimpsed.');}
  if(s.visible!==oldVisible||s.seen.size<s.visible.size)for(const k of s.visible)s.seen.add(k);
- if(!squad(s).length){if(!s.defeat){const escaped=s.units.filter(u=>u.team==='squad'&&u.away);for(const u of s.units.filter(u=>u.team==='squad'&&!u.away&&!['captured','dead'].includes(u.casualty))){u.casualty=u.casualty==='stable'?'captured':'dead';u.bleedTurns=0;u.recoveryTurns=0;u.ap=0;u.overwatch=null;syncWeapons(u);}const fresh=s.units.filter(u=>u.team==='squad'&&!u.recorded&&['captured','dead'].includes(u.casualty));s.defeat={location:s.definition.name,round:s.round,escaped:escaped.map(u=>({id:u.id,name:u.name})),captured:fresh.filter(u=>u.casualty==='captured').map(u=>structuredClone(u)),dead:fresh.filter(u=>u.casualty==='dead').map(u=>({id:u.id,name:u.name}))};for(const u of fresh)u.recorded=true; // a loss lists only the comrades it cost; earlier losses on the roster stay recorded once
+ if(!squad(s).length){if(!s.defeat){const escaped=s.units.filter(u=>u.team==='squad'&&u.away);for(const u of s.units.filter(u=>u.team==='squad'&&!u.away&&!['captured','dead','quit'].includes(u.casualty))){u.casualty=u.casualty==='stable'?'captured':'dead';u.bleedTurns=0;u.recoveryTurns=0;u.ap=0;u.overwatch=null;syncWeapons(u);}const fresh=s.units.filter(u=>u.team==='squad'&&!u.recorded&&['captured','dead'].includes(u.casualty));s.defeat={location:s.definition.name,round:s.round,escaped:escaped.map(u=>({id:u.id,name:u.name})),captured:fresh.filter(u=>u.casualty==='captured').map(u=>structuredClone(u)),dead:fresh.filter(u=>u.casualty==='dead').map(u=>({id:u.id,name:u.name}))};for(const u of fresh)u.recorded=true; // a loss lists only the comrades it cost; earlier losses on the roster stay recorded once
 log(s,s.defeat.captured.length+' captured / '+s.defeat.dead.length+' dead.'+(escaped.length?' '+escaped.length+' crossed the map edge.':''));}s.phase='lost';s.queue=[];return;}
  if(!alive(s.units[s.selected]))s.selected=squad(s)[0].id;
  s.exposed={};for(const g of guards(s))if(s.detected.has(g.id)){const zones=new Set();for(const u of squad(s))if(canSee(s,u,g))for(const zone of visibleZones(s,u,g))zones.add(zone);s.exposed[g.id]=[...zones];}
  const pending=s.units.some(u=>['bleeding','stable'].includes(u.casualty)||alive(u)&&u.burningTurns>0)||(s.fires?.length||0)>0; // a stabilized comrade is still down: the turns keep coming until it stands
- if(!guards(s).length&&!pending){if(s.phase!=='won'){log(s,'Local map cleared. Explore or gather at the travel marker.');s.queue=[];}s.phase='won';s.alerted=new Set();s.engaged=false;s.revision++;return;}
+ if(!guards(s).length&&!pending){if(s.phase!=='won'){log(s,'Local map cleared. Explore or gather at the travel marker.');s.queue=[];}s.phase='won';s.alerted=new Set();s.engaged=false;contactEnds(s);s.revision++;return;}
  for(const g of guards(s))reconcile(s,g);
  for(const g of guards(s)){const targets=squad(s).filter(p=>notices(s,g,p));if(targets.length)identified(s,g,targets.sort((a,b)=>distance(g,a)-distance(g,b))[0]);
   else{const moving=squad(s).filter(p=>perceive(s,g,p)===1);if(moving.length)suspect(s,g,approximate(moving.sort((a,b)=>distance(g,a)-distance(g,b))[0]));}}
@@ -167,7 +168,7 @@ log(s,s.defeat.captured.length+' captured / '+s.defeat.dead.length+' dead.'+(esc
  const wasAlert=s.alerted||new Set(),nowAlert=new Set(guards(s).filter(active).map(g=>g.id));s.alerted=nowAlert;
  const fresh=guards(s).filter(g=>nowAlert.has(g.id)&&!wasAlert.has(g.id)),heard=()=>fresh.some(g=>squad(s).some(p=>canSee(s,g,p)))?'You have been seen, but they are too far to reach you yet.':'You are pretty sure someone heard that.';
  const threat=guards(s).some(g=>g.alert&&threatens(s,g)),contact=pending||!!s.engaged||threat;let warned=false;
- if(['explore','won'].includes(s.phase)&&contact){s.phase='player';s.round++;s.queue=[];
+ if(['explore','won'].includes(s.phase)&&contact){s.phase='player';s.round++;s.queue=[];if(s.rules?.social&&!s.fight)s.fight={casualty:false}; // G5: a clean win lifts the squad
   // AP is live across the engagement: a fight that resumes while guards were already alert continues with the AP the squad has; a fresh fight gets a full turn. Guards always start theirs full.
   // freshFight is set by entering a map and by Area clear, so a fight on a new map is fresh even when its guards kept an alert from before.
   const resumed=wasAlert.size>0&&!s.freshFight;s.freshFight=false;for(const u of s.units)if(u.burningTurns)u.ap=0;else if(u.team==='guard'||!resumed)u.ap=u.maxAp;
@@ -178,9 +179,9 @@ log(s,s.defeat.captured.length+' captured / '+s.defeat.dead.length+' dead.'+(esc
   if(s.phase==='enemy')newRound(s);
   s.phase='explore';s.queue=[];
   if(nowAlert.size){warned=fresh.length>0;log(s,(warned?heard()+' ':'Area quiet: ')+'No one can reach you within two turns: real time resumes, alerted guards are still coming; actions other than walking still cost AP.');}
-  else{for(const u of squad(s))u.overwatch=null;s.freshFight=true;log(s,'Area clear. Real-time exploration resumed.');}}
+  else{for(const u of squad(s))u.overwatch=null;s.freshFight=true;log(s,'Area clear. Real-time exploration resumed.');contactEnds(s);}}
  // The last alerted guard stood down while the map was already in real time: the same all-clear, without a phase change.
- else if(['explore','won'].includes(s.phase)&&wasAlert.size&&!nowAlert.size&&!s.engaged){for(const u of squad(s))u.overwatch=null;s.freshFight=true;log(s,'Area clear. The alert is over.');}
+ else if(['explore','won'].includes(s.phase)&&wasAlert.size&&!nowAlert.size&&!s.engaged){for(const u of squad(s))u.overwatch=null;s.freshFight=true;log(s,'Area clear. The alert is over.');contactEnds(s);}
 
  // Guards newly alerted by a report or a sighting who cannot reach the squad get their warning whatever the phase did (a shot of your own may have opened the turn).
  if(fresh.length&&!threat&&!warned)log(s,heard());
@@ -192,7 +193,13 @@ log(s,s.defeat.captured.length+' captured / '+s.defeat.dead.length+' dead.'+(esc
 export const combatCosts=s=>s.phase==='player'||s.phase==='enemy'||(['explore','won'].includes(s.phase)&&((s.alerted?.size||0)>0||!!s.engaged));
 export function canControl(s,u){return u&&alive(u)&&!u.burningTurns&&u.team==='squad'&&['explore','player','won'].includes(s.phase);}
 // Downed comrades left on a map when the last standing squad member crosses its edge meet the defeat rule: stabilized are captured, bleeding die.
-export function abandonCasualties(s){const left=[];for(const u of s.units)if(u.team==='squad'&&!u.away&&incapacitated(u)){u.casualty=u.casualty==='stable'?'captured':'dead';u.bleedTurns=0;u.recoveryTurns=0;u.ap=0;u.overwatch=null;syncWeapons(u);left.push(u);}return left;}
+// G5: the end of a contact (the map won, or the last alerted guard stood down) lifts every merc's happiness when nobody went down, and lets a merc
+// whose meter has been at zero for a day walk: quitting never happens mid-contact.
+function contactEnds(s){if(s.fight){if(!s.fight.casualty&&cleanWin(squad(s)))log(s,'A clean fight: the squad\'s spirits lift.');s.fight=null;}for(const u of squad(s))if(u.quitPending)quitMerc(s,u);}
+// Quitting is a roster state beside captured and dead: the merc keeps its skills and history in the record, takes what it holds, and is off the map.
+export function quitMerc(s,u){if(!onContract(u))return false;u.casualty='quit';u.quitPending=false;u.ap=0;u.overwatch=null;u.away=undefined;u.x=-1;u.y=-1;u.z=0;syncWeapons(u);log(s,u.name+' has quit the squad.');
+ for(const line of partnerLost(s.units,u,'quit'))log(s,line);if(!alive(s.units[s.selected]))s.selected=squad(s)[0]?.id??s.selected;s.revision++;return true;}
+export function abandonCasualties(s){const left=[];for(const u of s.units)if(u.team==='squad'&&!u.away&&incapacitated(u)){u.casualty=u.casualty==='stable'?'captured':'dead';if(s.rules?.social)for(const line of partnerLost(s.units,u,u.casualty))log(s,line);u.bleedTurns=0;u.recoveryTurns=0;u.ap=0;u.overwatch=null;syncWeapons(u);left.push(u);}return left;}
 export function setStance(s,u,stance){
  if(!Object.hasOwn(STANCES,stance)||!canControl(s,u)||s.queue.length||stanceOf(u)===stance||(combatCosts(s)&&u.ap<2))return false;
  if(combatCosts(s))u.ap-=2;u.overwatch=null;u.stance=stance;refresh(s);log(s,u.name+' is '+stance+'.');return true;
@@ -242,7 +249,7 @@ function combatDamage(s,u,damage,fatal=false,source=null){
  if(living)killRelief(source,u);
  if(u.team==='guard'&&living&&s.rules?.social)mourn(s,u,source);
  if(u.team==='guard'&&living&&!u.lootDropped){delete s.contacts[u.id];awardCombatXP(s);s.loot.push({x:u.x,y:u.y,z:levelOf(u),body:u.id,searched:false,items:rollLoot(s,u)});u.pack=[];u.lootDropped=true;}
- if(u.team==='squad'&&(living||fatal&&incapacitated(u))){u.casualty=fatal?'dead':s.difficulty==='easy'?'stable':'bleeding';u.bleedTurns=u.casualty==='bleeding'?6:0;u.ap=0;u.overwatch=null;s.queue=[];u.recoveryTurns=0;u.burningTurns=0;if(living)collapse(u);if(u.casualty==='stable')beginRecovery(s,u);}
+ if(u.team==='squad'&&(living||fatal&&incapacitated(u))){u.casualty=fatal?'dead':s.difficulty==='easy'?'stable':'bleeding';u.bleedTurns=u.casualty==='bleeding'?6:0;u.ap=0;u.overwatch=null;s.queue=[];u.recoveryTurns=0;u.burningTurns=0;if(living)collapse(u);if(u.casualty==='stable')beginRecovery(s,u);if(s.fight)s.fight.casualty=true;if(u.casualty==='dead'&&s.rules?.social)for(const line of partnerLost(s.units,u,'dead',source))log(s,line);}
 }
 function ignite(s,u){
  if(!alive(u)||u.burningTurns>0)return;
@@ -362,7 +369,7 @@ const describeItem=i=>i.type==='weapon'?WEAPONS[i.kind].short+' ('+i.rounds+' lo
 export function searchPreview(s,u,pile){const cost=combatCosts(s)?SEARCH_COST:0;let reason='';if(!canControl(s,u)||s.queue.length)reason='Cannot act now';else if(!pile||!s.loot.includes(pile)||pileOpen(pile))reason='Nothing to search';else if(!adjacentTo(s,u,pile))reason='Stand beside the body';else if(combatCosts(s)&&u.ap<cost)reason='Not enough AP';return {ok:!reason,reason,cost};}
 export function searchBody(s,u,pile){const p=searchPreview(s,u,pile);if(!p.ok)return false;u.ap-=p.cost;u.overwatch=null;pile.searched=true;const who=s.units[pile.body]?.name||'the body';log(s,u.name+' searched '+who+': '+(pile.items.length?pile.items.map(describeItem).join(', '):'nothing worth taking')+'.');refresh(s);return true;}
 export function inventoryTransfer(s,u,index,mode,target=null){if(!canControl(s,u)||s.queue.length)return false;const near=p=>adjacentTo(s,u,p);if(mode==='take'){if(!s.loot.includes(target)||!near(target)||!pileOpen(target))return false;const item=target.items[index];if(!item||!accepts(u,item))return false;target.items.splice(index,1);receive(u,item);}else{syncWeapons(u);const item=u.pack[index];if(!item)return false;if(mode==='give'){if(!s.units.includes(target)||target===u||!alive(target)||target.team!=='squad'||!near(target)||!accepts(target,item))return false;receive(target,item);}else if(mode==='drop'){let pile=s.loot.find(p=>p.body===undefined&&p.x===u.x&&p.y===u.y&&levelOf(p)===levelOf(u));/* never into a closed body: a dropped item stays in the open */if(!pile){pile={x:u.x,y:u.y,z:levelOf(u),items:[]};s.loot.push(pile);}pile.items.push(item);}else return false;u.pack.splice(index,1);if(item.type==='weapon'){u.slots=u.slots.map(k=>k===item.kind?null:k);if(u.weapon===item.kind)u.weapon='hands';u.overwatch=null;}}log(s,'Inventory updated.');return true;}
-export function endTurn(s){if(s.phase!=='player'||s.queue.length)return false;s.engaged=false;for(const u of s.units)if(u.casualty==='bleeding'&&--u.bleedTurns<=0){u.casualty='dead';log(s,u.name+' died from blood loss.');}
+export function endTurn(s){if(s.phase!=='player'||s.queue.length)return false;s.engaged=false;for(const u of s.units)if(u.casualty==='bleeding'&&--u.bleedTurns<=0){u.casualty='dead';log(s,u.name+' died from blood loss.');if(s.fight)s.fight.casualty=true;if(s.rules?.social)for(const line of partnerLost(s.units,u,'dead'))log(s,line);}
  // Only a turn that began after the stabilization counts; the third such end runs the counter out, and the comrade stands when the next squad turn begins (stepEnemy), never for the guards' volley first.
  for(const u of s.units)if(recovering(u)&&s.round>u.recoveryFrom)u.recoveryTurns--;for(const u of s.units)panicRun(s,u);s.phase='enemy';s.enemyIndex=0;for(const g of guards(s))g.ap=g.burningTurns?0:g.maxAp;log(s,'Guard turn.');return true;}
 // The bookkeeping of a new squad turn: fires burn down, recovered comrades stand, AP refills (the waiting crosser's too), stress settles.
@@ -400,7 +407,7 @@ function fleeTurn(s,g,target){
 }
 
 export function stabilizePreview(s,medic,patient){const cost=medicalCost(medic);let reason='';if(!canControl(s,medic)||s.queue.length)reason='Cannot act now';else if(!s.units.includes(patient)||patient.team!=='squad'||patient.casualty!=='bleeding'||patient.bleedTurns<=0)reason='Choose a bleeding teammate';else if(!medic.medkits)reason='No medkits remaining';else if(levelOf(medic)!==levelOf(patient)||Math.abs(medic.x-patient.x)+Math.abs(medic.y-patient.y)!==1||blockedEdge(s,medic,patient))reason='Stand beside the casualty with an open edge';else if(combatCosts(s)&&medic.ap<cost)reason='Not enough AP';return {ok:!reason,reason,cost};}
-export function stabilize(s,medic,patient){const p=stabilizePreview(s,medic,patient);if(!p.ok)return false;if(combatCosts(s))medic.ap-=p.cost;medic.medkits--;patient.casualty='stable';patient.bleedTurns=0;beginRecovery(s,patient);const thanks=helped(patient,medic);if(thanks)log(s,patient.name+': '+thanks);log(s,medic.name+' stabilized '+patient.name+'.');refresh(s);return true;}
+export function stabilize(s,medic,patient){const p=stabilizePreview(s,medic,patient);if(!p.ok)return false;if(combatCosts(s))medic.ap-=p.cost;medic.medkits--;patient.casualty='stable';patient.bleedTurns=0;beginRecovery(s,patient);const thanks=helped(patient,medic);if(s.rules?.social)stabilizedPartner(medic,patient);if(thanks)log(s,patient.name+': '+thanks);log(s,medic.name+' stabilized '+patient.name+'.');refresh(s);return true;}
 export function cutPreview(s,u,edge){let reason='';const cost=4;if(!canControl(s,u)||s.queue.length)reason='Cannot act now';else if(!u.wireCutters)reason='Wire cutters required';else if(!u.slots.includes('wireCutters'))reason='Equip wire cutters in a held slot';else if(s.edges[edge]!=='fence-chainlink')reason='Choose a chain-link fence';else if(!edgeCells(edge).some(p=>p.x===u.x&&p.y===u.y&&levelOf(p)===levelOf(u)))reason='Stand beside the fence';else if(combatCosts(s)&&u.ap<cost)reason='Not enough AP';return {ok:!reason,reason,cost};}
 export function cutFence(s,u,edge){const p=cutPreview(s,u,edge);if(!p.ok)return false;if(combatCosts(s))u.ap-=p.cost;s.edges[edge]='fence-cut';u.overwatch=null;log(s,u.name+' cut a passable opening in the fence.');refresh(s);return true;}
 
