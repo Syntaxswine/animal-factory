@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Horse worker · grey form study</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#303030;color:#e2e2e2;font:14px system-ui;height:100vh;display:flex;flex-direction:column}header{padding:16px 22px;border-bottom:1px solid #666}h1{font-size:22px;margin:0 0 8px}p{margin:6px 0;color:#c5c5c5}label{margin-right:22px}button,select{background:#474747;color:white;border:1px solid #818181;padding:5px 9px}#views{display:grid;grid-template-columns:repeat(3,1fr);padding:10px 0;text-align:center;color:#ddd;letter-spacing:.04em}#scene{flex:1;min-height:360px}canvas{display:block}footer{padding:12px 22px;border-top:1px solid #555;font-size:13px}a{color:#ddd}
+</style>
+<header><h1>Horse worker · grey form study</h1>
+<p>One neutral pose. No weapon, texture, animation, or dramatic lighting. Judge proportions, garment flow, face, and stance.</p>
+<label>Views <select id="view"><option value="three">Front / side / three-quarter</option><option value="rear">Front / rear / three-quarter</option></select></label>
+<label><input type="checkbox" id="wire"> Wireframe</label><label><input type="checkbox" id="silhouette"> Silhouette</label>
+</header>
+<div id="views"><span>FRONT</span><span id="middle">SIDE</span><span>THREE-QUARTER</span></div>
+<div id="scene"></div><footer id="status">Building connected sculpt surfaces…</footer>
+<script type="module" src="./horse-grey-viewer.js"></script></html>

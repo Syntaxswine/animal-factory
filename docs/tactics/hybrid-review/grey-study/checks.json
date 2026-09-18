@@ -1,0 +1,113 @@
+{
+  "browser": "153.0.4234.46",
+  "errors": [],
+  "height": 1.65,
+  "min": [
+    -0.23485330376690522,
+    0,
+    -0.43971540628201816
+  ],
+  "max": [
+    0.2895905882039547,
+    1.65,
+    0.43971540628201816
+  ],
+  "scale": 0.9988334870136456,
+  "triangles": 724940,
+  "parts": [
+    {
+      "name": "connected shirt and sleeves",
+      "components": 1,
+      "vertices": 47448,
+      "triangles": 94892,
+      "min": [
+        -0.21193430861528442,
+        0.8103968697209989,
+        -0.43971540628201816
+      ]
+    },
+    {
+      "name": "connected overalls seat and legs",
+      "components": 1,
+      "vertices": 155914,
+      "triangles": 311824,
+      "min": [
+        -0.21504455698646463,
+        0.13985992232361913,
+        -0.3175959361536958
+      ]
+    },
+    {
+      "name": "forearm and hand -1",
+      "components": 1,
+      "vertices": 13812,
+      "triangles": 27620,
+      "min": [
+        -0.06586264117889414,
+        0.6598632240069724,
+        -0.4311689321245648
+      ]
+    },
+    {
+      "name": "work boot -1",
+      "components": 1,
+      "vertices": 24908,
+      "triangles": 49812,
+      "min": [
+        -0.15082384963298712,
+        0,
+        -0.3495917145012644
+      ]
+    },
+    {
+      "name": "forearm and hand 1",
+      "components": 1,
+      "vertices": 14042,
+      "triangles": 28080,
+      "min": [
+        -0.06586264117889414,
+        0.6598632240069724,
+        0.25581453130706244
+      ]
+    },
+    {
+      "name": "work boot 1",
+      "components": 1,
+      "vertices": 24908,
+      "triangles": 49812,
+      "min": [
+        -0.15082384963298712,
+        0,
+        0.11386701757909072
+      ]
+    },
+    {
+      "name": "unified skull jaw neck and ears",
+      "components": 1,
+      "vertices": 73044,
+      "triangles": 146084,
+      "min": [
+        -0.19872272236718966,
+        1.1167249220671016,
+        -0.1268047050878957
+      ]
+    },
+    {
+      "name": "mane crest",
+      "components": 1,
+      "vertices": 8410,
+      "triangles": 16816,
+      "min": [
+        -0.23485330376690522,
+        1.223872173986016,
+        -0.07181377129260812
+      ]
+    }
+  ],
+  "view": "three",
+  "material": "999999",
+  "render": {
+    "triangles": 724942,
+    "calls": 9
+  }
+}
