@@ -1,15 +1,16 @@
 {
-  "name": "animal-factory",
+  "name": "animal-factory-tactics-3d",
   "version": "0.4.0",
   "private": true,
   "type": "module",
-  "description": "A farm logistics game prototype.",
+  "description": "Independent 3D presentation experiment for Animal Factory Tactics",
   "scripts": {
     "serve": "node tools/serve.mjs",
     "serve:tactics": "node tools/serve-tactics.mjs",
     "check:tactics-balance": "node tools/tactics-balance.mjs",
     "check": "node --check dist/tactics/visibility.js && node --check dist/tactics/blocks.js && node --check dist/tactics/design-store.js && node --check dist/tactics/environment.js && node --check dist/tactics/environment-renderer.js && node --check dist/tactics/sector-rules.js && node --check dist/tactics/view.js && node --check dist/tactics/map-validation-worker.js && node --check dist/tactics/maps.js && node --check dist/tactics/world.js && node --check dist/tactics/editor-model.js && node --check dist/tactics/editor.js && node --check dist/tactics/app.js && node --check dist/tactics/engine.js && node --check dist/app.js && node --check dist/engine.js && node --check dist/renderer.js && node --check dist/people.js && node --check dist/isometric.js && node --test tests/*.test.mjs && node tools/check-assets.mjs",
-    "build:tactics-pages": "node tools/build-tactics-pages.mjs"
+    "build:tactics-pages": "node tools/build-tactics-pages.mjs",
+    "build:tactics-3d": "node tools/build-tactics-3d.mjs"
   },
   "engines": {
     "node": ">=22"
