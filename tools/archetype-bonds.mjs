@@ -1,36 +1,5 @@
-// Derives initial bond seeds between the twelve Jungian archetypes from three rules.
-// 1. Wheel: Pearson's four orientations, opposites 180 degrees apart. base = 30*cos(delta).
-// 2. Affinity: complementary wants, +15 both ways.
-// 3. Friction: A's failure mode is exactly what B fears, -15 for B toward A (directional).
-// Same-archetype pairs: competitive types -10, cooperative types +10.
-const A=['Innocent','Sage','Explorer','Rebel','Magician','Hero','Lover','Jester','Everyman','Caregiver','Ruler','Creator'];
-const angle=Object.fromEntries(A.map((a,i)=>[a,i*30]));
-const affinity=[['Innocent','Caregiver'],['Innocent','Ruler'],['Everyman','Caregiver'],['Everyman','Jester'],['Hero','Ruler'],['Hero','Rebel'],['Caregiver','Lover'],['Explorer','Rebel'],['Explorer','Sage'],['Creator','Magician'],['Creator','Sage'],['Jester','Lover'],['Sage','Magician'],['Ruler','Creator'],['Rebel','Magician']];
-// failure of X -> fears of [...]: the listed archetypes resent X.
-const friction={
- Innocent:['Sage','Magician'],                       // denial: the Sage fears ignorance, the Magician fears unseen consequences
- Everyman:['Rebel','Sage','Hero'],                   // going along with the crowd: powerlessness, deception, weakness
- Hero:['Innocent','Caregiver','Ruler','Everyman'],   // arrogance and needless fights: wrongdoing, selfishness, chaos, standing out
- Caregiver:['Explorer','Rebel','Hero'],              // smothering: being trapped, powerlessness, weakness
- Explorer:['Ruler','Everyman'],                      // never committing: chaos, being left behind
- Rebel:['Ruler','Innocent','Creator','Everyman'],    // destroying what worked: overthrow, unsafety, lost work, standing out
- Lover:['Sage','Hero'],                              // pleasing instead of truth: deception, weakness
- Creator:['Hero','Ruler'],                           // never shipping: weakness at the deadline, disorder
- Jester:['Ruler','Sage','Caregiver','Hero'],         // frivolity in the serious moment: chaos, ignorance, selfishness, weakness
- Sage:['Hero','Rebel','Explorer'],                   // paralysis: weakness, powerlessness, being trapped
- Magician:['Innocent','Everyman','Lover','Caregiver','Rebel'], // manipulation: wrongdoing, exclusion, being unwanted, selfishness, powerlessness
- Ruler:['Rebel','Explorer','Jester']                 // authoritarianism: powerlessness, being trapped, boredom
-};
-const competitive=new Set(['Hero','Ruler','Rebel','Jester','Magician']),cooperative=new Set(['Everyman','Caregiver','Innocent']);
-const aff=new Set(affinity.flatMap(([a,b])=>[a+'|'+b,b+'|'+a]));
-export function bond(from,to){ // how `from` initially regards `to`
- if(from===to)return 30+(competitive.has(from)?-10:cooperative.has(from)?10:0);
- const d=Math.abs(angle[from]-angle[to]),delta=Math.min(d,360-d);
- let v=Math.round(30*Math.cos(delta*Math.PI/180));
- if(aff.has(from+'|'+to))v+=15;
- if(friction[to].includes(from))v-=15; // `to` fails in the way `from` fears
- return v;
-}
+// Prints the archetype bond matrix, allies, feuds and one-sided pairs from the rules in dist/tactics/archetypes.js (GUARDS.md G3).
+import {WHEEL as A,bond} from '../dist/tactics/archetypes.js';
 const M=A.map(a=>A.map(b=>bond(a,b)));
 let md='| regards → | '+A.map(a=>a.slice(0,4)).join(' | ')+' |\n|'+' --- |'.repeat(A.length+1)+'\n';
 for(const [i,a] of A.entries())md+='| **'+a+'** | '+M[i].map(v=>(v>0?'+':'')+v).join(' | ')+' |\n';

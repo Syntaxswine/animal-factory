@@ -1,4 +1,4 @@
-import {restStrain} from './personalities.js';
+import {restStrain,driftBonds} from './personalities.js';
 import {factoryMap,generateMap,blockedEdge,tileKey,levelOf,neighbors,W,H} from './maps.js';
 import {createGame,squad,guards,alive,incapacitated,canControl,abandonCasualties,occupant,refresh,walkable,log,STANCES,stanceOf,emitNoise,enterFire,combatCosts,settleGuards} from './engine.js';
 import {awardXP} from './progression.js';
@@ -6,9 +6,9 @@ export const TRAVEL_MINUTES=60,PLAY_MINUTES_PER_SECOND=1,REST_RECOVERY_HOURS=48,
 // The overmap is a grid of local-map tiles. Two tiles are linked when they touch; a squad walks from one to the next across the shared edge.
 export const BORDER=3,SIDES={north:{dx:0,dy:-1},east:{dx:1,dy:0},south:{dx:0,dy:1},west:{dx:-1,dy:0}},OPPOSITE={north:'south',east:'west',south:'north',west:'east'};
 export function linksFrom(positions){const ids=Object.keys(positions),links=[];for(const a of ids)for(const b of ids)if(a<b&&Math.abs(positions[a].x-positions[b].x)+Math.abs(positions[a].y-positions[b].y)===1)links.push([a,b]);return links;}
-export function createWorld(custom=null,difficulty='standard') {
+export function createWorld(custom=null,difficulty='standard',rosterSeed=1947) {
   const positions={factory:{x:0,y:0},yard:{x:1,y:0},annex:{x:2,y:0}};
-  return {difficulty,current:'factory',start:'factory',clock:{minutes:480,incomeRemainder:0},money:0,journeys:0,lastIncome:0,locations:{factory:{type:'factory'},yard:{type:'yard'},annex:{type:'factory'}},definitions:{factory:custom||factoryMap(),yard:generateMap(83,'Freight yard'),annex:generateMap(126,'Outer factory')},states:{factory:createGame(1947,custom||factoryMap(),true,difficulty)},positions,links:linksFrom(positions)};
+  return {difficulty,current:'factory',start:'factory',clock:{minutes:480,incomeRemainder:0},money:0,journeys:0,lastIncome:0,locations:{factory:{type:'factory'},yard:{type:'yard'},annex:{type:'factory'}},definitions:{factory:custom||factoryMap(),yard:generateMap(83,'Freight yard'),annex:generateMap(126,'Outer factory')},rosterSeed,states:{factory:createGame(1947,custom||factoryMap(),true,difficulty,{social:true,rosterSeed})},positions,links:linksFrom(positions)};
 }
 export const currentMap=world=>world.states[world.current];
 // Shortest overmap route from the original starting tile, never from the squad.
@@ -61,9 +61,9 @@ export function spendTime(world,activity,hours,medicId=null){
  if(treatment){let needed=treatment.kitsNeeded;for(const donor of troops){const used=Math.min(donor.medkits,needed);donor.medkits-=used;needed-=used;}for(const patient of treatment.needsKit)patient.medicalRestHours=MEDICAL_RECOVERY_HOURS;}
  const income=advanceTime(world,hours*60);
  let healed=0;
- for(const u of troops){u.overwatch=null;if(activity!=='train'){restStrain(u,hours);const assisted=Math.min(hours,u.medicalRestHours||0),before=u.hp;recoverHealth(u,assisted/MEDICAL_RECOVERY_HOURS+(hours-assisted)/REST_RECOVERY_HOURS);u.medicalRestHours=u.hp===u.maxHp?0:Math.max(0,(u.medicalRestHours||0)-assisted);healed+=u.hp-before;u.ap=u.maxAp;}else if(u.level<10)awardXP(u,25*hours);}
+ const crossings=[];for(const u of troops){u.overwatch=null;if(activity!=='train'){restStrain(u,hours);if(s.rules?.social)crossings.push(...driftBonds(u,hours));const assisted=Math.min(hours,u.medicalRestHours||0),before=u.hp;recoverHealth(u,assisted/MEDICAL_RECOVERY_HOURS+(hours-assisted)/REST_RECOVERY_HOURS);u.medicalRestHours=u.hp===u.maxHp?0:Math.max(0,(u.medicalRestHours||0)-assisted);healed+=u.hp-before;u.ap=u.maxAp;}else if(u.level<10)awardXP(u,25*hours);}
  const message=activity==='train'?`Squad trained for ${hours} hour${hours===1?'':'s'}; +${25*hours} XP per eligible troop.`:`Squad rested for ${hours} hour${hours===1?'':'s'}; restored ${healed} HP total.`+(treatment?` ${treatment.medic.name} provided care; used ${treatment.kitsNeeded} medkits.`:'');
- refresh(s);log(s,message);return {ok:true,income,message};
+ refresh(s);log(s,message);for(const line of crossings)log(s,line);return {ok:true,income,message};
 }
 function recoverHealth(u,fraction){
  if(u.hp>=u.maxHp){u.restHealing=0;return;}
@@ -101,7 +101,7 @@ function landing(s,start,occupied) {
 // Where a unit lands on the next map: crossers appear on the opposite border at the row or column they left from, everyone else at their start.
 function entryTile(next,u){const from=u.away;if(!from)return next.definition.starts[u.id];return {x:from.side==='east'?0:from.side==='west'?W-1:from.x,y:from.side==='south'?0:from.side==='north'?H-1:from.y,z:0};}
 function arrivalPlan(world,destination){
-  const previous=currentMap(world),next=world.states[destination]||createGame(1947,world.definitions[destination],false,world.difficulty);
+  const previous=currentMap(world),next=world.states[destination]||createGame(1947,world.definitions[destination],false,world.difficulty,{social:true,rosterSeed:world.rosterSeed});
   const occupied=new Set(guards(next).map(u=>tileKey(u.x,u.y,levelOf(u)))),places=new Map();
   for(const u of previous.units.filter(u=>u.team==='squad')){const p=landing(next,entryTile(next,u),occupied);if(!p)return {ok:false,error:'No free arrival tile.'};places.set(u.id,p);if(alive(u)||u.away)occupied.add(tileKey(p.x,p.y,levelOf(p)));}
   return {ok:true,next,places};
