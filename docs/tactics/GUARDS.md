@@ -8,7 +8,7 @@ Opened 2026-09-16 on branch `tactics-guard-alertness`, stacked on `tactics-sight
 | --- | --- | --- |
 | G1 | Gunshot alarm at twice weapon range, for squad and guard shooters | Built on this branch, tests in `tests/tactics-alarm.test.mjs` |
 | G2 | Guard alert states: rest, suspicious, alert, searching, stand-down, broken; combat can end without killing everyone; return to post; a left map settles by the campaign clock | Built on branch `tactics-guard-states` (2026-09-17), tests in `tests/tactics-guard-states.test.mjs` |
-| G3 | Twelve Jungian archetypes drawn at random; bonds derived by wheel + affinity + friction (`tools/archetype-bonds.mjs`); traits for the state machine; barks | Designed, awaiting review |
+| G3 | Twelve Jungian archetypes drawn at random; bonds derived by wheel + affinity + friction (`dist/tactics/archetypes.js`); traits scale the state machine; six bond rungs; barks in register | Built on branch `tactics-archetypes` (2026-09-17), tests in `tests/tactics-archetypes.test.mjs` |
 | G4 | Shouted alarms between guards, guard-to-guard friendly-fire reactions and grudges | Planned |
 | G5 | Happiness meter: opposing mercs on one local map lose 5 a day; 24 hours at zero and the merc quits | Designed, awaiting review |
 
@@ -99,6 +99,16 @@ Reading: friendly fire is not what G2 changed (the hit count is flat), and each 
 **Left for later.** Shouts (G4) as an Alert trigger; per-archetype scaling of N, K, M, R, NERVE and the bark lines (G3); guards returning to a patrol route rather than a fixed post.
 
 ## G3: twelve archetypes, drawn at random
+
+**Built 2026-09-17** on branch `tactics-archetypes`, stacked on G2. Module `dist/tactics/archetypes.js` holds the twelve entries (want, fear, register, failure, ten traits, shout radius for G4, two barks per state), the bond rules (`bond(from,to)`, which `tools/archetype-bonds.mjs` now only prints), the six rungs, and the draw. Tests: `tests/tactics-archetypes.test.mjs` (ten cases).
+
+- **The knob.** `createGame(seed, map, detect, difficulty, {social})`: plain `createGame` leaves `s.rules.social` false and the G2 base numbers; `createWorld` (the campaign, the browser) turns it on. The neutral-knob falsifier holds: with the knob off, twenty headless-bot runs on the factory hash identically to the G2 tip 4124ea2 (units, rounds, phase, log).
+- **The draw.** A guard's archetype is a hash of the map seed and its index (`drawArchetype`), so a seed reproduces its roster and no RNG stream moves; the socialSeed concern in "Assignment" below is moot. Guards may repeat archetypes. `drawSquad(seed)` gives four distinct archetypes for a future recruit squad. The four authored mercs carry their tags (Yakov Ruler, Anya Rebel, Misha Creator, Vera Caregiver) always, and their authored bonds are their resting level (`social.resting`); `restingBond(a,b)` answers the authored value where one exists and the matrix otherwise.
+- **Traits scale G2.** Scale = 0.5 + trait/100 (a trait of 50 is the base). Hearing radius × vigilance scale (Sage 1.4, Jester 0.9); suspicion steps × initiative scale (Hero 17, Explorer 16, Sage 8); report cells and the K rounds before an alert guard loses the trail × vigilance scale (Sage: 4 rounds, 6 cells); nerve breaks at (1 − nerve/100) × ⅔ of health (Hero 10 %, Innocent 47 %, the base a third), and a broken guard stays broken for round(4 × (1 − nerve/100)) rounds (Innocent 3, Hero 1). The same 19-of-45 hit breaks an Innocent or a Lover and leaves a Hero or an Everyman Alert. Obedience is stored for G4.
+- **Barks.** Every transition speaks in the archetype's register, the two lines per state alternating per guard and state; the alert bark is the shout's placeholder until G4. Without an archetype the G2 line stands.
+- **Rungs.** Six rungs on the bond scale (bonded 60, trusted 25, cautious 0, strained −34, resented −69, feud), `rungOf` labels the merc sheet, and under the knob the friendly-fire retaliation chance is scaled by rung: bonded never, trusted half, cautious as written, strained 1.5×, resented and feud 2×. `opposing` (resented or worse) and `liked` (trusted or better) are the G5 predicates.
+- **Resting level.** Rest pulls every merc bond 10 % of the distance back toward its resting level per 8 hours (`driftBonds`, called from downtime rest under the knob); a crossed rung is logged ("Anya again tolerates Yakov: cautious trust").
+- **Not built here.** The six proposed bond events (survived a contact, covered by overwatch, left bleeding…), recruitment cards, guard-to-guard bond effects in play (those wait for G4's shouts and incidents) and the formation rules per rung.
 
 Direction 2026-09-16: personalities are randomly selected from twelve archetypes, not authored per guard. Another agent suggested the Jungian twelve, each defined by a want, a fear, a way of speaking and a failure mode:
 

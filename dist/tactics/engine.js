@@ -4,6 +4,8 @@ import {initProgression,awardCombatXP,train} from './progression.js';
 import {bulletTrajectory,shotgunTrajectories,traceProjectile,eyeHeight,targetHeight} from './projectiles.js';
 import {gridLayout,storeLayout,placeItem,initInventory,reserve,consumeAmmo,syncWeapons,accepts,receive} from './inventory.js';
 import {inCone,headingTo,sightOf,identifyRange,detectRange} from './perception.js';
+import {ARCHETYPES,drawArchetype,hearingScale,stepsScale,cellsScale,alertScale,nerveFraction,brokenRoundsOf,archetypeBark,bond as archetypeBond} from './archetypes.js';
+export {ARCHETYPES,NAMES as ARCHETYPE_NAMES,drawArchetype,drawSquad,rungOf,retaliationScale,bond as archetypeBond,shoutRadius,describeArchetype} from './archetypes.js';
 export {inCone,headingTo,bearingOffset,sightOf,identifyRange,detectRange,acuity,SIGHT,JOHNSON} from './perception.js';
 import {woodlandDepth} from './woodland.js';
 import {terrainVisibility,TERRAIN_RANGE,CHARACTER_RANGE} from './visibility.js';
@@ -54,7 +56,7 @@ export const occupant=(s,x,y,z=0)=>s.units.find(u=>(alive(u)||incapacitated(u))&
 export const tile=(s,x,y,z=0)=>terrainAt(s,x,y,z);
 export const walkable=(s,x,y,z=0)=>passable(s,{x,y,z});
 export function log(s,message){s.log.unshift(message);s.log=s.log.slice(0,50);s.revision++;}
-export function createGame(seed=1947,definition=factoryMap(),detect=true,difficulty='standard'){
+export function createGame(seed=1947,definition=factoryMap(),detect=true,difficulty='standard',options={}){
  const errors=validateMap(definition);if(errors.length)throw Error(errors.join(' '));
  const s={difficulty:difficulty==='easy'?'easy':'standard',map:structuredClone(definition.terrain),upper:structuredClone(definition.upper),stairs:structuredClone(definition.stairs),climbs:structuredClone(definition.climbs||[]),props:structuredClone(definition.props||[]),sectors:structuredClone(definition.sectors),edges:{...definition.edges},definition:structuredClone(definition),units:[],phase:'explore',round:0,selected:0,visible:new Set(),seen:new Set(),detected:new Set(),glimpses:{},log:[],seed,perceptionSeed:seed,revision:0,queue:[],enemyIndex:0,contacts:{},effect:null};
  const add=(team,name,species,x,y,weapon,z=0)=>s.units.push({id:s.units.length,team,name,species,x,y,z,medical:team==='squad'?[0,25,50,100][s.units.length]:0,medkits:team==='squad'?1:0,wireCutters:team==='squad',casualty:null,bleedTurns:0,sneaking:false,stealth:20,overwatch:null,lastHeard:null,stance:'standing',hp:team==='squad'?100:45,maxHp:team==='squad'?100:45,ap:team==='squad'?12:Math.max(7,WEAPONS[weapon].cost),maxAp:team==='squad'?12:Math.max(7,WEAPONS[weapon].cost),accuracy:team==='squad'?85:55,weapon,ammo:Object.fromEntries(Object.entries(WEAPONS).map(([k,v])=>[k,v.mag])),alert:false,state:'rest',wary:false,post:null,lastKnown:null,facing:1,heading:team==='squad'?45:225,cone:sightOf({species}).field,moved:false,fired:false,lastAt:x+','+y+','+z,steps:0});
@@ -63,6 +65,8 @@ export function createGame(seed=1947,definition=factoryMap(),detect=true,difficu
  const names=['Boris','Lev','Grigori','Oleg','Pavel','Igor','Anton','Vadim','Yuri','Sasha','Pyotr','Nikolai'];
  definition.guards.forEach((g,i)=>{add('guard',names[i]||`Guard ${i+1}`,g.species,g.x,g.y,g.weapon,levelOf(g));if(g.outfit)s.units.at(-1).outfit=g.outfit;if(Number.isFinite(g.heading))s.units.at(-1).heading=g.heading;});
  for(const g of guards(s))g.post={x:g.x,y:g.y,z:levelOf(g),heading:g.heading}; // a guard's start tile and heading are its post
+ // G3 behind its knob: the campaign (createWorld) draws an archetype per guard from a hash of the seed and the guard's index; plain createGame leaves the G2 base numbers.
+ s.rules={social:!!options.social};if(s.rules.social)for(const [i,g] of guards(s).entries()){g.archetype=drawArchetype(seed,i);g.traits={...ARCHETYPES[g.archetype].traits};}
  for(const u of s.units){initInventory(u,WEAPONS);if(u.team==='squad'){initProgression(u);initPersonality(u);}}s.loot=definition.starts.map((p,i)=>({...p,items:[{type:'ammo',kind:i%2?'rifle':'pistol',count:i%2?5:8}]}));
  if(definition.name==='Factory test')for(const [i,kind]of ['shotgun','sniper','smg','hmg'].entries())s.loot[i].items.push({type:'weapon',kind,rounds:WEAPONS[kind].mag},{type:'ammo',kind,count:12});
  if(definition.name==='Factory test')for(const [i,kind]of ['grenade','launcher','rpg'].entries())s.loot[i+1].items.push({type:'weapon',kind,rounds:WEAPONS[kind].mag},{type:'ammo',kind,count:kind==='grenade'?6:3});
@@ -418,7 +422,7 @@ const approximate=u=>({x:Math.max(0,Math.min(W-1,Math.round(u.x/6)*6)),y:Math.ma
 export function alarm(s,shooter,radius){for(const g of guards(s))if(g!==shooter&&!['alert','broken'].includes(stateOf(g))&&distance(g,shooter)<=radius)setState(s,g,'alert',approximate(shooter));}
 // Footsteps: a wary guard (one that has stood down once on this map) hears half again as far. An alert or broken guard keeps its own fix
 // and only remembers the sound, for when it drops out of Alert.
-export function emitNoise(s,u,radius){if(u.team!=='squad')return;for(const g of guards(s))if(!canSee(s,g,u)&&distance(g,u)<=radius*(g.wary?WARY_HEARING:1)){const fix=approximate(u);if(['alert','broken'].includes(stateOf(g))){g.lastHeard=fix;g.searchSteps=suspicionSteps(g);}else suspect(s,g,fix);}}
+export function emitNoise(s,u,radius){if(u.team!=='squad')return;for(const g of guards(s))if(!canSee(s,g,u)&&distance(g,u)<=radius*(g.wary?WARY_HEARING:1)*hearingScale(g)){const fix=approximate(u);if(['alert','broken'].includes(stateOf(g))){g.lastHeard=fix;g.searchSteps=suspicionSteps(g);}else suspect(s,g,fix);}}
 // Guard alert states (GUARDS.md G2). One state per guard; `g.alert` stays the boolean the rest of the engine reads (true only in Alert), so
 // threatens(), the enemy phase and the travel gate are unchanged. Rest, Suspicious, Alert, Searching, Stand-down and Broken are the rules;
 // personality parameters (G3) will scale the numbers. Counters in rounds tick at the end of each guard phase (settleRound); in real time
@@ -428,12 +432,15 @@ export const ALERT_ROUNDS=3,SEARCH_CELLS=4,BROKEN_ROUNDS=2,SUSPICION_STEPS=12,SU
 // The boolean wins when the two disagree (fixtures and older code flip it directly), and the old suspicion fields alone still read as Suspicious.
 export const stateOf=g=>{const st=g.alert?'alert':g.state&&g.state!=='alert'?g.state:'rest';return st==='rest'&&g.lastHeard&&g.searchSteps>0?'suspicious':st;};
 export const active=g=>['alert','searching','broken'].includes(stateOf(g)); // holds the engagement economy and the warnings; contact itself needs Alert
-const suspicionSteps=g=>Math.round(SUSPICION_STEPS*(g.wary?WARY_STEPS:1));
+const suspicionSteps=g=>Math.round(SUSPICION_STEPS*(g.wary?WARY_STEPS:1)*stepsScale(g));
+const alertRoundsOf=g=>Math.max(1,Math.round(ALERT_ROUNDS*alertScale(g)));
+// The resting bond between two units: the authored value for the authored mercs, the archetype matrix for everyone else.
+export function restingBond(a,b){if(a?.social?.resting&&b?.name in a.social.resting)return a.social.resting[b.name];return archetypeBond(a?.archetype,b?.archetype);}
 // A bark reaches the log when the squad could hear it (the old thirty-tile hearing ring) or already sees the guard.
-function bark(s,g,message){if(s.detected?.has(g.id)||squad(s).some(p=>distance(g,p)<=BARK_RANGE))log(s,message);}
+function bark(s,g,message,state){if(!(s.detected?.has(g.id)||squad(s).some(p=>distance(g,p)<=BARK_RANGE)))return;const line=state?archetypeBark(g,state):null;if(line)log(s,g.name+': "'+line+'"');else if(message)log(s,message);}
 // The neighbouring 6-tile report cells around a fix that a guard can actually stand in, nearest first.
 function searchCells(s,g,center){const cells=[];for(const [dx,dy] of [[6,0],[-6,0],[0,6],[0,-6],[6,6],[-6,6],[6,-6],[-6,-6]]){const c={x:center.x+dx,y:center.y+dy,z:levelOf(center)};if(!inBounds(c.x,c.y,c.z)||!fixGoals(s,c).size)continue;cells.push(c);}
- return cells.sort((a,b)=>distance(g,a)-distance(g,b)).slice(0,SEARCH_CELLS);}
+ return cells.sort((a,b)=>distance(g,a)-distance(g,b)).slice(0,Math.max(1,Math.round(SEARCH_CELLS*cellsScale(g))));}
 export const searchGoal=g=>g.search?.cells[g.search.index]||null;
 const atFix=(s,g,dest)=>fixGoals(s,dest).has(key(g.x,g.y,levelOf(g)));
 function homeGoals(s,g){const p=g.post;if(!p)return new Set();const o=occupant(s,p.x,p.y,levelOf(p));return walkable(s,p.x,p.y,levelOf(p))&&(!o||o===g)?new Set([key(p.x,p.y,levelOf(p))]):fixGoals(s,p);}
@@ -441,17 +448,17 @@ export function setState(s,g,state,fix=null,{swept=false}={}){
  const from=stateOf(g);
  if(from===state){ // a repeat of the same trigger refreshes the fix and the counters, nothing else
   if(state==='suspicious'){if(fix)g.lastHeard=fix;g.searchSteps=suspicionSteps(g);}
-  else if(state==='broken'){if(fix)g.threat=fix;g.brokenRounds=BROKEN_ROUNDS;g.brokenTicks=0;g.hitRound=s.round;}
+  else if(state==='broken'){if(fix)g.threat=fix;g.brokenRounds=brokenRoundsOf(g);g.brokenTicks=0;g.hitRound=s.round;}
   else if(state==='searching'&&fix){g.lastKnown=fix;g.search={cells:[fix,...searchCells(s,g,fix)],index:0};g.route=undefined;g.sweep=undefined;}
   else if(fix)g.lastKnown=fix;
   return;}
  g.state=state;g.alert=state==='alert';g.route=undefined;g.sweep=undefined;g.standoff=0;
  if(state==='rest'){g.lastKnown=null;g.lastHeard=null;g.searchSteps=0;g.search=null;g.unseen=0;g.threat=null;}
- else if(state==='suspicious'){if(fix)g.lastHeard=fix;g.searchSteps=suspicionSteps(g);g.search=null;bark(s,g,g.name+': "Who\'s there?"');}
- else if(state==='alert'){if(fix)g.lastKnown=fix;g.unseen=0;g.seenRound=-1;g.search=null;}
- else if(state==='searching'){if(fix)g.lastKnown=fix;const c=g.lastKnown||g.threat||{x:g.x,y:g.y,z:levelOf(g)};g.search={cells:[...(swept?[]:[c]),...searchCells(s,g,c)],index:0};bark(s,g,g.name+' lost the trail and is searching.');}
- else if(state==='standdown'){g.lastKnown=null;g.lastHeard=null;g.search=null;g.searchSteps=0;bark(s,g,g.name+' gave up the search.');}
- else if(state==='broken'){g.threat=fix||g.threat||g.lastKnown;g.brokenRounds=BROKEN_ROUNDS;g.brokenTicks=0;g.hitRound=s.round;bark(s,g,g.name+' breaks and runs.');}
+ else if(state==='suspicious'){if(fix)g.lastHeard=fix;g.searchSteps=suspicionSteps(g);g.search=null;bark(s,g,g.name+': "Who\'s there?"','suspicious');}
+ else if(state==='alert'){if(fix)g.lastKnown=fix;g.unseen=0;g.seenRound=-1;g.search=null;bark(s,g,null,'alert');}
+ else if(state==='searching'){if(fix)g.lastKnown=fix;const c=g.lastKnown||g.threat||{x:g.x,y:g.y,z:levelOf(g)};g.search={cells:[...(swept?[]:[c]),...searchCells(s,g,c)],index:0};bark(s,g,g.name+' lost the trail and is searching.','searching');}
+ else if(state==='standdown'){g.lastKnown=null;g.lastHeard=null;g.search=null;g.searchSteps=0;bark(s,g,g.name+' gave up the search.','standdown');}
+ else if(state==='broken'){g.threat=fix||g.threat||g.lastKnown;g.brokenRounds=brokenRoundsOf(g);g.brokenTicks=0;g.hitRound=s.round;bark(s,g,g.name+' breaks and runs.','broken');}
 }
 // Tests and older code flip the boolean directly: the state follows it.
 function reconcile(s,g){const st=stateOf(g);if(st!==g.state){g.state=st;g.route=undefined;g.sweep=undefined;g.standoff=0;if(st==='alert'){g.unseen=0;g.seenRound=-1;}g.search=null;}}
@@ -464,13 +471,13 @@ function targeted(s,b,a){if(!a||a.team===b.team)return;const fix={x:a.x,y:a.y,z:
 const onFire=(s,q)=>!!s.fires?.some(f=>f.x===q.x&&f.y===q.y&&f.z===levelOf(q));
 // A hit that leaves the guard standing: at or below NERVE of its health its nerve breaks for BROKEN_ROUNDS; otherwise it is Alert toward the shooter.
 function struck(s,u,source){const fix=source&&source.team!==u.team&&Number.isFinite(source.x)?{x:source.x,y:source.y,z:levelOf(source)}:null;u.hitRound=s.round;const st=stateOf(u);
- if(u.hp<=u.maxHp*NERVE&&!u.burningTurns)setState(s,u,'broken',fix);
- else if(st==='broken'){if(fix)u.threat=fix;u.brokenRounds=BROKEN_ROUNDS;u.brokenTicks=0;}
+ if(u.hp<=u.maxHp*nerveFraction(u)&&!u.burningTurns)setState(s,u,'broken',fix);
+ else if(st==='broken'){if(fix)u.threat=fix;u.brokenRounds=brokenRoundsOf(u);u.brokenTicks=0;}
  else if(st==='alert'){if(fix)u.lastKnown=fix;}
  else setState(s,u,'alert',fix);}
 // End of a guard phase: K rounds without an identification drop Alert to Searching; R rounds unshot end Broken.
 function settleRound(s){for(const g of guards(s)){const st=stateOf(g);
- if(st==='alert'){if(g.seenRound===s.round)g.unseen=0;else if(++g.unseen>=ALERT_ROUNDS)setState(s,g,'searching');}
+ if(st==='alert'){if(g.seenRound===s.round)g.unseen=0;else if(++g.unseen>=alertRoundsOf(g))setState(s,g,'searching');}
  else if(st==='broken'&&g.hitRound!==s.round&&--g.brokenRounds<=0)setState(s,g,g.lastKnown?'alert':'standdown');}}
 // The step away from the last threat that ends nearest an ally or the post; null when cornered (no legal step increases the distance).
 function fleeStep(s,g){const threat=g.threat||g.lastKnown;if(!threat)return null;const d0=distance(g,threat);
@@ -480,7 +487,7 @@ function fleeStep(s,g){const threat=g.threat||g.lastKnown;if(!threat)return null
 function stepTo(s,g,p){g.heading=headingTo(g,p);openDoorBetween(s,g,p);g.facing=(p.x-g.x)-(p.y-g.y)>=0?1:-1;g.x=p.x;g.y=p.y;g.z=levelOf(p);g.steps++;enterFire(s,g);}
 function sweep(s,g,ticks){g.sweep=(g.sweep??ticks)-1;g.heading=(g.heading+90)%360;return g.sweep<=0;}
 // Rest at the post (or where the guard stands when the post cannot be reached), wary for the rest of the map.
-function settle(s,g,home=true){setState(s,g,'rest');g.wary=true;if(home&&g.post)g.heading=g.post.heading;bark(s,g,g.name+(home?' is back at post.':' settled where it stood.'));}
+function settle(s,g,home=true){setState(s,g,'rest');g.wary=true;if(home&&g.post)g.heading=g.post.heading;bark(s,g,g.name+(home?' is back at post.':' settled where it stood.'),'rest');}
 // Nearest free walkable tile to a point, breadth first (a post or a fix may be occupied by the time the guard gets there).
 function placeAt(s,g,p){const z=levelOf(p),start={x:p.x,y:p.y,z};if(!inBounds(start.x,start.y,z))return false;const q=[start],seen=new Set([key(start.x,start.y,z)]);
  for(let i=0;i<q.length&&i<4000;i++){const c=q[i],cz=levelOf(c);const o=occupant(s,c.x,c.y,cz);if(walkable(s,c.x,c.y,cz)&&(!o||o===g)){g.x=c.x;g.y=c.y;g.z=cz;g.lastAt=c.x+','+c.y+','+cz;return true;}
@@ -494,7 +501,7 @@ export function settleGuards(s,minutes){const rounds=Math.floor(minutes/ROUND_MI
   const home=()=>{if(g.post)placeAt(s,g,g.post);setState(s,g,'rest');g.wary=true;if(g.post)g.heading=g.post.heading;};
   if(st==='suspicious'||st==='standdown'){home();continue;}
   let left=rounds;
-  if(st==='alert'||st==='broken'){if(left<ALERT_ROUNDS)continue;left-=ALERT_ROUNDS;const c=g.lastKnown||g.threat||{x:g.x,y:g.y,z:levelOf(g)};placeAt(s,g,c);setState(s,g,'searching',c);g.search.cells.shift();}
+  if(st==='alert'||st==='broken'){const k=alertRoundsOf(g);if(left<k)continue;left-=k;const c=g.lastKnown||g.threat||{x:g.x,y:g.y,z:levelOf(g)};placeAt(s,g,c);setState(s,g,'searching',c);g.search.cells.shift();}
   const cells=g.search?g.search.cells.length-g.search.index:0;if(left>=cells)home();else g.search.index+=left;}
  s.revision++;}
 
@@ -544,7 +551,7 @@ export function stepInvestigation(s){
  for(const g of guards(s)){
   if(g.burningTurns)continue;const st=stateOf(g);if(st==='rest')continue;
   if(st==='broken'){const p=fleeStep(s,g);if(p)stepTo(s,g,p);else{const seen=squad(s).find(q=>notices(s,g,q));if(seen){setState(s,g,'alert');identified(s,g,seen);bark(s,g,g.name+' is cornered and turns to fight.');acted=true;continue;}}
-   acted=true;if(++g.brokenTicks>=BROKEN_ROUNDS*REALTIME_ROUND_TICKS)setState(s,g,g.lastKnown?'alert':'standdown');continue;}
+   acted=true;if(++g.brokenTicks>=brokenRoundsOf(g)*REALTIME_ROUND_TICKS)setState(s,g,g.lastKnown?'alert':'standdown');continue;}
   const dest=st==='suspicious'?g.lastHeard:st==='alert'?g.lastKnown:st==='searching'?searchGoal(g):g.post;
   const spent=st==='suspicious'&&g.searchSteps<=0; // the step budget ran out short of the sound: sweep where it stands
   const goals=st==='standdown'?homeGoals(s,g):undefined;
