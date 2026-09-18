@@ -33,7 +33,8 @@ let terrainAim=false,terrainTarget=null;
 let selectedIds=new Set([0]),aimZone='torso',shotConfirmation=null;
 let viewLevel=0,routeCache=null,cursor=null,hoverAction=null,cursorView='';
 let lastClockFrame=null;
-let world=createWorld(customMap),s=currentMap(world),targetId=null,burst=false,showGrid=false,hover=null,hoverActor=null,route=null,lastTick=0,lastRevision=-1,toast='',toastUntil=0,effectUntil=0,effectStart=0,lastEffect=null,flame=null,drag=null,width=1,height=1;
+const rosterSeed=()=>Math.floor(Math.random()*2**31); // every new campaign draws its own guard roster (GUARDS.md G3); the ballistic seed stays 1947
+let world=createWorld(customMap,'standard',rosterSeed()),s=currentMap(world),targetId=null,burst=false,showGrid=false,hover=null,hoverActor=null,route=null,lastTick=0,lastRevision=-1,toast='',toastUntil=0,effectUntil=0,effectStart=0,lastEffect=null,flame=null,drag=null,width=1,height=1;
 const reducedMotion=matchMedia('(prefers-reduced-motion: reduce)');
 const fireArt=fireSprites((w,h)=>Object.assign(document.createElement('canvas'),{width:w,height:h})),fireBorn=new Map();
 const camera={x:0,y:0,zoom:1.15},images=new Map(),sprites=[];
@@ -207,7 +208,7 @@ function select(id,toggle=false){mapConfirmation=null;watchAim=false;watchPrevie
 function shotKey(t){const u=selected();return [u.id,t.id,aimZone,burst,s.round,s.phase,s.revision,u.x,u.y,u.z,u.weapon,u.ap,t.x,t.y,t.z,t.hp].join(':');}
 function chooseEnemy(id){terrainAim=false;terrainTarget=null;const t=s.units[id];if(!t||!alive(t)||!s.detected.has(id))return;if(targetId===id&&shotConfirmation===shotKey(t)){tryAttack();return;}targetId=id;shotConfirmation=shotKey(t);sync();updateHover();}
 function tryAttack(){const t=target();shotConfirmation=null;if(t&&attack(s,selected(),t,burst,false,aimZone))sync();else message('Attack unavailable. Check range, AP and ammunition.');}
-function restart(){mapConfirmation=null;watchAim=false;watchPreview=false;watchPreview=false;terrainAim=false;terrainTarget=null;lastClockFrame=null;selectedIds=new Set([0]);shotConfirmation=null;aimZone='torso';$('aim-zone').value=aimZone;world=createWorld(customMap,$('difficulty').value);s=currentMap(world);targetId=null;burst=false;hover=null;route=null;lastEffect=null;camera.zoom=1.15;center();sync();}
+function restart(){mapConfirmation=null;watchAim=false;watchPreview=false;watchPreview=false;terrainAim=false;terrainTarget=null;lastClockFrame=null;selectedIds=new Set([0]);shotConfirmation=null;aimZone='torso';$('aim-zone').value=aimZone;world=createWorld(customMap,$('difficulty').value,rosterSeed());s=currentMap(world);targetId=null;burst=false;hover=null;route=null;lastEffect=null;camera.zoom=1.15;center();sync();}
 function zoom(factor){const cx=width/2,cy=height/2,z=camera.zoom,next=Math.max(.025,Math.min(2.3,z*factor));camera.x=cx+(camera.x-cx)*next/z;camera.y=cy+(camera.y-cy)*next/z;camera.zoom=next;}
 $('squad').addEventListener('click',e=>{const b=e.target.closest('[data-unit]');if(b)select(Number(b.dataset.unit),e.shiftKey);});
 $('weapons').addEventListener('click',e=>{const b=e.target.closest('[data-weapon]');if(b&&equip(s,selected(),b.dataset.weapon)){burst=false;sync();}});

@@ -10,18 +10,18 @@ const clamp=(v,min=0,max=100)=>Math.max(min,Math.min(max,v));
 export const personality=u=>PERSONALITIES[u.personalityId];
 export function initPersonality(u){if(!PERSONALITIES[u.name])return;u.personalityId=u.name;u.archetype=personality(u).archetype;u.social={stress:0,fatigue:0,bonds:{...personality(u).bonds},resting:{...personality(u).bonds},incidents:{},memories:[],voice:0};}
 // Rest pulls every bond 10% of the way back toward its resting level per 8 hours (G3 "Levels of getting along"); returns the rungs crossed.
-export function driftBonds(u,hours){const m=u.social;if(!m?.resting)return [];const f=Math.min(1,hours/8*.1),crossed=[];
- for(const [name,rest] of Object.entries(m.resting)){const b=m.bonds[name]??rest;const next=b+(rest-b)*f;m.bonds[name]=next;const was=rungOf(b).name,now=rungOf(next).name;if(was!==now)crossed.push(`${u.name} ${next>b?'again':'no longer'} ${now==='trusted'||now==='bonded'?'trusts':now==='cautious trust'?'tolerates':'stands'} ${name}: ${now}.`);}
+export function driftBonds(u,hours){const m=u.social;if(!m?.resting)return [];const f=1-Math.pow(.9,hours/8),crossed=[]; // 10% of the remaining distance per 8 hours, compounding
+ for(const [name,rest] of Object.entries(m.resting)){const b=m.bonds[name]??rest;const next=b+(rest-b)*f;m.bonds[name]=next;const was=rungOf(b).name,now=rungOf(next).name;if(was!==now)crossed.push(`${u.name}'s regard for ${name} ${next>b?'rises':'falls'} to ${now}.`);}
  return crossed;}
 function remember(u,text){u.social.memories.unshift(text);u.social.memories.length=Math.min(8,u.social.memories.length);}
 export function retaliationChance(u,attacker,damage){const p=personality(u),m=u.social;if(!p||!m)return 0;const incident=m.incidents[attacker.name];return clamp(p.aggression*.0035+p.pride*.0015-p.discipline*.003-p.forgiveness*.002-p.loyalty*.001+(damage/u.maxHp)*.5+m.stress*.003+(incident?.grudge||0)*.004+Math.min(4,Math.max(0,(incident?.hits||0)-1))*.07-(m.bonds[attacker.name]||0)*.003,0,.95);}
 export function friendlyReaction(s,u,attacker,damage,canShoot){
  const p=personality(u),m=u.social;if(!p||!m)return null;
+ const rung=s.rules?.social?retaliationScale(m.bonds[attacker.name]||0):1; // G3: the rung BEFORE this hit's bond loss answers it (bonded never, trusted half, strained 1.5x, resented and feud 2x)
  const incident=m.incidents[attacker.name]||={hits:0,damage:0,grudge:0};incident.hits++;incident.damage+=damage;incident.grudge=clamp(incident.grudge+8+(100-p.forgiveness)*.12);m.stress=clamp(m.stress+10);m.bonds[attacker.name]=clamp((m.bonds[attacker.name]||0)-8-damage/u.maxHp*20,-100,100);
  remember(u,`${attacker.name} hit me for ${damage} damage (incident ${incident.hits}).`);
  s.socialSeed=(Math.imul(s.socialSeed??(s.seed^0x9e3779b9),1664525)+1013904223)>>>0;
- // G3 rungs (behind the campaign's social knob): bonded never retaliates, trusted at half, strained 1.5x, resented and feud 2x.
- const retaliate=canShoot&&s.socialSeed/4294967296<retaliationChance(u,attacker,damage)*(s.rules?.social?retaliationScale(m.bonds[attacker.name]):1);
+ const retaliate=canShoot&&s.socialSeed/4294967296<Math.min(.95,retaliationChance(u,attacker,damage)*rung);
  const lines=retaliate?p.retaliate:incident.hits>1?p.repeat:p.quip;
  const line=lines[(m.voice+++(p.humor>=60?1:0))%lines.length];
  return {speaker:u.name,line,retaliate};

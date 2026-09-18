@@ -26,7 +26,7 @@ test('a footstep makes a resting guard Suspicious; it walks its step budget, swe
  emitNoise(s,u,10);assert.equal(stateOf(g),'rest','twelve tiles is beyond a ten-tile footstep');
  g.wary=true;emitNoise(s,u,10);assert.equal(stateOf(g),'suspicious','wary: the ten-tile footstep carries fifteen');assert.equal(WARY_HEARING,1.5);
  assert.deepEqual(g.lastHeard,{x:12,y:30,z:0},'the approximate report cell');assert.equal(g.searchSteps,Math.round(SUSPICION_STEPS*WARY_STEPS),'a wary guard investigates longer');
- assert.ok(s.log.some(l=>l==='Boris: "Who\'s there?"'),'the bark is heard twelve tiles away');
+ assert.ok(s.log.some(l=>l==='Boris: “Who\'s there?”'),'the bark is heard twelve tiles away');
  assert.equal(s.phase,'explore','suspicion is not contact');assert.equal(s.alerted.size,0,'and does not charge AP');
  const n=run(s,g,'rest');
  assert.equal(stateOf(g),'rest');assert.ok(g.wary);assert.equal(g.x,26);assert.equal(g.y,30);assert.equal(g.heading,0,'back at post, facing its post heading');
@@ -105,7 +105,7 @@ test('a shot alerts suspicious, searching and standing-down guards; a broken one
 test('barks reach the log within thirty tiles or in view, not beyond',()=>{
  const {s,u,gs:[near,far]}=scene([{x:26,y:30,z:0,species:'donkey',weapon:'knife'},{x:120,y:30,z:0,species:'donkey',weapon:'knife'}]);
  setState(s,far,'suspicious',{x:120,y:36,z:0});assert.ok(!s.log.some(l=>l.startsWith('Lev:')),'a hundred tiles off, unheard');
- setState(s,near,'suspicious',{x:12,y:30,z:0});assert.ok(s.log.some(l=>l==='Boris: "Who\'s there?"'));
+ setState(s,near,'suspicious',{x:12,y:30,z:0});assert.ok(s.log.some(l=>l==='Boris: “Who\'s there?”'));
 });
 
 test('the bot cannot exploit Area quiet by standing still in front of an alerted guard: identification, not motion, is the trigger',()=>{

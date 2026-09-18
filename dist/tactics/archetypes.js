@@ -69,7 +69,8 @@ export function drawArchetype(seed,index){let h=(seed>>>0)^0x9e3779b9;for(const 
 export function drawSquad(seed,count=4){const out=[];for(let i=0;out.length<count&&i<200;i++){const a=drawArchetype(seed^0x5bd1e995,i);if(!out.includes(a))out.push(a);}return out;}
 
 // Trait scaling for the G2 state machine. A unit without traits scales by 1 (the G2 base numbers).
-export const traitsOf=u=>u?.traits||(u?.archetype&&ARCHETYPES[u.archetype]?.traits)||null;
+const TRAIT_KEYS=['vigilance','nerve','initiative','obedience'];const whole=t=>!!t&&TRAIT_KEYS.every(k=>Number.isFinite(t[k]));
+export const traitsOf=u=>{if(whole(u?.traits))return u.traits;const a=ARCHETYPES[u?.archetype]?.traits;return a||null;}; // a partial traits object counts as none
 const scale=(u,key)=>{const t=traitsOf(u);return t?.5+t[key]/100:1;};
 export const hearingScale=u=>scale(u,'vigilance');       // footstep radius: Sage 1.4, Jester 0.9
 export const stepsScale=u=>scale(u,'initiative');        // suspicion steps: Hero 1.45, Sage 0.7
@@ -77,7 +78,7 @@ export const cellsScale=u=>scale(u,'vigilance');         // report cells searche
 export const alertScale=u=>scale(u,'vigilance');         // rounds before an alert guard loses the trail
 export const nerveFraction=u=>{const t=traitsOf(u);return t?(1-t.nerve/100)*2/3:1/3;}; // breaks at or below this share of health: Hero .10, Innocent .47
 export const brokenRoundsOf=u=>{const t=traitsOf(u);return t?Math.max(1,Math.round(4*(1-t.nerve/100))):2;}; // Innocent 3, Hero 1
-export const shoutRadius=u=>u?.archetype?ARCHETYPES[u.archetype].radius:12;
+export const shoutRadius=u=>ARCHETYPES[u?.archetype]?.radius??12;
 // A bark in the archetype's register, alternating between its two lines; null without an archetype.
 export function archetypeBark(u,state){const a=ARCHETYPES[u?.archetype];if(!a||!a.barks[state])return null;const lines=a.barks[state],n=((u.barked??={})[state]||0);u.barked[state]=n+1;return lines[n%lines.length];}
 export function describeArchetype(name){const a=ARCHETYPES[name];if(!a)return '';return `${name}: wants ${a.wants}; fears ${a.fears}; speaks ${a.speaks}; fails by ${a.fails}.`;}
