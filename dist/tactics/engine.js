@@ -1,10 +1,10 @@
 import {explosivePreview,explosiveTrajectory,detonate} from './explosives.js';
-import {initPersonality,friendlyReaction,helped,settleStress,injuryStrain,killRelief,collapse} from './personalities.js';
+import {initPersonality,initGuardSocial,socialRoll,friendlyReaction,helped,settleStress,injuryStrain,killRelief,collapse} from './personalities.js';
 import {initProgression,awardCombatXP,train} from './progression.js';
 import {bulletTrajectory,shotgunTrajectories,traceProjectile,eyeHeight,targetHeight} from './projectiles.js';
 import {gridLayout,storeLayout,placeItem,initInventory,reserve,consumeAmmo,syncWeapons,accepts,receive} from './inventory.js';
 import {inCone,headingTo,sightOf,identifyRange,detectRange} from './perception.js';
-import {ARCHETYPES,drawArchetype,hearingScale,stepsScale,cellsScale,alertScale,nerveFraction,brokenRoundsOf,archetypeBark,bond as archetypeBond} from './archetypes.js';
+import {ARCHETYPES,drawArchetype,hearingScale,stepsScale,cellsScale,alertScale,nerveFraction,brokenRoundsOf,archetypeBark,bond as archetypeBond,shoutRadius,traitsOf,rungOf,opposing} from './archetypes.js';
 export {ARCHETYPES,NAMES as ARCHETYPE_NAMES,drawArchetype,drawSquad,rungOf,retaliationScale,bond as archetypeBond,shoutRadius,describeArchetype} from './archetypes.js';
 export {inCone,headingTo,bearingOffset,sightOf,identifyRange,detectRange,acuity,SIGHT,JOHNSON} from './perception.js';
 import {woodlandDepth} from './woodland.js';
@@ -67,7 +67,7 @@ export function createGame(seed=1947,definition=factoryMap(),detect=true,difficu
  for(const g of guards(s))g.post={x:g.x,y:g.y,z:levelOf(g),heading:g.heading}; // a guard's start tile and heading are its post
  // G3 behind its knob: the campaign (createWorld) draws an archetype per guard from a hash of the seed and the guard's index; plain createGame leaves the G2 base numbers.
  let rosterSeed=(options.rosterSeed??seed)>>>0;for(const c of String(definition.name||''))rosterSeed=Math.imul(rosterSeed^c.charCodeAt(0),16777619)>>>0;
- s.rules={social:!!options.social,rosterSeed};if(s.rules.social)for(const [i,g] of guards(s).entries()){g.archetype=drawArchetype(rosterSeed,i);g.traits={...ARCHETYPES[g.archetype].traits};}
+ s.rules={social:!!options.social,rosterSeed};if(s.rules.social)for(const [i,g] of guards(s).entries()){g.archetype=drawArchetype(rosterSeed,i);g.traits={...ARCHETYPES[g.archetype].traits};initGuardSocial(g);}
  for(const u of s.units){initInventory(u,WEAPONS);if(u.team==='squad'){initProgression(u);initPersonality(u);}}s.loot=definition.starts.map((p,i)=>({...p,items:[{type:'ammo',kind:i%2?'rifle':'pistol',count:i%2?5:8}]}));
  if(definition.name==='Factory test')for(const [i,kind]of ['shotgun','sniper','smg','hmg'].entries())s.loot[i].items.push({type:'weapon',kind,rounds:WEAPONS[kind].mag},{type:'ammo',kind,count:12});
  if(definition.name==='Factory test')for(const [i,kind]of ['grenade','launcher','rpg'].entries())s.loot[i+1].items.push({type:'weapon',kind,rounds:WEAPONS[kind].mag},{type:'ammo',kind,count:kind==='grenade'?6:3});
@@ -237,6 +237,7 @@ function combatDamage(s,u,damage,fatal=false,source=null){
  if(u.team==='guard'&&living&&u.hp>0)struck(s,u,source);
  if(u.hp>0)return;
  if(living)killRelief(source,u);
+ if(u.team==='guard'&&living&&s.rules?.social)mourn(s,u,source);
  if(u.team==='guard'&&living&&!u.lootDropped){delete s.contacts[u.id];awardCombatXP(s);s.loot.push({x:u.x,y:u.y,z:levelOf(u),body:u.id,searched:false,items:rollLoot(s,u)});u.pack=[];u.lootDropped=true;}
  if(u.team==='squad'&&(living||fatal&&incapacitated(u))){u.casualty=fatal?'dead':s.difficulty==='easy'?'stable':'bleeding';u.bleedTurns=u.casualty==='bleeding'?6:0;u.ap=0;u.overwatch=null;s.queue=[];u.recoveryTurns=0;u.burningTurns=0;if(living)collapse(u);if(u.casualty==='stable')beginRecovery(s,u);}
 }
@@ -317,7 +318,8 @@ export function attack(s,a,b,burst=false,byAI=false,zone='torso',reaction=false)
   for(const u of standing)if(!alive(u)&&!event.downed.includes(u.id))event.downed.push(u.id);
   const friendly=victim.team===shooter.team;
   log(s,`${shooter.name} → ${victim.name}: ${amount} damage${friendly?' / friendly fire':''}${f.reply?' / retaliation':''}${!alive(victim)?' / down':''}.`);
-  if(friendly&&victim!==shooter&&victim.team==='squad'&&alive(victim)&&!reacted.has(victim.id)){reacted.add(victim.id);
+  // G4: a guard under the campaign knob keeps the same ledger as a merc, so a colleague's bullet gets the same reaction (its bond starts at the archetype matrix).
+  if(friendly&&victim!==shooter&&victim.social&&alive(victim)&&!reacted.has(victim.id)){reacted.add(victim.id);if(victim.team==='guard')victim.social.bonds[shooter.name]??=restingBond(victim,shooter);
    const armed=WEAPONS[victim.weapon].mag>0,turned={...victim,heading:headingTo(victim,shooter),ap:WEAPONS[victim.weapon].cost};
    const reply=armed&&alive(shooter)?previewAttack(s,turned,shooter,false,'torso',retaliationToken):{ok:false};
    const response=friendlyReaction(s,victim,shooter,amount,reply.ok);
@@ -456,7 +458,7 @@ export function setState(s,g,state,fix=null,{swept=false,quiet=false}={}){
  g.state=state;g.alert=state==='alert';g.route=undefined;g.sweep=undefined;g.standoff=0;
  if(state==='rest'){g.lastKnown=null;g.lastHeard=null;g.searchSteps=0;g.search=null;g.unseen=0;g.threat=null;}
  else if(state==='suspicious'){if(fix)g.lastHeard=fix;g.searchSteps=suspicionSteps(g);g.search=null;bark(s,g,g.name+': “Who\'s there?”','suspicious');}
- else if(state==='alert'){if(fix)g.lastKnown=fix;g.unseen=0;g.seenRound=-1;g.search=null;if(!quiet)bark(s,g,null,'alert');}
+ else if(state==='alert'){if(fix)g.lastKnown=fix;g.unseen=0;g.seenRound=-1;g.search=null;shout(s,g,quiet);}
  else if(state==='searching'){if(fix)g.lastKnown=fix;const c=g.lastKnown||g.threat||{x:g.x,y:g.y,z:levelOf(g)};g.search={cells:[...(swept?[]:[c]),...searchCells(s,g,c)],index:0};bark(s,g,g.name+' lost the trail and is searching.','searching');}
  else if(state==='standdown'){g.lastKnown=null;g.lastHeard=null;g.search=null;g.searchSteps=0;bark(s,g,g.name+' gave up the search.','standdown');}
  else if(state==='broken'){g.threat=fix||g.threat||g.lastKnown;g.brokenRounds=brokenRoundsOf(g);g.brokenTicks=0;g.hitRound=s.round;bark(s,g,g.name+' breaks and runs.','broken');}
@@ -467,7 +469,28 @@ function reconcile(s,g){const st=stateOf(g);if(st!==g.state){g.state=st;g.route=
 function identified(s,g,p){const fix={x:p.x,y:p.y,z:levelOf(p)};g.seenRound=s.round;g.unseen=0;const st=stateOf(g);if(st==='broken'){g.lastKnown=fix;g.threat=fix;return;}if(st==='alert')g.lastKnown=fix;else setState(s,g,'alert',fix);}
 // A footstep or a peripheral glimpse: a resting, standing-down or suspicious guard goes (or stays) Suspicious toward it; a searching guard re-centres its search on it.
 function suspect(s,g,fix){const st=stateOf(g);if(st==='alert'||st==='broken')return;setState(s,g,st==='searching'?'searching':'suspicious',fix);}
-// Shot at, hit or miss: a broken guard learns where the shooter is and keeps running; anyone else is Alert toward the shooter. A colleague's bullet tells it nothing (G4).
+// G4 shouts (GUARDS.md). An Alert guard shouts once on entering the state: colleagues within its archetype's shout radius that heed it take its fix and
+// go Alert (and shout in turn, so an alarm can run down a chain); the rest go Suspicious toward the shouter. A shout without a fix rallies the
+// others on the shouter. A Rebel (radius 0) shouts for nobody; a Jester's listeners only ever go Suspicious. Heeding: a resented or feud listener
+// ignores the shout, a bonded one always answers, anyone else rolls its obedience on the social stream (never the ballistic one). Off the knob the
+// alert bark is all that happens, so a plain game is G2 to the count.
+export const bondOf=(a,b)=>a?.social?.bonds?.[b?.name]??restingBond(a,b);
+function heeds(s,h,g){const b=bondOf(h,g);if(opposing(b))return false;if(rungOf(b).name==='bonded')return true;return socialRoll(s)<(traitsOf(h)?.obedience??50)/100;}
+function shout(s,g){bark(s,g,null,'alert');if(!s.rules?.social||!g.archetype)return;const r=shoutRadius(g);if(r<=0)return;
+ const fix=g.lastKnown||{x:g.x,y:g.y,z:levelOf(g)},here={x:g.x,y:g.y,z:levelOf(g)};let answered=0;
+ for(const h of guards(s)){if(h===g||distance(h,g)>r||['alert','broken'].includes(stateOf(h)))continue;
+  if(g.archetype!=='Jester'&&heeds(s,h,g)){answered++;setState(s,h,'alert',{...fix});}else suspect(s,h,here);}
+ if(answered)bark(s,g,answered+(answered===1?' guard answers ':' guards answer ')+g.name+"'s shout.");}
+// G4 grief. A colleague the guard liked (trusted or bonded) falling within earshot costs stress (bonded 25, trusted 15) and a guard whose stress
+// passes its nerve breaks on the spot, toward the killer if the killer is not a guard. A colleague's bullet as the cause adds the G5 quantities:
+// the bond toward the killer drops a further 40 (trusted 20) and the grudge rises by the same.
+export const GRIEF_STRESS={bonded:25,trusted:15},GRIEF_BOND={bonded:40,trusted:20};
+function mourn(s,dead,killer){for(const g of guards(s)){if(!g.social||g===dead||distance(g,dead)>BARK_RANGE)continue;const rung=rungOf(bondOf(g,dead)).name;if(!(rung in GRIEF_STRESS))continue;
+ g.social.stress=Math.min(100,g.social.stress+GRIEF_STRESS[rung]);g.social.memories.unshift(dead.name+' was killed beside me.');g.social.memories.length=Math.min(8,g.social.memories.length);
+ if(killer&&killer.team==='guard'&&killer!==g){const inc=g.social.incidents[killer.name]||={hits:0,damage:0,grudge:0};inc.grudge=Math.min(100,inc.grudge+GRIEF_BOND[rung]);g.social.bonds[killer.name]=Math.max(-100,bondOf(g,killer)-GRIEF_BOND[rung]);}
+ if(g.social.stress>(traitsOf(g)?.nerve??50)&&stateOf(g)!=='broken'&&!g.burningTurns)setState(s,g,'broken',killer&&killer.team!==g.team&&Number.isFinite(killer.x)?{x:killer.x,y:killer.y,z:levelOf(killer)}:null);
+ else bark(s,g,g.name+' saw '+dead.name+' fall.');}}
+// Shot at, hit or miss: a broken guard learns where the shooter is and keeps running; anyone else is Alert toward the shooter. A colleague's bullet tells it nothing.
 function targeted(s,b,a){if(!a||a.team===b.team)return;const fix={x:a.x,y:a.y,z:levelOf(a)};const st=stateOf(b);if(st==='broken'){b.threat=fix;b.lastKnown=fix;}else if(st==='alert')b.lastKnown=fix;else setState(s,b,'alert',fix);}
 const onFire=(s,q)=>!!s.fires?.some(f=>f.x===q.x&&f.y===q.y&&f.z===levelOf(q));
 // A hit that leaves the guard standing: at or below NERVE of its health its nerve breaks for BROKEN_ROUNDS; otherwise it is Alert toward the shooter.
@@ -497,6 +520,7 @@ function placeAt(s,g,p){const z=levelOf(p),start={x:p.x,y:p.y,z};if(!inBounds(st
 // A map the squad has left advances no rounds; on re-entry its guards settle by the campaign clock, one round per ROUND_MINUTES:
 // K rounds take an alert or broken guard to its fix and Searching, M more take it home and wary; suspicion and a stand-down resolve within a round.
 export function settleGuards(s,minutes){const rounds=Math.floor(minutes/ROUND_MINUTES);if(rounds<=0)return;
+ if(s.rules?.social)for(const g of guards(s))settleStress(g,rounds*ROUND_MINUTES/60*5); // guards work stress off at the mercs' resting rate
  if(s.fires?.length)s.fires=s.fires.filter(f=>(f.turns-=rounds)>0);for(const g of guards(s))if(g.burningTurns)g.burningTurns=Math.max(0,g.burningTurns-rounds); // fires burn down by the same clock
  for(const g of guards(s)){let st=stateOf(g);if(st==='rest')continue;
   const home=()=>{if(g.post)placeAt(s,g,g.post);setState(s,g,'rest');g.wary=true;if(g.post)g.heading=g.post.heading;};
