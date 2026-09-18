@@ -55,16 +55,18 @@ export function createGreyHorse(){
    return d;
   }
   add('forearm and hand '+side,arm,[-.085,.64,side*.35-.14],[.16,1.08,side*.35+.14],.008);
-  function boot(x,y,z){
+  function hoof(x,y,z){
    const zz=z-side*.232;
-   let d=B(x,y,zz,[.040,.071,0],[.185,.064,.114],.060);
-   d=blend(d,B(x,y,zz,[-.034,.161,0],[.105,.099,.098],.074),.027);
-   d=Math.min(d,B(x,y,zz,[.040,.020,0],[.191,.020,.118],.011));
-   // A shallow vamp break where the ankle bends into the weight-bearing toe.
-   d+=.003*exp(-(((x-.055)/.035)**2))*exp(-(((y-.125)/.030)**2));
+   // Exposed single horse hoof: sloped wall, broad bearing rim and narrower coronet.
+   // No footwear sole, heel block or elongated boot toe.
+   const t=Math.max(0,Math.min(1,y/.115));
+   const cx=.009-.027*t,rx=.113-.033*t,rz=.094-.026*t;
+   let d=Math.max((Math.hypot((x-cx)/rx,zz/rz)-1)*Math.min(rx,rz),-y,y-.115);
+   // Short pastern enters the trouser opening above the hoof capsule.
+   d=blend(d,C(x,y,zz,[-.018,.105,0],[-.034,.205,0],.065,.070),.010);
    return d;
   }
-  add('work boot '+side,boot,[-.17,-.012,side*.232-.145],[.25,.29,side*.232+.145],.008);
+  add('exposed hoof '+side,hoof,[-.13,-.012,side*.232-.12],[.15,.29,side*.232+.12],.006);
  }
 
  function head(x,y,z){

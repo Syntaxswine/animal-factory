@@ -12,6 +12,6 @@ try{
  await page.locator('#silhouette').check();await page.screenshot({path:directory+'/silhouettes.png'});await page.locator('#silhouette').uncheck();
  await page.locator('#wire').check();await page.screenshot({path:directory+'/topology.png'});
  assert.deepEqual(errors,[]);assert.ok(Math.abs(d.height-1.65)<1e-6);for(const p of d.parts)assert.equal(p.components,1,p.name+' must be a single connected surface');
- for(const p of d.parts.filter(p=>p.name.startsWith('work boot')))assert.ok(Math.abs(p.min[1])<1e-5);
+ for(const p of d.parts.filter(p=>p.name.startsWith('exposed hoof')))assert.ok(Math.abs(p.min[1])<1e-5);
  fs.writeFileSync(directory+'/checks.json',JSON.stringify({browser:browser.version(),errors,...d},null,2)+'\n');console.log(JSON.stringify(d,null,2));
 }finally{await browser.close();}

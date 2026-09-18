@@ -6,7 +6,7 @@ test('grey sculpt has connected closed surfaces, finite normals and grounded pro
  const horse=createGreyHorse();
  try{
   const d=horse.diagnostics();assert.ok(Math.abs(d.height-1.65)<1e-6);assert.ok(Math.abs(d.min[1])<1e-7);
-  for(const p of d.parts){assert.equal(p.components,1,p.name);if(p.name.startsWith('work boot'))assert.ok(Math.abs(p.min[1])<1e-6);}
+  for(const p of d.parts){assert.equal(p.components,1,p.name);if(p.name.startsWith('exposed hoof'))assert.ok(Math.abs(p.min[1])<1e-6);}
   for(const mesh of horse.parts){
    const geometry=mesh.geometry,edges=new Map(),ix=geometry.index.array;
    for(const attribute of ['position','normal'])for(const v of geometry.attributes[attribute].array)assert.ok(Number.isFinite(v),mesh.name+' nonfinite '+attribute);
