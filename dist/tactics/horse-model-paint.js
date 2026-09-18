@@ -43,14 +43,14 @@ export function createModelPaint(renderer,horse,texture){
  for(let i=0;i<4;i++){const angle=i*Math.PI/2;camera.position.set(4*Math.cos(angle),.825,4*Math.sin(angle));camera.lookAt(0,.825,0);camera.updateProjectionMatrix();renderer.setViewport(i*512,0,512,1024);renderer.setScissor(i*512,0,512,1024);renderer.render(scene,camera);}
  renderer.setRenderTarget(oldTarget);renderer.outputColorSpace=oldSpace;renderer.toneMapping=oldTone;renderer.setClearColor(oldColor,oldAlpha);renderer.setViewport(oldViewport);renderer.setScissor(oldScissor);renderer.setScissorTest(oldScissorTest);
  idMaterials.forEach(m=>m.dispose());
- const debug={value:0};
+ const debug={value:0},gripForearm={value:0};
  const material=new THREE.MeshBasicMaterial({toneMapped:false});
  material.onBeforeCompile=shader=>{
-  Object.assign(shader.uniforms,{uModelPaint:{value:texture},uPaintDepth:{value:target.depthTexture},uPaintParts:{value:target.texture},uPaintMask:{value:mask},uPaintDebug:debug});
+  Object.assign(shader.uniforms,{uModelPaint:{value:texture},uPaintDepth:{value:target.depthTexture},uPaintParts:{value:target.texture},uPaintMask:{value:mask},uPaintDebug:debug,uGripForearm:gripForearm});
   shader.vertexShader=shader.vertexShader.replace('#include <common>','#include <common>\nattribute float paintPart; varying float vPaintPart; varying vec3 vPaintPosition; varying vec3 vPaintNormal;');
   shader.vertexShader=shader.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\nvPaintPosition=position;vPaintNormal=normal;vPaintPart=paintPart;');
   shader.fragmentShader=shader.fragmentShader.replace('#include <common>',`#include <common>
-   uniform sampler2D uModelPaint,uPaintDepth,uPaintParts,uPaintMask; uniform float uPaintDebug;
+   uniform sampler2D uModelPaint,uPaintDepth,uPaintParts,uPaintMask; uniform float uPaintDebug,uGripForearm;
    varying vec3 vPaintPosition,vPaintNormal; varying float vPaintPart;
    vec3 fallbackPaint(float part){
     if(part<1.5)return vec3(.67,.61,.43);
@@ -94,10 +94,17 @@ export function createModelPaint(renderer,horse,texture){
    float filled=smoothstep(.002,.025,fill.a);
    vec3 base=mix(fallbackPaint(vPaintPart),fill.rgb/max(.00001,fill.a),filled);
    diffuseColor.rgb=mix(base,paint.rgb/max(.00001,paint.a),coverage);
+   // The overhand pose exposes the inner forearm, absent from the four neutral views.
+   // Reuse the painted outer forearm at the same height, with broad form shading.
+   if(uGripForearm>.5&&abs(vPaintPart-3.0)<.1){
+    vec4 armPaint=paintView(vec3(.15,p.y,-.355),vec3(1.,0.,0.),0.,true);
+    float armMask=smoothstep(.765,.785,p.y)*(1.-smoothstep(.903,.918,p.y));
+    if(armPaint.a>.001)diffuseColor.rgb=mix(diffuseColor.rgb,armPaint.rgb/armPaint.a*(.80+.20*abs(n.x)),armMask);
+   }
    if(uPaintDebug>.5)diffuseColor.rgb=mix(mix(vec3(.8,.0,.55),vec3(.03,.18,.95),filled),vec3(.04,.8,.12),coverage);
   `);
  };
- material.customProgramCacheKey=()=> 'horse-model-projection-v1';
+ material.customProgramCacheKey=()=> 'horse-model-projection-v2';
  let visibilityPixels;
  function visibility(p,part,view){
   if(!visibilityPixels){visibilityPixels=new Uint8Array(2048*1024*4);renderer.readRenderTargetPixels(target,0,0,2048,1024,visibilityPixels);}
@@ -106,5 +113,5 @@ export function createModelPaint(renderer,horse,texture){
   const k=(y*2048+x)*4,surfacePart=visibilityPixels[k],surfaceDepth=(visibilityPixels[k+1]*256+visibilityPixels[k+2])/65535;
   return {visible:surfacePart===part&&depth-surfaceDepth<.009/9.9,surfacePart,depthErrorWorld:(depth-surfaceDepth)*9.9};
  }
- return {material,target,visibility,setDebug(value){debug.value=value?1:0;},dispose(){material.dispose();target.dispose();texture.dispose();mask.dispose();}};
+ return {setGripForearm(value){gripForearm.value=value?1:0;},material,target,visibility,setDebug(value){debug.value=value?1:0;},dispose(){material.dispose();target.dispose();texture.dispose();mask.dispose();}};
 }

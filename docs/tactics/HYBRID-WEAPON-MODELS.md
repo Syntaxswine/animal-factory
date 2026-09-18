@@ -1,10 +1,25 @@
 # Separate 3D weapons on the accepted horse
 
+## Current checkpoint: drum, chamber and HMG grasp corrections
+
+The review of `722f13b` correctly identified that contact with any nearby weapon geometry did not prove the intended grasp. This revision fixes the PPSh drum orientation and aligns the grenade launcher barrel with an actual top chamber, including rotating the six-chamber phase and connecting the raised barrel to its foregrip saddle.
+
+The HMG now has a raised upper handle, with the support anchor explicitly associated with its graspable bar. Its lower carry uses contact-specific wrist orientation, palm offset and elbow direction. The receiver gains stepped panels, lower rails and a latch; the dense ammunition belt follows a softer hanging curve. Weapon material shading is unchanged in this checkpoint.
+
+The old hand could not show a convincing overhand wrap. An HMG-only, 900-triangle connected glove now supplies four curled fingers and an opposing thumb. It follows the wrist bone in a fixed grasp. The support forearm narrows locally into a fitted cuff, and the exposed inner forearm borrows existing outer-forearm paint at the same height. This removes the jagged fallback patch, though the reused paint still looks stretched close up. Switching equipment restores the original geometry and skin weights. The equipped HMG character totals **11,004 triangles**, including this hand and cuff; the other character poses retain **10,300**. The HMG itself is **2,580 triangles**, PPSh **1,112**, and grenade launcher **1,072**.
+
+In the workshop, choose **Support grip** and the **Front / Side / Rear** inspection angles. **Isolate grasp** hides the arm and cuff only for diagnostic inspection; full-arm images are also retained. These controls provide visual evidence alongside the native 58 CSS-pixels-per-unit comparison.
+
+**Sixteen focused tests pass**, plus browser/resource checks and the Pages build. New tests inspect actual drum cap axes and chamber/barrel centerlines. HMG tests raycast the rendered glove at four finger sections and the opposing thumb around the named handle. Separating planes bound all glove/cuff triangles above the shroud and keep the cuff above the handle itself, excluding crossings between vertices. Switching restores the original hand geometry and skin weights; shotgun/flamethrower baseline hashes still pass. The old general hand proximity check remains only a broad regression check: the corrective glove uses a 22 mm center-distance allowance (13 mm bar radius plus glove clearance), while its specific wrap tests validate the actual surfaces.
+
+Independent hostile review: **9/10 for this bounded geometry-and-grip correction**, after rejecting the initial mitten-like grasp and oversized cuff. This does not approve the full catalog's appearance. Material finish, AK simplification and RPG hand spacing/warhead presentation remain open architect concerns. Pistol, knife, grenade, original rifle, shotgun and flamethrower assets are unchanged. This fixed HMG grasp does not demonstrate animated fingers, release/regrasp, reloads or gameplay integration. Nothing is merged to canonical or published to the separate 3D project.
+
+
 The user requested converting the entire weapon catalog to separate 3D models, using the accepted painted 10,300-triangle horse to test them. Open `/tactics/horse-weapons.html` for the workshop. Choose any weapon, compare its original sprite with the equipped horse at native or close scale, turn the character, or inspect the independent weapon alone. Contact markers and wireframe are available.
 
 This covers all twelve weapon IDs in `engine.js`, plus an empty-hands state. `launcher` uses the existing `grenade-launcher` artwork. The original 480-triangle rifle is reused. Other assets are authored in `weapon-models.js`, with shaped profiles, cylinders, bevels and deliberately placed steel edges, seams, wood-atlas surfaces and accessory detail. No character geometry, paint asset, gameplay statistics, inventory rules or firing simulation is changed.
 
-## Catalog and handling
+## Earlier catalog and handling
 
 | Weapon | Defining modeled features | Equipped pose |
 | --- | --- | --- |
@@ -25,7 +40,7 @@ Assets use local +X along the barrel/blade axis and named grip/support contacts.
 
 `horse-light-model.js` adds `equipWeapon()`, preserving its default rifle behavior and existing character comparison. Each asset supplies its own position, orientation and one-/two-hand contact set. The flamethrower mount attaches to the spine; its hose is a separate curved mesh whose ends follow the tank outlet and projector inlet. Selecting hands detaches the entire previous weapon, mount and hose. The caller owns and disposes equipped assets; the workshop disposes each previous selection and its contact markers.
 
-## Checks and evidence
+## Earlier checks and evidence
 
 Twelve focused tests pass across the character, projection and weapon suites. A snapshot captured at `138aacb` freezes the accepted shotgun and flamethrower geometry, materials and equipped carry, including the hose. Weapon checks compare the catalog with the actual engine catalog; validate hand contact against deformed hand vertices and actual weapon triangles; verify the visible muzzle-opening center at four headings; verify both hose ends against rendered tube-ring centers; and prove that switching to hands removes the backpack/hose from the scene graph. The hand-surface threshold remains 0.015 world units; weapon contact points may sit inside a grip and must be within 0.026 units of its surface.
 

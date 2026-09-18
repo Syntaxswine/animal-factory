@@ -69,7 +69,7 @@ export function createWeaponModel(id,texture=null){
   rod('PPSh rounded action',[-.075,.018,0],[.18,.018,0],.029,'steel');sidePort(.058,.022,.068,.030);box('PPSh charging tab',[.022,.012,.026],[.094,.012,.041],'dark');
   box('wooden fore-end',[.17,.036,.047],[.22,-.018,0],'wood');rod('perforated barrel shroud',[.11,.019,0],[.43,.019,0],.023);barrel(.13,.457,.010);
   for(let i=0;i<7;i++)for(const z of [-.024,.024])box('shroud vent',[.017,.012,.001],[.185+i*.031,.020,z],'bore');
-  rod('drum magazine',[.065,-.097,-.035],[.065,-.097,.035],.068,'dark',.068,16);ring('drum rim',.059,.003,[.065,-.097,.037],'edge');rod('drum hub',[.065,-.097,.035],[.065,-.097,.041],.021,'steel');anchor('support',[.24,-.04,0]);
+  rod('drum magazine',[.030,-.097,0],[.100,-.097,0],.068,'dark',.068,16);for(const x of [.027,.103]){ring('drum rim',.059,.003,[x,-.097,0],'edge','x');rod('drum hub',[x-.002,-.097,0],[x+.002,-.097,0],.021,'steel');}anchor('support',[.24,-.04,0]);
  }
  if(id==='shotgun'){
   barrel(.09,.61,.012);rod('magazine tube',[.09,-.012,0],[.49,-.012,0],.010);rod('wooden pump',[.15,-.015,0],[.32,-.015,0],.026,'wood');for(let i=0;i<7;i++)ring('pump groove '+i,.026,.002,[.167+i*.021,-.015,0],'dark','x');anchor('support',[.245,-.039,0]);
@@ -82,22 +82,22 @@ export function createWeaponModel(id,texture=null){
  if(id==='hmg'){
   shapedStock('HMG deep shoulder butt',[[-.31,-.092],[-.31,.030],[-.245,.030],[-.15,.002],[-.075,-.003],[-.056,-.034],[-.17,-.041],[-.25,-.084]],.054);
   profile('HMG heavy receiver',[[-.082,-.030],[.215,-.030],[.237,.021],[.206,.065],[-.060,.065],[-.082,.038]],.082,'steel');sidePort(.106,.014,.097,.044);box('HMG feed lid',[.235,.015,.097],[.07,.069,0],'dark');box('HMG lid top plane',[.209,.004,.079],[.068,.079,0],'steel');
-  box('feed cover',[.21,.055,.065],[.086,.035,0]);rod('heavy barrel shroud',[.21,.025,0],[.62,.025,0],.027);barrel(.23,.70,.014,.025);
+  box('receiver rear step',[.042,.017,.066],[-.065,.051,0],'dark');for(const z of [-.044,.044]){box('receiver lower rail',[.205,.006,.004],[.063,-.025,z],'edge');box('receiver side inset',[.076,.024,.003],[.003,.015,z],'dark');}rod('receiver latch',[.162,.031,.045],[.192,.031,.045],.007,'edge',.007,6);rod('heavy barrel shroud',[.21,.025,0],[.62,.025,0],.027);barrel(.23,.70,.014,.025);
   for(let i=0;i<8;i++)for(const z of [-.028,.028])box('cooling port',[.024,.016,.001],[.25+i*.045,.025,z],'bore');
   box('ammunition box',[.12,.13,.09],[.045,-.075,.075],'olive');
-  const beltCurve=new THREE.CatmullRomCurve3([V([.085,.054,.046]),V([.083,.043,.115]),V([.082,-.030,.172]),V([.080,-.126,.184]),V([.073,-.192,.141])]);const belt= beltCurve.getSpacedPoints(20),ribbon=[],ribbonIndices=[];
+  const beltCurve=new THREE.CatmullRomCurve3([V([.085,.054,.046]),V([.083,.043,.115]),V([.082,-.030,.172]),V([.064,-.126,.178]),V([.041,-.205,.141])]);const belt= beltCurve.getSpacedPoints(20),ribbon=[],ribbonIndices=[];
   for(let i=0;i<belt.length;i++){const p=belt[i];ribbon.push(p.x-.023,p.y,p.z-.004,p.x+.023,p.y,p.z-.004);if(i<belt.length-1)ribbonIndices.push(i*2,i*2+1,i*2+2,i*2+1,i*2+3,i*2+2);}
   const band=new THREE.BufferGeometry();band.setAttribute('position',new THREE.Float32BufferAttribute(ribbon,3));band.setIndex(ribbonIndices);band.computeVertexNormals();const backing=add(band,'dark','draped belt backing');backing.material.side=THREE.DoubleSide;
-  for(let i=0;i<belt.length;i++){const p=belt[i];rod('belt round '+i,[p.x-.032,p.y,p.z],[p.x+.040,p.y,p.z],.007,'brass',.003,6);const link=add(new THREE.TorusGeometry(.007,.002,4,8),'steel','cartridge link '+i,p.toArray());link.rotation.y=Math.PI/2;}
+  for(let i=0;i<belt.length;i++){const p=belt[i];rod('belt round '+i,[p.x-.032,p.y,p.z],[p.x+.040,p.y,p.z],.007,'brass',.003,6);const link=add(new THREE.TorusGeometry(.007,.002,3,8),'steel','cartridge link '+i,p.toArray());link.rotation.y=Math.PI/2;}
 
-  for(const z of [-1,1]){rod('bipod leg',[.49,.012,z*.021],[.53,-.235,z*.10],.007);box('bipod foot',[.047,.009,.027],[.53,-.238,z*.10],'dark');}anchor('support',[.23,-.010,0]);carry={...carry,position:[.27,.98,.035]};
+  for(const z of [-1,1]){rod('bipod leg',[.49,.012,z*.021],[.53,-.235,z*.10],.007);box('bipod foot',[.047,.009,.027],[.53,-.238,z*.10],'dark');}rod('upper handle rear riser',[.125,.067,0],[.15,.170,0],.009,'dark',.009,8);rod('upper handle front riser',[.32,.047,0],[.30,.170,0],.009,'dark',.009,8);rod('upper handle grip',[.15,.170,0],[.30,.170,0],.013,'wood',.013,10);anchor('support',[.225,.170,0]);carry={...carry,position:[.29,.88,.055],axis:[.20,.12,-.97],handPoses:{support:{quaternion:[-.5,.5,.5,-.5],fingerCurl:1.7,palm:[.065,-.016,0],elbowPole:[-.15,-.55,-.7],gripMesh:true}}};
  }
  if(id==='launcher'){
   shapedStock('launcher short broad butt',[[-.265,-.083],[-.265,.012],[-.175,.007],[-.097,-.009],[-.052,-.015],[-.052,-.041],[-.143,-.044]],.055);
   profile('launcher hinge frame',[[-.073,-.026],[.088,-.034],[.09,.064],[.028,.073],[-.053,.029]],.061,'steel');sidePort(-.012,.012,.046,.033);rod('launcher hinge pin',[.067,-.016,-.042],[.067,-.016,.042],.013,'dark');
   pistolGrip(-.028,-.065);rod('revolving cylinder',[.071,.025,0],[.221,.025,0],.052,'dark',.052,12);
-  for(let i=0;i<6;i++){const a=i*Math.PI/3;rod('chamber ridge '+i,[.076,.025+Math.sin(a)*.051,Math.cos(a)*.051],[.211,.025+Math.sin(a)*.051,Math.cos(a)*.051],.018,'steel');}
-  ring('cylinder front band',.065,.004,[.210,.025,0],'edge','x');ring('cylinder rear band',.065,.004,[.079,.025,0],'steel','x');barrel(.20,.405,.030,.025);box('foregrip',[.067,.055,.042],[.28,-.026,0],'wood');anchor('support',[.28,-.044,0]);
+  for(let i=0;i<6;i++){const a=Math.PI/2+i*Math.PI/3;rod('chamber ridge '+i,[.076,.025+Math.sin(a)*.051,Math.cos(a)*.051],[.211,.025+Math.sin(a)*.051,Math.cos(a)*.051],.018,'steel');}
+  ring('cylinder front band',.065,.004,[.210,.025,0],'edge','x');ring('cylinder rear band',.065,.004,[.079,.025,0],'steel','x');barrel(.20,.405,.030,.076);box('foregrip barrel saddle',[.067,.047,.028],[.28,.024,0],'dark');box('foregrip',[.067,.055,.042],[.28,-.026,0],'wood');anchor('support',[.28,-.044,0]);
  }
  if(id==='rpg'){
   rod('launch tube',[-.39,.025,0],[.35,.025,0],.033,'olive');rod('rear venturi',[-.48,.025,0],[-.39,.025,0],.062,'steel',.033);ring('rear rim',.057,.004,[-.48,.025,0],'edge','x');
@@ -117,7 +117,8 @@ export function createWeaponModel(id,texture=null){
   for(const z of [-.15,.15]){const curve=new THREE.CatmullRomCurve3([V([-.01,-.14,z]),V([.06,.18,z]),V([.22,.17,z]),V([.26,-.03,z]),V([.10,-.18,z])]);add(new THREE.TubeGeometry(curve,16,.009,5,false),'olive','backpack shoulder strap',[0,0,0],mount);}
   anchor('hoseOut',[-.076,-.125,.15],mount);hose=new THREE.Mesh(new THREE.BufferGeometry(),materials.dark);hose.name='flexible fuel hose';parts.push(hose);
  }
- const asset={id,...WEAPON_MODELS[id],root,parts,anchors,carry,mount,hose,muzzleMesh,get triangles(){return parts.reduce((n,p)=>n+(p.geometry.index?.count||p.geometry.attributes.position?.count||0)/3,0);},dispose(){for(const p of parts)p.geometry.dispose();for(const m of Object.values(materials))m.dispose();}};
+ const gripTargets=id==='hmg'?{support:parts.find(p=>p.name==='upper handle grip')}:{};
+ const asset={id,...WEAPON_MODELS[id],root,parts,anchors,carry,mount,hose,muzzleMesh,gripTargets,get triangles(){return parts.reduce((n,p)=>n+(p.geometry.index?.count||p.geometry.attributes.position?.count||0)/3,0);},dispose(){for(const p of parts)p.geometry.dispose();for(const m of Object.values(materials))m.dispose();}};
  if(hose)asset.updateHose=characterRoot=>{characterRoot.updateMatrixWorld(true);const a=characterRoot.worldToLocal(anchors.hoseOut.getWorldPosition(new THREE.Vector3())),b=characterRoot.worldToLocal(anchors.hoseIn.getWorldPosition(new THREE.Vector3()));const curve=new THREE.CatmullRomCurve3([a,a.clone().add(V([-.03,-.16,.07])),b.clone().add(V([-.06,-.12,.12])),b]);hose.geometry.dispose();hose.geometry=new THREE.TubeGeometry(curve,18,.011,6,false);};
  return asset;
 }

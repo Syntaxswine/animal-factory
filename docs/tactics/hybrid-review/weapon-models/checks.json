@@ -2,9 +2,9 @@
   "browser": "153.0.4234.46",
   "errors": [],
   "resources": [
-    21,
-    21,
-    21
+    23,
+    23,
+    23
   ],
   "checks": [
     {
@@ -455,10 +455,10 @@
     },
     {
       "close": false,
-      "triangles": 952,
+      "triangles": 1112,
       "rifleTriangles": 480,
       "weapon": "smg",
-      "weaponTriangles": 952,
+      "weaponTriangles": 1112,
       "bones": 17,
       "skinnedMeshes": 8,
       "min": [
@@ -507,14 +507,14 @@
       "heading": 0,
       "mountVisible": false,
       "hoseVisible": false,
-      "geometries": 46
+      "geometries": 48
     },
     {
       "close": true,
-      "triangles": 952,
+      "triangles": 1112,
       "rifleTriangles": 480,
       "weapon": "smg",
-      "weaponTriangles": 952,
+      "weaponTriangles": 1112,
       "bones": 17,
       "skinnedMeshes": 8,
       "min": [
@@ -563,23 +563,23 @@
       "heading": 0,
       "mountVisible": false,
       "hoseVisible": false,
-      "geometries": 46
+      "geometries": 48
     },
     {
       "close": false,
-      "triangles": 2740,
+      "triangles": 2580,
       "rifleTriangles": 480,
       "weapon": "hmg",
-      "weaponTriangles": 2740,
+      "weaponTriangles": 2580,
       "bones": 17,
       "skinnedMeshes": 8,
       "min": [
         -0.22549259662628174,
         0,
-        -0.37032844262904174
+        -0.37130734181665054
       ],
       "max": [
-        0.35179095623571666,
+        0.36033434651645824,
         1.649999976158142,
         0.32165971398353577
       ],
@@ -587,30 +587,30 @@
         {
           "side": -1,
           "grip": [
-            0.31994002839448366,
-            1.0588552957579065,
-            -0.17544675311083147
+            0.31465801458168563,
+            1.0750148465618883,
+            -0.14720334304193028
           ],
           "palm": [
-            0.31994002839448366,
-            1.0588552957579065,
-            -0.17544675311083147
+            0.31465801458168574,
+            1.075014846561888,
+            -0.14720334304193042
           ],
-          "error": 0
+          "error": 2.8441001681421824e-16
         },
         {
           "side": 1,
           "grip": [
-            0.28403936541210384,
-            0.9265210033249356,
-            0.04323972896725789
+            0.29100235831632865,
+            0.8275955215154216,
+            0.07443620108367505
           ],
           "palm": [
-            0.2840393654121038,
-            0.9265210033249354,
-            0.04323972896725788
+            0.2910023583163286,
+            0.8275955215154216,
+            0.07443620108367496
           ],
-          "error": 2.2898349882893854e-16
+          "error": 1.0007415106216802e-16
         }
       ],
       "sourceTriangles": 856076,
@@ -619,23 +619,23 @@
       "heading": 0,
       "mountVisible": false,
       "hoseVisible": false,
-      "geometries": 95
+      "geometries": 105
     },
     {
       "close": true,
-      "triangles": 2740,
+      "triangles": 2580,
       "rifleTriangles": 480,
       "weapon": "hmg",
-      "weaponTriangles": 2740,
+      "weaponTriangles": 2580,
       "bones": 17,
       "skinnedMeshes": 8,
       "min": [
         -0.22549259662628174,
         0,
-        -0.37032844262904174
+        -0.37130734181665054
       ],
       "max": [
-        0.35179095623571666,
+        0.36033434651645824,
         1.649999976158142,
         0.32165971398353577
       ],
@@ -643,30 +643,30 @@
         {
           "side": -1,
           "grip": [
-            0.31994002839448366,
-            1.0588552957579065,
-            -0.17544675311083147
+            0.31465801458168563,
+            1.0750148465618883,
+            -0.14720334304193028
           ],
           "palm": [
-            0.31994002839448366,
-            1.0588552957579065,
-            -0.17544675311083147
+            0.31465801458168574,
+            1.075014846561888,
+            -0.14720334304193042
           ],
-          "error": 0
+          "error": 2.8441001681421824e-16
         },
         {
           "side": 1,
           "grip": [
-            0.28403936541210384,
-            0.9265210033249356,
-            0.04323972896725789
+            0.29100235831632865,
+            0.8275955215154216,
+            0.07443620108367505
           ],
           "palm": [
-            0.2840393654121038,
-            0.9265210033249354,
-            0.04323972896725788
+            0.2910023583163286,
+            0.8275955215154216,
+            0.07443620108367496
           ],
-          "error": 2.2898349882893854e-16
+          "error": 1.0007415106216802e-16
         }
       ],
       "sourceTriangles": 856076,
@@ -675,7 +675,7 @@
       "heading": 0,
       "mountVisible": false,
       "hoseVisible": false,
-      "geometries": 95
+      "geometries": 105
     },
     {
       "close": false,
@@ -731,7 +731,7 @@
       "heading": 0,
       "mountVisible": false,
       "hoseVisible": false,
-      "geometries": 45
+      "geometries": 47
     },
     {
       "close": true,
@@ -787,7 +787,7 @@
       "heading": 0,
       "mountVisible": false,
       "hoseVisible": false,
-      "geometries": 45
+      "geometries": 47
     },
     {
       "close": false,
@@ -843,7 +843,7 @@
       "heading": 0,
       "mountVisible": false,
       "hoseVisible": false,
-      "geometries": 40
+      "geometries": 42
     },
     {
       "close": true,
@@ -899,7 +899,7 @@
       "heading": 0,
       "mountVisible": false,
       "hoseVisible": false,
-      "geometries": 40
+      "geometries": 42
     },
     {
       "close": false,
@@ -941,7 +941,7 @@
       "heading": 0,
       "mountVisible": false,
       "hoseVisible": false,
-      "geometries": 32
+      "geometries": 34
     },
     {
       "close": true,
@@ -983,14 +983,14 @@
       "heading": 0,
       "mountVisible": false,
       "hoseVisible": false,
-      "geometries": 32
+      "geometries": 34
     },
     {
       "close": false,
-      "triangles": 1060,
+      "triangles": 1072,
       "rifleTriangles": 480,
       "weapon": "launcher",
-      "weaponTriangles": 1060,
+      "weaponTriangles": 1072,
       "bones": 17,
       "skinnedMeshes": 8,
       "min": [
@@ -1039,14 +1039,14 @@
       "heading": 0,
       "mountVisible": false,
       "hoseVisible": false,
-      "geometries": 43
+      "geometries": 46
     },
     {
       "close": true,
-      "triangles": 1060,
+      "triangles": 1072,
       "rifleTriangles": 480,
       "weapon": "launcher",
-      "weaponTriangles": 1060,
+      "weaponTriangles": 1072,
       "bones": 17,
       "skinnedMeshes": 8,
       "min": [
@@ -1095,7 +1095,7 @@
       "heading": 0,
       "mountVisible": false,
       "hoseVisible": false,
-      "geometries": 43
+      "geometries": 46
     },
     {
       "close": false,
@@ -1151,7 +1151,7 @@
       "heading": 0,
       "mountVisible": false,
       "hoseVisible": false,
-      "geometries": 41
+      "geometries": 43
     },
     {
       "close": true,
@@ -1207,7 +1207,7 @@
       "heading": 0,
       "mountVisible": false,
       "hoseVisible": false,
-      "geometries": 41
+      "geometries": 43
     },
     {
       "close": false,
@@ -1263,7 +1263,7 @@
       "heading": 0,
       "mountVisible": true,
       "hoseVisible": true,
-      "geometries": 57
+      "geometries": 59
     },
     {
       "close": true,
@@ -1319,7 +1319,7 @@
       "heading": 0,
       "mountVisible": true,
       "hoseVisible": true,
-      "geometries": 57
+      "geometries": 59
     }
   ]
 }
