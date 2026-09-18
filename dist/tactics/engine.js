@@ -293,7 +293,7 @@ export function attack(s,a,b,burst=false,byAI=false,zone='torso',reaction=false)
  const trajectories=[],explosions=[],sequence=[];
  // A stack suspends the current burst while a reply resolves; ammunition bounds chains.
  const frames=[{a,b,p,zone,left:p.rounds,weapon:a.weapon,aim:{...b},reply:false}];
- while(frames.length){
+ cascade(s,()=>{while(frames.length){ // one attack, replies included, is one trigger for the guards it alerts
   const f=frames.at(-1),shooter=f.a,target=f.b,w=WEAPONS[f.weapon];
   if(!f.left||!alive(shooter)||shooter.burningTurns||w.mag&&shooter.ammo[f.weapon]<1){frames.pop();continue;}
   f.left--;shooter.overwatch=null;shooter.heading=headingTo(shooter,f.aim);shooter.facing=(f.aim.x-shooter.x)-(f.aim.y-shooter.y)>=0?1:-1;
@@ -329,7 +329,7 @@ export function attack(s,a,b,burst=false,byAI=false,zone='torso',reaction=false)
    if(response){event.dialogue=`${response.speaker}: “${response.line}”`;log(s,event.dialogue);if(response.retaliate){frames.push({a:victim,b:shooter,p:reply,zone:'torso',left:1,weapon:victim.weapon,aim:{...shooter},reply:true});}}
   }
  }
- }
+ }});
  s.effect={...sequence[0],trajectories,explosions,explosion:explosions.at(-1),sequence};
  refresh(s);if(byAI)resolveOverwatch(s,a);return true;
 }
@@ -476,7 +476,7 @@ function suspect(s,g,fix){const st=stateOf(g);if(st==='alert'||st==='broken')ret
 // go Alert (and shout in turn, so an alarm can run down a chain); a resting or stood-down colleague that does not heed goes Suspicious toward the
 // shouter, a suspicious or searching one keeps its own trail. One trigger asks each guard once (`cascade`: a shout, a gunshot's whole alarm ring, a
 // refresh's sightings share one asked set), and the shouter asks its whole ring before any answer relays, so a colleague bonded to the shouter is
-// asked by the shouter, never first by a stranger's relay; a Jester's joke is not an ask, so its listener stays askable. Guards alerted by a shout
+// asked by the shouter, never first by a stranger's relay, and a listener that declined a stranger earlier in the trigger still answers a shouter it is bonded to (the asked set blocks rolls, never a bonded answer); a Jester's joke is not an ask, so its listener stays askable. Guards alerted by a shout
 // answer without their own alert bark (one bark per cascade, plus the answer count), and a report-alerted guard (alarm, quiet) propagates the same
 // way without speaking. The campaign clock settle asks nobody: what the guards said to each other while the squad was away is not simulated. A shout without a fix rallies the others on the shouter. A Rebel (radius 0) shouts for
 // nobody; a Jester's listeners only ever go Suspicious. Heeding: a resented or feud listener ignores the shout, a bonded one always answers, anyone
@@ -484,10 +484,10 @@ function suspect(s,g,fix){const st=stateOf(g);if(st==='alert'||st==='broken')ret
 // to the count (the knob check below is redundant with the archetype check, since plain guards draw none; it stays as the stated gate).
 export const bondOf=(a,b)=>a?.social?.bonds?.[b?.name]??restingBond(a,b);
 function heeds(s,h,g){const b=bondOf(h,g);if(opposing(b))return false;if(rungOf(b).name==='bonded')return true;return socialRoll(s)<(traitsOf(h)?.obedience??50)/100;}
-function cascade(s,fn,asked){const top=!s.shouting;if(top)s.shouting=asked||new Set();try{return fn();}finally{if(top)delete s.shouting;}}
+function cascade(s,fn,asked){const top=!s.shouting;if(top)s.shouting=asked||new Set();else if(asked)for(const id of asked)s.shouting.add(id);try{return fn();}finally{if(top)delete s.shouting;}}
 function shout(s,g,quiet=false){if(!quiet)bark(s,g,null,'alert');if(!s.rules?.social||!g.archetype)return;const r=shoutRadius(g);if(r<=0)return;
  cascade(s,()=>{const asked=s.shouting,fix=g.lastKnown||{x:g.x,y:g.y,z:levelOf(g)},here={x:g.x,y:g.y,z:levelOf(g)},heeders=[];
-  for(const h of guards(s)){if(h===g||distance(h,g)>r||['alert','broken'].includes(stateOf(h))||asked.has(h.id))continue;
+  for(const h of guards(s)){if(h===g||distance(h,g)>r||['alert','broken'].includes(stateOf(h))||asked.has(h.id)&&rungOf(bondOf(h,g)).name!=='bonded')continue; // the asked set blocks rolls, never a bonded answer
    const doubt=()=>{if(['rest','standdown'].includes(stateOf(h)))suspect(s,h,here);};
    if(g.archetype==='Jester'){doubt();continue;}
    asked.add(h.id);if(heeds(s,h,g))heeders.push(h);else doubt();}
@@ -515,9 +515,9 @@ function struck(s,u,source){const fix=source&&source.team!==u.team&&Number.isFin
  else if(st==='alert'){if(fix)u.lastKnown=fix;}
  else setState(s,u,'alert',fix);}
 // End of a guard phase: K rounds without an identification drop Alert to Searching; R rounds unshot end Broken.
-function settleRound(s){for(const g of guards(s)){const st=stateOf(g);
+function settleRound(s){cascade(s,()=>{for(const g of guards(s)){const st=stateOf(g);
  if(st==='alert'){if(g.seenRound===s.round)g.unseen=0;else if(++g.unseen>=alertRoundsOf(g))setState(s,g,'searching');}
- else if(st==='broken'&&g.hitRound!==s.round&&--g.brokenRounds<=0)setState(s,g,g.lastKnown?'alert':'standdown');}}
+ else if(st==='broken'&&g.hitRound!==s.round&&--g.brokenRounds<=0)setState(s,g,g.lastKnown?'alert':'standdown');}});} // the recoveries of one guard phase are one trigger
 // The step away from the last threat that ends nearest an ally or the post; null when cornered (no legal step increases the distance).
 function fleeStep(s,g){const threat=g.threat||g.lastKnown;if(!threat)return null;const d0=distance(g,threat);
  const options=movementNeighbors(s,g).filter(q=>levelOf(q)===levelOf(g)&&!occupant(s,q.x,q.y,levelOf(q))&&!onFire(s,q)&&distance(q,threat)>d0+1e-9);if(!options.length)return null;

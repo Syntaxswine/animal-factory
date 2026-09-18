@@ -1,5 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';
-import {createGame,refresh,attack,alarm,squad,guards,stateOf,setState,settleGuards,restingBond,bondOf,distance,GRIEF_STRESS,GRIEF_BOND,BARK_RANGE} from '../dist/tactics/engine.js';
+import {createGame,refresh,attack,alarm,stepInvestigation,squad,guards,stateOf,setState,settleGuards,restingBond,bondOf,distance,GRIEF_STRESS,GRIEF_BOND,BARK_RANGE} from '../dist/tactics/engine.js';
 import {socialRoll} from '../dist/tactics/personalities.js';
 import {ARCHETYPES,shoutRadius,bond} from '../dist/tactics/archetypes.js';
 import {blankMap,edgeKey} from '../dist/tactics/maps.js';
@@ -163,6 +163,19 @@ test('review round 2: one ask per trigger across an alarm ring and across two si
   if(!attack(z,cz,uz,false,true)||az.hp>0)continue;
   assert.equal(bz.social.stress,GRIEF_STRESS.bonded);assert.ok(!z.detected.has(bz.id),'walled off: unseen');assert.ok(!z.log.some(l=>/saw Lev fall/.test(l)),'unseen grief is not logged');assert.match(bz.social.memories[0],/Lev was killed beside me/);return;}
  assert.fail('no kill');
+});
+
+test('review round 3: a listener that declined a stranger still answers the bonded shouter alerted later by the same report; a cornered broken guard shouts the sighting, not a stale fix',()=>{
+ // Ring guard a (cautious to L) is alerted first and L declines; ring guard b, bonded to L, is alerted next and L answers it.
+ const {s,u,gs:[a,b,l]}=scene([{x:26,y:30},{x:26,y:34},{x:36,y:32}]);give(a,'Everyman');give(b,'Everyman');give(l,'Explorer');l.traits.obedience=0;l.social.bonds.Boris=0;l.social.bonds.Lev=80;b.social.bonds.Boris=80;
+ u.weapon='pistol';alarm(s,u,14);assert.deepEqual([a,b].map(stateOf),['alert','alert']);assert.equal(stateOf(l),'alert','asked once by the stranger, answered the friend');assert.deepEqual(l.lastKnown,b.lastKnown);
+ // Cornered: a broken Ruler boxed in by void with a merc on its one open side turns to fight; its shout carries the merc's tile to a bonded colleague walled off from the merc.
+ let done=false;for(let seed=1;seed<60&&!done;seed++){const {s:t,u:v,gs:[g,k]}=scene([{x:30,y:30},{x:30,y:42}],{wall:false,seed,edges:Array.from({length:12},(_,i)=>edgeKey('e',29,31+i,0))});t.units.slice(1,4).forEach(p=>p.hp=0);
+  for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++)if((dx||dy)&&!(dx===-1&&dy===0))t.map[30+dy][30+dx]='void';give(g,'Ruler');give(k,'Everyman');k.social.bonds.Boris=80;g.heading=180;v.x=29;v.y=30;v.lastAt='29,30,0';v.heading=0;refresh(t);
+  setState(t,k,'rest');setState(t,g,'broken',{x:29,y:30,z:0});g.lastKnown={x:12,y:30,z:0};t.phase='explore';if(stateOf(k)!=='rest')continue;
+  assert.ok(stepInvestigation(t));if(stateOf(g)!=='alert')continue;
+  assert.equal(stateOf(k),'alert');assert.deepEqual(k.lastKnown,{x:29,y:30,z:0},'the sighting, not the stale fix at x=12');done=true;}
+ assert.ok(done,'no seed cornered the guard');
 });
 
 test('the campaign clock works guard stress off at the mercs\' resting rate',()=>{
