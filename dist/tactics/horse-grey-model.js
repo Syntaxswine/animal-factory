@@ -23,6 +23,8 @@ export function createGreyHorse(){
   d+=.0035*Math.sin((y-1.0)*45+abs(z)*12)*sleeve;
   const chest=exp(-(((x-.13)/.065)**2))*exp(-(((y-1.13)/.15)**2));
   d+=.003*exp(-(((y-1.105-z*.28)/.018)**2))*chest;
+  // Tuck the torso into the waist; sleeves retain their independent hanging hem.
+  d=clothEdge(d,.934-y-Math.max(0,abs(z)-.205)*8);
   return d;
  }
  add('connected shirt and sleeves',shirt,[-.26,.80,-.48],[.23,1.34,.48],.010);
@@ -37,8 +39,9 @@ export function createGreyHorse(){
   // Seat/waist and both legs are one field, with a real crotch arch.
   // Low bib follows the chest; straps rise from it rather than floating on a yoke.
   // Thin cloth follows the actual shirt field, merging into the waistband.
-  const bib=clothEdge(shirt(x,y,z)-.017,abs(z)-.145,.91-y,y-1.15,.035-x);
-  d=blend(d,bib,.018);
+  const waistT=Math.max(0,Math.min(1,(1.035-y)/.115)),waistEase=waistT*waistT*(3-2*waistT);
+  const bib=clothEdge(shirt(x,y,z)-.017*(1-waistEase),abs(z)-(.145+.025*waistEase),.91-y,y-1.15,.035-x);
+  d=blend(d,bib,.018+.055*waistEase);
   const strapBottom=.94+.20*Math.max(0,Math.min(1,(x+.03)/.12));
   const strap=clothEdge(shirt(x,y,z)-.017,abs(abs(z)-.13)-.017,strapBottom-y);d=blend(d,strap,.012);
   // Local oblique creases: directional compression, never rings around the legs.
@@ -87,18 +90,27 @@ export function createGreyHorse(){
   d=blend(d,C(x,y,z,[-.012,1.385,0],[.181,1.329,0],.060,.040),.025);
   for(const side of [-1,1]){
    d=blend(d,E(x,y,z,[-.062,1.567,side*.067],[.030,.085,.037]),.014);
-   d=blend(d,E(x,y,z,[.030,1.473,side*.066],[.041,.021,.027]),.014);
-   d=Math.max(d,-E(x,y,z,[.059,1.477,side*.098],[.027,.022,.020]));
-   d=blend(d,E(x,y,z,[.056,1.477,side*.075],[.021,.016,.017]),.004);
+   // Cheek ridge and mandibular edge flow into the skull, not separate facial beads.
+   d=blend(d,E(x,y,z,[-.023,1.404,side*.072],[.059,.045,.044]),.026);
+   d=blend(d,E(x,y,z,[.025,1.367,side*.036],[.088,.028,.030]),.038);
+   d=Math.max(d,-E(x,y,z,[.059,1.477,side*.098],[.033,.019,.023]));
+   d=blend(d,E(x,y,z,[.056,1.477,side*.070],[.026,.012,.017]),.003);
+   // Two slender lid rims frame an almond opening; the globe stays behind them.
+   d=blend(d,C(x,y,z,[.030,1.481,side*.072],[.061,1.493,side*.078],.007,.006),.005);
+   d=blend(d,C(x,y,z,[.061,1.493,side*.078],[.086,1.478,side*.073],.006,.005),.005);
+   d=blend(d,C(x,y,z,[.030,1.478,side*.072],[.063,1.462,side*.076],.005,.005),.004);
+   d=blend(d,C(x,y,z,[.063,1.462,side*.076],[.086,1.478,side*.073],.005,.005),.004);
    d=Math.max(d,-E(x,y,z,[.250,1.370,side*.077],[.021,.015,.020]));
    // Inner ear indentation and an integrated orbital ridge, not attached eye puffs.
    d=Math.max(d,-E(x,y,z,[-.039,1.589,side*.069],[.018,.044,.023]));
   }
+  // Shallow facial plane break behind each nostril and above the jaw.
+  d+=.004*exp(-(((x-.141)/.047)**2))*exp(-(((y-1.366)/.018)**2))*exp(-(((abs(z)-.069)/.025)**2));
   const lipY=1.329,lipMask=Math.max(0,Math.min(1,(x-.16)/.05));
   d+=.0025*exp(-(((y-lipY)/.006)**2))*lipMask;
   return d;
  }
- add('unified skull jaw neck and ears',head,[-.23,1.11,-.155],[.315,1.68,.155],.0055);
+ add('unified skull jaw neck and ears',head,[-.23,1.11,-.155],[.315,1.68,.155],.0045);
 
  // Hair is a single attached crest, following the rear neck/skull silhouette.
  function mane(x,y,z){

@@ -4,7 +4,7 @@ This separate study responds to the request for deliberate character modeling be
 
 The shirt and sleeves form one connected surface. The overalls join the bib, straps, waist, seat and both legs. The horse skull, cheeks, jaw, neck, ears and eye forms share one surface. Substantial forearms, a broad stance and exposed horse hooves restore the worker silhouette. Modeled folds describe sleeve compression and fabric around the knees, ankles and seat. All parts use the same plain grey material without texture maps.
 
-Standing height remains 1.65 world units, with both hoof bearing surfaces at zero. Tactical rules and the existing renderer are unchanged. This is a static sculpt/proportion study: its 790,924 triangles are not a proposed gameplay budget. Retopology, UV authoring and rigging remain future work after the user approves the forms.
+Standing height remains 1.65 world units, with both hoof bearing surfaces at zero. Tactical rules and the existing renderer are unchanged. This is a static sculpt/proportion study: its 856,076 triangles are not a proposed gameplay budget. Retopology, UV authoring and rigging remain future work after the user approves the forms.
 
 ## Evidence and review
 
@@ -35,3 +35,15 @@ The first revision received 8/10 for remaining bead-like eyes, rigid mane locks,
 The second visual review scored 8.5/10, requesting less hollow eyes and cleaner bib/strap borders. The third revision brings the eye surface forward within the socket and bevels cloth boundaries with consistent clearance from the underlying shirt. Both focused checks pass on this revision.
 
 Final independent hostile review: **9/10 for the targeted finishing corrections**. The reviewer found the eyes seated within their sockets, continuous clean bib/strap borders across views, and independently passing geometry checks. Overall proportions still require the user's approval before texture or animation.
+
+## Local face and waist corrections; gameplay-size comparison
+
+The architect accepted `1fc4f94` proportions as the working baseline, requesting localized corrections before texture or animation. The shirt torso now tucks into the waist instead of hanging beneath the armpits. The lower bib widens and blends into the waist. Almond eyelid rims frame recessed eye surfaces, with integrated cheek/jaw volumes and a shallow muzzle plane break. Overall stance and prototype height remain unchanged.
+
+Select **Gameplay-size sprite comparison**, or open `/tactics/horse-grey.html?view=gameplay`. Both panels use the existing prototype camera (45-degree azimuth, 30-degree elevation) and native comparison scale of 58 CSS pixels per world unit. The original rifle sprite uses the existing `rigidSpriteVertex` calibration; the grey model keeps its physical dimensions. The silhouette toggle applies to both. The sprite is armed and posed while the model is neutral and unarmed, so rifle/arm silhouettes differ; no pose-matching claim is made.
+
+Evidence: `hybrid-review/grey-study/gameplay-size.png` and `gameplay-silhouettes.png`, alongside refreshed close views. The geometry test passes; browser checks verify actual camera pixels per unit and viewport size, and found no browser/network errors. This remains a sculpt study, not a runtime mesh, and texture/animation work is still pending review of this comparison.
+
+The first hostile review scored this local pass 8.5/10, accepting the native comparison implementation but flagging triangular lower-bib flaps. The revision eases the bib width, tapers cloth clearance into the waist, and progressively blends the surfaces. Eyelid separation is slightly increased. Geometry and browser checks pass again. At native size, ears, muzzle and stance carry most of the character recognition; the small facial details require the close views to judge. Pose differences remain visible and disclosed.
+
+Final independent hostile review: **9/10 for the localized corrections and native comparison**. The reviewer confirmed smooth curved bib-to-waist edges, retained cheek/jaw definition, correct comparison scale, disclosed pose differences, and an independently passing geometry test. Texture and animation remain pending.

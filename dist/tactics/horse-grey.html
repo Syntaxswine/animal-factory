@@ -6,9 +6,9 @@
 </style>
 <header><h1>Horse worker · grey form study</h1>
 <p>One neutral pose. No weapon, texture, animation, or dramatic lighting. Judge proportions, garment flow, face, and stance.</p>
-<label>Views <select id="view"><option value="three">Front / side / three-quarter</option><option value="rear">Front / rear / three-quarter</option></select></label>
+<label>Views <select id="view"><option value="three">Front / side / three-quarter</option><option value="gameplay">Gameplay-size sprite comparison</option><option value="rear">Front / rear / three-quarter</option></select></label>
 <label><input type="checkbox" id="wire"> Wireframe</label><label><input type="checkbox" id="silhouette"> Silhouette</label>
 </header>
 <div id="views"><span>FRONT</span><span id="middle">SIDE</span><span>THREE-QUARTER</span></div>
-<div id="scene"></div><footer id="status">Building connected sculpt surfaces…</footer>
+<div id="scene"></div><p id="comparison-note" hidden style="text-align:center;padding:0 20px">Native comparison scale: 58 CSS pixels per world unit, prototype isometric camera. Original armed sprite versus neutral unarmed grey model; pose and rifle affect silhouette. Silhouette control applies to both.</p><footer id="status">Building connected sculpt surfaces…</footer>
 <script type="module" src="./horse-grey-viewer.js"></script></html>
