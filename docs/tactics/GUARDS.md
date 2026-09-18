@@ -108,6 +108,19 @@ Reading: friendly fire is not what G2 changed (the hit count is flat), and each 
 - **Barks.** Every transition speaks in the archetype's register, the two lines per state alternating per guard and state; the alert bark is the shout's placeholder until G4. Without an archetype the G2 line stands.
 - **Rungs.** Six rungs on the bond scale (bonded 60, trusted 25, cautious 0, strained −34, resented −69, feud), `rungOf` labels the merc sheet, and under the knob the friendly-fire retaliation chance is scaled by rung: bonded never, trusted half, cautious as written, strained 1.5×, resented and feud 2×. `opposing` (resented or worse) and `liked` (trusted or better) are the G5 predicates.
 - **Resting level.** Rest pulls every merc bond 10 % of the distance back toward its resting level per 8 hours (`driftBonds`, called from downtime rest under the knob); a crossed rung is logged ("Anya again tolerates Yakov: cautious trust").
+- **Balance** (headless bot, factory map, seeds 1947–1986, log cap raised in a detached copy of f3382f3 so the counts are complete; the bot reads none of the new fields):
+
+| Measure, 40 seeds | Control 8d84afc | G2 (713b02a) | G3 knob off (f3382f3) | G3 knob on |
+| --- | --- | --- | --- | --- |
+| Wins / losses | 40 / 0 | 37 / 3 | 37 / 3 (the same three) | 39 / 1 (1961) |
+| Friendly-fire hits | 250 | 259 | 259 | 287 |
+| Retaliation shots | 54 | 61 | 61 | 104 |
+| Comrades downed by friendly fire | 71 | 72 | 72 | 91 |
+| Mean surviving squad HP | 185 | 165 | 165 | 154 |
+| Mean rounds | 9.9 | 9.8 | 9.8 | 10.2 |
+
+Reading: knob off is G2 to the count, as the hash check says. Knob on, the archetype guards cost the squad another eleven HP a run (Heroes and Rulers do not break where the base guard did; Sages hear and search further), and the rungs raise the retaliation count (Anya and Misha rest at −10, strained, so their exchanges run at 1.5×; the authored roster has no bonded pair to damp anything) while the loss count fell to one; one loss in forty and three in forty are within the dice, so the honest claim is "no harder to win, a little more expensive, and noisier between the mercs". The levers stay per archetype: the wheel amplitude and the friction weight in the matrix set the roster's temperature; the trait scales set the guards' bite.
+
 - **Not built here.** The six proposed bond events (survived a contact, covered by overwatch, left bleeding…), recruitment cards, guard-to-guard bond effects in play (those wait for G4's shouts and incidents) and the formation rules per rung.
 
 Direction 2026-09-16: personalities are randomly selected from twelve archetypes, not authored per guard. Another agent suggested the Jungian twelve, each defined by a want, a fear, a way of speaking and a failure mode:
