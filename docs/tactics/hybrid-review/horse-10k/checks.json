@@ -1,0 +1,1671 @@
+{
+  "browser": "153.0.4234.46",
+  "errors": [],
+  "visibility": {
+    "surface": {
+      "visible": true,
+      "surfacePart": 7,
+      "depthErrorWorld": 0.001484126440318745
+    },
+    "hidden": {
+      "visible": false,
+      "surfacePart": 7,
+      "depthErrorWorld": 0.08148412644031872
+    },
+    "wrongPart": {
+      "visible": false,
+      "surfacePart": 7,
+      "depthErrorWorld": 0.001484126440318745
+    }
+  },
+  "checks": [
+    {
+      "close": false,
+      "heading": 0,
+      "triangles": 10300,
+      "rifleTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 8,
+      "min": [
+        -0.22549259662628174,
+        0,
+        -0.3772456954903972
+      ],
+      "max": [
+        0.33374447300507937,
+        1.649999976158142,
+        0.32165971398353577
+      ],
+      "contacts": [
+        {
+          "side": -1,
+          "grip": [
+            0.30189354523107487,
+            1.052062399895948,
+            -0.18067410501671907
+          ],
+          "palm": [
+            0.3018935452310748,
+            1.0520623998959477,
+            -0.1806741050167191
+          ],
+          "error": 2.3055512673781017e-16
+        },
+        {
+          "side": 1,
+          "grip": [
+            0.2540393654121038,
+            0.9515210033249355,
+            0.04323972896725789
+          ],
+          "palm": [
+            0.25403936541210387,
+            0.9515210033249356,
+            0.043239728967257855
+          ],
+          "error": 1.2888423398670571e-16
+        }
+      ],
+      "sourceTriangles": 856076,
+      "pixelsPerUnit": 58,
+      "pose": "carry",
+      "graphicPaint": false,
+      "modelPaint": true,
+      "mesh": "10k",
+      "coverage": {
+        "mappedPixels": 1770,
+        "borrowedPixels": 107,
+        "fallbackPixels": 52,
+        "fallbackPercent": 2.695697252462416
+      },
+      "baselineCoverage": {
+        "mappedPixels": 1775,
+        "borrowedPixels": 104,
+        "fallbackPixels": 62,
+        "fallbackPercent": 3.194229778464709
+      }
+    },
+    {
+      "close": false,
+      "heading": 45,
+      "triangles": 10300,
+      "rifleTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 8,
+      "min": [
+        -0.2730625141505706,
+        0,
+        -0.3916430385688294
+      ],
+      "max": [
+        0.2701299153577583,
+        1.649999976158142,
+        0.27237244906825775
+      ],
+      "contacts": [
+        {
+          "side": -1,
+          "grip": [
+            0.08571508818720824,
+            1.052062399895948,
+            -0.3412268578714733
+          ],
+          "palm": [
+            0.08571508818720805,
+            1.0520623998959477,
+            -0.34122685787147317
+          ],
+          "error": 3.152427400121712e-16
+        },
+        {
+          "side": 1,
+          "grip": [
+            0.21020806354064234,
+            0.9515210033249355,
+            -0.14905785240180947
+          ],
+          "palm": [
+            0.2102080635406423,
+            0.9515210033249356,
+            -0.14905785240180944
+          ],
+          "error": 1.1775693440128312e-16
+        }
+      ],
+      "sourceTriangles": 856076,
+      "pixelsPerUnit": 58,
+      "pose": "carry",
+      "graphicPaint": false,
+      "modelPaint": true,
+      "mesh": "10k",
+      "coverage": {
+        "mappedPixels": 1533,
+        "borrowedPixels": 29,
+        "fallbackPixels": 56,
+        "fallbackPercent": 3.4610630407911
+      },
+      "baselineCoverage": {
+        "mappedPixels": 1527,
+        "borrowedPixels": 25,
+        "fallbackPixels": 67,
+        "fallbackPercent": 4.138357010500309
+      }
+    },
+    {
+      "close": false,
+      "heading": 90,
+      "triangles": 10300,
+      "rifleTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 8,
+      "min": [
+        -0.3772456954903972,
+        0,
+        -0.33374447300507937
+      ],
+      "max": [
+        0.32165971398353577,
+        1.649999976158142,
+        0.22549259662628174
+      ],
+      "contacts": [
+        {
+          "side": -1,
+          "grip": [
+            -0.18067410501671902,
+            1.052062399895948,
+            -0.3018935452310749
+          ],
+          "palm": [
+            -0.18067410501671904,
+            1.0520623998959477,
+            -0.3018935452310748
+          ],
+          "error": 2.498001805406602e-16
+        },
+        {
+          "side": 1,
+          "grip": [
+            0.04323972896725795,
+            0.9515210033249355,
+            -0.2540393654121038
+          ],
+          "palm": [
+            0.043239728967257925,
+            0.9515210033249356,
+            -0.25403936541210387
+          ],
+          "error": 1.2719202621569003e-16
+        }
+      ],
+      "sourceTriangles": 856076,
+      "pixelsPerUnit": 58,
+      "pose": "carry",
+      "graphicPaint": false,
+      "modelPaint": true,
+      "mesh": "10k",
+      "coverage": {
+        "mappedPixels": 1789,
+        "borrowedPixels": 93,
+        "fallbackPixels": 40,
+        "fallbackPercent": 2.0811654526534857
+      },
+      "baselineCoverage": {
+        "mappedPixels": 1798,
+        "borrowedPixels": 91,
+        "fallbackPixels": 49,
+        "fallbackPercent": 2.5283797729618165
+      }
+    },
+    {
+      "close": false,
+      "heading": 135,
+      "triangles": 10300,
+      "rifleTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 8,
+      "min": [
+        -0.39164303856882954,
+        0,
+        -0.2701299153577583
+      ],
+      "max": [
+        0.2723724490682579,
+        1.649999976158142,
+        0.2730625141505706
+      ],
+      "contacts": [
+        {
+          "side": -1,
+          "grip": [
+            -0.3412268578714732,
+            1.052062399895948,
+            -0.08571508818720833
+          ],
+          "palm": [
+            -0.34122685787147317,
+            1.0520623998959477,
+            -0.08571508818720823
+          ],
+          "error": 2.486410087150353e-16
+        },
+        {
+          "side": 1,
+          "grip": [
+            -0.1490578524018094,
+            0.9515210033249355,
+            -0.2102080635406424
+          ],
+          "palm": [
+            -0.1490578524018095,
+            0.9515210033249356,
+            -0.21020806354064236
+          ],
+          "error": 1.415262216750919e-16
+        }
+      ],
+      "sourceTriangles": 856076,
+      "pixelsPerUnit": 58,
+      "pose": "carry",
+      "graphicPaint": false,
+      "modelPaint": true,
+      "mesh": "10k",
+      "coverage": {
+        "mappedPixels": 1959,
+        "borrowedPixels": 54,
+        "fallbackPixels": 50,
+        "fallbackPercent": 2.423654871546292
+      },
+      "baselineCoverage": {
+        "mappedPixels": 1964,
+        "borrowedPixels": 48,
+        "fallbackPixels": 60,
+        "fallbackPercent": 2.8957528957528957
+      }
+    },
+    {
+      "close": false,
+      "heading": 180,
+      "triangles": 10300,
+      "rifleTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 8,
+      "min": [
+        -0.3337444730050793,
+        0,
+        -0.32165971398353577
+      ],
+      "max": [
+        0.22549259662628174,
+        1.649999976158142,
+        0.3772456954903972
+      ],
+      "contacts": [
+        {
+          "side": -1,
+          "grip": [
+            -0.3018935452310749,
+            1.052062399895948,
+            0.18067410501671904
+          ],
+          "palm": [
+            -0.3018935452310748,
+            1.0520623998959477,
+            0.1806741050167191
+          ],
+          "error": 2.5438405243138006e-16
+        },
+        {
+          "side": 1,
+          "grip": [
+            -0.2540393654121038,
+            0.9515210033249355,
+            -0.043239728967257925
+          ],
+          "palm": [
+            -0.25403936541210387,
+            0.9515210033249356,
+            -0.04323972896725792
+          ],
+          "error": 1.2432050435751766e-16
+        }
+      ],
+      "sourceTriangles": 856076,
+      "pixelsPerUnit": 58,
+      "pose": "carry",
+      "graphicPaint": false,
+      "modelPaint": true,
+      "mesh": "10k",
+      "coverage": {
+        "mappedPixels": 1859,
+        "borrowedPixels": 105,
+        "fallbackPixels": 58,
+        "fallbackPercent": 2.868447082096934
+      },
+      "baselineCoverage": {
+        "mappedPixels": 1867,
+        "borrowedPixels": 102,
+        "fallbackPixels": 56,
+        "fallbackPercent": 2.765432098765432
+      }
+    },
+    {
+      "close": false,
+      "heading": -135,
+      "triangles": 10300,
+      "rifleTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 8,
+      "min": [
+        -0.2701299153577583,
+        0,
+        -0.2723724490682578
+      ],
+      "max": [
+        0.2730625141505706,
+        1.649999976158142,
+        0.3916430385688296
+      ],
+      "contacts": [
+        {
+          "side": -1,
+          "grip": [
+            -0.08571508818720827,
+            1.052062399895948,
+            0.34122685787147333
+          ],
+          "palm": [
+            -0.08571508818720809,
+            1.0520623998959477,
+            0.3412268578714732
+          ],
+          "error": 3.06884301130794e-16
+        },
+        {
+          "side": 1,
+          "grip": [
+            -0.21020806354064236,
+            0.9515210033249355,
+            0.1490578524018095
+          ],
+          "palm": [
+            -0.21020806354064225,
+            0.9515210033249356,
+            0.1490578524018095
+          ],
+          "error": 1.5700924586837752e-16
+        }
+      ],
+      "sourceTriangles": 856076,
+      "pixelsPerUnit": 58,
+      "pose": "carry",
+      "graphicPaint": false,
+      "modelPaint": true,
+      "mesh": "10k",
+      "coverage": {
+        "mappedPixels": 1532,
+        "borrowedPixels": 32,
+        "fallbackPixels": 53,
+        "fallbackPercent": 3.2776747062461347
+      },
+      "baselineCoverage": {
+        "mappedPixels": 1528,
+        "borrowedPixels": 30,
+        "fallbackPixels": 59,
+        "fallbackPercent": 3.6487322201607917
+      }
+    },
+    {
+      "close": false,
+      "heading": -90,
+      "triangles": 10300,
+      "rifleTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 8,
+      "min": [
+        -0.32165971398353577,
+        0,
+        -0.22549259662628174
+      ],
+      "max": [
+        0.3772456954903973,
+        1.649999976158142,
+        0.3337444730050793
+      ],
+      "contacts": [
+        {
+          "side": -1,
+          "grip": [
+            0.18067410501671913,
+            1.052062399895948,
+            0.3018935452310748
+          ],
+          "palm": [
+            0.18067410501671916,
+            1.0520623998959477,
+            0.3018935452310747
+          ],
+          "error": 2.498001805406602e-16
+        },
+        {
+          "side": 1,
+          "grip": [
+            -0.043239728967257834,
+            0.9515210033249355,
+            0.25403936541210387
+          ],
+          "palm": [
+            -0.04323972896725779,
+            0.9515210033249356,
+            0.25403936541210387
+          ],
+          "error": 1.1857187100668868e-16
+        }
+      ],
+      "sourceTriangles": 856076,
+      "pixelsPerUnit": 58,
+      "pose": "carry",
+      "graphicPaint": false,
+      "modelPaint": true,
+      "mesh": "10k",
+      "coverage": {
+        "mappedPixels": 1846,
+        "borrowedPixels": 99,
+        "fallbackPixels": 38,
+        "fallbackPercent": 1.9162884518406456
+      },
+      "baselineCoverage": {
+        "mappedPixels": 1845,
+        "borrowedPixels": 102,
+        "fallbackPixels": 46,
+        "fallbackPercent": 2.308078273958856
+      }
+    },
+    {
+      "close": false,
+      "heading": -45,
+      "triangles": 10300,
+      "rifleTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 8,
+      "min": [
+        -0.27237244906825775,
+        0,
+        -0.2730625141505706
+      ],
+      "max": [
+        0.39164303856882954,
+        1.649999976158142,
+        0.2701299153577583
+      ],
+      "contacts": [
+        {
+          "side": -1,
+          "grip": [
+            0.3412268578714732,
+            1.052062399895948,
+            0.0857150881872083
+          ],
+          "palm": [
+            0.34122685787147317,
+            1.0520623998959477,
+            0.08571508818720816
+          ],
+          "error": 2.6766507790745728e-16
+        },
+        {
+          "side": 1,
+          "grip": [
+            0.14905785240180944,
+            0.9515210033249355,
+            0.21020806354064236
+          ],
+          "palm": [
+            0.14905785240180947,
+            0.9515210033249356,
+            0.21020806354064234
+          ],
+          "error": 1.1775693440128312e-16
+        }
+      ],
+      "sourceTriangles": 856076,
+      "pixelsPerUnit": 58,
+      "pose": "carry",
+      "graphicPaint": false,
+      "modelPaint": true,
+      "mesh": "10k",
+      "coverage": {
+        "mappedPixels": 1985,
+        "borrowedPixels": 51,
+        "fallbackPixels": 52,
+        "fallbackPercent": 2.4904214559386975
+      },
+      "baselineCoverage": {
+        "mappedPixels": 1997,
+        "borrowedPixels": 46,
+        "fallbackPixels": 52,
+        "fallbackPercent": 2.4821002386634845
+      }
+    },
+    {
+      "close": false,
+      "heading": 0,
+      "triangles": 10300,
+      "rifleTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 8,
+      "min": [
+        -0.22549259662628174,
+        0,
+        -0.43068609203175195
+      ],
+      "max": [
+        0.27897399040369697,
+        1.649999976158142,
+        0.43083669451365747
+      ],
+      "contacts": [],
+      "sourceTriangles": 856076,
+      "pixelsPerUnit": 58,
+      "pose": "neutral",
+      "graphicPaint": false,
+      "modelPaint": true,
+      "mesh": "10k",
+      "coverage": {
+        "mappedPixels": 2029,
+        "borrowedPixels": 116,
+        "fallbackPixels": 60,
+        "fallbackPercent": 2.7210884353741496
+      },
+      "baselineCoverage": {
+        "mappedPixels": 2032,
+        "borrowedPixels": 109,
+        "fallbackPixels": 72,
+        "fallbackPercent": 3.253502033438771
+      }
+    },
+    {
+      "close": false,
+      "heading": 45,
+      "triangles": 10300,
+      "rifleTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 8,
+      "min": [
+        -0.3156136657118253,
+        0,
+        -0.3532057633971156
+      ],
+      "max": [
+        0.3531199998313081,
+        1.649999976158142,
+        0.31535815271172674
+      ],
+      "contacts": [],
+      "sourceTriangles": 856076,
+      "pixelsPerUnit": 58,
+      "pose": "neutral",
+      "graphicPaint": false,
+      "modelPaint": true,
+      "mesh": "10k",
+      "coverage": {
+        "mappedPixels": 1478,
+        "borrowedPixels": 17,
+        "fallbackPixels": 32,
+        "fallbackPercent": 2.0956123117223315
+      },
+      "baselineCoverage": {
+        "mappedPixels": 1475,
+        "borrowedPixels": 12,
+        "fallbackPixels": 41,
+        "fallbackPercent": 2.683246073298429
+      }
+    },
+    {
+      "close": false,
+      "heading": 90,
+      "triangles": 10300,
+      "rifleTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 8,
+      "min": [
+        -0.43068609203175195,
+        0,
+        -0.27897399040369697
+      ],
+      "max": [
+        0.43083669451365747,
+        1.649999976158142,
+        0.22549259662628174
+      ],
+      "contacts": [],
+      "sourceTriangles": 856076,
+      "pixelsPerUnit": 58,
+      "pose": "neutral",
+      "graphicPaint": false,
+      "modelPaint": true,
+      "mesh": "10k",
+      "coverage": {
+        "mappedPixels": 1983,
+        "borrowedPixels": 96,
+        "fallbackPixels": 51,
+        "fallbackPercent": 2.3943661971830985
+      },
+      "baselineCoverage": {
+        "mappedPixels": 1988,
+        "borrowedPixels": 96,
+        "fallbackPixels": 59,
+        "fallbackPercent": 2.753149790013999
+      }
+    },
+    {
+      "close": false,
+      "heading": 135,
+      "triangles": 10300,
+      "rifleTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 8,
+      "min": [
+        -0.3532057633971158,
+        0,
+        -0.3531199998313081
+      ],
+      "max": [
+        0.31535815271172685,
+        1.649999976158142,
+        0.31561366571182536
+      ],
+      "contacts": [],
+      "sourceTriangles": 856076,
+      "pixelsPerUnit": 58,
+      "pose": "neutral",
+      "graphicPaint": false,
+      "modelPaint": true,
+      "mesh": "10k",
+      "coverage": {
+        "mappedPixels": 2189,
+        "borrowedPixels": 57,
+        "fallbackPixels": 67,
+        "fallbackPercent": 2.896670990056204
+      },
+      "baselineCoverage": {
+        "mappedPixels": 2186,
+        "borrowedPixels": 48,
+        "fallbackPixels": 77,
+        "fallbackPercent": 3.3318909562959758
+      }
+    },
+    {
+      "close": false,
+      "heading": 180,
+      "triangles": 10300,
+      "rifleTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 8,
+      "min": [
+        -0.27897399040369697,
+        0,
+        -0.43083669451365747
+      ],
+      "max": [
+        0.22549259662628174,
+        1.649999976158142,
+        0.43068609203175195
+      ],
+      "contacts": [],
+      "sourceTriangles": 856076,
+      "pixelsPerUnit": 58,
+      "pose": "neutral",
+      "graphicPaint": false,
+      "modelPaint": true,
+      "mesh": "10k",
+      "coverage": {
+        "mappedPixels": 1989,
+        "borrowedPixels": 106,
+        "fallbackPixels": 56,
+        "fallbackPercent": 2.603440260344026
+      },
+      "baselineCoverage": {
+        "mappedPixels": 1990,
+        "borrowedPixels": 104,
+        "fallbackPixels": 55,
+        "fallbackPercent": 2.559329920893439
+      }
+    },
+    {
+      "close": false,
+      "heading": -135,
+      "triangles": 10300,
+      "rifleTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 8,
+      "min": [
+        -0.35311999983130815,
+        0,
+        -0.3153581527117268
+      ],
+      "max": [
+        0.3156136657118254,
+        1.649999976158142,
+        0.35320576339711574
+      ],
+      "contacts": [],
+      "sourceTriangles": 856076,
+      "pixelsPerUnit": 58,
+      "pose": "neutral",
+      "graphicPaint": false,
+      "modelPaint": true,
+      "mesh": "10k",
+      "coverage": {
+        "mappedPixels": 1483,
+        "borrowedPixels": 16,
+        "fallbackPixels": 36,
+        "fallbackPercent": 2.3452768729641695
+      },
+      "baselineCoverage": {
+        "mappedPixels": 1478,
+        "borrowedPixels": 16,
+        "fallbackPixels": 34,
+        "fallbackPercent": 2.225130890052356
+      }
+    },
+    {
+      "close": false,
+      "heading": -90,
+      "triangles": 10300,
+      "rifleTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 8,
+      "min": [
+        -0.43083669451365747,
+        0,
+        -0.22549259662628174
+      ],
+      "max": [
+        0.43068609203175195,
+        1.649999976158142,
+        0.27897399040369697
+      ],
+      "contacts": [],
+      "sourceTriangles": 856076,
+      "pixelsPerUnit": 58,
+      "pose": "neutral",
+      "graphicPaint": false,
+      "modelPaint": true,
+      "mesh": "10k",
+      "coverage": {
+        "mappedPixels": 2037,
+        "borrowedPixels": 108,
+        "fallbackPixels": 60,
+        "fallbackPercent": 2.7210884353741496
+      },
+      "baselineCoverage": {
+        "mappedPixels": 2034,
+        "borrowedPixels": 106,
+        "fallbackPixels": 67,
+        "fallbackPercent": 3.035795197100136
+      }
+    },
+    {
+      "close": false,
+      "heading": -45,
+      "triangles": 10300,
+      "rifleTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 8,
+      "min": [
+        -0.31535815271172674,
+        0,
+        -0.31561366571182525
+      ],
+      "max": [
+        0.35320576339711574,
+        1.649999976158142,
+        0.35311999983130804
+      ],
+      "contacts": [],
+      "sourceTriangles": 856076,
+      "pixelsPerUnit": 58,
+      "pose": "neutral",
+      "graphicPaint": false,
+      "modelPaint": true,
+      "mesh": "10k",
+      "coverage": {
+        "mappedPixels": 2351,
+        "borrowedPixels": 66,
+        "fallbackPixels": 67,
+        "fallbackPercent": 2.6972624798711755
+      },
+      "baselineCoverage": {
+        "mappedPixels": 2353,
+        "borrowedPixels": 61,
+        "fallbackPixels": 67,
+        "fallbackPercent": 2.700523982265216
+      }
+    },
+    {
+      "close": true,
+      "heading": 0,
+      "triangles": 10300,
+      "rifleTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 8,
+      "min": [
+        -0.22549259662628174,
+        0,
+        -0.3772456954903972
+      ],
+      "max": [
+        0.33374447300507937,
+        1.649999976158142,
+        0.32165971398353577
+      ],
+      "contacts": [
+        {
+          "side": -1,
+          "grip": [
+            0.30189354523107487,
+            1.052062399895948,
+            -0.18067410501671907
+          ],
+          "palm": [
+            0.3018935452310748,
+            1.0520623998959477,
+            -0.1806741050167191
+          ],
+          "error": 2.3055512673781017e-16
+        },
+        {
+          "side": 1,
+          "grip": [
+            0.2540393654121038,
+            0.9515210033249355,
+            0.04323972896725789
+          ],
+          "palm": [
+            0.25403936541210387,
+            0.9515210033249356,
+            0.043239728967257855
+          ],
+          "error": 1.2888423398670571e-16
+        }
+      ],
+      "sourceTriangles": 856076,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "carry",
+      "graphicPaint": false,
+      "modelPaint": true,
+      "mesh": "10k",
+      "coverage": {
+        "mappedPixels": 45736,
+        "borrowedPixels": 3134,
+        "fallbackPixels": 909,
+        "fallbackPercent": 1.8260712348580728
+      },
+      "baselineCoverage": {
+        "mappedPixels": 45864,
+        "borrowedPixels": 3115,
+        "fallbackPixels": 1055,
+        "fallbackPercent": 2.108566175000999
+      }
+    },
+    {
+      "close": true,
+      "heading": 45,
+      "triangles": 10300,
+      "rifleTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 8,
+      "min": [
+        -0.2730625141505706,
+        0,
+        -0.3916430385688294
+      ],
+      "max": [
+        0.2701299153577583,
+        1.649999976158142,
+        0.27237244906825775
+      ],
+      "contacts": [
+        {
+          "side": -1,
+          "grip": [
+            0.08571508818720824,
+            1.052062399895948,
+            -0.3412268578714733
+          ],
+          "palm": [
+            0.08571508818720805,
+            1.0520623998959477,
+            -0.34122685787147317
+          ],
+          "error": 3.152427400121712e-16
+        },
+        {
+          "side": 1,
+          "grip": [
+            0.21020806354064234,
+            0.9515210033249355,
+            -0.14905785240180947
+          ],
+          "palm": [
+            0.2102080635406423,
+            0.9515210033249356,
+            -0.14905785240180944
+          ],
+          "error": 1.1775693440128312e-16
+        }
+      ],
+      "sourceTriangles": 856076,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "carry",
+      "graphicPaint": false,
+      "modelPaint": true,
+      "mesh": "10k",
+      "coverage": {
+        "mappedPixels": 39703,
+        "borrowedPixels": 1007,
+        "fallbackPixels": 1119,
+        "fallbackPercent": 2.6751775084271676
+      },
+      "baselineCoverage": {
+        "mappedPixels": 39804,
+        "borrowedPixels": 899,
+        "fallbackPixels": 1257,
+        "fallbackPercent": 2.9957102001906577
+      }
+    },
+    {
+      "close": true,
+      "heading": 90,
+      "triangles": 10300,
+      "rifleTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 8,
+      "min": [
+        -0.3772456954903972,
+        0,
+        -0.33374447300507937
+      ],
+      "max": [
+        0.32165971398353577,
+        1.649999976158142,
+        0.22549259662628174
+      ],
+      "contacts": [
+        {
+          "side": -1,
+          "grip": [
+            -0.18067410501671902,
+            1.052062399895948,
+            -0.3018935452310749
+          ],
+          "palm": [
+            -0.18067410501671904,
+            1.0520623998959477,
+            -0.3018935452310748
+          ],
+          "error": 2.498001805406602e-16
+        },
+        {
+          "side": 1,
+          "grip": [
+            0.04323972896725795,
+            0.9515210033249355,
+            -0.2540393654121038
+          ],
+          "palm": [
+            0.043239728967257925,
+            0.9515210033249356,
+            -0.25403936541210387
+          ],
+          "error": 1.2719202621569003e-16
+        }
+      ],
+      "sourceTriangles": 856076,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "carry",
+      "graphicPaint": false,
+      "modelPaint": true,
+      "mesh": "10k",
+      "coverage": {
+        "mappedPixels": 47073,
+        "borrowedPixels": 2677,
+        "fallbackPixels": 690,
+        "fallbackPercent": 1.3679619349722443
+      },
+      "baselineCoverage": {
+        "mappedPixels": 47210,
+        "borrowedPixels": 2617,
+        "fallbackPixels": 812,
+        "fallbackPercent": 1.603507178261814
+      }
+    },
+    {
+      "close": true,
+      "heading": 135,
+      "triangles": 10300,
+      "rifleTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 8,
+      "min": [
+        -0.39164303856882954,
+        0,
+        -0.2701299153577583
+      ],
+      "max": [
+        0.2723724490682579,
+        1.649999976158142,
+        0.2730625141505706
+      ],
+      "contacts": [
+        {
+          "side": -1,
+          "grip": [
+            -0.3412268578714732,
+            1.052062399895948,
+            -0.08571508818720833
+          ],
+          "palm": [
+            -0.34122685787147317,
+            1.0520623998959477,
+            -0.08571508818720823
+          ],
+          "error": 2.486410087150353e-16
+        },
+        {
+          "side": 1,
+          "grip": [
+            -0.1490578524018094,
+            0.9515210033249355,
+            -0.2102080635406424
+          ],
+          "palm": [
+            -0.1490578524018095,
+            0.9515210033249356,
+            -0.21020806354064236
+          ],
+          "error": 1.415262216750919e-16
+        }
+      ],
+      "sourceTriangles": 856076,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "carry",
+      "graphicPaint": false,
+      "modelPaint": true,
+      "mesh": "10k",
+      "coverage": {
+        "mappedPixels": 52249,
+        "borrowedPixels": 1336,
+        "fallbackPixels": 718,
+        "fallbackPercent": 1.3222105592692852
+      },
+      "baselineCoverage": {
+        "mappedPixels": 52574,
+        "borrowedPixels": 1160,
+        "fallbackPixels": 809,
+        "fallbackPercent": 1.4832334121702144
+      }
+    },
+    {
+      "close": true,
+      "heading": 180,
+      "triangles": 10300,
+      "rifleTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 8,
+      "min": [
+        -0.3337444730050793,
+        0,
+        -0.32165971398353577
+      ],
+      "max": [
+        0.22549259662628174,
+        1.649999976158142,
+        0.3772456954903972
+      ],
+      "contacts": [
+        {
+          "side": -1,
+          "grip": [
+            -0.3018935452310749,
+            1.052062399895948,
+            0.18067410501671904
+          ],
+          "palm": [
+            -0.3018935452310748,
+            1.0520623998959477,
+            0.1806741050167191
+          ],
+          "error": 2.5438405243138006e-16
+        },
+        {
+          "side": 1,
+          "grip": [
+            -0.2540393654121038,
+            0.9515210033249355,
+            -0.043239728967257925
+          ],
+          "palm": [
+            -0.25403936541210387,
+            0.9515210033249356,
+            -0.04323972896725792
+          ],
+          "error": 1.2432050435751766e-16
+        }
+      ],
+      "sourceTriangles": 856076,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "carry",
+      "graphicPaint": false,
+      "modelPaint": true,
+      "mesh": "10k",
+      "coverage": {
+        "mappedPixels": 48749,
+        "borrowedPixels": 2856,
+        "fallbackPixels": 884,
+        "fallbackPercent": 1.684162395930576
+      },
+      "baselineCoverage": {
+        "mappedPixels": 48957,
+        "borrowedPixels": 2816,
+        "fallbackPixels": 1021,
+        "fallbackPercent": 1.9339318861991892
+      }
+    },
+    {
+      "close": true,
+      "heading": -135,
+      "triangles": 10300,
+      "rifleTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 8,
+      "min": [
+        -0.2701299153577583,
+        0,
+        -0.2723724490682578
+      ],
+      "max": [
+        0.2730625141505706,
+        1.649999976158142,
+        0.3916430385688296
+      ],
+      "contacts": [
+        {
+          "side": -1,
+          "grip": [
+            -0.08571508818720827,
+            1.052062399895948,
+            0.34122685787147333
+          ],
+          "palm": [
+            -0.08571508818720809,
+            1.0520623998959477,
+            0.3412268578714732
+          ],
+          "error": 3.06884301130794e-16
+        },
+        {
+          "side": 1,
+          "grip": [
+            -0.21020806354064236,
+            0.9515210033249355,
+            0.1490578524018095
+          ],
+          "palm": [
+            -0.21020806354064225,
+            0.9515210033249356,
+            0.1490578524018095
+          ],
+          "error": 1.5700924586837752e-16
+        }
+      ],
+      "sourceTriangles": 856076,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "carry",
+      "graphicPaint": false,
+      "modelPaint": true,
+      "mesh": "10k",
+      "coverage": {
+        "mappedPixels": 39968,
+        "borrowedPixels": 962,
+        "fallbackPixels": 998,
+        "fallbackPercent": 2.3802709406601794
+      },
+      "baselineCoverage": {
+        "mappedPixels": 40075,
+        "borrowedPixels": 947,
+        "fallbackPixels": 1101,
+        "fallbackPercent": 2.613773947724521
+      }
+    },
+    {
+      "close": true,
+      "heading": -90,
+      "triangles": 10300,
+      "rifleTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 8,
+      "min": [
+        -0.32165971398353577,
+        0,
+        -0.22549259662628174
+      ],
+      "max": [
+        0.3772456954903973,
+        1.649999976158142,
+        0.3337444730050793
+      ],
+      "contacts": [
+        {
+          "side": -1,
+          "grip": [
+            0.18067410501671913,
+            1.052062399895948,
+            0.3018935452310748
+          ],
+          "palm": [
+            0.18067410501671916,
+            1.0520623998959477,
+            0.3018935452310747
+          ],
+          "error": 2.498001805406602e-16
+        },
+        {
+          "side": 1,
+          "grip": [
+            -0.043239728967257834,
+            0.9515210033249355,
+            0.25403936541210387
+          ],
+          "palm": [
+            -0.04323972896725779,
+            0.9515210033249356,
+            0.25403936541210387
+          ],
+          "error": 1.1857187100668868e-16
+        }
+      ],
+      "sourceTriangles": 856076,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "carry",
+      "graphicPaint": false,
+      "modelPaint": true,
+      "mesh": "10k",
+      "coverage": {
+        "mappedPixels": 47755,
+        "borrowedPixels": 2926,
+        "fallbackPixels": 659,
+        "fallbackPercent": 1.283599532528243
+      },
+      "baselineCoverage": {
+        "mappedPixels": 47843,
+        "borrowedPixels": 2948,
+        "fallbackPixels": 748,
+        "fallbackPercent": 1.4513281204524728
+      }
+    },
+    {
+      "close": true,
+      "heading": -45,
+      "triangles": 10300,
+      "rifleTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 8,
+      "min": [
+        -0.27237244906825775,
+        0,
+        -0.2730625141505706
+      ],
+      "max": [
+        0.39164303856882954,
+        1.649999976158142,
+        0.2701299153577583
+      ],
+      "contacts": [
+        {
+          "side": -1,
+          "grip": [
+            0.3412268578714732,
+            1.052062399895948,
+            0.0857150881872083
+          ],
+          "palm": [
+            0.34122685787147317,
+            1.0520623998959477,
+            0.08571508818720816
+          ],
+          "error": 2.6766507790745728e-16
+        },
+        {
+          "side": 1,
+          "grip": [
+            0.14905785240180944,
+            0.9515210033249355,
+            0.21020806354064236
+          ],
+          "palm": [
+            0.14905785240180947,
+            0.9515210033249356,
+            0.21020806354064234
+          ],
+          "error": 1.1775693440128312e-16
+        }
+      ],
+      "sourceTriangles": 856076,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "carry",
+      "graphicPaint": false,
+      "modelPaint": true,
+      "mesh": "10k",
+      "coverage": {
+        "mappedPixels": 51900,
+        "borrowedPixels": 1563,
+        "fallbackPixels": 712,
+        "fallbackPercent": 1.3142593447161974
+      },
+      "baselineCoverage": {
+        "mappedPixels": 52102,
+        "borrowedPixels": 1506,
+        "fallbackPixels": 813,
+        "fallbackPercent": 1.4939086014589955
+      }
+    },
+    {
+      "close": true,
+      "heading": 0,
+      "triangles": 10300,
+      "rifleTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 8,
+      "min": [
+        -0.22549259662628174,
+        0,
+        -0.43068609203175195
+      ],
+      "max": [
+        0.27897399040369697,
+        1.649999976158142,
+        0.43083669451365747
+      ],
+      "contacts": [],
+      "sourceTriangles": 856076,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "neutral",
+      "graphicPaint": false,
+      "modelPaint": true,
+      "mesh": "10k",
+      "coverage": {
+        "mappedPixels": 52953,
+        "borrowedPixels": 3212,
+        "fallbackPixels": 1023,
+        "fallbackPercent": 1.7888368189130588
+      },
+      "baselineCoverage": {
+        "mappedPixels": 53106,
+        "borrowedPixels": 3148,
+        "fallbackPixels": 1207,
+        "fallbackPercent": 2.1005551591514244
+      }
+    },
+    {
+      "close": true,
+      "heading": 45,
+      "triangles": 10300,
+      "rifleTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 8,
+      "min": [
+        -0.3156136657118253,
+        0,
+        -0.3532057633971156
+      ],
+      "max": [
+        0.3531199998313081,
+        1.649999976158142,
+        0.31535815271172674
+      ],
+      "contacts": [],
+      "sourceTriangles": 856076,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "neutral",
+      "graphicPaint": false,
+      "modelPaint": true,
+      "mesh": "10k",
+      "coverage": {
+        "mappedPixels": 38640,
+        "borrowedPixels": 552,
+        "fallbackPixels": 482,
+        "fallbackPercent": 1.2149014467913495
+      },
+      "baselineCoverage": {
+        "mappedPixels": 38715,
+        "borrowedPixels": 464,
+        "fallbackPixels": 600,
+        "fallbackPercent": 1.5083335428241031
+      }
+    },
+    {
+      "close": true,
+      "heading": 90,
+      "triangles": 10300,
+      "rifleTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 8,
+      "min": [
+        -0.43068609203175195,
+        0,
+        -0.27897399040369697
+      ],
+      "max": [
+        0.43083669451365747,
+        1.649999976158142,
+        0.22549259662628174
+      ],
+      "contacts": [],
+      "sourceTriangles": 856076,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "neutral",
+      "graphicPaint": false,
+      "modelPaint": true,
+      "mesh": "10k",
+      "coverage": {
+        "mappedPixels": 52167,
+        "borrowedPixels": 2768,
+        "fallbackPixels": 837,
+        "fallbackPercent": 1.500753066054651
+      },
+      "baselineCoverage": {
+        "mappedPixels": 52259,
+        "borrowedPixels": 2715,
+        "fallbackPixels": 991,
+        "fallbackPercent": 1.7707495756276244
+      }
+    },
+    {
+      "close": true,
+      "heading": 135,
+      "triangles": 10300,
+      "rifleTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 8,
+      "min": [
+        -0.3532057633971158,
+        0,
+        -0.3531199998313081
+      ],
+      "max": [
+        0.31535815271172685,
+        1.649999976158142,
+        0.31561366571182536
+      ],
+      "contacts": [],
+      "sourceTriangles": 856076,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "neutral",
+      "graphicPaint": false,
+      "modelPaint": true,
+      "mesh": "10k",
+      "coverage": {
+        "mappedPixels": 58348,
+        "borrowedPixels": 1311,
+        "fallbackPixels": 851,
+        "fallbackPercent": 1.406379110890762
+      },
+      "baselineCoverage": {
+        "mappedPixels": 58628,
+        "borrowedPixels": 1161,
+        "fallbackPixels": 936,
+        "fallbackPercent": 1.5413750514615068
+      }
+    },
+    {
+      "close": true,
+      "heading": 180,
+      "triangles": 10300,
+      "rifleTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 8,
+      "min": [
+        -0.27897399040369697,
+        0,
+        -0.43083669451365747
+      ],
+      "max": [
+        0.22549259662628174,
+        1.649999976158142,
+        0.43068609203175195
+      ],
+      "contacts": [],
+      "sourceTriangles": 856076,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "neutral",
+      "graphicPaint": false,
+      "modelPaint": true,
+      "mesh": "10k",
+      "coverage": {
+        "mappedPixels": 52052,
+        "borrowedPixels": 2863,
+        "fallbackPixels": 918,
+        "fallbackPercent": 1.6441889205308688
+      },
+      "baselineCoverage": {
+        "mappedPixels": 52200,
+        "borrowedPixels": 2835,
+        "fallbackPixels": 1025,
+        "fallbackPercent": 1.8283981448448092
+      }
+    },
+    {
+      "close": true,
+      "heading": -135,
+      "triangles": 10300,
+      "rifleTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 8,
+      "min": [
+        -0.35311999983130815,
+        0,
+        -0.3153581527117268
+      ],
+      "max": [
+        0.3156136657118254,
+        1.649999976158142,
+        0.35320576339711574
+      ],
+      "contacts": [],
+      "sourceTriangles": 856076,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "neutral",
+      "graphicPaint": false,
+      "modelPaint": true,
+      "mesh": "10k",
+      "coverage": {
+        "mappedPixels": 38663,
+        "borrowedPixels": 520,
+        "fallbackPixels": 462,
+        "fallbackPercent": 1.1653424139235717
+      },
+      "baselineCoverage": {
+        "mappedPixels": 38771,
+        "borrowedPixels": 502,
+        "fallbackPixels": 543,
+        "fallbackPercent": 1.3637733574442434
+      }
+    },
+    {
+      "close": true,
+      "heading": -90,
+      "triangles": 10300,
+      "rifleTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 8,
+      "min": [
+        -0.43083669451365747,
+        0,
+        -0.22549259662628174
+      ],
+      "max": [
+        0.43068609203175195,
+        1.649999976158142,
+        0.27897399040369697
+      ],
+      "contacts": [],
+      "sourceTriangles": 856076,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "neutral",
+      "graphicPaint": false,
+      "modelPaint": true,
+      "mesh": "10k",
+      "coverage": {
+        "mappedPixels": 53187,
+        "borrowedPixels": 3069,
+        "fallbackPixels": 1119,
+        "fallbackPercent": 1.9503267973856209
+      },
+      "baselineCoverage": {
+        "mappedPixels": 53247,
+        "borrowedPixels": 3074,
+        "fallbackPixels": 1237,
+        "fallbackPercent": 2.149136523159248
+      }
+    },
+    {
+      "close": true,
+      "heading": -45,
+      "triangles": 10300,
+      "rifleTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 8,
+      "min": [
+        -0.31535815271172674,
+        0,
+        -0.31561366571182525
+      ],
+      "max": [
+        0.35320576339711574,
+        1.649999976158142,
+        0.35311999983130804
+      ],
+      "contacts": [],
+      "sourceTriangles": 856076,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "neutral",
+      "graphicPaint": false,
+      "modelPaint": true,
+      "mesh": "10k",
+      "coverage": {
+        "mappedPixels": 61845,
+        "borrowedPixels": 1853,
+        "fallbackPixels": 974,
+        "fallbackPercent": 1.506061355764473
+      },
+      "baselineCoverage": {
+        "mappedPixels": 62024,
+        "borrowedPixels": 1797,
+        "fallbackPixels": 1081,
+        "fallbackPercent": 1.6655881174694154
+      }
+    }
+  ]
+}
