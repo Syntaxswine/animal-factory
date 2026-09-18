@@ -470,26 +470,33 @@ function identified(s,g,p){const fix={x:p.x,y:p.y,z:levelOf(p)};g.seenRound=s.ro
 // A footstep or a peripheral glimpse: a resting, standing-down or suspicious guard goes (or stays) Suspicious toward it; a searching guard re-centres its search on it.
 function suspect(s,g,fix){const st=stateOf(g);if(st==='alert'||st==='broken')return;setState(s,g,st==='searching'?'searching':'suspicious',fix);}
 // G4 shouts (GUARDS.md). An Alert guard shouts once on entering the state: colleagues within its archetype's shout radius that heed it take its fix and
-// go Alert (and shout in turn, so an alarm can run down a chain); the rest go Suspicious toward the shouter. A shout without a fix rallies the
-// others on the shouter. A Rebel (radius 0) shouts for nobody; a Jester's listeners only ever go Suspicious. Heeding: a resented or feud listener
-// ignores the shout, a bonded one always answers, anyone else rolls its obedience on the social stream (never the ballistic one). Off the knob the
-// alert bark is all that happens, so a plain game is G2 to the count.
+// go Alert (and shout in turn, so an alarm can run down a chain); a resting or stood-down colleague that does not heed goes Suspicious toward the
+// shouter, a suspicious or searching one keeps its own trail. One cascade asks each guard once: a listener that declined is not re-asked by the
+// relays. Guards alerted by a shout answer without their own alert bark (one bark per cascade, plus the answer count), and a report-alerted guard
+// (alarm, quiet) propagates the same way without speaking. A shout without a fix rallies the others on the shouter. A Rebel (radius 0) shouts for
+// nobody; a Jester's listeners only ever go Suspicious. Heeding: a resented or feud listener ignores the shout, a bonded one always answers, anyone
+// else rolls its obedience on the social stream (never the ballistic one). Off the knob the alert bark is all that happens, so a plain game is G2
+// to the count (the knob check below is redundant with the archetype check, since plain guards draw none; it stays as the stated gate).
 export const bondOf=(a,b)=>a?.social?.bonds?.[b?.name]??restingBond(a,b);
 function heeds(s,h,g){const b=bondOf(h,g);if(opposing(b))return false;if(rungOf(b).name==='bonded')return true;return socialRoll(s)<(traitsOf(h)?.obedience??50)/100;}
-function shout(s,g){bark(s,g,null,'alert');if(!s.rules?.social||!g.archetype)return;const r=shoutRadius(g);if(r<=0)return;
- const fix=g.lastKnown||{x:g.x,y:g.y,z:levelOf(g)},here={x:g.x,y:g.y,z:levelOf(g)};let answered=0;
- for(const h of guards(s)){if(h===g||distance(h,g)>r||['alert','broken'].includes(stateOf(h)))continue;
-  if(g.archetype!=='Jester'&&heeds(s,h,g)){answered++;setState(s,h,'alert',{...fix});}else suspect(s,h,here);}
- if(answered)bark(s,g,answered+(answered===1?' guard answers ':' guards answer ')+g.name+"'s shout.");}
+function shout(s,g,quiet=false){if(!quiet)bark(s,g,null,'alert');if(!s.rules?.social||!g.archetype)return;const r=shoutRadius(g);if(r<=0)return;
+ const fix=g.lastKnown||{x:g.x,y:g.y,z:levelOf(g)},here={x:g.x,y:g.y,z:levelOf(g)},top=!s.shouting,asked=s.shouting||=new Set();let answered=0;
+ for(const h of guards(s)){if(h===g||distance(h,g)>r||['alert','broken'].includes(stateOf(h))||asked.has(h.id))continue;asked.add(h.id);
+  if(g.archetype!=='Jester'&&heeds(s,h,g)){answered++;setState(s,h,'alert',{...fix},{quiet:true});}else if(['rest','standdown'].includes(stateOf(h)))suspect(s,h,here);}
+ if(answered)bark(s,g,answered+(answered===1?' guard answers ':' guards answer ')+g.name+"'s shout.");
+ if(top)delete s.shouting;}
 // G4 grief. A colleague the guard liked (trusted or bonded) falling within earshot costs stress (bonded 25, trusted 15) and a guard whose stress
-// passes its nerve breaks on the spot, toward the killer if the killer is not a guard. A colleague's bullet as the cause adds the G5 quantities:
-// the bond toward the killer drops a further 40 (trusted 20) and the grudge rises by the same.
+// passes its nerve breaks on the spot: away from the killer if the killer is not a guard, away from where the colleague fell otherwise (so a
+// broken mourner is never fixless and "cornered" where it stands). Stress is the mercs' meter, so the hits a guard has taken count toward it.
+// A colleague's bullet as the cause adds the G5 quantities: the bond toward the killer drops a further 40 (trusted 20) and the grudge rises by
+// the same. The grief line is logged when the squad can see the mourner (grief is watched, not heard).
 export const GRIEF_STRESS={bonded:25,trusted:15},GRIEF_BOND={bonded:40,trusted:20};
 function mourn(s,dead,killer){for(const g of guards(s)){if(!g.social||g===dead||distance(g,dead)>BARK_RANGE)continue;const rung=rungOf(bondOf(g,dead)).name;if(!(rung in GRIEF_STRESS))continue;
  g.social.stress=Math.min(100,g.social.stress+GRIEF_STRESS[rung]);g.social.memories.unshift(dead.name+' was killed beside me.');g.social.memories.length=Math.min(8,g.social.memories.length);
  if(killer&&killer.team==='guard'&&killer!==g){const inc=g.social.incidents[killer.name]||={hits:0,damage:0,grudge:0};inc.grudge=Math.min(100,inc.grudge+GRIEF_BOND[rung]);g.social.bonds[killer.name]=Math.max(-100,bondOf(g,killer)-GRIEF_BOND[rung]);}
- if(g.social.stress>(traitsOf(g)?.nerve??50)&&stateOf(g)!=='broken'&&!g.burningTurns)setState(s,g,'broken',killer&&killer.team!==g.team&&Number.isFinite(killer.x)?{x:killer.x,y:killer.y,z:levelOf(killer)}:null);
- else bark(s,g,g.name+' saw '+dead.name+' fall.');}}
+ const from=killer&&killer.team!==g.team&&Number.isFinite(killer.x)?{x:killer.x,y:killer.y,z:levelOf(killer)}:{x:dead.x,y:dead.y,z:levelOf(dead)};
+ if(g.social.stress>(traitsOf(g)?.nerve??50)&&stateOf(g)!=='broken'&&!g.burningTurns)setState(s,g,'broken',from);
+ else if(s.detected?.has(g.id))log(s,g.name+' saw '+dead.name+' fall.');}}
 // Shot at, hit or miss: a broken guard learns where the shooter is and keeps running; anyone else is Alert toward the shooter. A colleague's bullet tells it nothing.
 function targeted(s,b,a){if(!a||a.team===b.team)return;const fix={x:a.x,y:a.y,z:levelOf(a)};const st=stateOf(b);if(st==='broken'){b.threat=fix;b.lastKnown=fix;}else if(st==='alert')b.lastKnown=fix;else setState(s,b,'alert',fix);}
 const onFire=(s,q)=>!!s.fires?.some(f=>f.x===q.x&&f.y===q.y&&f.z===levelOf(q));
@@ -576,7 +583,7 @@ export function stepInvestigation(s){
  if(!['explore','won'].includes(s.phase))return false;let acted=false;const quota={left:REALTIME_SEARCHES};
  for(const g of guards(s)){
   if(g.burningTurns)continue;const st=stateOf(g);if(st==='rest')continue;
-  if(st==='broken'){const p=fleeStep(s,g);if(p)stepTo(s,g,p);else{const seen=squad(s).find(q=>notices(s,g,q));if(seen){setState(s,g,'alert',null,{quiet:true});identified(s,g,seen);bark(s,g,g.name+' is cornered and turns to fight.','alert');acted=true;continue;}}
+  if(st==='broken'){const p=fleeStep(s,g);if(p)stepTo(s,g,p);else{const seen=squad(s).find(q=>notices(s,g,q));if(seen){setState(s,g,'alert',{x:seen.x,y:seen.y,z:levelOf(seen)},{quiet:true});identified(s,g,seen);bark(s,g,g.name+' is cornered and turns to fight.','alert');acted=true;continue;}}
    acted=true;if(++g.brokenTicks>=brokenRoundsOf(g)*REALTIME_ROUND_TICKS)setState(s,g,g.lastKnown?'alert':'standdown');continue;}
   const dest=st==='suspicious'?g.lastHeard:st==='alert'?g.lastKnown:st==='searching'?searchGoal(g):g.post;
   const spent=st==='suspicious'&&g.searchSteps<=0; // the step budget ran out short of the sound: sweep where it stands

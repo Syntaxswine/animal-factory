@@ -1,12 +1,13 @@
 import test from 'node:test';import assert from 'node:assert/strict';
-import {createGame,refresh,attack,squad,guards,stateOf,setState,settleGuards,restingBond,bondOf,distance,GRIEF_STRESS,GRIEF_BOND,BARK_RANGE} from '../dist/tactics/engine.js';
+import {createGame,refresh,attack,alarm,squad,guards,stateOf,setState,settleGuards,restingBond,bondOf,distance,GRIEF_STRESS,GRIEF_BOND,BARK_RANGE} from '../dist/tactics/engine.js';
+import {socialRoll} from '../dist/tactics/personalities.js';
 import {ARCHETYPES,shoutRadius,bond} from '../dist/tactics/archetypes.js';
 import {blankMap,edgeKey} from '../dist/tactics/maps.js';
 
 // GUARDS.md G4. The alarm-test geometry: squad west at (14,30), optionally a wall along the east edge of x=20, guards facing east unless told otherwise.
-function scene(guardsList,{wall=true,seed=1,social=true}={}){
+function scene(guardsList,{wall=true,seed=1,social=true,edges=[]}={}){
  const m=blankMap();m.starts=[{x:14,y:30,z:0},{x:15,y:30,z:0},{x:15,y:31,z:0},{x:14,y:31,z:0}];m.guards=guardsList.map(g=>({heading:0,species:'donkey',weapon:'knife',...g}));
- if(wall)for(let y=0;y<60;y++)m.edges[edgeKey('e',20,y,0)]='wall';
+ if(wall)for(let y=0;y<60;y++)m.edges[edgeKey('e',20,y,0)]='wall';for(const k of edges)m.edges[k]='wall';
  const s=createGame(seed,m,false,'standard',{social});for(const p of s.units)p.lastAt=p.x+','+p.y+','+(p.z||0);refresh(s);
  return {s,u:s.units[0],gs:s.units.slice(4)};
 }
@@ -32,7 +33,8 @@ test('a Ruler shouts twenty tiles: a bonded colleague takes its fix and goes Ale
  assert.equal(stateOf(oleg),'rest','twenty-two tiles: out of the Ruler\'s reach');
  assert.equal(stateOf(pavel),'alert','twenty-eight tiles from the Ruler, thirteen from the Hero that answered');assert.deepEqual(pavel.lastKnown,FIX,'the chain carries the original fix');
  assert.equal(s.seed,ballistic,'no shout or obedience roll touches the ballistic stream');
- assert.ok(s.log.some(l=>l==='Boris: "Intruders! All posts, on me!"'),'the shout is the alert bark');
+ assert.ok(s.log.some(l=>l==='Boris: “Intruders! All posts, on me!”'),'the shout is the alert bark');
+ assert.ok(!s.log.some(l=>/^Lev: “/.test(l)),'the guard that answered does not shout over him: one bark per cascade');assert.equal(s.shouting,undefined,'no cascade state left behind');
  assert.ok(s.log.some(l=>l==='1 guard answers Boris\'s shout.'),s.log.slice(0,6).join(' | '));
 });
 
@@ -67,7 +69,7 @@ test('a colleague\'s bullet: the guard it lands on keeps a merc\'s ledger (a hit
   assert.fail('no seed put the bullet into the colleague');};
  const {s,a,b}=shoot(true);
  assert.equal(b.social.incidents.Boris.hits,1);assert.ok(Math.abs(b.social.stress-(20+(45-b.hp)/45*35))<1e-9,'ten for the incident plus the injury strain a merc would take: '+b.social.stress);
- assert.ok(b.social.bonds.Boris<restingBond(b,a),'started at the matrix value ('+restingBond(b,a)+'), now '+b.social.bonds.Boris);
+ assert.ok(Math.abs(b.social.bonds.Boris-(restingBond(b,a)-8-(45-b.hp)/45*20))<1e-9,'started at the matrix value ('+restingBond(b,a)+'), now '+b.social.bonds.Boris);
  assert.ok(s.log.some(l=>l==='Lev: “Oi. Other way, mate.”'),s.log.slice(0,6).join(' | '));
  const {s:t,b:c}=shoot(false);
  assert.equal(c.social,undefined);assert.equal(t.socialSeed,undefined,'no social roll off the knob');assert.ok(!t.log.some(l=>/Lev: “/.test(l)));
@@ -100,10 +102,41 @@ test('a liked colleague killed by another guard\'s bullet: the mourner\'s bond t
  for(let seed=1;seed<200;seed++){const {s,u,gs:[c,a,b]}=scene([{x:30,y:30,heading:180,weapon:'rifle'},{x:22,y:30,heading:0},{x:22,y:40}],{wall:false,seed});
   give(c,'Hero');give(a,'Everyman');give(b,'Caregiver');b.social.bonds.Lev=80;a.hp=1;c.accuracy=1000;s.phase='enemy';u.hp=1000;
   if(!attack(s,c,u,false,true)||a.hp>0)continue;
-  assert.equal(b.social.stress,GRIEF_STRESS.bonded);
+  assert.equal(b.social.stress,GRIEF_STRESS.bonded);assert.equal(stateOf(b),'alert','a Caregiver at nerve 55 holds');
+  const {s:s2,u:u2,gs:[c2,a2,b2]}=scene([{x:30,y:30,heading:180,weapon:'rifle'},{x:22,y:30,heading:0},{x:22,y:40}],{wall:false,seed,edges:Array.from({length:10},(_,i)=>edgeKey('e',21,31+i,0))}); // a wall keeps the mourner from seeing the mercs, whose sight would otherwise re-fix its threat
+  give(c2,'Hero');give(a2,'Everyman');give(b2,'Innocent');b2.social.bonds.Lev=80;b2.social.stress=10;a2.hp=1;c2.accuracy=1000;s2.phase='enemy';u2.hp=1000;
+  assert.ok(attack(s2,c2,u2,false,true)&&a2.hp===0,'the same seed kills the same colleague');assert.equal(stateOf(b2),'broken');assert.deepEqual(b2.threat,{x:22,y:30,z:0},'it runs from where Lev fell, not from nothing');
   assert.equal(b.social.bonds.Boris,bond('Caregiver','Hero')-GRIEF_BOND.bonded,'the matrix value minus forty');assert.equal(b.social.incidents.Boris.grudge,GRIEF_BOND.bonded);
   assert.equal(bondOf(b,c),b.social.bonds.Boris);return;}
  assert.fail('no seed killed the colleague in the line of fire');
+});
+
+test('review round 1: a searching listener at feud keeps its own trail, a stood-down one grows suspicious of the shouter; a cascade asks a guard once; a fixless shout rallies on the shouter',()=>{
+ const {s,gs:[g,k,m]}=scene([{x:30,y:30},{x:40,y:30},{x:30,y:40}]);give(g,'Ruler');give(k,'Everyman');give(m,'Everyman');k.social.bonds.Boris=-80;m.social.bonds.Boris=-80;
+ const trail={x:50,y:50,z:0};k.alert=true;k.lastKnown=trail;setState(s,k,'searching');assert.equal(stateOf(k),'searching');setState(s,m,'standdown');assert.equal(stateOf(g),'rest','the set-up shouted nothing');
+ setState(s,g,'alert',FIX);
+ assert.equal(stateOf(k),'searching','it distrusts him: it keeps its own search');assert.deepEqual(k.lastKnown,trail);assert.deepEqual(k.search.cells[0],trail);
+ assert.equal(stateOf(m),'suspicious');assert.deepEqual(m.lastHeard,{x:30,y:30,z:0});
+ // One ask per cascade: the Explorer (obedience forced to 0) within both the Ruler and the Hero relay is asked by the Ruler only.
+ const {s:t,gs:[r,h,e]}=scene([{x:30,y:30},{x:40,y:30},{x:36,y:36}]);give(r,'Ruler');give(h,'Hero');give(e,'Explorer');h.social.bonds.Boris=80;e.traits.obedience=0;e.social.bonds.Boris=0;e.social.bonds.Lev=0;
+ assert.ok(distance(r,e)<=20&&distance(h,e)<=16);const probe={seed:t.seed};socialRoll(probe);const expected=probe.socialSeed;
+ setState(t,r,'alert',FIX);assert.equal(stateOf(h),'alert');assert.equal(stateOf(e),'suspicious');assert.deepEqual(e.lastHeard,{x:40,y:30,z:0},'the cascade is depth-first: the Hero, answering first, asked the Explorer before the Ruler reached it, and the Ruler did not ask again');
+ assert.equal(t.socialSeed,expected,'exactly one obedience roll: the bonded Hero rolled nothing and the Explorer was not re-asked');
+ // A fixless Alert (a colleague's stray, a fire) rallies the listeners on the shouter's own tile.
+ const {s:v,gs:[p,q]}=scene([{x:30,y:30},{x:38,y:30}]);give(p,'Everyman');give(q,'Everyman');q.social.bonds.Boris=80;assert.equal(p.lastKnown,null);
+ setState(v,p,'alert');assert.equal(stateOf(q),'alert');assert.deepEqual(q.lastKnown,{x:30,y:30,z:0});
+});
+
+test('review round 1: a report alerts the ring silently but still propagates; a merc\'s bullet stresses a guard like a merc; a Hero carrying sixty-one breaks on a bonded death',()=>{
+ const {s,u,gs}=scene([{x:24,y:30},{x:24,y:34},{x:24,y:38}]);for(const g of gs)give(g,'Lover');gs[1].social.bonds.Boris=80;gs[2].social.bonds.Boris=80;
+ u.weapon='pistol';const before=s.log.length;alarm(s,u,24);assert.deepEqual(gs.map(stateOf),['alert','alert','alert']);
+ const fresh=s.log.slice(0,s.log.length-before);assert.equal(fresh.filter(l=>/Stay with me|They are here/.test(l)).length,0,'no chorus');assert.ok(fresh.some(l=>/guards? answers? Boris's shout/.test(l)),'but the answer is on the record: '+fresh.join(' | '));
+ for(let seed=1;seed<200;seed++){const {s:t,u:v,gs:[g]}=scene([{x:24,y:30,heading:180}],{wall:false,seed});t.units.slice(1,4).forEach(p=>p.hp=0);give(g,'Hero');v.accuracy=1000;t.phase='player';v.ap=12;
+  if(attack(t,v,g)&&g.hp<45&&g.hp>0){assert.ok(Math.abs(g.social.stress-(10+(45-g.hp)/45*35))<1e-9,'injury strain: '+g.social.stress);break;}}
+ for(let seed=1;seed<200;seed++){const {s:t,u:v,gs:[a,b]}=scene([{x:24,y:30,heading:180},{x:34,y:30}],{wall:false,seed});t.units.slice(1,4).forEach(p=>p.hp=0);
+  give(a,'Everyman');give(b,'Hero');b.social.bonds.Boris=80;b.social.stress=61;a.hp=1;v.accuracy=1000;t.phase='player';v.ap=12;
+  if(attack(t,v,a)&&a.hp===0){assert.equal(b.social.stress,86);assert.equal(stateOf(b),'broken','86 passes a Hero\'s nerve of 85');return;}}
+ assert.fail('no kill');
 });
 
 test('the campaign clock works guard stress off at the mercs\' resting rate',()=>{
