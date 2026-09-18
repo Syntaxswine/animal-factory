@@ -140,8 +140,8 @@ test('review round 1: a report alerts the ring silently but still propagates; a 
 });
 
 test('review round 2: one ask per trigger across an alarm ring and across two sibling relays; the shouter asks a bonded colleague before a relay can; a joke is not an ask; the clock settle wakes nobody; grief is watched, not heard',()=>{
- // (a) two ring guards both within twelve of an Explorer outside a fourteen-tile ring: one obedience roll, not two.
- const {s,u,gs:[g1,g2,e]}=scene([{x:26,y:30},{x:26,y:34},{x:36,y:32}]);give(g1,'Everyman');give(g2,'Everyman');give(e,'Explorer');e.traits.obedience=0;for(const n of ['Boris','Lev'])e.social.bonds[n]=0;g2.social.bonds.Boris=80; // bonded to the first ring guard, so it rolls nothing itself
+ // (a) two ring guards at feud with each other (so the report alerts each separately, not one through the other's shout), both within twelve of an Explorer outside a fourteen-tile ring: one obedience roll, not two.
+ const {s,u,gs:[g1,g2,e]}=scene([{x:26,y:30},{x:26,y:34},{x:36,y:32}]);give(g1,'Everyman');give(g2,'Everyman');give(e,'Explorer');e.traits.obedience=0;for(const n of ['Boris','Lev'])e.social.bonds[n]=0;g2.social.bonds.Boris=-80;g1.social.bonds.Lev=-80;
  assert.ok(distance(u,e)>14&&distance(g1,e)<=12&&distance(g2,e)<=12);let probe={seed:s.seed};socialRoll(probe);
  u.weapon='pistol';alarm(s,u,14);assert.deepEqual([g1,g2,e].map(stateOf),['alert','alert','suspicious']);assert.equal(s.socialSeed,probe.socialSeed,'asked once by the whole ring');assert.equal(s.shouting,undefined);
  // (b) two heeders of one Ruler both reach a far Explorer: asked once.
@@ -154,9 +154,13 @@ test('review round 2: one ask per trigger across an alarm ring and across two si
  // (d) a Jester's joke does not use up the listener's one ask: the Ruler alerted by the same report still gets its answer.
  const {s:w,u:u2,gs:[j,r3,l]}=scene([{x:26,y:30},{x:30,y:38},{x:36,y:34}]);give(j,'Jester');give(r3,'Ruler');give(l,'Everyman');l.social.bonds.Lev=80;l.social.bonds.Boris=0;
  assert.ok(distance(u2,l)>20&&distance(j,l)<=12&&distance(r3,l)<=20);u2.weapon='pistol';alarm(w,u2,20);assert.deepEqual([j,r3].map(stateOf),['alert','alert']);assert.equal(stateOf(l),'alert','the Jester\'s doubt, then the bonded Ruler\'s order');
- // (e) the clock: a broken guard recovering to Alert during a settle wakes no resting colleague, and the settle leaves nothing behind.
- const {s:c,gs:[b,k]}=scene([{x:30,y:30},{x:36,y:30}]);give(b,'Ruler');give(k,'Everyman');k.social.bonds.Boris=80;setState(c,b,'broken',FIX);assert.equal(stateOf(k),'rest');
- settleGuards(c,600);assert.equal(stateOf(b),'rest');assert.equal(stateOf(k),'rest','asleep when the squad left, asleep when it returns');assert.equal(k.lastKnown,null);assert.equal(c.shouting,undefined);
+ // (e) the clock: a broken guard recovering to Alert during a settle wakes no resting colleague, bonded or not, whichever of the two the settle loop reaches first, and the settle leaves nothing behind.
+ for(const [broken,listener] of [[0,1],[1,0]]){const {s:c,gs}=scene([{x:30,y:30},{x:36,y:30}]);const b=gs[broken],k=gs[listener];give(b,'Ruler');give(k,'Everyman');k.social.bonds[b.name]=80;setState(c,b,'broken',FIX);assert.equal(stateOf(k),'rest');const n=c.log.length;
+  settleGuards(c,600);assert.equal(stateOf(b),'rest');assert.equal(stateOf(k),'rest','asleep when the squad left, asleep when it returns');assert.equal(k.lastKnown,null);assert.equal(k.wary,false,'never alerted, so never stood down');assert.ok(!c.log.slice(0,c.log.length-n).some(l=>/answers/.test(l)),'the clock settles no shouts');assert.equal(c.shouting,undefined);assert.equal(c.sealed,undefined);}
+ // (e2) two guards identifying the merc in one refresh are one trigger: the listener cautious to both rolls once.
+ {const {s:c,gs:[p,q,l]}=scene([{x:36,y:29},{x:36,y:31},{x:48,y:30}],{wall:false});c.units.slice(1,4).forEach(x=>x.hp=0);for(const g of [p,q,l])setState(c,g,'rest');refresh(c);assert.deepEqual([p,q,l].map(stateOf),['rest','rest','rest'],'all facing east, the one merc dead astern');
+  give(p,'Caregiver');give(q,'Caregiver');give(l,'Explorer');p.social.bonds.Lev=-80;q.social.bonds.Boris=-80;l.traits.obedience=0;l.social.bonds.Boris=0;l.social.bonds.Lev=0;const probe={seed:c.seed};socialRoll(probe);const v=c.units[0];v.x=26;v.y=30;v.lastAt='26,30,0'; // the merc steps to ten tiles in front of the two guards, still dead astern of the listener, whose view the guards block anyway
+  p.heading=180;q.heading=180;refresh(c);assert.deepEqual([p,q,l].map(stateOf),['alert','alert','suspicious']);assert.equal(c.socialSeed,probe.socialSeed,'one roll for two sightings in one refresh');}
  // (f) the grief line is logged only when the squad can see the mourner; the memory is kept either way.
  for(let seed=1;seed<200;seed++){const {s:z,u:uz,gs:[cz,az,bz]}=scene([{x:30,y:30,heading:180,weapon:'rifle'},{x:22,y:30,heading:0},{x:22,y:40}],{wall:false,seed,edges:Array.from({length:10},(_,i)=>edgeKey('e',21,31+i,0))});
   give(cz,'Hero');give(az,'Everyman');give(bz,'Caregiver');bz.social.bonds.Lev=80;az.hp=1;cz.accuracy=1000;z.phase='enemy';uz.hp=1000;

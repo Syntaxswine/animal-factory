@@ -484,8 +484,9 @@ function suspect(s,g,fix){const st=stateOf(g);if(st==='alert'||st==='broken')ret
 // to the count (the knob check below is redundant with the archetype check, since plain guards draw none; it stays as the stated gate).
 export const bondOf=(a,b)=>a?.social?.bonds?.[b?.name]??restingBond(a,b);
 function heeds(s,h,g){const b=bondOf(h,g);if(opposing(b))return false;if(rungOf(b).name==='bonded')return true;return socialRoll(s)<(traitsOf(h)?.obedience??50)/100;}
-function cascade(s,fn,asked){const top=!s.shouting;if(top)s.shouting=asked||new Set();else if(asked)for(const id of asked)s.shouting.add(id);try{return fn();}finally{if(top)delete s.shouting;}}
-function shout(s,g,quiet=false){if(!quiet)bark(s,g,null,'alert');if(!s.rules?.social||!g.archetype)return;const r=shoutRadius(g);if(r<=0)return;
+// A sealed cascade lets no shout propagate at all (the campaign-clock settle): membership in the asked set only blocks rolls, never a bonded answer, so sealing is a flag, not a full set.
+function cascade(s,fn,{sealed=false}={}){const top=!s.shouting;if(top)s.shouting=new Set();if(sealed)s.sealed=(s.sealed||0)+1;try{return fn();}finally{if(sealed)s.sealed--;if(top){delete s.shouting;delete s.sealed;}}}
+function shout(s,g,quiet=false){if(!quiet)bark(s,g,null,'alert');if(!s.rules?.social||!g.archetype||s.sealed)return;const r=shoutRadius(g);if(r<=0)return;
  cascade(s,()=>{const asked=s.shouting,fix=g.lastKnown||{x:g.x,y:g.y,z:levelOf(g)},here={x:g.x,y:g.y,z:levelOf(g)},heeders=[];
   for(const h of guards(s)){if(h===g||distance(h,g)>r||['alert','broken'].includes(stateOf(h))||asked.has(h.id)&&rungOf(bondOf(h,g)).name!=='bonded')continue; // the asked set blocks rolls, never a bonded answer
    const doubt=()=>{if(['rest','standdown'].includes(stateOf(h)))suspect(s,h,here);};
@@ -543,7 +544,7 @@ export function settleGuards(s,minutes){const rounds=Math.floor(minutes/ROUND_MI
   let left=rounds;
   if(st==='broken'){const r=brokenRoundsOf(g);if(left<r)continue;left-=r;if(!g.lastKnown&&!g.threat){home();continue;}setState(s,g,'alert',g.lastKnown||g.threat,{quiet:true});st='alert';}
   if(st==='alert'){const k=alertRoundsOf(g);if(left<k)continue;left-=k;const c=g.lastKnown||g.threat||{x:g.x,y:g.y,z:levelOf(g)};placeAt(s,g,c);setState(s,g,'searching',c);g.search.cells.shift();}
-  const cells=g.search?g.search.cells.length-g.search.index:0;if(left>=cells)home();else g.search.index+=left;}},new Set(guards(s).map(g=>g.id))); // the clock settles no shouts
+  const cells=g.search?g.search.cells.length-g.search.index:0;if(left>=cells)home();else g.search.index+=left;}},{sealed:true}); // the clock settles no shouts
  s.revision++;}
 
 // Real-time route finding is bounded: one A* of at most REALTIME_NODES expansions per guard, only when its goal changes or its remembered
