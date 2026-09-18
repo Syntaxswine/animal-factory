@@ -4,6 +4,8 @@ This is a separate experimental project and deployment. It preserves the committ
 
 ## Available now
 
+- Weapon workshop: `tactics/horse-weapons.html?weapon=hmg`, integrated through `156665a`. Correct hand placement is the current acceptance criterion; hand anatomy, cuffs and weapon finishes remain polish. The HMG upper handle and grasp pass the dedicated clearance checks. All 391 repository tests pass. Shotgun and flamethrower remain the accepted weapon baselines. This is static equipment inspection, not firing or animation integration.
+
 - Painted, skinned horse and separate rifle: `tactics/horse-light.html?mesh=10k`. The 10,300-triangle model retains the same painted skin and rig; the 28,886-triangle model remains selectable for comparison. This reduces character geometry by 64.34%, without establishing a frame-time improvement. See [model validation and limits](HYBRID-HORSE-10K.md).
 - Representative painted environment: `tactics/hybrid-viewer.html?visual=room&props=sample`.
 - Earlier playable hybrid and editor: retained as explicitly labeled development prototypes. These use sprite characters and experimental geometry rules.
