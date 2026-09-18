@@ -142,7 +142,10 @@ export function notices(s,a,b){
  hash^=hash>>>16;hash=Math.imul(hash,0x45d9f3b);hash^=hash>>>16;
  const seen=(hash>>>0)/4294967296<detectionChance(s,a,b);records[b.id]={stamp,seen};return seen;
 }
-export function refresh(s){
+// Every trigger that can put several guards in Alert at once (a refresh's sightings, a gunshot's alarm ring) is one cascade: a listener that
+// declined a shout is not re-asked by the next guard the same trigger alerts.
+export function refresh(s){return cascade(s,()=>refreshNow(s));}
+function refreshNow(s){
  const oldDetected=s.detected,oldVisible=s.visible,oldGlimpses=s.glimpses||{};
  for(const u of s.units){const at=u.x+','+u.y+','+levelOf(u);u.moved=!!u.fired||u.lastAt!==at;u.lastAt=at;u.fired=false;}s.visible=terrainVisibility(s,squad(s));s.detected=new Set(guards(s).filter(g=>squad(s).some(p=>canSee(s,p,g))).map(g=>g.id));
  s.glimpses={};for(const g of guards(s))if(!s.detected.has(g.id)&&squad(s).some(p=>perceive(s,p,g)===1))s.glimpses[g.id]={x:g.x,y:g.y,z:levelOf(g)};
@@ -422,7 +425,7 @@ export function setSneaking(s,u){if(!canControl(s,u)||s.queue.length)return fals
 const approximate=u=>({x:Math.max(0,Math.min(W-1,Math.round(u.x/6)*6)),y:Math.max(0,Math.min(H-1,Math.round(u.y/6)*6)),z:levelOf(u)});
 // A gunshot alerts every guard within twice the weapon's range, squad or guard shooter alike. Guards already alert keep
 // their own, better fix; the rest converge on the approximate report. Suspicion beyond that ring is unchanged (emitNoise).
-export function alarm(s,shooter,radius){for(const g of guards(s))if(g!==shooter&&!['alert','broken'].includes(stateOf(g))&&distance(g,shooter)<=radius)setState(s,g,'alert',approximate(shooter),{quiet:true});}
+export function alarm(s,shooter,radius){cascade(s,()=>{for(const g of guards(s))if(g!==shooter&&!['alert','broken'].includes(stateOf(g))&&distance(g,shooter)<=radius)setState(s,g,'alert',approximate(shooter),{quiet:true});});}
 // Footsteps: a wary guard (one that has stood down once on this map) hears half again as far. An alert or broken guard keeps its own fix
 // and only remembers the sound, for when it drops out of Alert.
 export function emitNoise(s,u,radius){if(u.team!=='squad')return;for(const g of guards(s))if(!canSee(s,g,u)&&distance(g,u)<=radius*(g.wary?WARY_HEARING:1)*hearingScale(g)){const fix=approximate(u);if(['alert','broken'].includes(stateOf(g))){g.lastHeard=fix;g.searchSteps=suspicionSteps(g);}else suspect(s,g,fix);}}
@@ -471,20 +474,25 @@ function identified(s,g,p){const fix={x:p.x,y:p.y,z:levelOf(p)};g.seenRound=s.ro
 function suspect(s,g,fix){const st=stateOf(g);if(st==='alert'||st==='broken')return;setState(s,g,st==='searching'?'searching':'suspicious',fix);}
 // G4 shouts (GUARDS.md). An Alert guard shouts once on entering the state: colleagues within its archetype's shout radius that heed it take its fix and
 // go Alert (and shout in turn, so an alarm can run down a chain); a resting or stood-down colleague that does not heed goes Suspicious toward the
-// shouter, a suspicious or searching one keeps its own trail. One cascade asks each guard once: a listener that declined is not re-asked by the
-// relays. Guards alerted by a shout answer without their own alert bark (one bark per cascade, plus the answer count), and a report-alerted guard
-// (alarm, quiet) propagates the same way without speaking. A shout without a fix rallies the others on the shouter. A Rebel (radius 0) shouts for
+// shouter, a suspicious or searching one keeps its own trail. One trigger asks each guard once (`cascade`: a shout, a gunshot's whole alarm ring, a
+// refresh's sightings share one asked set), and the shouter asks its whole ring before any answer relays, so a colleague bonded to the shouter is
+// asked by the shouter, never first by a stranger's relay; a Jester's joke is not an ask, so its listener stays askable. Guards alerted by a shout
+// answer without their own alert bark (one bark per cascade, plus the answer count), and a report-alerted guard (alarm, quiet) propagates the same
+// way without speaking. The campaign clock settle asks nobody: what the guards said to each other while the squad was away is not simulated. A shout without a fix rallies the others on the shouter. A Rebel (radius 0) shouts for
 // nobody; a Jester's listeners only ever go Suspicious. Heeding: a resented or feud listener ignores the shout, a bonded one always answers, anyone
 // else rolls its obedience on the social stream (never the ballistic one). Off the knob the alert bark is all that happens, so a plain game is G2
 // to the count (the knob check below is redundant with the archetype check, since plain guards draw none; it stays as the stated gate).
 export const bondOf=(a,b)=>a?.social?.bonds?.[b?.name]??restingBond(a,b);
 function heeds(s,h,g){const b=bondOf(h,g);if(opposing(b))return false;if(rungOf(b).name==='bonded')return true;return socialRoll(s)<(traitsOf(h)?.obedience??50)/100;}
+function cascade(s,fn,asked){const top=!s.shouting;if(top)s.shouting=asked||new Set();try{return fn();}finally{if(top)delete s.shouting;}}
 function shout(s,g,quiet=false){if(!quiet)bark(s,g,null,'alert');if(!s.rules?.social||!g.archetype)return;const r=shoutRadius(g);if(r<=0)return;
- const fix=g.lastKnown||{x:g.x,y:g.y,z:levelOf(g)},here={x:g.x,y:g.y,z:levelOf(g)},top=!s.shouting,asked=s.shouting||=new Set();let answered=0;
- for(const h of guards(s)){if(h===g||distance(h,g)>r||['alert','broken'].includes(stateOf(h))||asked.has(h.id))continue;asked.add(h.id);
-  if(g.archetype!=='Jester'&&heeds(s,h,g)){answered++;setState(s,h,'alert',{...fix},{quiet:true});}else if(['rest','standdown'].includes(stateOf(h)))suspect(s,h,here);}
- if(answered)bark(s,g,answered+(answered===1?' guard answers ':' guards answer ')+g.name+"'s shout.");
- if(top)delete s.shouting;}
+ cascade(s,()=>{const asked=s.shouting,fix=g.lastKnown||{x:g.x,y:g.y,z:levelOf(g)},here={x:g.x,y:g.y,z:levelOf(g)},heeders=[];
+  for(const h of guards(s)){if(h===g||distance(h,g)>r||['alert','broken'].includes(stateOf(h))||asked.has(h.id))continue;
+   const doubt=()=>{if(['rest','standdown'].includes(stateOf(h)))suspect(s,h,here);};
+   if(g.archetype==='Jester'){doubt();continue;}
+   asked.add(h.id);if(heeds(s,h,g))heeders.push(h);else doubt();}
+  for(const h of heeders)if(!['alert','broken'].includes(stateOf(h)))setState(s,h,'alert',{...fix},{quiet:true});
+  if(heeders.length)bark(s,g,heeders.length+(heeders.length===1?' guard answers ':' guards answer ')+g.name+"'s shout.");});}
 // G4 grief. A colleague the guard liked (trusted or bonded) falling within earshot costs stress (bonded 25, trusted 15) and a guard whose stress
 // passes its nerve breaks on the spot: away from the killer if the killer is not a guard, away from where the colleague fell otherwise (so a
 // broken mourner is never fixless and "cornered" where it stands). Stress is the mercs' meter, so the hits a guard has taken count toward it.
@@ -529,13 +537,13 @@ function placeAt(s,g,p){const z=levelOf(p),start={x:p.x,y:p.y,z};if(!inBounds(st
 export function settleGuards(s,minutes){const rounds=Math.floor(minutes/ROUND_MINUTES);if(rounds<=0)return;
  if(s.rules?.social)for(const g of guards(s))settleStress(g,rounds*ROUND_MINUTES/60*5); // guards work stress off at the mercs' resting rate
  if(s.fires?.length)s.fires=s.fires.filter(f=>(f.turns-=rounds)>0);for(const g of guards(s))if(g.burningTurns)g.burningTurns=Math.max(0,g.burningTurns-rounds); // fires burn down by the same clock
- for(const g of guards(s)){let st=stateOf(g);if(st==='rest')continue;
+ cascade(s,()=>{for(const g of guards(s)){let st=stateOf(g);if(st==='rest')continue;
   const home=()=>{if(g.post)placeAt(s,g,g.post);setState(s,g,'rest');g.wary=true;if(g.post)g.heading=g.post.heading;};
   if(st==='suspicious'||st==='standdown'){home();continue;}
   let left=rounds;
   if(st==='broken'){const r=brokenRoundsOf(g);if(left<r)continue;left-=r;if(!g.lastKnown&&!g.threat){home();continue;}setState(s,g,'alert',g.lastKnown||g.threat,{quiet:true});st='alert';}
   if(st==='alert'){const k=alertRoundsOf(g);if(left<k)continue;left-=k;const c=g.lastKnown||g.threat||{x:g.x,y:g.y,z:levelOf(g)};placeAt(s,g,c);setState(s,g,'searching',c);g.search.cells.shift();}
-  const cells=g.search?g.search.cells.length-g.search.index:0;if(left>=cells)home();else g.search.index+=left;}
+  const cells=g.search?g.search.cells.length-g.search.index:0;if(left>=cells)home();else g.search.index+=left;}},new Set(guards(s).map(g=>g.id))); // the clock settles no shouts
  s.revision++;}
 
 // Real-time route finding is bounded: one A* of at most REALTIME_NODES expansions per guard, only when its goal changes or its remembered
