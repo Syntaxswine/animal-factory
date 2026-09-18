@@ -4,12 +4,13 @@ import * as THREE from '../dist/tactics/vendor/three.module.js';
 import {createGreyHorse} from '../dist/tactics/horse-grey-model.js';
 const {MeshoptSimplifier}= {MeshoptSimplifier:createRequire(import.meta.url)('./vendor/meshoptimizer/meshopt_simplifier.cjs')};
 await MeshoptSimplifier.ready;
+const low=process.argv.includes('--10k');
 const horse=createGreyHorse(),parts=[];
 for(const mesh of horse.parts){
  const g=mesh.geometry.clone().applyMatrix4(mesh.matrixWorld),positions=g.attributes.position.array;
- const target=mesh.name.includes('shirt')?4500:mesh.name.includes('overalls')?6500:mesh.name.includes('skull')?6500:mesh.name.includes('mane')?800:mesh.name.includes('hoof')?900:2100;
+ const target=low?(mesh.name.includes('shirt')?1700:mesh.name.includes('overalls')?2600:mesh.name.includes('skull')?2500:mesh.name.includes('mane')?300:mesh.name.includes('hoof')?350:1100):(mesh.name.includes('shirt')?4500:mesh.name.includes('overalls')?6500:mesh.name.includes('skull')?6500:mesh.name.includes('mane')?800:mesh.name.includes('hoof')?900:2100);
  const rigid=mesh.name.includes('skull')||mesh.name.includes('hoof')||mesh.name.includes('mane');
- const tolerance=mesh.name.includes('hoof')?.0008:mesh.name.includes('forearm')?.002:mesh.name.includes('skull')?.0025:.006;
+ const tolerance=low?(mesh.name.includes('hoof')?.003:mesh.name.includes('forearm')?.004:mesh.name.includes('skull')?.008:.015):(mesh.name.includes('hoof')?.0008:mesh.name.includes('forearm')?.002:mesh.name.includes('skull')?.0025:.006);
  let [indices,error]=MeshoptSimplifier.simplify(new Uint32Array(g.index.array),positions,3,target*3,tolerance,rigid?['ErrorAbsolute']:['Regularize','ErrorAbsolute']);
  // Edge collapse can leave coincident opposite triangles around tiny closed features.
  // Remove both faces of each coincident pair before compaction; validate manifold output.
@@ -21,5 +22,5 @@ for(const mesh of horse.parts){
  g.dispose();
 }
 const data={schema:1,source:'ec5d468 approved grey form',sourceTriangles:horse.diagnostics().triangles,triangles:parts.reduce((n,p)=>n+p.triangles,0),parts};
-fs.writeFileSync(new URL('../dist/tactics/horse-light-data.json',import.meta.url),JSON.stringify(data)+'\n');
+fs.writeFileSync(new URL(low?'../dist/tactics/horse-10k-data.json':'../dist/tactics/horse-light-data.json',import.meta.url),JSON.stringify(data)+'\n');
 console.log(JSON.stringify({source:data.sourceTriangles,triangles:data.triangles,parts:parts.map(p=>({name:p.name,triangles:p.triangles,error:p.errorWorld}))},null,2));horse.dispose();

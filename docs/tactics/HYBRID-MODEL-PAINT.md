@@ -1,5 +1,7 @@
 # Painting on the horse model
 
+A subsequent [10,300-triangle comparison](HYBRID-HORSE-10K.md) uses this same painted skin and keeps the original mesh selectable.
+
 The user approved the sculpt but requested painting the skin while it is on the model. This pass renders the unchanged lightweight mesh, paints directly over those views, and projects the resulting artwork onto its skinned surfaces. It replaces the generic atlas/procedural marks in the default comparison. It does not change the approved shape, 28,886 triangles, skeleton, carry pose or prototype dimensions.
 
 Open `/tactics/horse-light.html`. **Painted skin** is on by default. Disable it to compare the prior finish; **Previous graphic finish** then switches between the two earlier materials. Grey still shows the unchanged mesh. Turn, neutral/carry, and native/close controls work with every material.

@@ -1,10 +1,10 @@
 # Animal Factory Tactics 3D
 
-This is a separate experimental project and deployment. It preserves the committed graphics history through `40ef988`; unpublished builder changes are excluded. The user's visual approval covers the painted horse direction. It does not imply that the new horse is already playable or that the earlier hybrid collision experiment has gameplay parity.
+This is a separate experimental project and deployment. It preserves the committed graphics history through `6d40981`; unpublished builder changes are excluded. The user's visual approval covers the painted horse direction. It does not imply that the new horse is already playable or that the earlier hybrid collision experiment has gameplay parity.
 
 ## Available now
 
-- Approved painted, skinned horse and separate rifle: `tactics/horse-light.html`.
+- Painted, skinned horse and separate rifle: `tactics/horse-light.html?mesh=10k`. The 10,300-triangle model retains the same painted skin and rig; the 28,886-triangle model remains selectable for comparison. This reduces character geometry by 64.34%, without establishing a frame-time improvement. See [model validation and limits](HYBRID-HORSE-10K.md).
 - Representative painted environment: `tactics/hybrid-viewer.html?visual=room&props=sample`.
 - Earlier playable hybrid and editor: retained as explicitly labeled development prototypes. These use sprite characters and experimental geometry rules.
 
