@@ -1,5 +1,6 @@
 import * as THREE from './vendor/three.module.js';
 import {createWorkerRifle} from './horse-rifle.js';
+import {graphicPaintGLSL} from './horse-graphic-paint.js';
 export const LIGHT_ATLAS='../assets/characters/lowpoly-proof/horse-worker-light-atlas.png';
 const V=a=>new THREE.Vector3(...a),clamp=THREE.MathUtils.clamp,smooth=(a,b,x)=>{const t=clamp((x-a)/(b-a),0,1);return t*t*(3-2*t);};
 // Offline-reduced approved surfaces, real skeleton and normalized blended skin weights.
@@ -10,25 +11,30 @@ export function createLightHorse(data,texture=null){
  const limbs=[];for(const side of [-1,1]){const sh=bone('upperArm'+side,spine,[-.045,1.191,side*.205]),el=bone('forearm'+side,sh,[.022,.991,side*.344]),wr=bone('hand'+side,el,[.061,.742,side*.355]),finger=bone('fingers'+side,wr,[.072,.712,side*.355]);const th=bone('thigh'+side,hips,[-.03,.77,side*.12]),kn=bone('shin'+side,th,[.024,.475,side*.196]),ho=bone('hoof'+side,kn,[-.035,.12,side*.232]);limbs.push({side,sh,el,wr,finger,th,kn,ho});}
  root.updateMatrixWorld(true);const skeleton=new THREE.Skeleton(bones);skeleton.calculateInverses();
  const material=new THREE.MeshStandardMaterial({map:texture,color:0xffffff,vertexColors:true,roughness:.92}),grey=new THREE.MeshStandardMaterial({color:0x999999,roughness:.88}),parts=[];
+ const graphicUniform={value:1};
  material.onBeforeCompile=shader=>{
-  shader.vertexShader=shader.vertexShader.replace('#include <common>','#include <common>\nattribute float region; varying float vRegion; varying vec3 vRestPosition;').replace('#include <begin_vertex>','#include <begin_vertex>\nvRegion=region;vRestPosition=position;');
-  shader.fragmentShader=shader.fragmentShader.replace('#include <common>','#include <common>\nvarying float vRegion; varying vec3 vRestPosition;');
+  shader.uniforms.uGraphicPaint=graphicUniform;
+  shader.vertexShader=shader.vertexShader.replace('#include <common>','#include <common>\nattribute float region; varying float vRegion; varying vec3 vRestPosition; varying vec3 vRestNormal;').replace('#include <begin_vertex>','#include <begin_vertex>\nvRegion=region;vRestPosition=position;vRestNormal=normal;');
+  shader.fragmentShader=shader.fragmentShader.replace('#include <common>','#include <common>\nvarying float vRegion; varying vec3 vRestPosition; varying vec3 vRestNormal;');
+  shader.fragmentShader=shader.fragmentShader.replace('#include <common>','#include <common>\nuniform float uGraphicPaint;\n'+graphicPaintGLSL);
   shader.fragmentShader=shader.fragmentShader.replace('#include <map_fragment>',`#ifdef USE_MAP
    vec4 texel=texture2D(map,vMapUv);
    float strength=(vRegion<1.5||vRegion>4.5)?0.24:0.46;
    diffuseColor.rgb*=mix(vec3(1.0),texel.rgb,strength);
   #endif`);
   shader.fragmentShader=shader.fragmentShader.replace('#include <color_fragment>',`#include <color_fragment>
+   vec3 softBase=diffuseColor.rgb;
+   diffuseColor.rgb=mix(softBase,graphicPaint(softBase,vRestPosition,normalize(vRestNormal),vRegion),uGraphicPaint);
    if(vRegion<1.5){
     float blaze=(1.0-smoothstep(0.014,0.024,abs(vRestPosition.z)))*smoothstep(1.386,1.416,vRestPosition.y)*smoothstep(0.004,0.030,vRestPosition.x);
-    diffuseColor.rgb=mix(diffuseColor.rgb,vec3(0.77,0.70,0.55),blaze);
+    diffuseColor.rgb=mix(diffuseColor.rgb,mix(vec3(0.77,0.70,0.55),vec3(1.0,.95,.78),uGraphicPaint),blaze);
     float nose=smoothstep(0.18,0.245,vRestPosition.x)*(1.0-smoothstep(1.375,1.402,vRestPosition.y));
     diffuseColor.rgb=mix(diffuseColor.rgb,vec3(0.16,0.092,0.058),nose*.70);
     vec2 eye=(vRestPosition.xy-vec2(0.058,1.477))/vec2(0.024,0.012);
     float eyeMask=(1.0-smoothstep(0.65,1.10,dot(eye,eye)))*smoothstep(0.065,0.082,abs(vRestPosition.z));
     diffuseColor.rgb=mix(diffuseColor.rgb,vec3(0.012,0.009,0.007),eyeMask);
     float scarf=smoothstep(1.247,1.254,vRestPosition.y)*(1.0-smoothstep(1.286,1.300,vRestPosition.y));
-    diffuseColor.rgb=mix(diffuseColor.rgb,vec3(0.30,0.023,0.012),scarf);
+    diffuseColor.rgb=mix(diffuseColor.rgb,mix(vec3(0.30,0.023,0.012),vec3(.58,.028,.012),uGraphicPaint),scarf);
    }
    float sleeveFold=exp(-pow((vRestPosition.y-1.01)/.023,2.0))*smoothstep(.22,.30,abs(vRestPosition.z));
    if(vRegion>2.5&&vRegion<3.5)diffuseColor.rgb*=1.0-.13*sleeveFold;
@@ -39,7 +45,7 @@ export function createLightHorse(data,texture=null){
     vec2 cuffUV=vec2((2.035+clamp((vRestPosition.z+.44)/.88,.02,.98)*.93)/4.0,1.0-(.965-clamp((vRestPosition.y-.91)/.40,.02,.98)*.93)/4.0);
     cloth*=mix(vec3(1.0),texture2D(map,cuffUV).rgb,.46);
     #endif
-    cloth*=1.0-.13*sleeveFold;diffuseColor.rgb=mix(diffuseColor.rgb,cloth,cuff);
+    cloth*=1.0-.13*sleeveFold;cloth=mix(cloth,paintShirt(cloth,vRestPosition,normalize(vRestNormal)),uGraphicPaint);diffuseColor.rgb=mix(diffuseColor.rgb,cloth,cuff);
    }
    if(vRegion>3.5&&vRegion<4.5){
     // Pocket and seams are placed in garment space and follow skinning; grain stays quiet.
@@ -54,7 +60,7 @@ export function createLightHorse(data,texture=null){
    }
   `);
  };
- material.customProgramCacheKey=()=> 'horse-light-painted-masks-v1';
+ material.customProgramCacheKey=()=> 'horse-light-graphic-paint-v2';
  function weights(name,p){const [x,y,z]=p,l=limbs[z<0?0:1];if(name.includes('mane'))return [[head,1]];if(name.includes('skull')){const t=smooth(1.22,1.38,y);return [[spine,1-t],[head,t]];}
   if(name.includes('hoof'))return [[l.ho,1]];
   if(name.includes('forearm')){const h=1-smooth(.725,.81,y),f=(1-smooth(.682,.724,y))*.82;const u=smooth(.98,1.06,y);return [[l.sh,(1-h)*u],[l.el,(1-h)*(1-u)],[l.wr,h*(1-f)],[l.finger,h*f]];}
@@ -94,5 +100,5 @@ export function createLightHorse(data,texture=null){
   root.rotation.y=heading*Math.PI/180;root.updateMatrixWorld(true);skeleton.update();return contacts;
  }
  function diagnostics(){root.updateMatrixWorld(true);skeleton.update();const box=new THREE.Box3(),v=new THREE.Vector3();for(const m of parts){const p=m.geometry.attributes.position;for(let i=0;i<p.count;i++){v.fromBufferAttribute(p,i);m.applyBoneTransform(i,v);box.expandByPoint(v.applyMatrix4(m.matrixWorld));}}return {triangles:data.triangles,rifleTriangles:rifle.triangles,bones:bones.length,skinnedMeshes:parts.length,min:box.min.toArray(),max:box.max.toArray(),contacts:contacts.map(c=>{const l=limbs.find(l=>l.side===c.side),grip=(c.side===1?rifle.anchors.grip:rifle.anchors.support).getWorldPosition(new THREE.Vector3()),palm=bones[l.wr].localToWorld(palmLocal.clone());return {side:c.side,grip:grip.toArray(),palm:palm.toArray(),error:grip.distanceTo(palm)};}),sourceTriangles:data.sourceTriangles};}
- pose('neutral');return {root,parts,bones,skeleton,rifle,material,grey,pose,diagnostics,setGrey(value){for(const p of parts)p.material=value?grey:material;},dispose(){for(const p of parts)p.geometry.dispose();material.dispose();grey.dispose();rifle.dispose();}};
+ pose('neutral');return {root,parts,bones,skeleton,rifle,material,grey,pose,diagnostics,setGraphic(value){graphicUniform.value=value?1:0;},setGrey(value){for(const p of parts)p.material=value?grey:material;},dispose(){for(const p of parts)p.geometry.dispose();material.dispose();grey.dispose();rifle.dispose();}};
 }

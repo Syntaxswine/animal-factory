@@ -4,6 +4,14 @@ The grey forms at `ec5d468` are the approved working reference. This experiment 
 
 Open `/tactics/horse-light.html`. The initial view compares the original rifle sprite with one textured carry pose at the existing prototype camera and 58 CSS pixels per world unit. Close view, neutral grey, wireframe, turning and rifle-only inspection are available. The sprite remains the fixed illustration while the model turns; carry is not a firing pose.
 
+## Graphic paint direction
+
+The follow-up art direction is bright, high-contrast painted detail like the original illustration. **Graphic paint** is enabled by default; disable it to compare the softer finish delivered at `72b110a`. This material pass preserves the mesh, skin weights, carry pose and prototype dimensions.
+
+`horse-graphic-paint.js` places broad chestnut cheek/jaw values, ivory shirt highlights, olive fold shadows, a crisp bib-pocket rim, and red neckerchief knot/tails in bind space so they follow the skinned surfaces. Short tapered cuff and knee strokes describe local folds rather than repeated bands. The existing atlas supplies restrained grain underneath these larger graphic shapes; the new detail is shader paint, not a replacement atlas or added polygons.
+
+Evidence includes graphic native/close views at four headings and `soft-baseline-native.png` / `soft-baseline-close.png` in `hybrid-review/light-carry/`. The first hostile review scored this pass 8/10 and flagged stripe-like folds and a disconnected scarf symbol. Those marks were localized and tapered, and the scarf was raised and broadened to meet the neck band. Independent review of the revision scored **9/10 for the material-only pass**, confirming localized folds, a connected scarf and clearer color separation at gameplay size. All three existing model tests, the browser/shader checks and the Pages build passed. Broader animation and production readiness remain unproven.
+
 ## Mesh and rig
 
 - Approved reference: 856,076 triangles, retained unchanged in the grey viewer.
