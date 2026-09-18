@@ -41,7 +41,7 @@ export function tickWorld(world,elapsedMs,{paused=false}={}){
 // A merc whose meter has been at zero for a day quits here if the map is calm; otherwise the engine lets it go when the contact ends.
 export function settleMorale(world,s,minutes,mapOf=u=>u.away?u.away.destination:world.current){if(!s.rules?.social)return [];
  const {lines,quitting}=settleHappiness(s.units.filter(u=>u.team==='squad'),minutes,world.clock.minutes,mapOf);for(const line of lines)log(s,line);
- if(['explore','won'].includes(s.phase))for(const u of quitting)quitMerc(s,u);return lines;}
+ if(['explore','won'].includes(s.phase)&&!combatCosts(s))for(const u of s.units)if(u.team==='squad'&&u.quitPending&&u.social?.happiness===0)quitMerc(s,u);return lines;} // calm means no guard alert and nothing engaged; otherwise the engine lets it go when the contact ends
 export function downtimeReason(world){
  const s=currentMap(world);
  if(s.phase!=='won'||guards(s).length)return 'Clear this map before resting or training.';
@@ -124,11 +124,12 @@ function arrive(world,destination,plan=arrivalPlan(world,destination)){
   // Leaving a lost map (the crossers resolving their retreat) files its record with the run at once; re-entry below is the fallback.
   if(previous.phase==='lost'&&previous.defeat){world.defeats=[...(world.defeats||[]),{...previous.defeat,map:world.current}];delete previous.defeat;previous.phase='explore';}
   const incoming=structuredClone(previous.units.filter(u=>u.team==='squad')),carried=new Map();
-  for(const u of incoming){const p=places.get(u.id);if(u.away?.ap!==undefined)carried.set(u.id,u.away.ap);delete u.away;u.x=p.x;u.y=p.y;u.z=levelOf(p);u.alert=false;u.lastKnown=null;}
+  for(const u of incoming){const p=places.get(u.id);if(u.away?.ap!==undefined)carried.set(u.id,u.away.ap);delete u.away;if(u.casualty==='quit'){u.x=-1;u.y=-1;u.z=0;continue;} // a merc that quit travels as a record, never as a body
+   u.x=p.x;u.y=p.y;u.z=levelOf(p);u.alert=false;u.lastKnown=null;}
   // A map left mid-fight, or lost after some comrades crossed its edge, is entered fresh: its guards keep their alert and last fix, refresh() decides contact.
   if(next.phase==='lost'){world.defeats=[...(world.defeats||[]),{...next.defeat,map:destination}];delete next.defeat;next.phase='explore';}
   if(['player','enemy'].includes(next.phase)){next.phase='explore';next.enemyIndex=0;}
-  next.units=[...incoming,...next.units.filter(u=>u.team==='guard')];next.selected=incoming.find(alive)?.id??previous.selected;next.queue=[];next.effect=null;next.alerted=new Set();next.engaged=false;next.freshFight=true; // entering a map is a fresh fight: full AP on contact (capped by what a crosser carried), whatever alert the guards kept
+  next.units=[...incoming,...next.units.filter(u=>u.team==='guard')];next.selected=incoming.find(alive)?.id??previous.selected;next.queue=[];next.effect=null;next.alerted=new Set();next.engaged=false;next.freshFight=true;next.fight=null;previous.fight=null; // entering a map is a fresh fight, and a map change ends a contact without a clean-win lift: full AP on contact (capped by what a crosser carried), whatever alert the guards kept
   // Failed travel takes no time. Production during transit uses previously liberated maps.
   previous.leftAt=world.clock.minutes; // the moment this map was left: its guards settle by the clock when the squad returns
   const income=advanceTime(world,TRAVEL_MINUTES);settleMorale(world,next,TRAVEL_MINUTES,()=>destination); // the hour on the road, everyone together on the destination

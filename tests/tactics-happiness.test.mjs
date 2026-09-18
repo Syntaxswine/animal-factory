@@ -108,11 +108,47 @@ test('the medic\'s relief and the clean win: stabilizing a bonded partner lifts 
 
 test('a partner\'s rung crossing upward lifts the meter five, once per crossing; the rescue hook pays 15 / 5 (no rescue facility calls it yet)',()=>{
  const {w,s,mercs:[yakov,anya,misha,vera]}=world();for(const u of [yakov,anya,misha,vera])u.social.happiness=50;
- pair(yakov,anya,-40);settleMorale(w,s,0);pair(yakov,anya,-30); // resented → strained
+ yakov.social.rungSeen.Anya=4;pair(yakov,anya,-40);settleMorale(w,s,0);pair(yakov,anya,-30); // the pair starts life resented; resented → strained is new ground
  settleMorale(w,s,0);assert.equal(happy(yakov),55);assert.ok(s.log.some(l=>l==='Yakov is glad of Anya: strained.'));
  settleMorale(w,s,0);assert.equal(happy(yakov),55,'once');pair(yakov,anya,-60);settleMorale(w,s,0);assert.equal(happy(yakov),55,'downward crossings cost nothing here (the events do that)');
  pair(vera,misha,80);pair(anya,misha,30);misha.casualty='captured';misha.hp=0;vera.social.happiness=50;anya.social.happiness=50;
  partnerRescued(s.units,misha);assert.equal(happy(vera),50+15);assert.equal(happy(anya),50+5);
+});
+
+test('review round 1: a quitter has no body after travel; escaped crossers grieve a lost map; no quit while guards are alerted; a lifted meter cancels the walk; a map change ends the contact; the engine marks casualties; the medic\'s relief through stabilize',()=>{
+ // (1) travel after a quit: Anya is a record at (-1,-1) on the next map, no occupant anywhere, and the previous map's contact is closed.
+ {const {w,s,mercs:[yakov,anya]}=world();quitMerc(s,anya);assert.deepEqual([anya.x,anya.y],[-1,-1]);s.fight={casualty:true};gather(s);assert.ok(travel(w,'yard').ok);const y=currentMap(w);const a2=y.units.find(u=>u.name==='Anya');
+  assert.equal(a2.casualty,'quit');assert.deepEqual([a2.x,a2.y],[-1,-1],'never placed on a landing tile');assert.ok(!alive(a2));assert.equal(y.fight,null);assert.equal(s.fight,null);assert.equal(y.units.filter(u=>u.team==='squad'&&alive(u)).length,3);}
+ // (2) a partial defeat: Yakov crossed east and waits beyond the edge; the three left behind fall; he grieves Vera (bonded) and Misha (trusted) from the yard side.
+ {const {s,mercs:[yakov,anya,misha,vera]}=world();pair(yakov,vera,80);pair(yakov,misha,30);pair(yakov,anya,-90);yakov.away={destination:'yard',side:'east',ap:0};
+  for(const u of [anya,misha,vera]){u.hp=0;u.casualty='bleeding';}refresh(s);assert.equal(s.phase,'lost');assert.deepEqual([anya.casualty,misha.casualty,vera.casualty],['dead','dead','dead']);
+  assert.equal(happy(yakov),0,'Vera and Misha at the rung in force: 75 and 35 exhaust the meter');assert.equal(yakov.social.stress,40,'Anya fell first: her feud relief landed on an empty meter, then Misha 15 and Vera 25');assert.ok(s.log.some(l=>l==='Yakov has not spoken since Vera died.'));}
+ // (3) alerted guards closing in real time are still the contact: no quit until the alert is over.
+ {const {w,s,mercs:[yakov,anya]}=world();pair(yakov,anya,-100);anya.social.happiness=0;stamp(w,s);advanceTime(w,QUIT_HOURS*60);s.alerted=new Set([9]);settleMorale(w,s,QUIT_HOURS*60);
+  assert.equal(anya.quitPending,true);assert.equal(anya.casualty,null,'guards alerted: not yet');s.alerted=new Set();settleMorale(w,s,0);assert.equal(anya.casualty,'quit','the alert is over');}
+ // (4) the decision to walk goes with the timer: a meter lifted before the contact ends is no longer quitting.
+ {const {w,s,mercs:[yakov,anya]}=world();pair(yakov,anya,-100);anya.social.happiness=0;stamp(w,s);advanceTime(w,QUIT_HOURS*60);s.phase='player';settleMorale(w,s,QUIT_HOURS*60);assert.equal(anya.quitPending,true);
+  anya.social.happiness=40;settleMorale(w,s,0);assert.equal(anya.quitPending,false);assert.equal(anya.social.zeroSince,null);s.phase='explore';refresh(s);assert.equal(anya.casualty,null,'she stays');}
+ // (5) the engine marks a casualty: a contact that cost a bleed-out pays no clean win; and −15 a day with three opposing partners; a liked partner elsewhere adds nothing.
+ {const m=blankMap();m.starts=[{x:14,y:30,z:0},{x:15,y:30,z:0},{x:15,y:31,z:0},{x:14,y:31,z:0}];m.guards=[{x:24,y:30,heading:180,species:'donkey',weapon:'rifle'}];
+  const s=createGame(1,m,false,'standard',{social:true});for(const p of s.units)p.lastAt=p.x+','+p.y+','+(p.z||0);refresh(s);const [yakov,anya,misha,vera]=s.units,g=s.units[4];
+  assert.equal(s.phase,'player','the guard sees them: contact');assert.deepEqual(s.fight,{casualty:false});for(const u of [yakov,anya,misha,vera]){u.social.happiness=50;for(const p of [yakov,anya,misha,vera])if(p!==u)u.social.bonds[p.name]=10;}
+  yakov.hp=0;yakov.casualty='bleeding';yakov.bleedTurns=1;s.queue=[];assert.ok(endTurn(s));assert.equal(yakov.casualty,'dead');assert.equal(s.fight.casualty,true);
+  g.hp=0;refresh(s);assert.equal(s.phase,'won');assert.equal(s.fight,null);for(const u of [anya,misha,vera])assert.equal(happy(u),50,'a bleed-out is a casualty: no lift (cautious partners pay stress, not happiness)');}
+ {const {w,s,mercs:[yakov,anya,misha,vera]}=world();pair(anya,yakov,-90);pair(anya,misha,-90);pair(anya,vera,-90);stamp(w,s);anya.social.happiness=50;settleMorale(w,s,DAY);near(happy(anya),35,'three opposing partners: fifteen a day');
+  pair(anya,yakov,-90);pair(anya,misha,80);stamp(w,s);anya.social.happiness=50;misha.away={destination:'yard',side:'east',ap:0};settleMorale(w,s,DAY);near(happy(anya),50-5-5,'Yakov and Vera here, the bonded Misha elsewhere adds nothing');}
+ // (6) stabilize() itself pays the medic's relief; the literal numbers the tables promise.
+ {const {s,mercs:[yakov,anya,misha,vera]}=world();pair(vera,misha,80);vera.social.happiness=50;misha.hp=0;misha.casualty='bleeding';misha.bleedTurns=6;vera.x=misha.x+1;vera.y=misha.y;vera.medical=100;vera.medkits=1;s.phase='explore';
+  assert.ok(stabilize(s,vera,misha),'adjacent, a kit, the skill');assert.equal(happy(vera),55);}
+ {const {s,mercs:[yakov,anya,misha,vera]}=world();pair(vera,misha,30);pair(yakov,misha,80);vera.social.bonds.Anya=10;yakov.social.bonds.Anya=10;partnerLost(s.units,misha,'dead',anya);
+  assert.equal(happy(vera),65,'trusted death: 35');assert.equal(vera.social.bonds.Anya,10-20,'trusted: the killer costs 20');assert.equal(yakov.social.bonds.Anya,10-40);}
+ {const {s,mercs:[yakov,anya,misha,vera]}=world();pair(vera,misha,80);pair(yakov,misha,30);partnerLost(s.units,misha,'captured');assert.equal(happy(vera),80);assert.equal(happy(yakov),90);
+  pair(vera,anya,80);quitMerc(s,anya);assert.equal(happy(vera),80-15);}
+ // (7) the killer never grieves against itself even when bonded to the victim; a quitter is not converted by a total defeat; the best rung seen is paid once.
+ {const {s,mercs:[yakov,anya,misha,vera]}=world();pair(anya,misha,80);partnerLost(s.units,misha,'dead',anya);assert.equal(anya.social.incidents.Anya,undefined);assert.equal(happy(anya),25,'she grieves him all the same');}
+ {const {s,mercs:[yakov,anya,misha,vera]}=world();quitMerc(s,anya);for(const u of [yakov,misha,vera]){u.hp=0;u.casualty='bleeding';}refresh(s);assert.equal(s.phase,'lost');assert.equal(anya.casualty,'quit');}
+ {const {w,s,mercs:[yakov,anya]}=world();for(const u of s.units.slice(0,4))u.social.happiness=50;yakov.social.rungSeen.Anya=4;pair(yakov,anya,-36);stamp(w,s);pair(yakov,anya,-30);settleMorale(w,s,0);assert.equal(happy(yakov),55);
+  pair(yakov,anya,-40);settleMorale(w,s,0);pair(yakov,anya,-30);settleMorale(w,s,0);assert.equal(happy(yakov),55,'the same boundary crossed again pays nothing');pair(yakov,anya,0);settleMorale(w,s,0);assert.equal(happy(yakov),60,'a new best rung pays');}
 });
 
 test('downtime rest settles the meter beside the bond drift, and the card shows the hours left when a merc is about to quit',()=>{

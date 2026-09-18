@@ -33,10 +33,11 @@ export function settleHappiness(units,minutes,now,mapOf=()=>'here'){
   let delta=-DECAY_PER_DAY*oppHere.length*days;
   if(!oppHere.length)delta+=(opp.length?APART_PER_DAY:CALM_PER_DAY)*days; // one rate, two tiers (decision 2)
   for(const p of ps)if(mapOf(p)===here){const r=rungOf(bondTo(u,p)).name;if(LIKED_PER_DAY[r])delta+=LIKED_PER_DAY[r]*days;}
-  // A partner's rung crossing upward lifts the meter once per crossing; the crossing itself came from a hand-over, a rescue or rest.
-  for(const p of ps){const idx=rungIndex(bondTo(u,p)),seen=m.rungSeen?.[p.name];if(m.rungSeen){if(seen!==undefined&&idx<seen){delta+=RUNG_UP;lines.push(`${u.name} is glad of ${p.name}: ${RUNGS[idx].name}.`);}m.rungSeen[p.name]=idx;}}
+  // A partner's rung rising lifts the meter the first time the pair reaches each rung (the best rung seen is remembered, so a bond wobbling across
+  // one boundary is paid once, not every time); the rise itself came from a hand-over, a rescue or rest.
+  for(const p of ps){const idx=rungIndex(bondTo(u,p)),seen=m.rungSeen?.[p.name];if(m.rungSeen){if(seen===undefined)m.rungSeen[p.name]=idx;else if(idx<seen){delta+=RUNG_UP;lines.push(`${u.name} is glad of ${p.name}: ${RUNGS[idx].name}.`);m.rungSeen[p.name]=idx;}}}
   change(u,delta);
-  if(m.happiness>0)m.zeroSince=null;
+  if(m.happiness>0){m.zeroSince=null;u.quitPending=false;} // the timer resets the moment the meter rises, and so does the decision to walk
   else{m.zeroSince??=now;if(now-m.zeroSince>=QUIT_HOURS*60&&!u.quitPending){u.quitPending=true;const names=oppHere.map(p=>p.name).join(' and ')||'the squad';lines.push(`${u.name} has had enough of ${names} (${Math.round((now-m.zeroSince)/60)} hours at zero).`);quitting.push(u);}}
  }
  return {lines,quitting};
