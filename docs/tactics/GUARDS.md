@@ -14,7 +14,7 @@ Opened 2026-09-16 on branch `tactics-guard-alertness`, stacked on `tactics-sight
 
 Same gates as the other arcs: full suite green, 20-seed balance before and after, hostile review of at least 4/5 before the next stage.
 
-Integration review: G2 is implemented and included in the canonical integration. G3–G5 below remain proposals, not implemented game behavior. The bond script is a design calculator and is not imported by the game. Publishing this document does not satisfy the implementation or balance gates above.
+Integration review: G2 is implemented and included in the canonical integration; G3 is built on branch `tactics-archetypes` (its module `dist/tactics/archetypes.js` is imported by the engine, and the bond script now only prints from it). G4–G5 below remain proposals, not implemented game behavior. Publishing this document does not satisfy the implementation or balance gates above.
 
 ## Historical baseline before G2
 
