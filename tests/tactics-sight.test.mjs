@@ -60,7 +60,8 @@ test('a guard that glimpses a moving worker gains approximate suspicion, not ale
  u.y=69;refresh(s);
  assert.equal(perceive(s,g,u),1);assert.ok(!g.alert,'a glimpse does not alert');assert.deepEqual(g.lastHeard,{x:30,y:72,z:0});assert.equal(g.searchSteps,12);assert.equal(s.phase,'explore');
  assert.ok(stepInvestigation(s),'the guard turns toward the movement');
- assert.equal(g.heading,90);assert.ok(g.alert,'the binocular core now identifies the worker');assert.equal(s.phase,'player');
+ assert.equal(g.heading,90);assert.ok(g.alert,'the binocular core now identifies the worker');
+ assert.equal(s.phase,'explore','thirty-nine tiles with a pistol: alert, but no fight until it could reach the squad within two turns');assert.ok(s.log.some(l=>l.startsWith('You have been seen')),s.log.slice(0,3).join(' | '));
 });
 
 test('neither a glimpse nor identification passes a wall',()=>{

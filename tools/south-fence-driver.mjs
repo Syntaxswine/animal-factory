@@ -1,6 +1,6 @@
 import * as E from '../dist/tactics/engine.js';
 import * as M from '../dist/tactics/maps.js';
-import {createSquadBot,stepSquadBot,followOrder,scavenge} from './tactics-squad-bot.mjs';
+import {createSquadBot,stepSquadBot,followOrder,scavenge,rallied} from './tactics-squad-bot.mjs';
 export function createRun(s){return {stage:'loadout',actions:0,waypoint:0,bot:createSquadBot(),events:[],initialEdges:{...s.edges},waypoints:[{x:30,y:45,z:0},{x:30,y:100,z:0},{x:46,y:100,z:0},{x:49,y:100,z:0},{x:68,y:105,z:0},{x:70,y:145,z:0},{x:94,y:145,z:0}],openingInitiallyAlert:s.units[4].alert};}
 const note=(r,s,type,detail)=>r.events.push({action:r.actions,round:s.round,type,detail});
 function advance(r,s,stage){note(r,s,'stage',stage);r.stage=stage;r.bot.orders=[];}
@@ -21,7 +21,7 @@ export function stepRun(s,r){r.actions++;if(['won','lost'].includes(s.phase))ret
   for(const u of E.squad(s))if(u.sneaking&&E.setSneaking(s,u))return true;
   if(r.waypoint===3&&s.edges['e:47:100']!=='fence-cut'){acted=order(r,s,{type:'cut',unit:2,edge:'e:47:100'});if(s.edges['e:47:100']==='fence-cut')note(r,s,'breach','e:47:100');}
   else if(r.waypoint===4&&E.alive(s.units[25])){acted=combat(r,s);if(!acted)acted=order(r,s,{type:'attack',unit:1,target:25,weapon:'rifle',zone:'torso'});}
-  else {const p=r.waypoints[r.waypoint],lead=E.squad(s).find(u=>u.id===2)||E.squad(s)[0];if(!p){advance(r,s,'position');return true;}if(E.distance(lead,p)<1){note(r,s,'waypoint',p);r.waypoint++;r.bot.orders=[];return true;}acted=combat(r,s);if(!acted)acted=groupToward(s,p,r);}
+  else {const p=r.waypoints[r.waypoint],lead=E.squad(s).find(u=>u.id===2)||E.squad(s)[0];if(!p){advance(r,s,'position');return true;}if(rallied(s,p,r.rally??3)){note(r,s,'waypoint',p);r.waypoint++;r.bot.orders=[];return true;}/* every standing member inside the rally radius, not just the lead */acted=combat(r,s);if(!acted)acted=groupToward(s,p,r);}
  }
  else if(r.stage==='position'){
   const positions=[{unit:3,x:97,y:145,z:0},{unit:1,x:96,y:145,z:0},{unit:0,x:98,y:146,z:0},{unit:2,x:97,y:144,z:0}];const next=positions.find(p=>E.alive(s.units[p.unit])&&(s.units[p.unit].x!==p.x||s.units[p.unit].y!==p.y));if(!next){advance(r,s,'ambush');return true;}acted=combat(r,s);if(!acted)acted=order(r,s,{type:'move',...next});

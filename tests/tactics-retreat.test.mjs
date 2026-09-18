@@ -3,12 +3,12 @@ import {createWorld,currentMap,travel,travelReason,leave,leaveReason,resolveRetr
 import {blankMap,W,H,levelOf} from '../dist/tactics/maps.js';
 import {guards,squad,alive,occupant,refresh,walkable,setStance,endTurn} from '../dist/tactics/engine.js';
 
-// Factory with one guard far from the east edge; the yard is blank. Squad starts on the east border band.
+// Factory with one guard in pistol reach of the east edge (so its alert holds turn mode under the pacing rule) but with no rounds and no reserve, so it never fires; the yard is blank. Squad starts on the east border band.
 function world({guard=true,phase='player'}={}){
- const m=blankMap('Factory');if(guard)m.guards=[{x:200,y:120,z:0,species:'cow',weapon:'pistol'}];
+ const m=blankMap('Factory');if(guard)m.guards=[{x:228,y:100,z:0,species:'cow',weapon:'pistol'}];
  const w=createWorld(m);w.definitions.yard=blankMap('Yard');const s=currentMap(w);
  squad(s).forEach((u,i)=>{u.x=W-1-(i%2);u.y=100+Math.floor(i/2);});
- if(guard&&phase==='player'){guards(s)[0].alert=true;}
+ if(guard){const g=guards(s)[0];g.ammo.pistol=0;g.pack=g.pack.filter(i=>i.type!=='ammo');if(phase==='player')g.alert=true;}
  refresh(s);return {w,s};
 }
 
@@ -134,7 +134,7 @@ test('rest and training wait for the squad to regroup',()=>{
 });
 
 test('crossing mid-turn does not refill the turn: a squad that crossed with 10 AP into a live contact keeps 10, and crossing clears overwatch',()=>{
- const m=blankMap('Factory');m.guards=[{x:200,y:120,z:0,species:'cow',weapon:'pistol'}];const yard=blankMap('Yard');yard.guards=[{x:8,y:100,z:0,species:'cow',weapon:'pistol'}];
+ const m=blankMap('Factory');m.guards=[{x:228,y:100,z:0,species:'cow',weapon:'pistol'}];const yard=blankMap('Yard');yard.guards=[{x:8,y:100,z:0,species:'cow',weapon:'pistol'}];/* both guards sit in pistol reach of the border the squad uses */
  const w=createWorld(m);w.definitions.yard=yard;const s=currentMap(w);squad(s).forEach((u,i)=>{u.x=W-1-(i%2);u.y=100+Math.floor(i/2);});guards(s)[0].alert=true;refresh(s);
  assert.equal(s.phase,'player');s.units[0].overwatch={weapon:'assault',heading:0};
  for(const u of squad(s))assert.ok(leave(w,u,'east').ok);
@@ -187,6 +187,6 @@ test('abandoned comrades are written to the run record once, and a second loss o
  assert.equal(w.defeats.length,1);assert.equal(w.defeats[0].cause,'abandoned');assert.deepEqual(w.defeats[0].captured.map(u=>u.name),['Anya']);assert.equal(w.defeats[0].map,'factory');
  const y=currentMap(w);for(const u of squad(y))assert.ok(leave(w,u,'west').ok);const back=currentMap(w);assert.equal(back,s);
  assert.ok(leave(w,back.units[0],'east').ok);for(const u of squad(back)){u.hp=0;u.casualty='bleeding';}refresh(back);
- assert.equal(back.phase,'lost');assert.deepEqual(back.defeat.dead.map(u=>u.name).sort(),['Misha','Vera']);assert.equal(back.defeat.captured.length,0,'Anya was recorded by the abandonment, not again');
+ assert.equal(back.phase,'lost');assert.deepEqual(back.defeat.dead.map(u=>u.name).sort(),['Misha','Vera']);assert.equal(back.defeat.captured.length,0,'Anya was recorded by the abandonment, not again');assert.equal(back.units[1].casualty,'captured','a later defeat must preserve the earlier capture');
  assert.ok(resolveRetreat(w).ok);assert.equal(w.defeats.length,2);assert.equal(w.defeats[1].dead.length,2);
 });
