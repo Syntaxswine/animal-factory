@@ -3,6 +3,7 @@ import {createWorld,currentMap,tickWorld,spendTime,travel,settleMorale,advanceTi
 import {createGame,refresh,attack,endTurn,stepEnemy,stabilize,abandonCasualties,quitMerc,squad,guards,alive,occupant,setState} from '../dist/tactics/engine.js';
 import {settleHappiness,partnerLost,partnerRescued,stabilizedPartner,cleanWin,quitHoursLeft,hasMeter,onContract,rungMemory,DAY,QUIT_HOURS,RECONCILE_MINUTES,PARTNER_DEATH,PARTNER_CAPTURED,PARTNER_QUIT,STABILIZED_RELIEF,CLEAN_WIN,RUNG_UP,KILLER_BOND,GRUDGE_STEP} from '../dist/tactics/happiness.js';
 import {blankMap} from '../dist/tactics/maps.js';
+import {helped} from '../dist/tactics/personalities.js';
 
 // GUARDS.md G5. A campaign world on a blank map: four mercs with their authored bonds, no guards, the map already won.
 const world=()=>{const w=createWorld(blankMap());const s=currentMap(w);return {w,s,mercs:s.units.slice(0,4)};};
@@ -154,6 +155,14 @@ test('review round 1: a quitter has no body after travel; escaped crossers griev
   pair(yakov,anya,-40);settleMorale(w,s,0);advanceTime(w,RECONCILE_MINUTES);settleMorale(w,s,RECONCILE_MINUTES);yakov.social.happiness=50;pair(yakov,anya,0);settleMorale(w,s,0);assert.equal(happy(yakov),55,'a day at feud, then cautious trust again: reconciliation pays');}
  // The whole squad walking out is named, and the run is lost as with any empty roster.
  {const {s,mercs}=world();for(const u of mercs)quitMerc(s,u);refresh(s);assert.equal(s.phase,'lost');assert.ok(s.log.some(l=>l==='The squad has walked out.'));assert.ok(!s.log.some(l=>/0 captured \/ 0 dead/.test(l)));}
+});
+
+test('ai-65 falsifier: a hand-over that lifts a bond across a rung pays once, and the same-day rest drift dropping it back and the next hand-over lifting it again pay nothing; a day later the climb pays again',()=>{
+ const {w,s,mercs:[yakov,anya]}=world();anya.social.bonds.Yakov=22;stamp(w,s);anya.social.happiness=50; // cautious trust, two short of trusted; the authored resting level is +5
+ helped(anya,yakov);assert.ok(anya.social.bonds.Yakov>=25,'stabilized by Yakov: +20 crosses into trusted');settleMorale(w,s,0);assert.equal(happy(anya),55,'new ground for the pair');
+ anya.social.bonds.Yakov=20;settleMorale(w,s,0);assert.equal(happy(anya),55,'drift back below the line the same day: nothing');
+ helped(anya,yakov);settleMorale(w,s,0);assert.equal(happy(anya),55,'and the same-day climb back pays nothing: a wobble');
+ anya.social.bonds.Yakov=20;settleMorale(w,s,0);advanceTime(w,DAY);settleMorale(w,s,DAY);anya.social.happiness=50;helped(anya,yakov);settleMorale(w,s,0);assert.equal(happy(anya),55,'a day at cautious trust, then trusted again: reconciliation');
 });
 
 test('downtime rest settles the meter beside the bond drift, and the card shows the hours left when a merc is about to quit',()=>{
