@@ -21,7 +21,11 @@ export const partners=(u,units)=>units.filter(p=>p!==u&&hasMeter(p)&&onContract(
 function change(u,delta){const before=u.social.happiness;u.social.happiness=clamp(before+delta);return u.social.happiness-before;}
 function remember(u,text){if(!u.social.memories)return;u.social.memories.unshift(text);u.social.memories.length=Math.min(8,u.social.memories.length);}
 
-export function initHappiness(u){u.social.happiness=100;u.social.zeroSince=null;u.social.rungSeen=Object.fromEntries(Object.entries(u.social.bonds||{}).map(([n,b])=>[n,rungIndex(b)]));}
+// Per partner: the best rung the pair has reached, the rung it stands at, and since when (campaign minutes). A rise pays when it is new ground or
+// the pair held the lower rung for a day or more, so a wobble across one boundary pays nothing and a real fall followed by reconciliation pays again.
+export const RECONCILE_MINUTES=DAY;
+export const rungMemory=(idx,now=0)=>({best:idx,at:idx,since:now});
+export function initHappiness(u){u.social.happiness=100;u.social.zeroSince=null;u.social.rungSeen=Object.fromEntries(Object.entries(u.social.bonds||{}).map(([n,b])=>[n,rungMemory(rungIndex(b))]));}
 export const quitHoursLeft=(u,now)=>u?.social?.zeroSince==null?null:Math.max(0,QUIT_HOURS-(now-u.social.zeroSince)/60);
 
 // One settlement covering `minutes` of campaign clock that ends at `now`. mapOf(u) names the local map the merc counts as on (a waiting
@@ -33,9 +37,13 @@ export function settleHappiness(units,minutes,now,mapOf=()=>'here'){
   let delta=-DECAY_PER_DAY*oppHere.length*days;
   if(!oppHere.length)delta+=(opp.length?APART_PER_DAY:CALM_PER_DAY)*days; // one rate, two tiers (decision 2)
   for(const p of ps)if(mapOf(p)===here){const r=rungOf(bondTo(u,p)).name;if(LIKED_PER_DAY[r])delta+=LIKED_PER_DAY[r]*days;}
-  // A partner's rung rising lifts the meter the first time the pair reaches each rung (the best rung seen is remembered, so a bond wobbling across
-  // one boundary is paid once, not every time); the rise itself came from a hand-over, a rescue or rest.
-  for(const p of ps){const idx=rungIndex(bondTo(u,p)),seen=m.rungSeen?.[p.name];if(m.rungSeen){if(seen===undefined)m.rungSeen[p.name]=idx;else if(idx<seen){delta+=RUNG_UP;lines.push(`${u.name} is glad of ${p.name}: ${RUNGS[idx].name}.`);m.rungSeen[p.name]=idx;}}}
+  // A partner's rung rising lifts the meter when the rise is new ground for the pair, or ends a day or more at the lower rung (reconciliation);
+  // the rise itself came from a hand-over, a rescue or rest. A wobble across one boundary pays nothing.
+  for(const p of ps){if(!m.rungSeen)continue;const idx=rungIndex(bondTo(u,p)),st=m.rungSeen[p.name];
+   if(!st||typeof st!=='object'){m.rungSeen[p.name]=rungMemory(idx,now);continue;}
+   if(idx===st.at)continue;
+   if(idx<st.at&&(idx<st.best||now-st.since>=RECONCILE_MINUTES)){delta+=RUNG_UP;lines.push(`${u.name} is glad of ${p.name}: ${RUNGS[idx].name}.`);}
+   if(idx<st.best)st.best=idx;st.at=idx;st.since=now;}
   change(u,delta);
   if(m.happiness>0){m.zeroSince=null;u.quitPending=false;} // the timer resets the moment the meter rises, and so does the decision to walk
   else{m.zeroSince??=now;if(now-m.zeroSince>=QUIT_HOURS*60&&!u.quitPending){u.quitPending=true;const names=oppHere.map(p=>p.name).join(' and ')||'the squad';lines.push(`${u.name} has had enough of ${names} (${Math.round((now-m.zeroSince)/60)} hours at zero).`);quitting.push(u);}}

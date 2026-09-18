@@ -1,7 +1,7 @@
 import test from 'node:test';import assert from 'node:assert/strict';
 import {createWorld,currentMap,tickWorld,spendTime,travel,settleMorale,advanceTime,TRAVEL_MINUTES} from '../dist/tactics/world.js';
 import {createGame,refresh,attack,endTurn,stepEnemy,stabilize,abandonCasualties,quitMerc,squad,guards,alive,occupant,setState} from '../dist/tactics/engine.js';
-import {settleHappiness,partnerLost,partnerRescued,stabilizedPartner,cleanWin,quitHoursLeft,hasMeter,onContract,DAY,QUIT_HOURS,PARTNER_DEATH,PARTNER_CAPTURED,PARTNER_QUIT,STABILIZED_RELIEF,CLEAN_WIN,RUNG_UP,KILLER_BOND,GRUDGE_STEP} from '../dist/tactics/happiness.js';
+import {settleHappiness,partnerLost,partnerRescued,stabilizedPartner,cleanWin,quitHoursLeft,hasMeter,onContract,rungMemory,DAY,QUIT_HOURS,RECONCILE_MINUTES,PARTNER_DEATH,PARTNER_CAPTURED,PARTNER_QUIT,STABILIZED_RELIEF,CLEAN_WIN,RUNG_UP,KILLER_BOND,GRUDGE_STEP} from '../dist/tactics/happiness.js';
 import {blankMap} from '../dist/tactics/maps.js';
 
 // GUARDS.md G5. A campaign world on a blank map: four mercs with their authored bonds, no guards, the map already won.
@@ -108,7 +108,7 @@ test('the medic\'s relief and the clean win: stabilizing a bonded partner lifts 
 
 test('a partner\'s rung crossing upward lifts the meter five, once per crossing; the rescue hook pays 15 / 5 (no rescue facility calls it yet)',()=>{
  const {w,s,mercs:[yakov,anya,misha,vera]}=world();for(const u of [yakov,anya,misha,vera])u.social.happiness=50;
- yakov.social.rungSeen.Anya=4;pair(yakov,anya,-40);settleMorale(w,s,0);pair(yakov,anya,-30); // the pair starts life resented; resented → strained is new ground
+ yakov.social.rungSeen.Anya=rungMemory(4,w.clock.minutes);pair(yakov,anya,-40);settleMorale(w,s,0);pair(yakov,anya,-30); // the pair starts life resented; resented → strained is new ground
  settleMorale(w,s,0);assert.equal(happy(yakov),55);assert.ok(s.log.some(l=>l==='Yakov is glad of Anya: strained.'));
  settleMorale(w,s,0);assert.equal(happy(yakov),55,'once');pair(yakov,anya,-60);settleMorale(w,s,0);assert.equal(happy(yakov),55,'downward crossings cost nothing here (the events do that)');
  pair(vera,misha,80);pair(anya,misha,30);misha.casualty='captured';misha.hp=0;vera.social.happiness=50;anya.social.happiness=50;
@@ -147,8 +147,13 @@ test('review round 1: a quitter has no body after travel; escaped crossers griev
  // (7) the killer never grieves against itself even when bonded to the victim; a quitter is not converted by a total defeat; the best rung seen is paid once.
  {const {s,mercs:[yakov,anya,misha,vera]}=world();pair(anya,misha,80);partnerLost(s.units,misha,'dead',anya);assert.equal(anya.social.incidents.Anya,undefined);assert.equal(happy(anya),25,'she grieves him all the same');}
  {const {s,mercs:[yakov,anya,misha,vera]}=world();quitMerc(s,anya);for(const u of [yakov,misha,vera]){u.hp=0;u.casualty='bleeding';}refresh(s);assert.equal(s.phase,'lost');assert.equal(anya.casualty,'quit');}
- {const {w,s,mercs:[yakov,anya]}=world();for(const u of s.units.slice(0,4))u.social.happiness=50;yakov.social.rungSeen.Anya=4;pair(yakov,anya,-36);stamp(w,s);pair(yakov,anya,-30);settleMorale(w,s,0);assert.equal(happy(yakov),55);
-  pair(yakov,anya,-40);settleMorale(w,s,0);pair(yakov,anya,-30);settleMorale(w,s,0);assert.equal(happy(yakov),55,'the same boundary crossed again pays nothing');pair(yakov,anya,0);settleMorale(w,s,0);assert.equal(happy(yakov),60,'a new best rung pays');}
+ {const {w,s,mercs:[yakov,anya]}=world();for(const u of s.units.slice(0,4))u.social.happiness=50;yakov.social.rungSeen.Anya=rungMemory(4,w.clock.minutes);pair(yakov,anya,-36);stamp(w,s);pair(yakov,anya,-30);settleMorale(w,s,0);assert.equal(happy(yakov),55);
+  pair(yakov,anya,-40);settleMorale(w,s,0);pair(yakov,anya,-30);settleMorale(w,s,0);assert.equal(happy(yakov),55,'a wobble across the same boundary pays nothing');pair(yakov,anya,0);settleMorale(w,s,0);assert.equal(happy(yakov),60,'a new best rung pays');
+  // Reconciliation: a real fall (a day or more at the lower rung) followed by the climb back pays again, though the rung is not new ground.
+  pair(yakov,anya,-40);settleMorale(w,s,0);advanceTime(w,RECONCILE_MINUTES-1);settleMorale(w,s,RECONCILE_MINUTES-1);yakov.social.happiness=50;pair(yakov,anya,0);settleMorale(w,s,0);assert.equal(happy(yakov),50,'a minute short of a day: still a wobble');
+  pair(yakov,anya,-40);settleMorale(w,s,0);advanceTime(w,RECONCILE_MINUTES);settleMorale(w,s,RECONCILE_MINUTES);yakov.social.happiness=50;pair(yakov,anya,0);settleMorale(w,s,0);assert.equal(happy(yakov),55,'a day at feud, then cautious trust again: reconciliation pays');}
+ // The whole squad walking out is named, and the run is lost as with any empty roster.
+ {const {s,mercs}=world();for(const u of mercs)quitMerc(s,u);refresh(s);assert.equal(s.phase,'lost');assert.ok(s.log.some(l=>l==='The squad has walked out.'));assert.ok(!s.log.some(l=>/0 captured \/ 0 dead/.test(l)));}
 });
 
 test('downtime rest settles the meter beside the bond drift, and the card shows the hours left when a merc is about to quit',()=>{
