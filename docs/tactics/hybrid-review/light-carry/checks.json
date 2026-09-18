@@ -52,7 +52,8 @@
       "sourceTriangles": 856076,
       "pixelsPerUnit": 58,
       "pose": "carry",
-      "graphicPaint": true
+      "graphicPaint": true,
+      "modelPaint": false
     },
     {
       "close": false,
@@ -104,7 +105,8 @@
       "sourceTriangles": 856076,
       "pixelsPerUnit": 58,
       "pose": "carry",
-      "graphicPaint": true
+      "graphicPaint": true,
+      "modelPaint": false
     },
     {
       "close": false,
@@ -156,7 +158,8 @@
       "sourceTriangles": 856076,
       "pixelsPerUnit": 58,
       "pose": "carry",
-      "graphicPaint": true
+      "graphicPaint": true,
+      "modelPaint": false
     },
     {
       "close": false,
@@ -208,7 +211,8 @@
       "sourceTriangles": 856076,
       "pixelsPerUnit": 58,
       "pose": "carry",
-      "graphicPaint": true
+      "graphicPaint": true,
+      "modelPaint": false
     },
     {
       "close": true,
@@ -260,7 +264,8 @@
       "sourceTriangles": 856076,
       "pixelsPerUnit": 299.99999999999994,
       "pose": "carry",
-      "graphicPaint": true
+      "graphicPaint": true,
+      "modelPaint": false
     },
     {
       "close": true,
@@ -312,7 +317,8 @@
       "sourceTriangles": 856076,
       "pixelsPerUnit": 299.99999999999994,
       "pose": "carry",
-      "graphicPaint": true
+      "graphicPaint": true,
+      "modelPaint": false
     },
     {
       "close": true,
@@ -364,7 +370,8 @@
       "sourceTriangles": 856076,
       "pixelsPerUnit": 299.99999999999994,
       "pose": "carry",
-      "graphicPaint": true
+      "graphicPaint": true,
+      "modelPaint": false
     },
     {
       "close": true,
@@ -416,7 +423,8 @@
       "sourceTriangles": 856076,
       "pixelsPerUnit": 299.99999999999994,
       "pose": "carry",
-      "graphicPaint": true
+      "graphicPaint": true,
+      "modelPaint": false
     }
   ]
 }

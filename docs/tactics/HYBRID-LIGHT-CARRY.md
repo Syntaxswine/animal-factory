@@ -2,6 +2,8 @@
 
 The grey forms at `ec5d468` are the approved working reference. This experiment advances that character only; it does not merge the graphics branch or integrate a gameplay replacement.
 
+The current default skin is the subsequent [model-painted skin experiment](HYBRID-MODEL-PAINT.md). Disable **Painted skin** to inspect the earlier finishes documented below.
+
 Open `/tactics/horse-light.html`. The initial view compares the original rifle sprite with one textured carry pose at the existing prototype camera and 58 CSS pixels per world unit. Close view, neutral grey, wireframe, turning and rifle-only inspection are available. The sprite remains the fixed illustration while the model turns; carry is not a firing pose.
 
 ## Graphic paint direction
