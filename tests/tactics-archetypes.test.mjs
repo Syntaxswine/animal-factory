@@ -169,3 +169,20 @@ test('review D8 + M29: helpers tolerate bad input, and a guard owns a copy of it
  assert.equal(shoutRadius({archetype:'Bogus'}),12);assert.equal(hearingScale({traits:{}}),1,'a partial traits object counts as none');assert.equal(nerveFraction({traits:{vigilance:50}}),NERVE);
  const {s,gs:[g]}=scene([{x:24,y:30,z:0,species:'donkey',weapon:'knife'}],{social:true});g.traits.nerve=0;assert.notEqual(ARCHETYPES[g.archetype].traits.nerve,0,'the table is untouched');
 });
+
+test('review round 2: the per-guard K on the clock (a Sage keeps the trail four rounds after its R), a broken Innocent lasts three guard phases, an above-threshold second hit refreshes to its own R, a fix-less broken guard goes home, the yard follows the campaign roster seed',()=>{
+ const make=(name,minutes,fix={x:40,y:90,z:0})=>{const {s,gs:[g]}=scene([{x:40,y:100,z:0,species:'donkey',weapon:'knife'}],{wall:false});for(const p of squad(s))teleport(p,p.x,p.y+170);give(g,name);setState(s,g,'broken',fix);g.lastKnown=fix;if(!fix){g.threat=null;g.lastKnown=null;}refresh(s);settleGuards(s,minutes);return g;};
+ assert.equal(stateOf(make('Sage',ROUND_MINUTES*(2+3))),'alert','Sage: R = 2, then K = round(3 x 1.4) = 4: three rounds later it still holds the trail');assert.equal(stateOf(make('Sage',ROUND_MINUTES*(2+4))),'searching');
+ const home=make('Innocent',ROUND_MINUTES*3,null);assert.equal(stateOf(home),'rest','no fix known after R: home and wary');assert.ok(home.wary);assert.equal(home.y,100);
+ // Turn mode: the guard phase decrements the counter setState wrote.
+ const {s,u,gs:[g]}=scene([{x:30,y:30,z:0,species:'donkey',weapon:'knife'}],{wall:false});s.units.slice(1,4).forEach(p=>p.hp=0);teleport(u,200,200);refresh(s);give(g,'Innocent');
+ setState(s,g,'broken',{x:25,y:30,z:0});g.lastKnown={x:25,y:30,z:0};round(s);round(s);round(s);assert.equal(stateOf(g),'broken','Innocent: R = 3 rounds after the round it broke in, which does not count');round(s);assert.equal(stateOf(g),'alert');
+ // A pistol hit (16 at range) that leaves a broken Innocent above its threshold refreshes the count to ITS R, not the base.
+ let done=false;for(let seed=1;seed<80&&!done;seed++){const {s:x,u:q,gs:[c]}=scene([{x:30,y:30,z:0,species:'donkey',weapon:'knife'}],{wall:false,seed});x.units.slice(1,4).forEach(p=>p.hp=0);give(c,'Innocent');c.heading=180;c.hp=45;setState(x,c,'broken',{x:25,y:30,z:0});c.brokenRounds=1;teleport(q,25,30);q.heading=0;q.weapon='pistol';refresh(x);x.phase='player';q.ap=12;
+  if(attack(x,q,c,false,false,'weapon')&&c.hp>21&&c.hp<45){assert.equal(stateOf(c),'broken');assert.equal(c.brokenRounds,3,'above the threshold (25 of 45 after a 20-damage weapon-zone hit): the else branch refreshed to the Innocent R');done=true;}}
+ assert.ok(done,'a non-breaking pistol hit was found');
+ // The yard's roster follows the campaign's roster seed.
+ const m=blankMap('Factory');const y=blankMap('Yard');y.guards=Array.from({length:12},(_,i)=>({x:100+i*4,y:100,z:0,species:'donkey',weapon:'knife'}));
+ const rosterOf=seed=>{const w=createWorld(m,'standard',seed);w.definitions.yard=y;const f=currentMap(w);for(const p of squad(f))teleport(p,W-1-(p.id%2),100+Math.floor(p.id/2));refresh(f);for(const p of squad(f))leave(w,p,'east');return guards(currentMap(w)).map(g=>g.archetype).join('/');};
+ assert.notEqual(rosterOf(7),rosterOf(8),'the yard draws from the campaign seed, not 1947');assert.equal(rosterOf(7),rosterOf(7));
+});
