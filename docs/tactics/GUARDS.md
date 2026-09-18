@@ -7,16 +7,18 @@ Opened 2026-09-16 on branch `tactics-guard-alertness`, stacked on `tactics-sight
 | Stage | Scope | State |
 | --- | --- | --- |
 | G1 | Gunshot alarm at twice weapon range, for squad and guard shooters | Built on this branch, tests in `tests/tactics-alarm.test.mjs` |
-| G2 | Guard alert states: rest, suspicious, alert, searching, stand-down, broken; combat can end without killing everyone; return to post | Planned, awaiting review of this document |
+| G2 | Guard alert states: rest, suspicious, alert, searching, stand-down, broken; combat can end without killing everyone; return to post; a left map settles by the campaign clock | Built on branch `tactics-guard-states` (2026-09-17), tests in `tests/tactics-guard-states.test.mjs` |
 | G3 | Twelve Jungian archetypes drawn at random; bonds derived by wheel + affinity + friction (`tools/archetype-bonds.mjs`); traits for the state machine; barks | Designed, awaiting review |
 | G4 | Shouted alarms between guards, guard-to-guard friendly-fire reactions and grudges | Planned |
 | G5 | Happiness meter: opposing mercs on one local map lose 5 a day; 24 hours at zero and the merc quits | Designed, awaiting review |
 
 Same gates as the other arcs: full suite green, 20-seed balance before and after, hostile review of at least 4/5 before the next stage.
 
-Integration review: G2–G5 below remain proposals, not implemented game behavior. The bond script is a design calculator and is not imported by the game. Publishing this document does not satisfy the implementation or balance gates above.
+Integration review: G2 is implemented and included in the canonical integration. G3–G5 below remain proposals, not implemented game behavior. The bond script is a design calculator and is not imported by the game. Publishing this document does not satisfy the implementation or balance gates above.
 
-## What exists today
+## Historical baseline before G2
+
+These bullets describe the original baseline, not current G2 behavior.
 
 - `alert` is a single boolean per guard. It becomes true when the squad identifies the guard, when the guard identifies a squad member, when the guard is attacked, or (G1) when a gun fires within twice its range. It never becomes false. Combat lasts until every alerted guard is dead.
 - Non-alert guards do nothing except investigate: a footstep within 10 tiles (3 sneaking) or a peripheral glimpse gives them a `lastHeard` cell on the 6-tile grid and 12 investigation steps toward it, after which they stop where they are. They never return to post.
@@ -50,26 +52,51 @@ Balance on the current tip (2026-09-16, after Codex's weapon revision 5b4e0bb an
 
 ## G2: alert states
 
-One state per guard, replacing the boolean. Transitions are the rules; personality parameters (G3) scale the numbers.
+**Built 2026-09-17** on branch `tactics-guard-states`, on top of the playtest follow-ups (`threatens()`, `stepInvestigation`, the engagement economy). Tests: `tests/tactics-guard-states.test.mjs` (19 cases) plus two re-pinned cases in `tests/tactics-pacing.test.mjs`.
+
+One state per guard, `g.state`, with `g.alert` kept as the boolean the rest of the engine reads: it is true only in Alert, so `threatens()`, the guard phase, the alarm and the travel gate are unchanged. Transitions are the rules below; personality parameters (G3) will scale the numbers. Every counter in rounds ticks at the end of a guard phase; in real time the same transitions happen on arrival and sweep; a map the squad has left settles by the campaign clock on re-entry.
 
 | State | What the guard does | Leaves when |
 | --- | --- | --- |
-| **Rest** | Holds post facing its assigned heading. Sight lobe and hearing as today. | Footstep or glimpse → Suspicious. Identification, being attacked, gunshot within alarm radius, or a shout → Alert. |
-| **Suspicious** | Walks toward the `lastHeard` cell for up to *N* steps, then sweeps: two 90° turns on the spot. | Anything Alert-worthy → Alert. Steps exhausted → Stand-down. |
-| **Alert** | Today's combat routine, plus a shout (G4). Tracks the freshest of: identified target, colleague's shout, gunshot report. | No squad member identified by this guard for *K* consecutive rounds → Searching. Nerve broken → Broken. |
-| **Searching** | Goes to `lastKnown`, sweeps, then checks the neighbouring 6-tile cells for *M* rounds. | Identification → Alert. Rounds exhausted → Stand-down. |
-| **Stand-down** | Walks back to post. Vigilance raised for the rest of the map (wary: suspicion radius +50%, longer investigation). | Arrives → Rest (wary). Any trigger → the corresponding state. |
-| **Broken** | Moves away from the last threat toward the nearest ally or post, does not fire unless cornered. | *R* rounds unshot → Alert if a target is known, else Stand-down. |
+| **Rest** | Holds post facing its post heading. Sight lobe and hearing as today; a wary guard (one that has stood down once on this map) hears footsteps 1.5× as far. | Footstep or glimpse → Suspicious. Identification, a hit, a gunshot within alarm radius → Alert (a shout, G4, will join that list). |
+| **Suspicious** | Walks toward the `lastHeard` cell for up to N = 12 steps (18 wary), then sweeps two quarter turns on the spot; a fresh footstep re-aims it. Real time only: in turn mode it waits. | Anything Alert-worthy → Alert. Arrived, out of steps or unable to get there → Stand-down. |
+| **Alert** | Today's combat routine: fires on what it identifies, closes on the freshest fix (identification, colleague's report, gunshot). Beyond two-turn reach it closes in real time. | Turn mode: no squad member identified by this guard for K = 3 consecutive rounds → Searching. Real time: reaches (or cannot reach) its fix and identifies nobody → sweeps 8 ticks → Searching. Nerve broken → Broken. |
+| **Searching** | Goes to `lastKnown` (skipped when the Alert sweep already happened there), then to up to M = 4 of the neighbouring 6-tile report cells, nearest first, sweeping 8 ticks at each; in turn mode it walks with its AP and leaves one cell per arrival. Never fires: it has no target. A footstep re-centres the search on the sound. | Identification → Alert. Cells exhausted → Stand-down. |
+| **Stand-down** | Walks back to the post tile, or to the ring around it when a body or a colleague stands on it. Three failed route searches in a row (walled in) and it rests where its last partial route left it. | Arrives → Rest, wary, facing its post heading. Any trigger → the corresponding state. |
+| **Broken** | Nerve breaks when a hit leaves the guard standing at or below a third of its health (`NERVE`). A later shot, hit or miss, only tells it where the shooter is; it never steps into ground fire. It steps away from the last threat, choosing the tile that ends nearest an ally or its post, and does not fire unless cornered: no legal step increases its distance from the threat. Cornered in turn mode it strikes at what it can see and stays broken; cornered in real time (no attacks there) it turns to fight, which is Alert. | R = 2 rounds unshot (the hit round does not count; 12 ticks in real time) → Alert if a target is known, else Stand-down. A hit while broken restarts the count. |
 
-Proposed defaults, before personality scaling: N = 12, K = 3, M = 4, R = 2; shout radius follows the archetype table in G4 (base 12, Ruler 20), never the officer role.
+Constants (`engine.js`): `ALERT_ROUNDS 3, SEARCH_CELLS 4, BROKEN_ROUNDS 2, SUSPICION_STEPS 12, SUSPICION_SWEEP 2, WARY_HEARING 1.5, WARY_STEPS 1.5, NERVE 1/3, ROUND_MINUTES 10, REALTIME_ROUND_TICKS 6, STANDOFF_TRIES 3, BARK_RANGE 30`. `SWEEP_TICKS 8` is the follow-ups' constant. Shout radius will follow the archetype table in G4 (base 12, Ruler 20), never the officer role.
 
-The squad's side of "combat can end" is already built (RULES.md, "Retreat and border crossings", 2026-09-16): members walk off the map across its 3-tile border, one at a time, and the map keeps its alerted guards; return and the fight resumes as a fresh contact. A map the squad has left advances no rounds (`stepEnemy` runs only on the current map), so K, M and R alone would leave those guards Alert forever. G2 therefore needs a second clock: while the squad is elsewhere, the state machine settles by campaign time on the next arrival (proposal: 1 round = 10 clock minutes, so K + M = 7 rounds ≈ 70 minutes; the shortest possible return is two crossings = 120 minutes, so a squad that steps out and straight back always finds the guards Stood-down and wary, never mid-search; that is the intended price of a retreat, the guards regroup faster than the squad can). Acceptance (staged by writing the clock in a test, since the game cannot return in under 120 minutes): leave a map with all guards Alert; advance the clock 60 minutes and re-enter: the guards are Searching around `lastKnown`; advance 120 minutes instead: every guard is at post and wary.
+**What holds the map.** Contact is unchanged: an alert guard that could bring a squad member under fire within two of its turns, a pending casualty or fire, or the squad having opened fire this turn. The engagement economy (`s.alerted`, live AP, the warnings) holds while any guard is Alert, Searching or Broken; it releases when the last of them stands down ("Area clear"). So a searching guard four tiles away with a clear line of fire is not contact until it identifies someone, and a squad that slips out of sight is out of turn mode within K rounds while its AP stays live. The travel marker refuses only while a guard is Alert.
 
-**Combat can end.** Contact is any guard in Alert *that could bring a squad member under fire within two of its turns* (built 2026-09-17 as `threatens()`, RULES.md "Local alerts and combat pacing": alert guards beyond that reach close in real time and only warn the squad; an alert guard that reaches its fix and sees nobody sweeps eight ticks and stands down, a first, flat version of Searching → Stand-down; Searching as its own state with the M-round neighbourhood check is still to build). When none remain, the phase returns to real-time exploration even with guards alive: "Area quiet." Bleeding and burning still hold combat open as today. This is the "at rest" the user asked for, and it makes stealth and disengagement real options instead of a fight to the last guard.
+**Barks.** A transition speaks when the squad could hear it (thirty tiles) or already sees the guard: "Boris: \"Who's there?\"", "Boris lost the trail and is searching.", "Boris gave up the search.", "Boris is back at post.", "Boris breaks and runs.", "Boris is cornered and turns to fight." G3 gives each archetype its own lines. The app tags a detected guard with `?`, `SEARCHING`, `STANDING DOWN` or `BROKEN`.
 
-**Posts.** A guard's start tile and heading are its post. Patrol routes are a later addition; the state machine does not depend on them.
+**The campaign clock.** The squad's side of "combat can end" is already built (RULES.md, "Retreat and border crossings"): members walk off the map across its 3-tile border and the map keeps its alerted guards. A map the squad has left advances no rounds, so `settleGuards(map, minutes)` runs on re-entry (`world.js` `arrive()` stamps `leftAt` when a map is left and settles by the difference), one round per ROUND_MINUTES = 10: a suspicious or standing-down guard is home and wary within a round; an alert or broken guard needs K rounds to reach its fix and drop to Searching, then one round per remaining cell to stand down and walk home; the walk itself is not charged. The shortest possible return is two crossings = 120 minutes = 12 rounds, so a squad that steps out and straight back always finds the guards at post and wary, never mid-search: that is the intended price of a retreat, the guards regroup faster than the squad can. Acceptance, staged by writing the clock in a test: 20 minutes leaves them Alert where they stood; 60 minutes finds them Searching around `lastKnown` with one cell left; 120 minutes finds every guard at post and wary; the real there-and-back across a border is measured at exactly 120 minutes.
 
-**Acceptance properties.** A guard cannot skip from Rest to Searching. Stand-down always ends at the post (or at the nearest free tile to it when the post is occupied, e.g. by a downed merc) or in a higher state, never stalled. A wall blocks every sight-based transition and none of the sound-based ones. Combat ends within K + (walk to `lastKnown`) + M rounds of the last identification if nobody fires. "Cornered" for Broken means no legal step increases the guard's distance from the last threat. The existing bot cannot exploit "Area quiet" by standing still next to an alerted guard.
+**Posts.** A guard's start tile and heading are its post (`g.post`). Patrol routes are a later addition; the state machine does not depend on them.
+
+**Acceptance properties, all tested.** A guard cannot skip from Rest to Searching (rounds do nothing to a resting guard; a glimpse or footstep makes it Suspicious; only K rounds of Alert or an Alert sweep reach Searching). Stand-down always ends at the post, beside an occupied post, or where the guard stands after three failed routes, never stalled. A wall blocks every sight-based transition and none of the sound-based ones. Combat ends within K rounds of the last identification if nobody fires; the walk to `lastKnown` and the M cells then run in real time. A broken guard runs, does not fire, and comes back Alert after R rounds unshot; cornered, it fights. The existing bot cannot exploit "Area quiet" by standing still next to an alerted guard: identification, not motion, is the trigger, and a still worker in front of an alert guard is contact on the next refresh.
+
+**Balance (headless bot, factory map, seeds 1947–1986, per-seed timeout 150 s, control = the tip 8d84afc in a detached worktree; branch measured at 713b02a, after review round 1).** The bot was not changed; it does not chase a fleeing guard and does not read the new states.
+
+| Measure, 40 seeds | Control 8d84afc | G2 branch |
+| --- | --- | --- |
+| Wins / losses | 40 / 0 | 37 / 3 (1961, 1965, 1972) |
+| Stalls, timeouts | 0, 0 | 0, 0 |
+| Friendly-fire hits (log lines) | 250 | 259 |
+| Comrades downed by friendly fire | 71 | 72 |
+| Retaliation shots | 54 | 61 |
+| Fuel-tank explosions | 15 | 13 |
+| Mean surviving squad HP at the end | 185 | 165 |
+| Mean rounds | 9.9 | 9.8 |
+| Guards that broke and ran | – | 62 (1.6 a run) |
+| Alert → Searching drops | – | 146 |
+
+Reading: friendly fire is not what G2 changed (the hit count is flat), and each of the three losses is the personality system's retaliation spiral or a flamethrower burst arriving in the same round, chains the control also rolls but survives. What G2 changed is that a guard at a third of its health now runs instead of standing to be finished (1.6 a run), and comes back Alert two rounds later while the bot has moved on; searching guards re-approach from the report cells rather than converging on a stale fix. Both are the design, and they cost the squad about twenty HP a run on average. The levers, all scaled per archetype in G3: `NERVE` (higher breaks more guards), `BROKEN_ROUNDS` (longer keeps them away), `ALERT_ROUNDS` (K). Counted with a log-cap-raised copy of each tree and a 40-seed script; the balance table alone is blind to the mechanism.
+
+**Hostile review 2026-09-17 (one reviewer, two rounds).** Round 1 scored 3/5: a shot that missed a broken guard cured it (two raw `alert=true` writes in `attack()` predating G2, fixed by routing them through `targeted()`); turn-mode Searching ran the eight unbounded path searches per step (104 s per guard phase with 35 searchers on the south-fence map, now the bounded router); the clock settle ignored fires; a broken guard would flee into ground fire; nine of twenty-five mutants survived (K, R in real time, NERVE, wary steps, the re-centred search, the walled-in stand-down), each now pinned in `tests/tactics-guard-states.test.mjs`. Round 2 on 713b02a scored 4/5, merge with follow-ups: the turn-mode search phase with 35 searchers on the south-fence map costs about 3 s (one bounded route per searcher per step; caching the route across the steps of a turn, as real time already does with `g.route`, would take it under a second); the clock credits nothing below K rounds (20 minutes away leaves the Alert counter at zero, as the doc says); the timeout choice and the cornered strike got their own falsifiers after the round (19 cases).
+
+**Left for later.** Shouts (G4) as an Alert trigger; per-archetype scaling of N, K, M, R, NERVE and the bark lines (G3); guards returning to a patrol route rather than a fixed post.
 
 ## G3: twelve archetypes, drawn at random
 

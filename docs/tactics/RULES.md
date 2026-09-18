@@ -110,7 +110,9 @@ Flat species cones are superseded by measured-vision sight lobes: total field, b
 
 ## Guard alertness (2026-09-16, in progress)
 
-A gunshot alerts every guard within twice the weapon's range, whoever fired; alerted listeners converge on the approximate report. The alert / at-rest state machine and guard personalities drawn at random from twelve archetypes are planned in GUARDS.md.
+A gunshot alerts every guard within twice the weapon's range, whoever fired; alerted listeners converge on the approximate report.
+
+**Alert states (G2, 2026-09-17).** Every guard is in one of six states: Rest at its post; Suspicious after a footstep or glimpse (walks up to 12 steps toward the sound, 18 once wary, sweeps two quarter turns, stands down); Alert (today's combat routine, closing on the freshest fix; beyond two-turn reach it closes in real time); Searching after three rounds without identifying anyone, or after the real-time sweep at its fix (visits up to four neighbouring 6-tile cells, never fires, drops back to Alert on an identification); Stand-down (walks back to its post and rests, wary: it then hears footsteps half again as far); Broken when a hit leaves it at a third of its health or less (runs from the shooter toward an ally or its post for two rounds, fires only when cornered, then returns to Alert if it still knows where you are). Contact, and turn mode with it, needs a guard in Alert; Searching and Broken guards still hold the live-AP economy ("Area quiet") until they stand down ("Area clear"). A map you leave settles by the campaign clock on your return, one round per ten minutes, so the shortest there-and-back across a border (two hours) always finds its guards at post and wary. Barks reach the log within thirty tiles. The rules, constants and acceptance checks are in GUARDS.md G2; guard personalities drawn at random from twelve archetypes remain planned there (G3).
 
 ## Retreat and border crossings — 2026-09-16
 
