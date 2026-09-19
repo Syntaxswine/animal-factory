@@ -52,17 +52,24 @@ export const recoveryEnds=(s,u)=>u.casualty==='stable'?u.recoveryTurns+(s.round=
 // A physical body on this map is alive(u)||incapacitated(u) with no `away` flag; projectiles.js and explosives.js inline that test (importing engine there would be a cycle).
 export const medicalCost=u=>Math.ceil(12-9*Math.max(0,Math.min(100,Number(u.medical)||0))/100);
 export const squad=s=>s.units.filter(u=>u.team==='squad'&&alive(u));
+// Ids are stable: a fresh map numbers its units by index, a hired merc keeps its campaign id (recruits.js) on every map it visits, so the index is only a fast path.
+export const unit=(s,id)=>{const u=s.units[id];return u&&u.id===id?u:s.units.find(v=>v.id===id);};
+export const roster=s=>s.units.filter(u=>u.team==='squad');
 export const guards=s=>s.units.filter(u=>u.team==='guard'&&alive(u));
 export const occupant=(s,x,y,z=0)=>s.units.find(u=>(alive(u)||incapacitated(u))&&u.x===x&&u.y===y&&levelOf(u)===z);
 export const tile=(s,x,y,z=0)=>terrainAt(s,x,y,z);
 export const walkable=(s,x,y,z=0)=>passable(s,{x,y,z});
 export function log(s,message){s.log.unshift(message);s.log=s.log.slice(0,50);s.revision++;}
+// One unit record, the shape every system reads. On a fresh map the id is the index; a hired merc brings its campaign id (world.js enlist).
+export function spawnUnit(s,{team,name,species,x,y,z=0,weapon,id=s.units.length,medical=0}){const u={id,team,name,species,x,y,z,medical,medkits:team==='squad'?1:0,wireCutters:team==='squad',casualty:null,bleedTurns:0,sneaking:false,stealth:20,overwatch:null,lastHeard:null,stance:'standing',hp:team==='squad'?100:45,maxHp:team==='squad'?100:45,ap:team==='squad'?12:Math.max(7,WEAPONS[weapon].cost),maxAp:team==='squad'?12:Math.max(7,WEAPONS[weapon].cost),accuracy:team==='squad'?85:55,weapon,ammo:Object.fromEntries(Object.entries(WEAPONS).map(([k,v])=>[k,v.mag])),alert:false,state:'rest',wary:false,post:null,lastKnown:null,facing:1,heading:team==='squad'?45:225,cone:sightOf({species}).field,moved:false,fired:false,lastAt:x+','+y+','+z,steps:0};s.units.push(u);return u;}
+export const DEFAULT_CAST=[['Yakov','horse','assault'],['Anya','goat','rifle'],['Misha','donkey','pistol'],['Vera','sheep','knife']];
+// options.cast: [{name,species,weapon}] takes the squad starts in order (the balance instrument fields a hired merc alone); absent, the four comrades.
 export function createGame(seed=1947,definition=factoryMap(),detect=true,difficulty='standard',options={}){
  const errors=validateMap(definition);if(errors.length)throw Error(errors.join(' '));
  const s={difficulty:difficulty==='easy'?'easy':'standard',map:structuredClone(definition.terrain),upper:structuredClone(definition.upper),stairs:structuredClone(definition.stairs),climbs:structuredClone(definition.climbs||[]),props:structuredClone(definition.props||[]),sectors:structuredClone(definition.sectors),edges:{...definition.edges},definition:structuredClone(definition),units:[],phase:'explore',round:0,selected:0,visible:new Set(),seen:new Set(),detected:new Set(),glimpses:{},log:[],seed,perceptionSeed:seed,revision:0,queue:[],enemyIndex:0,contacts:{},effect:null};
- const add=(team,name,species,x,y,weapon,z=0)=>s.units.push({id:s.units.length,team,name,species,x,y,z,medical:team==='squad'?[0,25,50,100][s.units.length]:0,medkits:team==='squad'?1:0,wireCutters:team==='squad',casualty:null,bleedTurns:0,sneaking:false,stealth:20,overwatch:null,lastHeard:null,stance:'standing',hp:team==='squad'?100:45,maxHp:team==='squad'?100:45,ap:team==='squad'?12:Math.max(7,WEAPONS[weapon].cost),maxAp:team==='squad'?12:Math.max(7,WEAPONS[weapon].cost),accuracy:team==='squad'?85:55,weapon,ammo:Object.fromEntries(Object.entries(WEAPONS).map(([k,v])=>[k,v.mag])),alert:false,state:'rest',wary:false,post:null,lastKnown:null,facing:1,heading:team==='squad'?45:225,cone:sightOf({species}).field,moved:false,fired:false,lastAt:x+','+y+','+z,steps:0});
- const cast=[['Yakov','horse','assault'],['Anya','goat','rifle'],['Misha','donkey','pistol'],['Vera','sheep','knife']];
- definition.starts.forEach((p,i)=>add('squad',cast[i][0],cast[i][1],p.x,p.y,cast[i][2],levelOf(p)));
+ const add=(team,name,species,x,y,weapon,z=0)=>spawnUnit(s,{team,name,species,x,y,z,weapon,medical:team==='squad'?[0,25,50,100][s.units.length]:0});
+ const cast=options.cast?options.cast.map(c=>[c.name,c.species,c.weapon]):DEFAULT_CAST;
+ definition.starts.forEach((p,i)=>{if(cast[i])add('squad',cast[i][0],cast[i][1],p.x,p.y,cast[i][2],levelOf(p));});
  const names=['Boris','Lev','Grigori','Oleg','Pavel','Igor','Anton','Vadim','Yuri','Sasha','Pyotr','Nikolai'];
  definition.guards.forEach((g,i)=>{add('guard',names[i]||`Guard ${i+1}`,g.species,g.x,g.y,g.weapon,levelOf(g));if(g.outfit)s.units.at(-1).outfit=g.outfit;if(Number.isFinite(g.heading))s.units.at(-1).heading=g.heading;});
  for(const g of guards(s))g.post={x:g.x,y:g.y,z:levelOf(g),heading:g.heading}; // a guard's start tile and heading are its post
@@ -157,7 +164,7 @@ function refreshNow(s){
  if(!squad(s).length){if(!s.defeat){const escaped=s.units.filter(u=>u.team==='squad'&&u.away),converted=[];for(const u of s.units.filter(u=>u.team==='squad'&&!u.away&&!['captured','dead','quit'].includes(u.casualty))){u.casualty=u.casualty==='stable'?'captured':'dead';u.bleedTurns=0;u.recoveryTurns=0;u.ap=0;u.overwatch=null;syncWeapons(u);converted.push(u);}
   if(s.rules?.social&&escaped.length)for(const u of converted)for(const line of partnerLost(s.units,u,u.casualty))log(s,line);/* the crossers who escaped grieve the comrades the lost map cost; a defeat nobody escaped settles nothing */const fresh=s.units.filter(u=>u.team==='squad'&&!u.recorded&&['captured','dead'].includes(u.casualty));s.defeat={location:s.definition.name,round:s.round,escaped:escaped.map(u=>({id:u.id,name:u.name})),captured:fresh.filter(u=>u.casualty==='captured').map(u=>structuredClone(u)),dead:fresh.filter(u=>u.casualty==='dead').map(u=>({id:u.id,name:u.name}))};for(const u of fresh)u.recorded=true; // a loss lists only the comrades it cost; earlier losses on the roster stay recorded once
 log(s,converted.length===0&&s.units.some(u=>u.team==='squad'&&u.casualty==='quit')?'The squad has walked out.':s.defeat.captured.length+' captured / '+s.defeat.dead.length+' dead.'+(escaped.length?' '+escaped.length+' crossed the map edge.':''));}s.phase='lost';s.queue=[];return;}
- if(!alive(s.units[s.selected]))s.selected=squad(s)[0].id;
+ if(!alive(unit(s,s.selected)))s.selected=squad(s)[0].id;
  s.exposed={};for(const g of guards(s))if(s.detected.has(g.id)){const zones=new Set();for(const u of squad(s))if(canSee(s,u,g))for(const zone of visibleZones(s,u,g))zones.add(zone);s.exposed[g.id]=[...zones];}
  const pending=s.units.some(u=>['bleeding','stable'].includes(u.casualty)||alive(u)&&u.burningTurns>0)||(s.fires?.length||0)>0; // a stabilized comrade is still down: the turns keep coming until it stands
  if(!guards(s).length&&!pending){if(s.phase!=='won'){log(s,'Local map cleared. Explore or gather at the travel marker.');s.queue=[];}s.phase='won';s.alerted=new Set();s.engaged=false;contactEnds(s);s.revision++;return;}
@@ -186,7 +193,7 @@ log(s,converted.length===0&&s.units.some(u=>u.team==='squad'&&u.casualty==='quit
 
  // Guards newly alerted by a report or a sighting who cannot reach the squad get their warning whatever the phase did (a shot of your own may have opened the turn).
  if(fresh.length&&!threat&&!warned)log(s,heard());
- if(!alive(s.units[s.selected]))s.selected=squad(s)[0].id;
+ if(!alive(unit(s,s.selected)))s.selected=squad(s)[0].id;
  s.revision++;
 }
 // AP is charged in turn mode and, in real time, whenever a guard on the map is alert or the squad has opened fire: the engagement is one economy;
@@ -196,11 +203,12 @@ export function canControl(s,u){return u&&alive(u)&&!u.burningTurns&&u.team==='s
 // Downed comrades left on a map when the last standing squad member crosses its edge meet the defeat rule: stabilized are captured, bleeding die.
 // G5: the end of a contact (the map won, or the last alerted guard stood down) lifts every merc's happiness when nobody went down, and lets a merc
 // whose meter has been at zero for a day walk: quitting never happens mid-contact.
-function contactEnds(s){for(const u of squad(s))if(u.quitPending){if(u.social.happiness===0)quitMerc(s,u);else u.quitPending=false;} // a meter that rose again before the end is no longer quitting
+function contactEnds(s){for(const u of squad(s))if(u.contract?.expired)quitMerc(s,u,'contract'); // a contract that ran out mid-fight ends with the contact (world.js settleContracts)
+ for(const u of squad(s))if(u.quitPending){if(u.social.happiness===0)quitMerc(s,u);else u.quitPending=false;} // a meter that rose again before the end is no longer quitting
  if(s.fight){if(!s.fight.casualty&&cleanWin(squad(s)))log(s,'A clean fight: the squad\'s spirits lift.');s.fight=null;}}
 // Quitting is a roster state beside captured and dead: the merc keeps its skills and history in the record, takes what it holds, and is off the map.
-export function quitMerc(s,u){if(!onContract(u))return false;u.casualty='quit';u.quitPending=false;u.ap=0;u.overwatch=null;u.away=undefined;u.x=-1;u.y=-1;u.z=0;syncWeapons(u);log(s,u.name+' has quit the squad.');
- for(const line of partnerLost(s.units,u,'quit'))log(s,line);if(!alive(s.units[s.selected]))s.selected=squad(s)[0]?.id??s.selected;s.revision++;return true;}
+export function quitMerc(s,u,cause='quit'){if(!onContract(u))return false;u.casualty='quit';u.quitPending=false;if(u.contract)u.contract.ended=cause;u.ap=0;u.overwatch=null;u.away=undefined;u.x=-1;u.y=-1;u.z=0;syncWeapons(u);log(s,cause==='contract'?u.name+"'s contract has ended: "+u.name+' has left the squad.':cause==='released'?u.name+' was paid off and left the squad.':u.name+' has quit the squad.');
+ for(const line of partnerLost(s.units,u,'quit'))log(s,line);if(!alive(unit(s,s.selected)))s.selected=squad(s)[0]?.id??s.selected;s.revision++;return true;}
 export function abandonCasualties(s){const left=[];for(const u of s.units)if(u.team==='squad'&&!u.away&&incapacitated(u)){u.casualty=u.casualty==='stable'?'captured':'dead';if(s.rules?.social)for(const line of partnerLost(s.units,u,u.casualty))log(s,line);u.bleedTurns=0;u.recoveryTurns=0;u.ap=0;u.overwatch=null;syncWeapons(u);left.push(u);}return left;}
 export function setStance(s,u,stance){
  if(!Object.hasOwn(STANCES,stance)||!canControl(s,u)||s.queue.length||stanceOf(u)===stance||(combatCosts(s)&&u.ap<2))return false;
@@ -218,7 +226,7 @@ export function move(s,u,x,y,z=levelOf(u)){
 export function stepMovement(s){
  if(!s.queue.length||!['explore','player','won'].includes(s.phase))return false;
  if(s.queue[0].group)return stepGroupMovement(s);
- let step=s.queue[0];const actor=s.units[step.id];if(step.goal&&canControl(s,actor)){const goal=step.goal,path=navigationPath(s,actor,goal.x,goal.y,goal.z);if(!path?.length){s.queue=[];log(s,'Route stopped: destination reached or no discovered route remains.');return false;}s.queue=path.map(p=>({id:actor.id,...p,goal}));}step=s.queue.shift();const u=s.units[step.id],currentStep=u&&movementNeighbors(s,u).find(p=>p.x===step.x&&p.y===step.y&&p.z===levelOf(step));if(!canControl(s,u)||!currentStep||occupant(s,step.x,step.y,levelOf(step))||(s.phase==='player'&&u.ap<currentStep.cost)){s.queue=[];return false;}
+ let step=s.queue[0];const actor=unit(s,step.id);if(step.goal&&canControl(s,actor)){const goal=step.goal,path=navigationPath(s,actor,goal.x,goal.y,goal.z);if(!path?.length){s.queue=[];log(s,'Route stopped: destination reached or no discovered route remains.');return false;}s.queue=path.map(p=>({id:actor.id,...p,goal}));}step=s.queue.shift();const u=unit(s,step.id),currentStep=u&&movementNeighbors(s,u).find(p=>p.x===step.x&&p.y===step.y&&p.z===levelOf(step));if(!canControl(s,u)||!currentStep||occupant(s,step.x,step.y,levelOf(step))||(s.phase==='player'&&u.ap<currentStep.cost)){s.queue=[];return false;}
  openDoorBetween(s,u,step);u.heading=headingTo(u,step);u.facing=(step.x-u.x)-(step.y-u.y)>=0?1:-1;u.x=step.x;u.y=step.y;u.z=levelOf(step);u.steps++;u.overwatch=null;emitNoise(s,u,u.sneaking?3:10);if(s.phase==='player')u.ap-=currentStep.cost;enterFire(s,u);refresh(s);return true;
 }
 export function coverAgainst(s,a,b){
@@ -369,7 +377,7 @@ export const pileOpen=p=>p.body===undefined||!!p.searched;
 export const pileContents=p=>pileOpen(p)?p.items:[];
 const describeItem=i=>i.type==='weapon'?WEAPONS[i.kind].short+' ('+i.rounds+' loaded)':i.kind==='flamethrower'?i.count+' fuel bursts':i.count+' '+i.kind+' rounds';
 export function searchPreview(s,u,pile){const cost=combatCosts(s)?SEARCH_COST:0;let reason='';if(!canControl(s,u)||s.queue.length)reason='Cannot act now';else if(!pile||!s.loot.includes(pile)||pileOpen(pile))reason='Nothing to search';else if(!adjacentTo(s,u,pile))reason='Stand beside the body';else if(combatCosts(s)&&u.ap<cost)reason='Not enough AP';return {ok:!reason,reason,cost};}
-export function searchBody(s,u,pile){const p=searchPreview(s,u,pile);if(!p.ok)return false;u.ap-=p.cost;u.overwatch=null;pile.searched=true;const who=s.units[pile.body]?.name||'the body';log(s,u.name+' searched '+who+': '+(pile.items.length?pile.items.map(describeItem).join(', '):'nothing worth taking')+'.');refresh(s);return true;}
+export function searchBody(s,u,pile){const p=searchPreview(s,u,pile);if(!p.ok)return false;u.ap-=p.cost;u.overwatch=null;pile.searched=true;const who=unit(s,pile.body)?.name||'the body';log(s,u.name+' searched '+who+': '+(pile.items.length?pile.items.map(describeItem).join(', '):'nothing worth taking')+'.');refresh(s);return true;}
 export function inventoryTransfer(s,u,index,mode,target=null){if(!canControl(s,u)||s.queue.length)return false;const near=p=>adjacentTo(s,u,p);if(mode==='take'){if(!s.loot.includes(target)||!near(target)||!pileOpen(target))return false;const item=target.items[index];if(!item||!accepts(u,item))return false;target.items.splice(index,1);receive(u,item);}else{syncWeapons(u);const item=u.pack[index];if(!item)return false;if(mode==='give'){if(!s.units.includes(target)||target===u||!alive(target)||target.team!=='squad'||!near(target)||!accepts(target,item))return false;receive(target,item);}else if(mode==='drop'){let pile=s.loot.find(p=>p.body===undefined&&p.x===u.x&&p.y===u.y&&levelOf(p)===levelOf(u));/* never into a closed body: a dropped item stays in the open */if(!pile){pile={x:u.x,y:u.y,z:levelOf(u),items:[]};s.loot.push(pile);}pile.items.push(item);}else return false;u.pack.splice(index,1);if(item.type==='weapon'){u.slots=u.slots.map(k=>k===item.kind?null:k);if(u.weapon===item.kind)u.weapon='hands';u.overwatch=null;}}log(s,'Inventory updated.');return true;}
 export function endTurn(s){if(s.phase!=='player'||s.queue.length)return false;s.engaged=false;for(const u of s.units)if(u.casualty==='bleeding'&&--u.bleedTurns<=0){u.casualty='dead';log(s,u.name+' died from blood loss.');if(s.fight)s.fight.casualty=true;if(s.rules?.social)for(const line of partnerLost(s.units,u,'dead'))log(s,line);}
  // Only a turn that began after the stabilization counts; the third such end runs the counter out, and the comrade stands when the next squad turn begins (stepEnemy), never for the guards' volley first.
@@ -414,17 +422,17 @@ export function cutPreview(s,u,edge){let reason='';const cost=4;if(!canControl(s
 export function cutFence(s,u,edge){const p=cutPreview(s,u,edge);if(!p.ok)return false;if(combatCosts(s))u.ap-=p.cost;s.edges[edge]='fence-cut';u.overwatch=null;log(s,u.name+' cut a passable opening in the fence.');refresh(s);return true;}
 
 export function moveGroup(s,ids,leader,x,y,z=levelOf(leader)){
- const members=[...new Set(ids)].map(id=>s.units[id]);if(!members.length||!members.includes(leader)||members.some(u=>!canControl(s,u)||levelOf(u)!==levelOf(leader)))return false;
+ const members=[...new Set(ids)].map(id=>unit(s,id));if(!members.length||!members.includes(leader)||members.some(u=>!canControl(s,u)||levelOf(u)!==levelOf(leader)))return false;
  const dx=x-leader.x,dy=y-leader.y,reserved=new Set(),orders=[];
  // Selected comrades vacate their starts; execution still checks real occupancy.
  const planning=navigationState(s);planning.units=planning.units.filter(u=>!members.includes(u));
  // Frontmost members vacate space first; every member still takes at most one step per tick.
  members.sort((a,b)=>(b.x*dx+b.y*dy)-(a.x*dx+a.y*dy));
  for(const u of members){const gx=u.x+dx,gy=u.y+dy,candidates=[];for(let oy=-2;oy<=2;oy++)for(let ox=-2;ox<=2;ox++)candidates.push({x:gx+ox,y:gy+oy,z,d:ox*ox+oy*oy});candidates.sort((a,b)=>a.d-b.d);let found=null;for(const goal of candidates){if(reserved.has(key(goal.x,goal.y,z)))continue;const path=inBounds(goal.x,goal.y,z)?pathTo(planning,u,goal.x,goal.y,z):null;if(path&&(path.length||u.x===goal.x&&u.y===goal.y&&levelOf(u)===z)){if(s.phase==='player'&&path.length&&path[0].cost>u.ap)continue;found=goal;break;}}if(!found)return false;reserved.add(key(found.x,found.y,z));orders.push({id:u.id,goal:{x:found.x,y:found.y,z}});}
- if(orders.every(o=>{const u=s.units[o.id];return u.x===o.goal.x&&u.y===o.goal.y&&levelOf(u)===z;}))return false;for(const u of members)u.overwatch=null;s.queue=[{group:orders}];log(s,'Group movement ordered for '+orders.length+' comrades.');return true;
+ if(orders.every(o=>{const u=unit(s,o.id);return u.x===o.goal.x&&u.y===o.goal.y&&levelOf(u)===z;}))return false;for(const u of members)u.overwatch=null;s.queue=[{group:orders}];log(s,'Group movement ordered for '+orders.length+' comrades.');return true;
 }
-function stepGroupMovement(s){const order=s.queue[0];let moved=false;for(const entry of order.group){const u=s.units[entry.id],goal=entry.goal;if(!canControl(s,u)){s.queue=[];return moved;}if(u.x===goal.x&&u.y===goal.y&&levelOf(u)===goal.z)continue;const path=navigationPath(s,u,goal.x,goal.y,goal.z),step=path?.[0],valid=step&&movementNeighbors(s,u).find(p=>p.x===step.x&&p.y===step.y&&p.z===step.z);if(!valid||occupant(s,step.x,step.y,step.z)||(s.phase==='player'&&u.ap<valid.cost)){s.queue=[];log(s,'Group stopped: route blocked or a comrade lacks AP.');return moved;}openDoorBetween(s,u,step);u.heading=headingTo(u,step);u.facing=(step.x-u.x)-(step.y-u.y)>=0?1:-1;u.x=step.x;u.y=step.y;u.z=step.z;u.steps++;u.overwatch=null;emitNoise(s,u,u.sneaking?3:10);if(s.phase==='player')u.ap-=valid.cost;enterFire(s,u);moved=true;refresh(s);if(s.queue[0]!==order)return moved;}
- if(order.group.every(e=>{const u=s.units[e.id];return u.x===e.goal.x&&u.y===e.goal.y&&levelOf(u)===e.goal.z;}))s.queue=[];return moved;
+function stepGroupMovement(s){const order=s.queue[0];let moved=false;for(const entry of order.group){const u=unit(s,entry.id),goal=entry.goal;if(!canControl(s,u)){s.queue=[];return moved;}if(u.x===goal.x&&u.y===goal.y&&levelOf(u)===goal.z)continue;const path=navigationPath(s,u,goal.x,goal.y,goal.z),step=path?.[0],valid=step&&movementNeighbors(s,u).find(p=>p.x===step.x&&p.y===step.y&&p.z===step.z);if(!valid||occupant(s,step.x,step.y,step.z)||(s.phase==='player'&&u.ap<valid.cost)){s.queue=[];log(s,'Group stopped: route blocked or a comrade lacks AP.');return moved;}openDoorBetween(s,u,step);u.heading=headingTo(u,step);u.facing=(step.x-u.x)-(step.y-u.y)>=0?1:-1;u.x=step.x;u.y=step.y;u.z=step.z;u.steps++;u.overwatch=null;emitNoise(s,u,u.sneaking?3:10);if(s.phase==='player')u.ap-=valid.cost;enterFire(s,u);moved=true;refresh(s);if(s.queue[0]!==order)return moved;}
+ if(order.group.every(e=>{const u=unit(s,e.id);return u.x===e.goal.x&&u.y===e.goal.y&&levelOf(u)===e.goal.z;}))s.queue=[];return moved;
 }
 
 export function turnTo(s,u,heading){if(!canControl(s,u)||s.queue.length||!Number.isFinite(heading))return false;heading=((heading%360)+360)%360;if(heading===u.heading)return false;u.overwatch=null;u.heading=heading;u.facing=Math.cos(heading*Math.PI/180)-Math.sin(heading*Math.PI/180)>=0?1:-1;refresh(s);return true;}

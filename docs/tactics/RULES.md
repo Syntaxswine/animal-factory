@@ -181,6 +181,10 @@ Decisions recorded here because PLAYTEST-FOLLOWUPS.md left them open: the moveme
 
 Checks: `tests/tactics-recovery.test.mjs` (six cases: fatigue at the downing; three full turns with the medic's turn not counting; a cleared map waits for the comrade then is won; Easy counts from the downing; a blast on a recovering comrade kills and the dead and captured stay down; a comrade left recovering at a border crossing is captured). `tests/tactics-medical.test.mjs` and `tests/tactics-difficulty.test.mjs` updated from the old encounter-end rule.
 
+## Mercenary contracts — 2026-09-18
+
+The hiring hall (**Mercenaries**, on a cleared map) signs mercenaries by the day, week or month from a slate of six candidates a campaign day; rates run $100 to $10,000 a day and buy base stats, level, training and kit monotonically; a candidate's footing with every comrade is shown before signing. Contracts run on the campaign clock and a merc whose contract is up leaves at the next quiet moment. Rules, tables and balance in ECONOMY.md, "Mercenary contracts".
+
 ## Implemented weapon ranges and accuracy
 
 Unarmed/knife: 1 tile including clear diagonals on the same floor. Flamethrower: 10. Pistol/shotgun: 12. SMG: 20. AK-47/rifle: 24. Heavy machine gun: 28. Sniper rifle: 36. Grenade launcher: 22 effective; RPG: 40 effective. Existing explosive overshoot, scatter and height advantages remain.

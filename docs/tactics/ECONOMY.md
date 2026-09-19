@@ -16,7 +16,7 @@ The overmap shows the treasury, total production, and each location's liberation
 status and potential income. Production continues during play, travel, rest and
 training using the same elapsed-time calculation. Restart and reload discard the
 clock and treasury along with the existing session-only campaign.
-Spending and offline production are not implemented.
+Offline production is not implemented. The treasury's first sink is the hiring hall below.
 
 ## Rest and training
 
@@ -39,6 +39,46 @@ points through the same progression rules as combat. Assign points on the existi
 character sheet. Training does not heal. Dead and captured troops receive neither
 healing nor XP, and unresolved casualties block downtime. Time jumps affect the
 entire campaign and continue factory production.
+
+## Mercenary contracts — 2026-09-18
+
+Direction (the boss, 2026-09-18): a hiring screen with a cropped sprite portrait, the merc's stats, its personality type and the types it does and does not work well with, the equipment it comes with, and its price by the day, the week and the month; rates from $100 a day to $10,000 a day, a week costing about five days and a month about twelve; the $100 merc next to useless, the $10,000 merc able to clear a map alone.
+
+Built on branch `tactics-hiring`, stacked on G5 (PR #10): module `dist/tactics/recruits.js` (pure: candidates, the rate and kit ladders, compatibility, the portrait crop, contract arithmetic), `world.js` (the hall: `candidates`, `hire`, `renew`, `release`, `settleContracts`, `enlist`), the engine's stable unit ids, and the **Mercenaries** screen in `app.js`. Tests: `tests/tactics-hiring.test.mjs` (13 cases).
+
+**The hall.** Open **Mercenaries** from the header or the overmap. Hiring is gated like rest: a cleared map, no queued movement, nobody waiting beyond an edge, no unresolved casualty (`hiringReason`). Each campaign day offers six candidates (`slate`): slot *i* draws its grade inside [*i*/6, (*i*+1)/6), so every day has a cheap hand and a dear one; name, species (horse, goat, donkey, sheep, cow, hen, skunk) and archetype are hashes of the campaign's roster seed, the day and the slot, never an RNG stream, so a campaign reproduces its slates and nothing here moves a bullet or a social roll. Names are unique on the slate and against the roster (a taken name walks forward through the pool of 36; none is a comrade's or a guard's). A signed candidate leaves the slate; the slate turns over at midnight. The roster holds eight on contract.
+
+**The rate.** A candidate's grade *g* (0..1) sets its daily rate at $100 × 100^*g*, on a clean figure (tens under a thousand, hundreds under ten thousand): $100 at 0, $1,000 at ½, $10,000 at 1. A week is 5 + *c* days' rate and a month 12 + 2*c*, where *c* is the archetype's commitment: −½ for the types that want to belong or to keep order (Ruler, Innocent, Everyman, Caregiver, Lover), +½ for the free spirits (Explorer, Rebel, Jester, Magician), 0 otherwise. So a week runs 4.5 to 5.5 days' rate and a month 11 to 13. A candidate whose predicted footing with any comrade on the roster is opposing (resented or feud at the matrix's resting level) asks 20 % more, and the card and the log say with whom.
+
+**What the rate buys**, monotonically in the grade:
+
+| | Grade 0 ($100) | Grade 1 ($10,000) | The comrades |
+| --- | --- | --- | --- |
+| Base health / AP / accuracy | 60 / 9 / 55 | 160 / 16 / 115 | 100 / 12 / 85 (≈ grade .45, about $790 a day) |
+| Base medical / stealth | 0 / 10 | 60 / 60 | 0–100 / 20 |
+| Level, points spent | 1, none | 10, 27 by the archetype's profile (a Hero: shooting 14, vitality 9, mobility 4) | 1 |
+| Kit | a knife and the clothes they stand in | sniper rifle (15 reserve), AK-47 (90), three grenades, 3 medkits, cutters | per comrade |
+
+The kit ladder: knife; pistol and knife with 8 rounds and a medkit from grade .15; rifle and pistol, cutters from .35; AK-47 and pistol with 60 rounds and 2 medkits from .55; sniper rifle and AK-47 from .75; grenades and 3 medkits from .9. Species traits stack on the base as they do for the comrades (`recalculate` reads `u.base`; a unit without one keeps the comrades' numbers, so nothing changes for them). A recruit's later levels and points work as today.
+
+**The card** shows the portrait (the head and shoulders of the standing sprite: a 128-pixel square centred on the figure's axis at the top of its content box, `portraitCrop`), the numbers a hire would have, the training ranks, the species line, the archetype in one line (wants, fears, speaks) and its pitch in register, **works well with** (the types liked both ways at the resting level of the matrix) and **does not work with** (opposing either way), the predicted footing with each comrade on the roster as labels (would get on with Vera; would take time with Yakov; would grate on Misha; would clash with Anya: the lower of the two directions decides), the kit, and the three prices.
+
+**A hire** is paid from the treasury up front, arrives beside the selected comrade on free ground (`enlist`: the same landing search as travel), carries a campaign id from 1000 (`world.nextId`; ids are stable across maps and the engine now looks units up by id, `unit(s,id)`, so a fifth merc and a map's guard number 4 no longer collide), keeps the archetype's ledger: its bonds toward every comrade and theirs toward it at the matrix's resting level, happiness 100 under the campaign knob, the archetype's hit lines for friendly fire, its sheet from the archetype. The desk's cards and the 1–9 keys follow roster order, not the id.
+
+**Contracts** run on the campaign clock (`u.contract`: term, from, until, paid, renewals). Every clock advance settles them: a contract past its minute is up ("X's contract is up."), and the merc walks at the next quiet moment: at once on a calm map, otherwise when the contact ends, through the G5 quit path with its own line ("X's contract has ended: X has left the squad."), taking what it carries; a liked partner's departure costs the meter as a quit does. Renew from the hall while the map is quiet: renewal extends from the contract's end, so renewing early loses nothing, and pay day lifts the meter by 10 (the row GUARDS.md G5 left as a proposal). Pay a merc off and it leaves now, nothing refunded. The four comrades are never on contract: they stay for the cause. A contract cannot be renewed mid-fight; a merc whose contract runs out in one keeps fighting until the map is quiet.
+
+**Balance** (headless bot, factory map, seeds 1947–1966, campaign knob on; `tools/tactics-balance.mjs --roster`):
+
+| Roster | Wins / losses | Reading |
+| --- | --- | --- |
+| The four comrades (control) | 18 / 2 | Unchanged: knob off and on, twenty seeds hash-identical to the G5 tip ed88234. |
+| The comrades and a $100 hand | 20 / 20 | The hand arms itself from the start piles (15 scavenges a run against 9) and draws fire; within the dice of the control. |
+| A $100 hand alone | 0 / 20 | Dead by round 6 on average, gun or no gun. |
+| A $10,000 veteran alone | 17 / 20 | Clears the map with 86–215 HP left; the three losses are the bot walking into the flamethrower guard. |
+
+The ends of the ladder do what the brief says at the bot's skill; a human should do better with the veteran and no better with the hand. Levers: `BASE_LOW`/`BASE_HIGH`, the kit thresholds, `SURCHARGE`, `COMMITMENT`, `ROSTER_MAX`, `SLATE`.
+
+**Not built.** A daily wage drawn from the treasury (contracts are paid up front); re-recruiting a merc that quit; hiring on a lost map (campaign continuation after a wipe is STORY.md's open question 3); the rescue facility; bond events beyond the matrix at signing.
 
 # Sprite integration
 

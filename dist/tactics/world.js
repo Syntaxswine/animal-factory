@@ -2,7 +2,11 @@ import {restStrain,driftBonds} from './personalities.js';
 import {settleHappiness} from './happiness.js';
 import {quitMerc} from './engine.js';
 import {factoryMap,generateMap,blockedEdge,tileKey,levelOf,neighbors,W,H} from './maps.js';
-import {createGame,squad,guards,alive,incapacitated,canControl,abandonCasualties,occupant,refresh,walkable,log,STANCES,stanceOf,emitNoise,enterFire,combatCosts,settleGuards} from './engine.js';
+import {createGame,squad,guards,alive,incapacitated,canControl,abandonCasualties,occupant,refresh,walkable,log,STANCES,stanceOf,emitNoise,enterFire,combatCosts,settleGuards,spawnUnit,unit,WEAPONS} from './engine.js';
+import {initInventory} from './inventory.js';
+import {initProgression} from './progression.js';
+import {onContract} from './happiness.js';
+import {slate,fit,dailyRate,pricesFor,buildRecruit,recruitSocial,contractPrices,payDay,ROSTER_MAX,MERC_ID_BASE,DAY_MINUTES} from './recruits.js';
 import {awardXP} from './progression.js';
 export const TRAVEL_MINUTES=60,PLAY_MINUTES_PER_SECOND=1,REST_RECOVERY_HOURS=48,MEDICAL_RECOVERY_HOURS=24,MEDIC_SKILL_REQUIRED=25;
 // The overmap is a grid of local-map tiles. Two tiles are linked when they touch; a squad walks from one to the next across the shared edge.
@@ -10,7 +14,7 @@ export const BORDER=3,SIDES={north:{dx:0,dy:-1},east:{dx:1,dy:0},south:{dx:0,dy:
 export function linksFrom(positions){const ids=Object.keys(positions),links=[];for(const a of ids)for(const b of ids)if(a<b&&Math.abs(positions[a].x-positions[b].x)+Math.abs(positions[a].y-positions[b].y)===1)links.push([a,b]);return links;}
 export function createWorld(custom=null,difficulty='standard',rosterSeed=1947) {
   const positions={factory:{x:0,y:0},yard:{x:1,y:0},annex:{x:2,y:0}};
-  return {difficulty,current:'factory',start:'factory',clock:{minutes:480,incomeRemainder:0},money:0,journeys:0,lastIncome:0,locations:{factory:{type:'factory'},yard:{type:'yard'},annex:{type:'factory'}},definitions:{factory:custom||factoryMap(),yard:generateMap(83,'Freight yard'),annex:generateMap(126,'Outer factory')},rosterSeed,states:{factory:createGame(1947,custom||factoryMap(),true,difficulty,{social:true,rosterSeed})},positions,links:linksFrom(positions)};
+  return {difficulty,current:'factory',start:'factory',clock:{minutes:480,incomeRemainder:0},money:0,journeys:0,lastIncome:0,locations:{factory:{type:'factory'},yard:{type:'yard'},annex:{type:'factory'}},definitions:{factory:custom||factoryMap(),yard:generateMap(83,'Freight yard'),annex:generateMap(126,'Outer factory')},rosterSeed,nextId:MERC_ID_BASE,hired:[],states:{factory:createGame(1947,custom||factoryMap(),true,difficulty,{social:true,rosterSeed})},positions,links:linksFrom(positions)};
 }
 export const currentMap=world=>world.states[world.current];
 // Shortest overmap route from the original starting tile, never from the squad.
@@ -35,7 +39,7 @@ export function advanceTime(world,minutes){
 }
 export function tickWorld(world,elapsedMs,{paused=false}={}){
  if(paused||currentMap(world).phase==='lost'||!Number.isFinite(elapsedMs)||elapsedMs<=0)return 0;
- const minutes=elapsedMs/1000*PLAY_MINUTES_PER_SECOND,income=advanceTime(world,minutes);settleMorale(world,currentMap(world),minutes);return income;
+ const minutes=elapsedMs/1000*PLAY_MINUTES_PER_SECOND,income=advanceTime(world,minutes);settleMorale(world,currentMap(world),minutes);settleContracts(world,currentMap(world));return income;
 }
 // G5: happiness is settled whenever the campaign clock advances (exploration, downtime, travel). A waiting crosser counts as on its destination.
 // A merc whose meter has been at zero for a day quits here if the map is calm; otherwise the engine lets it go when the contact ends.
@@ -43,9 +47,9 @@ export function tickWorld(world,elapsedMs,{paused=false}={}){
 export function settleMorale(world,s,minutes,mapOf=u=>u.away?u.away.destination:world.current,now=world.clock.minutes){if(!s.rules?.social)return [];
  const {lines,quitting}=settleHappiness(s.units.filter(u=>u.team==='squad'),minutes,now,mapOf);for(const line of lines)log(s,line);
  if(['explore','won'].includes(s.phase)&&!combatCosts(s))for(const u of s.units)if(u.team==='squad'&&u.quitPending&&u.social?.happiness===0)quitMerc(s,u);return lines;} // calm means no guard alert and nothing engaged; otherwise the engine lets it go when the contact ends
-export function downtimeReason(world){
+export function downtimeReason(world,activity='resting or training'){
  const s=currentMap(world);
- if(s.phase!=='won'||guards(s).length)return 'Clear this map before resting or training.';
+ if(s.phase!=='won'||guards(s).length)return 'Clear this map before '+activity+'.';
  if(s.queue.length)return 'Stop movement before resting or training.';
  if(away(s).length)return 'Regroup first: comrades are waiting beyond the map edge.';
  if(!squad(s).some(u=>!u.casualty))return 'No troops available.';
@@ -71,7 +75,7 @@ export function spendTime(world,activity,hours,medicId=null){
  let healed=0;
  // Rest drifts bonds and the meter settles in one-hour slices, so a rung boundary the drift crosses changes the rate at the same clock hour
  // whether the player chose one 48-hour rest or two of 24 (Codex's G5 review); training drifts nothing and settles once.
- const crossings=[];if(activity!=='train'&&s.rules?.social){const end=world.clock.minutes;for(let done=0;done<hours;done++){for(const u of troops)crossings.push(...driftBonds(u,1));settleMorale(world,s,60,undefined,end-(hours-done-1)*60);}}else settleMorale(world,s,hours*60);
+ const crossings=[];if(activity!=='train'&&s.rules?.social){const end=world.clock.minutes;for(let done=0;done<hours;done++){for(const u of troops)crossings.push(...driftBonds(u,1));settleMorale(world,s,60,undefined,end-(hours-done-1)*60);}}else settleMorale(world,s,hours*60);settleContracts(world,s);
  for(const u of troops){u.overwatch=null;if(activity!=='train'){restStrain(u,hours);const assisted=Math.min(hours,u.medicalRestHours||0),before=u.hp;recoverHealth(u,assisted/MEDICAL_RECOVERY_HOURS+(hours-assisted)/REST_RECOVERY_HOURS);u.medicalRestHours=u.hp===u.maxHp?0:Math.max(0,(u.medicalRestHours||0)-assisted);healed+=u.hp-before;u.ap=u.maxAp;}else if(u.level<10)awardXP(u,25*hours);}
  const message=activity==='train'?`Squad trained for ${hours} hour${hours===1?'':'s'}; +${25*hours} XP per eligible troop.`:`Squad rested for ${hours} hour${hours===1?'':'s'}; restored ${healed} HP total.`+(treatment?` ${treatment.medic.name} provided care; used ${treatment.kitsNeeded} medkits.`:'');
  refresh(s);log(s,message);for(const line of crossings)log(s,line);return {ok:true,income,message};
@@ -110,7 +114,7 @@ function landing(s,start,occupied) {
   let best=null,bestD=Infinity;for(let y=0;y<H;y++)for(let x=0;x<W;x++){const d=Math.hypot(x-start.x,y-start.y);if(d<bestD&&walkable(s,x,y,0)&&!occupied.has(tileKey(x,y,0))){best={x,y,z:0};bestD=d;}}return best;
 }
 // Where a unit lands on the next map: crossers appear on the opposite border at the row or column they left from, everyone else at their start.
-function entryTile(next,u){const from=u.away;if(!from)return next.definition.starts[u.id];return {x:from.side==='east'?0:from.side==='west'?W-1:from.x,y:from.side==='south'?0:from.side==='north'?H-1:from.y,z:0};}
+function entryTile(next,u){const from=u.away;if(!from)return next.definition.starts[u.id]??next.definition.starts[0];/* a hired merc has no start of its own: it lands beside the first */return {x:from.side==='east'?0:from.side==='west'?W-1:from.x,y:from.side==='south'?0:from.side==='north'?H-1:from.y,z:0};}
 function arrivalPlan(world,destination){
   const previous=currentMap(world),next=world.states[destination]||createGame(1947,world.definitions[destination],false,world.difficulty,{social:true,rosterSeed:world.rosterSeed});
   const occupied=new Set(guards(next).map(u=>tileKey(u.x,u.y,levelOf(u)))),places=new Map();
@@ -136,7 +140,7 @@ function arrive(world,destination,plan=arrivalPlan(world,destination)){
   next.units=[...incoming,...next.units.filter(u=>u.team==='guard')];next.selected=incoming.find(alive)?.id??previous.selected;next.queue=[];next.effect=null;next.alerted=new Set();next.engaged=false;next.freshFight=true;next.fight=null;previous.fight=null; // entering a map is a fresh fight, and a map change ends a contact without a clean-win lift: full AP on contact (capped by what a crosser carried), whatever alert the guards kept
   // Failed travel takes no time. Production during transit uses previously liberated maps.
   previous.leftAt=world.clock.minutes; // the moment this map was left: its guards settle by the clock when the squad returns
-  const income=advanceTime(world,TRAVEL_MINUTES);settleMorale(world,next,TRAVEL_MINUTES,()=>destination); // the hour on the road, everyone together on the destination
+  const income=advanceTime(world,TRAVEL_MINUTES);settleMorale(world,next,TRAVEL_MINUTES,()=>destination);settleContracts(world,next); // the hour on the road, everyone together on the destination
   if(Number.isFinite(next.leftAt))settleGuards(next,world.clock.minutes-next.leftAt);next.leftAt=undefined;
   world.states[destination]=next;world.current=destination;world.journeys++;world.lastIncome=income;
   refresh(next);
@@ -196,6 +200,47 @@ export function recall(world,u){
   emitNoise(s,u,u.sneaking?3:10);enterFire(s,u);
   log(s,`${u.name} came back across the ${side} edge.`);refresh(s);return {ok:true,state:s};
 }
+// Mercenary contracts (ECONOMY.md, "Mercenary contracts"). Hiring happens on a cleared map, like rest; a contract runs on the campaign clock
+// and a merc whose contract has run out walks at the next safe moment, the way a merc that quit does (G5).
+export const hiringDay=world=>Math.floor(world.clock.minutes/DAY_MINUTES);
+export const hiringReason=world=>downtimeReason(world,'hiring');
+// The squad members a candidate is measured against and counted with: on contract (standing or down), not dead, captured or gone.
+export const contracted=s=>s.units.filter(u=>u.team==='squad'&&onContract(u));
+// Today's slate: six candidates drawn from the roster seed and the campaign day, minus the ones already signed today; new faces at midnight.
+export function candidates(world){const s=currentMap(world),members=contracted(s),taken=new Set(s.units.filter(u=>u.team==='squad').map(u=>u.name));
+ return slate(world.rosterSeed,hiringDay(world),{taken}).filter(c=>!world.hired.includes(c.key)).map(c=>{const f=fit(c.archetype,members),rate=dailyRate(c,f);return {...c,fit:f,rate,prices:pricesFor(rate,c.archetype)};});}
+// Spawn a candidate onto a map beside `at` (the selected comrade by default) as a full squad unit: inventory, progression, the candidate's build, its ledger.
+export function enlist(s,c,{id=MERC_ID_BASE,at=null,social=!!s.rules?.social}={}){
+ const anchor=at||squad(s)[0]||s.definition.starts[0],occupied=new Set(s.units.filter(u=>alive(u)||incapacitated(u)).map(u=>tileKey(u.x,u.y,levelOf(u))));
+ const p=landing(s,{x:anchor.x,y:anchor.y,z:levelOf(anchor)},occupied);if(!p)return null;
+ const u=spawnUnit(s,{team:'squad',name:c.name,species:c.species,x:p.x,y:p.y,z:levelOf(p),weapon:c.kit.weapon,id});
+ initInventory(u,WEAPONS);initProgression(u);buildRecruit(u,c,WEAPONS);recruitSocial(u,s.units.filter(v=>v.team==='squad'&&v!==u),social);if(Number.isFinite(anchor.heading))u.heading=anchor.heading;return u;}
+export function hire(world,key,term){
+ const s=currentMap(world),reason=hiringReason(world);if(reason)return {ok:false,error:reason};
+ const c=candidates(world).find(c=>c.key===key);if(!c)return {ok:false,error:'That candidate has moved on.'};
+ const t=c.prices[term];if(!t)return {ok:false,error:'Choose a day, a week or a month.'};
+ if(contracted(s).length>=ROSTER_MAX)return {ok:false,error:`The roster holds ${ROSTER_MAX}.`};
+ if(world.money<t.price)return {ok:false,error:`Need $${t.price.toLocaleString()}; the treasury holds $${world.money.toLocaleString()}.`};
+ const u=enlist(s,c,{id:world.nextId,at:unit(s,s.selected)});if(!u)return {ok:false,error:'No free ground to arrive on.'};
+ world.nextId++;world.money-=t.price;world.hired.push(c.key);const now=world.clock.minutes;
+ u.hired={key:c.key,day:c.day,grade:c.grade,rate:c.rate,signed:now};u.contract={term,from:now,until:now+t.minutes,paid:t.price,renewals:0,expired:false};
+ refresh(s);log(s,`${u.name} signed on for a ${term} at $${t.price.toLocaleString()}${c.fit.trouble.length?' (asked more: expects trouble with '+c.fit.trouble.join(' and ')+')':''}.`);return {ok:true,unit:u,price:t.price};}
+// Renewal extends from the contract's end (nothing is lost by renewing early) or from now when it has run out; pay day lifts the meter (GUARDS.md G5's table).
+export function renewReason(world,u){const s=currentMap(world);if(!u?.hired||!onContract(u))return 'No such contract.';if(u.away)return u.name+' is beyond the map edge.';if(combatCosts(s))return 'Finish the fight first.';return '';}
+export function renew(world,id,term){
+ const s=currentMap(world),u=unit(s,id),reason=renewReason(world,u);if(reason)return {ok:false,error:reason};
+ const t=contractPrices(u)[term];if(!t)return {ok:false,error:'Choose a day, a week or a month.'};
+ if(world.money<t.price)return {ok:false,error:`Need $${t.price.toLocaleString()}; the treasury holds $${world.money.toLocaleString()}.`};
+ world.money-=t.price;const now=world.clock.minutes,from=Math.max(now,u.contract.until);
+ u.contract={...u.contract,term,until:from+t.minutes,paid:u.contract.paid+t.price,renewals:u.contract.renewals+1,expired:false};payDay(u);
+ log(s,`${u.name} signed on for another ${term} at $${t.price.toLocaleString()}.`);s.revision++;return {ok:true,price:t.price};}
+// Paying a merc off ends the contract now, no refund; it leaves the way a merc that quit does.
+export function release(world,id){const s=currentMap(world),u=unit(s,id),reason=renewReason(world,u);if(reason)return {ok:false,error:reason};quitMerc(s,u,'released');return {ok:true};}
+// Every clock advance: a contract past its end is up; the merc walks at once on a calm map, otherwise when the contact ends (engine contactEnds).
+export function settleContracts(world,s,now=world.clock.minutes){const lines=[];
+ for(const u of s.units)if(u.team==='squad'&&u.contract&&onContract(u)&&!u.contract.expired&&now>=u.contract.until){u.contract.expired=true;const line=u.name+"'s contract is up.";lines.push(line);log(s,line);}
+ if(['explore','won'].includes(s.phase)&&!combatCosts(s))for(const u of s.units)if(u.team==='squad'&&u.contract?.expired&&onContract(u))quitMerc(s,u,'contract');
+ return lines;}
 // A map lost after some comrades crossed its edge ends the fight for those who stayed; the crossers still arrive.
 export function resolveRetreat(world){
   const s=currentMap(world);if(s.phase!=='lost'||!away(s).length)return {ok:false,error:'Nothing to resolve.'};

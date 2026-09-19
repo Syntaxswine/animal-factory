@@ -69,8 +69,8 @@ export function scavenge(s,u,bot,{travel=true,calm=true}={}){
  // The player does not know what a body holds until someone searches it: the same rule for the test player. A body beside it is searched when no
  // guard threatens; bodies it has seen fall are walked to only while no guard is in sight (calm), and only by the nearest comrade, not the whole squad.
  for(const pile of (s.loot||[]).filter(p=>p.body!==undefined&&!p.searched&&s.seen.has(E.key(p.x,p.y,M.levelOf(p)))&&E.distance(u,p)<=bot.scavengeRadius).sort((a,b)=>E.distance(u,a)-E.distance(u,b))){
-  if(near(s,u,pile)){if(E.searchBody(s,u,pile))return event(bot,s,u,'search',s.units[pile.body]?.name);}
-  else if(travel&&calm&&!E.squad(s).some(v=>v!==u&&E.distance(v,pile)<E.distance(u,pile))){const goals=[pile,...M.neighbors(s,pile,undefined,false)].filter(q=>near(s,q,pile));if(oneStep(s,u,goals,bot))return event(bot,s,u,'seek-body',s.units[pile.body]?.name);}
+  if(near(s,u,pile)){if(E.searchBody(s,u,pile))return event(bot,s,u,'search',E.unit(s,pile.body)?.name);}
+  else if(travel&&calm&&!E.squad(s).some(v=>v!==u&&E.distance(v,pile)<E.distance(u,pile))){const goals=[pile,...M.neighbors(s,pile,undefined,false)].filter(q=>near(s,q,pile));if(oneStep(s,u,goals,bot))return event(bot,s,u,'seek-body',E.unit(s,pile.body)?.name);}
  }
  return false;
 }
@@ -91,13 +91,13 @@ export function followOrder(s,bot){
   if(!out.some(m=>E.canControl(s,m)&&s.phase==='player'&&m.ap<2)){order.stuck=(order.stuck||0)+1;if(order.stuck>=RALLY_PATIENCE){bot.orders.shift();bot.unreachable.add(pointKey);event(bot,s,null,'reassess','rally point unreachable');return false;/* no progress to report: the turn may end */}}
   // A patience tick in real time is a tick spent waiting (guards move meanwhile); in turn mode it is a turn to end.
   return s.phase!=='player'&&(order.stuck||0)>0;}
- const u=s.units.find(u=>u.id===order.unit&&E.canControl(s,u));if(!u){if(!E.alive(s.units[order.unit]))bot.orders.shift();return false;}
+ const u=s.units.find(u=>u.id===order.unit&&E.canControl(s,u));if(!u){if(!E.alive(E.unit(s,order.unit)))bot.orders.shift();return false;}
  let done=false,acted=false;
  if(order.type==='sneak'){done=u.sneaking===(order.enabled??true);if(!done)acted=done=E.setSneaking(s,u);}
  else if(['move','lure'].includes(order.type)){done=u.x===order.x&&u.y===order.y&&M.levelOf(u)===(order.z||0);if(!done)acted=oneStep(s,u,[order],bot);}
  else if(order.type==='cut'){done=s.edges[order.edge]==='fence-cut';if(!done){const cells=M.edgeCells(order.edge);if(!cells.some(p=>p.x===u.x&&p.y===u.y&&p.z===M.levelOf(u)))acted=oneStep(s,u,cells,bot);else if(!u.slots.includes('wireCutters'))acted=E.equipCutters(s,u,1);else acted=done=E.cutFence(s,u,order.edge);}}
  else if(order.type==='overwatch'){if(u.overwatch)done=true;else{u.heading=order.heading??u.heading;E.refresh(s);acted=done=E.setOverwatch(s,u);}}
- else if(order.type==='attack'){const target=s.units[order.target];done=!target||!E.alive(target);
+ else if(order.type==='attack'){const target=E.unit(s,order.target);done=!target||!E.alive(target);
   // Bounded pursuit: the order is anchored where the target stood when it was given; a target that has moved past the leash is reassessed, not chased across the map.
   if(!done){order.anchor||={x:target.x,y:target.y,z:M.levelOf(target)};const leash=order.leash??bot.leash;if(E.distance(target,order.anchor)>leash){bot.orders.shift();return event(bot,s,u,'reassess',target.name+' moved '+Math.round(E.distance(target,order.anchor))+' tiles from where the order found it');}}
   if(!done){if(order.weapon&&u.weapon!==order.weapon)acted=E.equip(s,u,order.weapon);else{u.heading=E.headingTo(u,target);E.refresh(s);if(E.previewAttack(s,u,target,false,order.zone||'torso').ok)acted=E.attack(s,u,target,false,false,order.zone||'torso');else acted=oneStep(s,u,M.neighbors(s,target),bot);}done=!E.alive(target);}}
