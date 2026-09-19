@@ -62,7 +62,7 @@ export function createLightHorse(data,texture=null){
   `);
  };
  material.customProgramCacheKey=()=> 'horse-light-graphic-paint-v2';
- function weights(name,p){const [x,y,z]=p,l=limbs[z<0?0:1];if(name.includes('mane'))return [[head,1]];if(name.includes('skull')){const t=smooth(1.22,1.38,y);return [[spine,1-t],[head,t]];}
+ function weights(name,p){const [x,y,z]=p,l=limbs[z<0?0:1];if(name.includes('mane')||name.includes('beard'))return [[head,1]];if(name.includes('skull')){const t=smooth(1.22,1.38,y);return [[spine,1-t],[head,t]];}
   if(name.includes('hoof'))return [[l.ho,1]];
   if(name.includes('forearm')){const h=1-smooth(.725,.81,y),f=(1-smooth(.682,.724,y))*.82;const u=smooth(.98,1.06,y);return [[l.sh,(1-h)*u],[l.el,(1-h)*(1-u)],[l.wr,h*(1-f)],[l.finger,h*f]];}
   if(name.includes('shirt')){const sleeve=Math.max(smooth(.16,.255,Math.abs(z)),smooth(.20,.25,Math.abs(z))*(1-smooth(1.03,1.11,y))),elbow=1-smooth(.98,1.06,y);return [[spine,1-sleeve],[l.sh,sleeve*(1-elbow)],[l.el,sleeve*elbow]];}
