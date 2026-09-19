@@ -23,13 +23,18 @@ item is decided or shipped; a conversation answer is not evidence that a feature
 
 ## 1. Starting cash and the tutorial bonus
 
-Direction: $20,000 at the start; a small cash bonus for finishing the tutorial.
+Direction: $20,000 at the start, enough to recruit a squad and pay for roughly one to two
+weeks of service (user clarification, 2026-09-19); a small cash bonus for finishing the tutorial.
+After the initial town, three nearby, higher-paying factories provide the next income sources.
+Balance the opening squad and contracts against this runway.
 
 Tree: `createWorld` in `world.js` starts the treasury at $0. A campaign's only income is factory
 production; its only sink is the hiring hall. There is nothing to finish and nothing to pay a
 bonus for.
 
-To decide: the size of the bonus and what "finishing" is (the last tutorial map won, or a
+To decide: the intended starting squad size and quality, how the four existing comrades fit
+that recruitment budget, and contract costs that meet the one-to-two-week target; the size of
+the bonus and what "finishing" is (the last tutorial map won, or a
 checklist of lessons); whether $20,000 is the same on every difficulty; whether the bonus is
 cash alone or comes with the first pointer to the three factories (item 9).
 
