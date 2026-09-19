@@ -7,9 +7,10 @@ const V=a=>new THREE.Vector3(...a),clamp=THREE.MathUtils.clamp,smooth=(a,b,x)=>{
 // Offline-reduced approved surfaces, real skeleton and normalized blended skin weights.
 export function createLightHorse(data,texture=null){
  const root=new THREE.Group(),rig=new THREE.Group();root.add(rig);const bones=[],rest=[],lookup={};
- function bone(name,parent,world){const b=new THREE.Bone();b.name=name;const i=bones.length;bones.push(b);lookup[name]=i;rest.push(V(world));if(parent!==null){bones[parent].add(b);b.position.copy(rest[i]).sub(rest[parent]);}else {rig.add(b);b.position.copy(rest[i]);}return i;}
+ function bone(name,parent,world){world=data.bonePositions?.[name]||world;const b=new THREE.Bone();b.name=name;const i=bones.length;bones.push(b);lookup[name]=i;rest.push(V(world));if(parent!==null){bones[parent].add(b);b.position.copy(rest[i]).sub(rest[parent]);}else {rig.add(b);b.position.copy(rest[i]);}return i;}
  const hips=bone('hips',null,[0,.80,0]),spine=bone('spine',hips,[-.025,1.08,0]),head=bone('head',spine,[-.065,1.30,0]);
- const limbs=[];for(const side of [-1,1]){const sh=bone('upperArm'+side,spine,[-.045,1.191,side*.205]),el=bone('forearm'+side,sh,[.022,.991,side*.344]),wr=bone('hand'+side,el,[.061,.742,side*.355]),finger=bone('fingers'+side,wr,[.072,.712,side*.355]);const th=bone('thigh'+side,hips,[-.03,.77,side*.12]),kn=bone('shin'+side,th,[.024,.475,side*.196]),ho=bone('hoof'+side,kn,[-.035,.12,side*.232]);limbs.push({side,sh,el,wr,finger,th,kn,ho});}
+ const armSpread=data.species==='pig-director'?.085:0;
+ const limbs=[];for(const side of [-1,1]){const sh=bone('upperArm'+side,spine,[-.045,1.191,side*(.205+armSpread)]),el=bone('forearm'+side,sh,[.022,.991,side*(.344+armSpread)]),wr=bone('hand'+side,el,[.061,.742,side*(.355+armSpread)]),finger=bone('fingers'+side,wr,[.072,.712,side*(.355+armSpread)]);const th=bone('thigh'+side,hips,[-.03,.77,side*.12]),kn=bone('shin'+side,th,[.024,.475,side*.196]),ho=bone('hoof'+side,kn,[-.035,.12,side*.232]);limbs.push({side,sh,el,wr,finger,th,kn,ho});}
  root.updateMatrixWorld(true);const skeleton=new THREE.Skeleton(bones);skeleton.calculateInverses();
  const material=new THREE.MeshStandardMaterial({map:texture,color:0xffffff,vertexColors:true,roughness:.92}),grey=new THREE.MeshStandardMaterial({color:0x999999,roughness:.88}),parts=[];
  const graphicUniform={value:1};
@@ -62,10 +63,11 @@ export function createLightHorse(data,texture=null){
   `);
  };
  material.customProgramCacheKey=()=> 'horse-light-graphic-paint-v2';
+ function directorSleeve(x,y,z){const t=clamp(((x+.035)*.056+(y-1.217)*-.201+(Math.abs(z)-.285)*.144)/(.056**2+.201**2+.144**2),0,1);return (1-smooth(.108,.152,Math.hypot(x+.035-.056*t,y-1.217+.201*t,Math.abs(z)-.285-.144*t)))*smooth(.25,.32,Math.abs(z));}
  function weights(name,p){const [x,y,z]=p,l=limbs[z<0?0:1];if(name.includes('tail'))return [[hips,1]];if(name.includes('mane')||name.includes('beard'))return [[head,1]];if(name.includes('skull')){const t=smooth(1.22,1.38,y);return [[spine,1-t],[head,t]];}
-  if(name.includes('hoof'))return [[l.ho,1]];
+  if(name.includes('hoof')||name.includes('boot'))return [[l.ho,1]];
   if(name.includes('forearm')){const h=1-smooth(.725,.81,y),f=(1-smooth(.682,.724,y))*.82;const u=smooth(.98,1.06,y);return [[l.sh,(1-h)*u],[l.el,(1-h)*(1-u)],[l.wr,h*(1-f)],[l.finger,h*f]];}
-  if(name.includes('shirt')){const sleeve=Math.max(smooth(.16,.255,Math.abs(z)),smooth(.20,.25,Math.abs(z))*(1-smooth(1.03,1.11,y))),elbow=1-smooth(.98,1.06,y);return [[spine,1-sleeve],[l.sh,sleeve*(1-elbow)],[l.el,sleeve*elbow]];}
+  if(name.includes('shirt')){const sleeve=data.species==='pig-director'?directorSleeve(x,y,z):data.species==='pig-foreman'?smooth(.270,.335,Math.abs(z)):Math.max(smooth(.16,.255,Math.abs(z)),smooth(.20,.25,Math.abs(z))*(1-smooth(1.03,1.11,y))),elbow=1-smooth(.98,1.06,y);return [[spine,1-sleeve],[l.sh,sleeve*(1-elbow)],[l.el,sleeve*elbow]];}
   if(y>.86){const t=smooth(.86,1.02,y);return [[hips,1-t],[spine,t]];}const leg=1-smooth(.69,.83,y),knee=1-smooth(.42,.53,y),ankle=1-smooth(.17,.27,y);return [[hips,1-leg],[l.th,leg*(1-knee)],[l.kn,leg*knee*(1-ankle)],[l.ho,leg*knee*ankle]];
  }
  function uvColor(name,p,n,forcedPanel=null){const [x,y,z]=p;let panel=0,u=0,v=0,color=[1,1,1];
@@ -78,15 +80,16 @@ export function createLightHorse(data,texture=null){
   if(forcedPanel!==null)panel=forcedPanel;
   u=clamp(u,.02,.98);v=clamp(v,.02,.98);return {panel,uv:[(panel%4+.035+u*.93)/4,1-(Math.floor(panel/4)+.965-v*.93)/4],color};
  }
- for(const source of data.parts){const g=new THREE.BufferGeometry(),p=[],norm=[],uv=[],colors=[],skinIndex=[],skinWeight=[],index=[],split=new Map();
+ for(const source of data.parts){const g=new THREE.BufferGeometry(),p=[],norm=[],paintP=[],paintN=[],uv=[],colors=[],skinIndex=[],skinWeight=[],index=[],split=new Map();
   // Split at material-panel boundaries without changing positions or skin weights.
   for(let k=0;k<source.index.length;k+=3){const ids=source.index.slice(k,k+3),center=[0,0,0];for(const i of ids)for(let a=0;a<3;a++)center[a]+=source.position[i*3+a]/3;
    const triangleUV=uvColor(source.name,center,[0,0,0]);
-   for(const i of ids){const pt=source.position.slice(i*3,i*3+3),nn=source.normal.slice(i*3,i*3+3),sample=uvColor(source.name,pt,nn,triangleUV.panel);const panel=triangleUV.panel;const key=i+':'+panel;let j=split.get(key);if(j===undefined){j=p.length/3;split.set(key,j);p.push(...pt);norm.push(...nn);uv.push(...sample.uv);colors.push(...sample.color);const w=weights(source.name,pt).filter(a=>a[1]>0);while(w.length<4)w.push([0,0]);skinIndex.push(...w.map(a=>a[0]));skinWeight.push(...w.map(a=>a[1]));}index.push(j);}
+   for(const i of ids){const pt=source.position.slice(i*3,i*3+3),nn=source.normal.slice(i*3,i*3+3),sample=uvColor(source.name,pt,nn,triangleUV.panel);const panel=triangleUV.panel;const key=i+':'+panel;let j=split.get(key);if(j===undefined){j=p.length/3;split.set(key,j);p.push(...pt);norm.push(...nn);paintP.push(...(source.paintPosition||source.position).slice(i*3,i*3+3));paintN.push(...(source.paintNormal||source.normal).slice(i*3,i*3+3));uv.push(...sample.uv);colors.push(...sample.color);const w=weights(source.name,(source.paintPosition||source.position).slice(i*3,i*3+3)).filter(a=>a[1]>0);while(w.length<4)w.push([0,0]);skinIndex.push(...w.map(a=>a[0]));skinWeight.push(...w.map(a=>a[1]));}index.push(j);}
   }
   const region=source.name.includes('skull')?1:source.name.includes('forearm')?2:source.name.includes('shirt')?3:source.name.includes('overalls')?4:source.name.includes('hoof')?5:6;
   const palette=new THREE.Color({1:0xb77a49,2:0xb77a49,3:0xf2e4c8,4:0x8c9064,5:0x665b4e,6:0x533823}[region]).toArray();
   for(let i=0;i<colors.length;i++)colors[i]=palette[i%3];
+  g.setAttribute('paintPosition',new THREE.Float32BufferAttribute(paintP,3));g.setAttribute('paintNormal',new THREE.Float32BufferAttribute(paintN,3));
   g.setAttribute('region',new THREE.Float32BufferAttribute(new Float32Array(p.length/3).fill(region),1));
   g.setAttribute('position',new THREE.Float32BufferAttribute(p,3));g.setAttribute('normal',new THREE.Float32BufferAttribute(norm,3));g.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2));g.setAttribute('color',new THREE.Float32BufferAttribute(colors,3));g.setAttribute('skinIndex',new THREE.Uint16BufferAttribute(skinIndex,4));g.setAttribute('skinWeight',new THREE.Float32BufferAttribute(skinWeight,4));g.setIndex(index);const m=new THREE.SkinnedMesh(g,material);m.name=source.name;m.frustumCulled=false;root.add(m);m.bind(skeleton);parts.push(m);
  }
