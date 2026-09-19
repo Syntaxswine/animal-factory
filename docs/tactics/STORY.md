@@ -45,7 +45,7 @@ Do not equate self-government with a universally happy population or permanent a
 
 On defeat, stabilized mercenaries are captured; those still bleeding die. Training is permanent and cannot be respecced. Preserving a captured mercenary's identity, skills and history gives the planned mid-to-late-game rescue facility a meaningful payoff.
 
-Implemented now: distinct captured/dead results and an independent captured-roster snapshot in the defeated local-map state. Not implemented yet: campaign continuation after a wipe, replacement recruitment, a playable rescue facility, detainee transfer rules, or campaign persistence across browser reloads. Those systems are prerequisites for completing a later rescue, not features to imply are already playable.
+Implemented now: distinct captured/dead results and an independent captured-roster snapshot in the defeated local-map state. Not implemented yet: campaign continuation after a wipe, a playable rescue facility, detainee transfer rules, or campaign persistence across browser reloads. Those systems are prerequisites for completing a later rescue, not features to imply are already playable. Replacement recruitment exists since 2026-09-18 as the hiring hall (ECONOMY.md, "Mercenary contracts"): hired mercs on day, week or month contracts beside the four comrades; it does not yet continue a campaign after a wipe.
 
 ## Decisions to make when campaign work begins
 
