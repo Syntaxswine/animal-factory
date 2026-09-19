@@ -40,6 +40,8 @@ The tail has a dedicated painted texture,
 `dist/assets/characters/lowpoly-proof/skunk-tail-paint-v1.png`, also generated
 with the built-in tool. Prompt:
 [SKUNK-TAIL-PAINT-PROMPT.txt](SKUNK-TAIL-PAINT-PROMPT.txt).
+The stripe layout is rotated 90 degrees clockwise around the tail, viewed
+from tip toward root, using a quarter-turn UV phase offset.
 Two cream stripes wrap around a continuous flow spine running from the root
 past the crown. Excluding the overlapping return-tip branch from this mapping
 prevents stripe pinching at the inner curl. Radial components interpolate across
