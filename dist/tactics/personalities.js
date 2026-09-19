@@ -14,7 +14,7 @@ export function initGuardSocial(g){g.social={stress:0,fatigue:0,bonds:{},inciden
 // The social stream: never the ballistic one, so no social roll moves a bullet.
 export function socialRoll(s){s.socialSeed=(Math.imul(s.socialSeed??(s.seed^0x9e3779b9),1664525)+1013904223)>>>0;return s.socialSeed/4294967296;}
 // What the friendly-fire formula reads: the authored personality for a merc, the archetype's traits and hit lines for a guard.
-export function disposition(u){const p=personality(u);if(p)return p;const a=ARCHETYPES[u?.archetype];if(!a)return null;const [quip,repeat,retaliate]=a.hit;return {...a.traits,quip:[quip],repeat:[repeat],retaliate:[retaliate]};}
+export function disposition(u){const p=personality(u);if(p)return p;const a=ARCHETYPES[u?.archetype];if(!a)return null;const [quip,repeat,retaliate]=a.hit;return {...a.traits,quip:[quip],repeat:[repeat],retaliate:[retaliate],thanks:a.thanks};}
 export function initPersonality(u,social=false){if(!PERSONALITIES[u.name])return;u.personalityId=u.name;u.archetype=personality(u).archetype;u.social={stress:0,fatigue:0,bonds:{...personality(u).bonds},resting:{...personality(u).bonds},incidents:{},memories:[],voice:0};if(social)initHappiness(u);} // the happiness meter (G5) exists only in the campaign, so a plain game stays G4 to the byte
 // Rest pulls every bond 10% of the way back toward its resting level per 8 hours (G3 "Levels of getting along"); returns the rungs crossed.
 export function driftBonds(u,hours){const m=u.social;if(!m?.resting)return [];const f=1-Math.pow(.9,hours/8),crossed=[]; // 10% of the remaining distance per 8 hours, compounding
@@ -33,7 +33,7 @@ export function friendlyReaction(s,u,attacker,damage,canShoot){
  const line=lines[(m.voice+++(p.humor>=60?1:0))%lines.length];
  return {speaker:u.name,line,retaliate};
 }
-export function helped(patient,medic){if(!patient.social)return null;patient.social.bonds[medic.name]=clamp((patient.social.bonds[medic.name]||0)+20,-100,100);patient.social.stress=clamp(patient.social.stress-20);remember(patient,`${medic.name} stopped my bleeding.`);return personality(patient)?.thanks;}
+export function helped(patient,medic){if(!patient.social)return null;patient.social.bonds[medic.name]=clamp((patient.social.bonds[medic.name]||0)+20,-100,100);patient.social.stress=clamp(patient.social.stress-20);remember(patient,`${medic.name} stopped my bleeding.`);return disposition(patient)?.thanks;}
 // Injury uses actual HP lost, so overkill cannot inflate either meter.
 export function injuryStrain(u,hpLost){if(!u.social||hpLost<=0)return;const fraction=hpLost/u.maxHp;u.social.stress=clamp(u.social.stress+10+fraction*35);u.social.fatigue=clamp((u.social.fatigue||0)+5+fraction*25);}
 // Being shot down is total collapse: the rest debt maxes out and only real rest (restStrain) works it off.

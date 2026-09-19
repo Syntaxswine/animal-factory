@@ -75,10 +75,12 @@ export function spendTime(world,activity,hours,medicId=null){
  let healed=0;
  // Rest drifts bonds and the meter settles in one-hour slices, so a rung boundary the drift crosses changes the rate at the same clock hour
  // whether the player chose one 48-hour rest or two of 24 (Codex's G5 review); training drifts nothing and settles once.
- const crossings=[];if(activity!=='train'&&s.rules?.social){const end=world.clock.minutes;for(let done=0;done<hours;done++){for(const u of troops)crossings.push(...driftBonds(u,1));settleMorale(world,s,60,undefined,end-(hours-done-1)*60);}}else settleMorale(world,s,hours*60);settleContracts(world,s);
+ const crossings=[];if(activity!=='train'&&s.rules?.social){const end=world.clock.minutes;for(let done=0;done<hours;done++){for(const u of troops)crossings.push(...driftBonds(u,1));settleMorale(world,s,60,undefined,end-(hours-done-1)*60);}}else settleMorale(world,s,hours*60);
  for(const u of troops){u.overwatch=null;if(activity!=='train'){restStrain(u,hours);const assisted=Math.min(hours,u.medicalRestHours||0),before=u.hp;recoverHealth(u,assisted/MEDICAL_RECOVERY_HOURS+(hours-assisted)/REST_RECOVERY_HOURS);u.medicalRestHours=u.hp===u.maxHp?0:Math.max(0,(u.medicalRestHours||0)-assisted);healed+=u.hp-before;u.ap=u.maxAp;}else if(u.level<10)awardXP(u,25*hours);}
  const message=activity==='train'?`Squad trained for ${hours} hour${hours===1?'':'s'}; +${25*hours} XP per eligible troop.`:`Squad rested for ${hours} hour${hours===1?'':'s'}; restored ${healed} HP total.`+(treatment?` ${treatment.medic.name} provided care; used ${treatment.kitsNeeded} medkits.`:'');
- refresh(s);log(s,message);for(const line of crossings)log(s,line);return {ok:true,income,message};
+ refresh(s);log(s,message);for(const line of crossings)log(s,line);
+ settleContracts(world,s); // last: a merc whose contract ran out inside the block is healed or trained for the hours it did, then walks (review round 2)
+ return {ok:true,income,message};
 }
 function recoverHealth(u,fraction){
  if(u.hp>=u.maxHp){u.restHealing=0;return;}
@@ -212,11 +214,12 @@ export function candidates(world){const s=currentMap(world),members=contracted(s
  const taken=new Set(s.units.filter(u=>u.team==='squad'&&u.hired?.day!==today).map(u=>u.name)); // today's own hires keep their slot's name, so signing one candidate never renames another
  return slate(world.rosterSeed,today,{taken}).filter(c=>!world.hired.includes(c.key)).map(c=>{const f=fit(c.archetype,members),rate=dailyRate(c,f);return {...c,fit:f,rate,prices:pricesFor(rate,c.archetype)};});}
 // Spawn a candidate onto a map beside `at` (the selected comrade by default) as a full squad unit: inventory, progression, the candidate's build, its ledger.
-export function enlist(s,c,{id=MERC_ID_BASE,at=null,social=!!s.rules?.social}={}){
+export function enlist(s,c,{id=null,at=null,social=!!s.rules?.social}={}){
+ if(id===null)id=1+Math.max(MERC_ID_BASE-1,...s.units.map(v=>v.id)); // the next free campaign id; hire() passes world.nextId
  const anchor=at||squad(s)[0]||s.definition.starts[0],occupied=new Set(s.units.filter(u=>alive(u)||incapacitated(u)).map(u=>tileKey(u.x,u.y,levelOf(u))));
  const p=landing(s,{x:anchor.x,y:anchor.y,z:levelOf(anchor)},occupied);if(!p)return null;
  const u=spawnUnit(s,{team:'squad',name:c.name,species:c.species,x:p.x,y:p.y,z:levelOf(p),weapon:c.kit.weapon,id});
- initInventory(u,WEAPONS);initProgression(u);buildRecruit(u,c,WEAPONS);recruitSocial(u,s.units.filter(v=>v.team==='squad'&&v!==u),social);if(Number.isFinite(anchor.heading))u.heading=anchor.heading;return u;}
+ initInventory(u,WEAPONS);initProgression(u);buildRecruit(u,c,WEAPONS);recruitSocial(u,s.units.filter(v=>v.team==='squad'&&v!==u&&onContract(v)),social);/* the ledger names the members on contract, not the dead, the captured or the gone */if(Number.isFinite(anchor.heading))u.heading=anchor.heading;return u;}
 export function hire(world,key,term){
  const s=currentMap(world),reason=hiringReason(world);if(reason)return {ok:false,error:reason};
  const c=candidates(world).find(c=>c.key===key);if(!c)return {ok:false,error:'That candidate has moved on.'};

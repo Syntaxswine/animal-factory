@@ -167,7 +167,7 @@ log(s,converted.length===0&&s.units.some(u=>u.team==='squad'&&u.casualty==='quit
  if(!alive(unit(s,s.selected)))s.selected=squad(s)[0].id;
  s.exposed={};for(const g of guards(s))if(s.detected.has(g.id)){const zones=new Set();for(const u of squad(s))if(canSee(s,u,g))for(const zone of visibleZones(s,u,g))zones.add(zone);s.exposed[g.id]=[...zones];}
  const pending=s.units.some(u=>['bleeding','stable'].includes(u.casualty)||alive(u)&&u.burningTurns>0)||(s.fires?.length||0)>0; // a stabilized comrade is still down: the turns keep coming until it stands
- if(!guards(s).length&&!pending){if(s.phase!=='won'){log(s,'Local map cleared. Explore or gather at the travel marker.');s.queue=[];}s.phase='won';s.alerted=new Set();s.engaged=false;contactEnds(s);s.revision++;return;}
+ if(!guards(s).length&&!pending){if(s.phase!=='won'){log(s,'Local map cleared. Explore or gather at the travel marker.');s.queue=[];}s.phase='won';s.alerted=new Set();s.engaged=false;contactEnds(s);if(!squad(s).length)return refreshNow(s);/* the last body walked out: the re-entry declares the defeat (review round 2) */s.revision++;return;}
  for(const g of guards(s))reconcile(s,g);
  for(const g of guards(s)){const targets=squad(s).filter(p=>notices(s,g,p));if(targets.length)identified(s,g,targets.sort((a,b)=>distance(g,a)-distance(g,b))[0]);
   else{const moving=squad(s).filter(p=>perceive(s,g,p)===1);if(moving.length)suspect(s,g,approximate(moving.sort((a,b)=>distance(g,a)-distance(g,b))[0]));}}
@@ -187,9 +187,9 @@ log(s,converted.length===0&&s.units.some(u=>u.team==='squad'&&u.casualty==='quit
   if(s.phase==='enemy')newRound(s);
   s.phase='explore';s.queue=[];
   if(nowAlert.size){warned=fresh.length>0;log(s,(warned?heard()+' ':'Area quiet: ')+'No one can reach you within two turns: real time resumes, alerted guards are still coming; actions other than walking still cost AP.');}
-  else{for(const u of squad(s))u.overwatch=null;s.freshFight=true;log(s,'Area clear. Real-time exploration resumed.');contactEnds(s);}}
+  else{for(const u of squad(s))u.overwatch=null;s.freshFight=true;log(s,'Area clear. Real-time exploration resumed.');contactEnds(s);if(!squad(s).length)return refreshNow(s);}}
  // The last alerted guard stood down while the map was already in real time: the same all-clear, without a phase change.
- else if(['explore','won'].includes(s.phase)&&wasAlert.size&&!nowAlert.size&&!s.engaged){for(const u of squad(s))u.overwatch=null;s.freshFight=true;log(s,'Area clear. The alert is over.');contactEnds(s);}
+ else if(['explore','won'].includes(s.phase)&&wasAlert.size&&!nowAlert.size&&!s.engaged){for(const u of squad(s))u.overwatch=null;s.freshFight=true;log(s,'Area clear. The alert is over.');contactEnds(s);if(!squad(s).length)return refreshNow(s);}
 
  // Guards newly alerted by a report or a sighting who cannot reach the squad get their warning whatever the phase did (a shot of your own may have opened the turn).
  if(fresh.length&&!threat&&!warned)log(s,heard());
