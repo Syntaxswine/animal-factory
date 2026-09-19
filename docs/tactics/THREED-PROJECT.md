@@ -4,6 +4,8 @@ This is a separate experimental project and deployment. It preserves the committ
 
 ## Available now
 
+- Goat worker: `tactics/goat-worker.html?mesh=10k`, through `b5a47d6`. The 9,994-triangle model reuses the worker rig and the existing rifle at unchanged scale. Independently checked 64 mesh/pose/heading/scale combinations and the horse shader regression. Accepted for the static prototype; hand detail and the small collar transition remain polish. Other goat equipment poses, animation and real-world weapon dimensions are not validated by this review.
+
 - Weapon workshop: `tactics/horse-weapons.html?weapon=hmg`, integrated through `156665a`. Correct hand placement is the current acceptance criterion; hand anatomy, cuffs and weapon finishes remain polish. The HMG upper handle and grasp pass the dedicated clearance checks. All 391 repository tests pass. Shotgun and flamethrower remain the accepted weapon baselines. This is static equipment inspection, not firing or animation integration.
 
 - Painted, skinned horse and separate rifle: `tactics/horse-light.html?mesh=10k`. The 10,300-triangle model retains the same painted skin and rig; the 28,886-triangle model remains selectable for comparison. This reduces character geometry by 64.34%, without establishing a frame-time improvement. See [model validation and limits](HYBRID-HORSE-10K.md).

@@ -22,7 +22,7 @@ export function paintValidity(rgba,width,height){
  return valid;
 }
 
-export function createModelPaint(renderer,horse,texture){
+export function createModelPaint(renderer,horse,texture,{species='horse'}={}){
  texture.colorSpace=THREE.SRGBColorSpace;texture.minFilter=THREE.LinearMipmapLinearFilter;texture.magFilter=THREE.LinearFilter;
  texture.anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy());
  const image=texture.image,canvas=document.createElement('canvas');canvas.width=image.width;canvas.height=image.height;const context=canvas.getContext('2d',{willReadFrequently:true});context.drawImage(image,0,0);
@@ -53,6 +53,12 @@ export function createModelPaint(renderer,horse,texture){
    uniform sampler2D uModelPaint,uPaintDepth,uPaintParts,uPaintMask; uniform float uPaintDebug,uGripForearm;
    varying vec3 vPaintPosition,vPaintNormal; varying float vPaintPart;
    vec3 fallbackPaint(float part){
+    ${species==='goat'?`if(part<1.5)return vec3(.52,.28,.055);
+    if(part<2.5)return vec3(.13,.17,.058);
+    if(abs(part-3.0)<.1||abs(part-5.0)<.1)return vPaintPosition.y>.918?vec3(.52,.28,.055):vec3(.60,.49,.30);
+    if(part<6.5)return vec3(.10,.065,.035);
+    if(part<7.5)return vPaintPosition.y>1.52?vec3(.25,.16,.078):vec3(.60,.49,.30);
+    return vec3(.67,.56,.37);`:''}
     if(part<1.5)return vec3(.67,.61,.43);
     if(part<2.5)return vec3(.13,.17,.058);
     if(abs(part-3.0)<.1||abs(part-5.0)<.1)return vPaintPosition.y>.918?vec3(.67,.61,.43):(vPaintPosition.y<.775?vec3(.045,.033,.022):vec3(.38,.13,.038));
@@ -66,16 +72,27 @@ export function createModelPaint(renderer,horse,texture){
     float facing=view<.5?n.x:(view<1.5?n.z:(view<2.5?-n.x:-n.z));
     // The frontal painting owns the blaze; side paintings own cheeks/eyes.
     // This prevents two separately painted ridge edges from becoming two stripes.
-    float blazeOwner=(1.0-smoothstep(.024,.065,abs(p.z)))*smoothstep(1.375,1.415,p.y)*smoothstep(.0,.04,p.x)*step(6.5,vPaintPart)*step(vPaintPart,7.5);
+    float blazeOwner=${species==='goat'?'0.0':'(1.0-smoothstep(.024,.065,abs(p.z)))*smoothstep(1.375,1.415,p.y)*smoothstep(.0,.04,p.x)*step(6.5,vPaintPart)*step(vPaintPart,7.5)'};
     facing=view<.5?mix(facing,1.0,blazeOwner):facing*(1.0-blazeOwner);
+    ${species==='goat'?`// Side paintings own the eye and horn markings; frontal projection otherwise
+    // smears their separately painted contours across the oblique surface.
+    float eyeOwner=(1.0-smoothstep(.75,1.15,length((p.xy-vec2(.048,1.485))/vec2(.055,.040))))*smoothstep(.047,.065,abs(p.z));
+    float hornOwner=smoothstep(1.54,1.57,p.y)*(1.0-smoothstep(-.055,-.025,p.x));
+    float owner=max(eyeOwner,hornOwner)*step(6.5,vPaintPart)*step(vPaintPart,7.5);
+    float sideView=p.z>0.0?1.0:3.0;
+    facing=abs(view-sideView)<.1?mix(facing,1.0,owner):facing*(1.0-owner);`:''}
     vec2 local=vec2(across/.925+.5,(p.y-.825)/1.85+.5),uv=vec2((view+local.x)/4.0,local.y);
     float depth=(4.0-toward-.1)/9.9,visible=1.0-smoothstep(.002/9.9,.009/9.9,depth-texture2D(uPaintDepth,uv).r);
     float sourcePart=texture2D(uPaintParts,uv).r*255.0;
     float samePart=1.0-step(.4,abs(sourcePart-vPaintPart));
     // A sleeve underlap may borrow shirt paint, but never skin or overall paint.
     if(!direct&&p.y>.925&&(abs(vPaintPart-3.0)<.1||abs(vPaintPart-5.0)<.1))samePart=max(samePart,1.0-step(.4,abs(sourcePart-1.0)));
-    vec3 color=texture2D(uModelPaint,uv).rgb;
-    float valid=texture2D(uPaintMask,uv).r;
+    vec2 colorUV=uv;
+    ${species==='goat'?`// Register the painted iris onto the visible orbital shelf, rather than
+    // letting it fall entirely into the recessed lower surface at game elevation.
+    if(abs(view-sideView)<.1){colorUV.x+=(view<2.0?-.006:.006)/(.925*4.0)*eyeOwner;colorUV.y-=.014/1.85*eyeOwner;}`:''}
+    vec3 color=texture2D(uModelPaint,colorUV).rgb;
+    float valid=texture2D(uPaintMask,colorUV).r;
     float weight=(direct?pow(max(0.0,facing),4.0)*visible:pow(max(.4,facing),2.0))*samePart*valid;
     weight*=step(0.0,local.x)*step(local.x,1.0)*step(0.0,local.y)*step(local.y,1.0);
     return vec4(color*weight,weight);
@@ -91,9 +108,15 @@ export function createModelPaint(renderer,horse,texture){
    if(vPaintPart<2.5&&vPaintPart>1.5&&p.y<.86){float center=.12+clamp(.8-p.y,0.0,.67)*.17;fillPosition.z=mix(p.z,sign(p.z)*center,.16);}
    if(abs(vPaintPart-4.0)<.1||abs(vPaintPart-6.0)<.1)fillPosition.z=mix(p.z,sign(p.z)*.232,.18);
    vec4 fill=paintView(fillPosition,n,0.0,false)+paintView(fillPosition,n,2.0,false);
+   ${species==='goat'?`fill+=paintView(fillPosition,n,1.0,false)+paintView(fillPosition,n,3.0,false);`:''}
    float filled=smoothstep(.002,.025,fill.a);
    vec3 base=mix(fallbackPaint(vPaintPart),fill.rgb/max(.00001,fill.a),filled);
    diffuseColor.rgb=mix(base,paint.rgb/max(.00001,paint.a),coverage);
+   ${species==='goat'?`// The top of a strap is hidden in all four level reference views. Reuse
+   // the same strap's front paint continuously; keep this blue in coverage mode.
+   float strap=smoothstep(1.185,1.225,p.y)*(1.0-smoothstep(.035,.055,abs(abs(p.z)-.13)))*(1.0-step(.4,abs(vPaintPart-2.0)));
+   vec4 strapPaint=paintView(vec3(.16,1.18,sign(p.z)*.13),vec3(1.,0.,0.),0.,false);
+   if(strapPaint.a>.001){diffuseColor.rgb=mix(diffuseColor.rgb,strapPaint.rgb/strapPaint.a*(.86+.14*max(n.y,0.)),strap);coverage*=1.-strap;filled=mix(filled,1.,strap);}`:''}
    // The overhand pose exposes the inner forearm, absent from the four neutral views.
    // Reuse the painted outer forearm at the same height, with broad form shading.
    if(uGripForearm>.5&&abs(vPaintPart-3.0)<.1){
@@ -104,7 +127,7 @@ export function createModelPaint(renderer,horse,texture){
    if(uPaintDebug>.5)diffuseColor.rgb=mix(mix(vec3(.8,.0,.55),vec3(.03,.18,.95),filled),vec3(.04,.8,.12),coverage);
   `);
  };
- material.customProgramCacheKey=()=> 'horse-model-projection-v2';
+ material.customProgramCacheKey=()=> 'worker-model-projection-v3-'+species;
  let visibilityPixels;
  function visibility(p,part,view){
   if(!visibilityPixels){visibilityPixels=new Uint8Array(2048*1024*4);renderer.readRenderTargetPixels(target,0,0,2048,1024,visibilityPixels);}
