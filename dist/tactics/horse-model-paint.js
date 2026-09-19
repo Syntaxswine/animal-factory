@@ -55,6 +55,13 @@ export function createModelPaint(renderer,horse,texture,{species='horse',frame=P
    uniform sampler2D uModelPaint,uPaintDepth,uPaintParts,uPaintMask; uniform float uPaintDebug,uGripForearm;
    varying vec3 vPaintPosition,vPaintNormal; varying float vPaintPart;
    vec3 fallbackPaint(float part){
+    ${species==='pig-foreman'?`if(part<1.5)return vec3(.18,.18,.065);
+    if(part<2.5)return vec3(.13,.070,.032);
+    if(abs(part-3.)<.1||abs(part-5.)<.1)return vPaintPosition.y>.918?vec3(.18,.18,.065):(vPaintPosition.y<.775?vec3(.028,.023,.017):vec3(.66,.29,.19));
+    if(part<6.5)return vec3(.028,.023,.017);
+    if(part<8.5)return vec3(.66,.29,.19);
+    return vPaintPosition.y<1.555?vec3(.025,.020,.012):vec3(.28,.045,.015);
+    `:''}
     ${species==='skunk'?`if(part<1.5)return vec3(.62,.33,.035);
     if(part<2.5)return vec3(.13,.17,.058);
     if(abs(part-3.0)<.1||abs(part-5.0)<.1)return vPaintPosition.y>.918?vec3(.62,.33,.035):vec3(.035,.028,.023);
@@ -85,8 +92,16 @@ export function createModelPaint(renderer,horse,texture,{species='horse',frame=P
     float facing=view<.5?n.x:(view<1.5?n.z:(view<2.5?-n.x:-n.z));
     // The frontal painting owns the blaze; side paintings own cheeks/eyes.
     // This prevents two separately painted ridge edges from becoming two stripes.
-    float blazeOwner=${species==='goat'?'0.0':species==='bull'?'(1.0-smoothstep(.024,.065,abs(p.z)))*smoothstep(1.435,1.455,p.y)*smoothstep(.0,.04,p.x)*step(6.5,vPaintPart)*step(vPaintPart,7.5)':'(1.0-smoothstep(.024,.065,abs(p.z)))*smoothstep(1.375,1.415,p.y)*smoothstep(.0,.04,p.x)*step(6.5,vPaintPart)*step(vPaintPart,7.5)'};
+    float blazeOwner=${species==='goat'||species==='pig-foreman'?'0.0':species==='bull'?'(1.0-smoothstep(.024,.065,abs(p.z)))*smoothstep(1.435,1.455,p.y)*smoothstep(.0,.04,p.x)*step(6.5,vPaintPart)*step(vPaintPart,7.5)':'(1.0-smoothstep(.024,.065,abs(p.z)))*smoothstep(1.375,1.415,p.y)*smoothstep(.0,.04,p.x)*step(6.5,vPaintPart)*step(vPaintPart,7.5)'};
     facing=view<.5?mix(facing,1.0,blazeOwner):facing*(1.0-blazeOwner);
+    ${species==='pig-foreman'?`// Profile paint owns each eye and the visor's top. The front badge
+    // shares a height with the visor but must remain on the vertical cap band.
+    float eyeOwner=(1.-smoothstep(.75,1.15,length((p.xy-vec2(.083,1.467))/vec2(.042,.028))))*smoothstep(.075,.108,abs(p.z))*step(6.5,vPaintPart)*step(vPaintPart,7.5);
+    float visor=smoothstep(.12,.17,p.x)*(1.-smoothstep(1.59,1.61,p.y))*max(smoothstep(.3,.65,n.y),smoothstep(.17,.20,p.x))*step(8.5,vPaintPart);
+    float badge=(1.-smoothstep(.026,.043,abs(p.z)))*smoothstep(.065,.10,p.x)*smoothstep(1.567,1.580,p.y)*(1.-smoothstep(1.632,1.649,p.y))*step(8.5,vPaintPart)*(1.-visor);
+    facing=view<.5?mix(facing,1.,badge):facing*(1.-badge);
+    float owner=max(eyeOwner,visor),sideView=p.z>0.?1.:3.;
+    facing=abs(view-sideView)<.1?mix(facing,1.,owner):facing*(1.-owner);`:''}
     ${species==='skunk'?`float eyeOwner=(1.0-smoothstep(.75,1.15,length((p.xy-vec2(.050,1.474))/vec2(.045,.033))))*smoothstep(.060,.084,abs(p.z))*step(6.5,vPaintPart)*step(vPaintPart,7.5);
     float sideView=p.z>0.0?1.0:3.0;
     facing=abs(view-sideView)<.1?mix(facing,1.0,eyeOwner):facing*(1.0-eyeOwner);`:''}
@@ -108,6 +123,10 @@ export function createModelPaint(renderer,horse,texture,{species='horse',frame=P
     // A sleeve underlap may borrow shirt paint, but never skin or overall paint.
     if(!direct&&p.y>.925&&(abs(vPaintPart-3.0)<.1||abs(vPaintPart-5.0)<.1))samePart=max(samePart,1.0-step(.4,abs(sourcePart-1.0)));
     vec2 colorUV=uv;
+    ${species==='pig-foreman'?`// The painted soles end about six pixels above the registered grey soles.
+    if(abs(vPaintPart-4.)<.1||abs(vPaintPart-6.)<.1)colorUV.y+=6./887.;
+    // Lift the badge onto the cap front so the physical visor does not occlude it.
+    if(view<.5)colorUV.y-=.018/${frame.height.toFixed(6)}*badge;`:''}
     ${species==='skunk'?`// ImageGen preserved scale but translated the painted figures 33 pixels
     // upward in the 887px sheet. Register color/mask only; depth stays geometric.
     colorUV.y+=33.0/887.0;`:''}
@@ -117,6 +136,13 @@ export function createModelPaint(renderer,horse,texture,{species='horse',frame=P
     vec3 color=texture2D(uModelPaint,colorUV).rgb;
     float valid=texture2D(uPaintMask,colorUV).r;
     float weight=(direct?pow(max(0.0,facing),4.0)*visible:pow(max(.4,facing),2.0))*samePart*valid;
+    ${species==='pig-foreman'?`// Hidden rear belt surfaces may reuse rear/side leather, never the
+    // frontal buckle. Restrict the converse too to preserve the front artwork.
+    if(!direct&&abs(vPaintPart-2.)<.1){
+     if(view<.5)weight*=smoothstep(-.10,-.04,p.x);
+     if(abs(view-2.)<.1)weight*=1.-smoothstep(.04,.10,p.x);
+    }
+    if(!direct&&visor>.01&&abs(view-sideView)>.1)weight*=1.-visor;`:''}
     ${species==='skunk'?`// The ears and crown share one connected mesh. Profile ear interiors
     // must not be reused across the hidden crown between the ears.
     float crown=smoothstep(1.54,1.565,p.y)*(1.-smoothstep(.045,.070,abs(p.z)))*step(6.5,vPaintPart)*step(vPaintPart,7.5);
@@ -135,10 +161,30 @@ export function createModelPaint(renderer,horse,texture,{species='horse',frame=P
    if(vPaintPart<2.5&&vPaintPart>1.5&&p.y<.86){float center=.12+clamp(.8-p.y,0.0,.67)*.17;fillPosition.z=mix(p.z,sign(p.z)*center,.16);}
    if(abs(vPaintPart-4.0)<.1||abs(vPaintPart-6.0)<.1)fillPosition.z=mix(p.z,sign(p.z)*.232,.18);
    vec4 fill=paintView(fillPosition,n,0.0,false)+paintView(fillPosition,n,2.0,false);
-   ${species==='goat'||species==='bull'||species==='skunk'?`fill+=paintView(fillPosition,n,1.0,false)+paintView(fillPosition,n,3.0,false);`:''}
+   ${species==='goat'||species==='bull'||species==='skunk'||species==='pig-foreman'?`fill+=paintView(fillPosition,n,1.0,false)+paintView(fillPosition,n,3.0,false);`:''}
    float filled=smoothstep(.002,.025,fill.a);
    vec3 base=mix(fallbackPaint(vPaintPart),fill.rgb/max(.00001,fill.a),filled);
    diffuseColor.rgb=mix(base,paint.rgb/max(.00001,paint.a),coverage);
+   ${species==='pig-foreman'?`
+   // Paint expanded the tail root slightly beyond its mesh silhouette. Keep that
+   // pink edge on the tail rather than projecting a second curl onto trousers.
+   float tailGhost=(1.-smoothstep(-.18,-.14,p.x))*(1.-smoothstep(.055,.09,abs(p.z)))*smoothstep(.78,.80,p.y)*(1.-smoothstep(.88,.90,p.y))*(1.-step(.1,abs(vPaintPart-2.)));
+   tailGhost*=smoothstep(.30,.48,diffuseColor.r);
+   vec4 seatPaint=paintView(vec3(-.24,p.y,.12),vec3(-1.,0.,0.),2.,false);
+   if(seatPaint.a>.001){diffuseColor.rgb=mix(diffuseColor.rgb,seatPaint.rgb/seatPaint.a,tailGhost);coverage*=1.-tailGhost;filled=mix(filled,1.,tailGhost);}
+   // Neutral forearms obscure the lateral hips in the profile paintings.
+   // Reuse unoccluded front trouser cloth instead of their painted shadow edge.
+   float hip=smoothstep(.22,.26,abs(p.z))*(1.-smoothstep(.10,.16,abs(p.x)))*smoothstep(.64,.69,p.y)*(1.-smoothstep(.89,.925,p.y))*(1.-step(.1,abs(vPaintPart-2.)));
+   vec4 hipPaint=paintView(vec3(.18,p.y,sign(p.z)*(.11+p.x*.3)),vec3(1.,0.,0.),0.,false);
+   if(hipPaint.a>.001){diffuseColor.rgb=mix(diffuseColor.rgb,hipPaint.rgb/hipPaint.a,hip);coverage*=1.-hip;filled=mix(filled,1.,hip);}
+   if(vPaintPart>8.5){
+    float visor=smoothstep(.12,.17,p.x)*(1.-smoothstep(1.59,1.61,p.y))*max(smoothstep(.3,.65,n.y),smoothstep(.17,.20,p.x));
+    vec4 leather=paintView(vec3(.13,1.544,p.z*.5),vec3(1.,0.,0.),0.,false);
+    if(leather.a>.001){diffuseColor.rgb=mix(diffuseColor.rgb,leather.rgb/leather.a,visor);coverage*=1.-visor;filled=mix(filled,1.,visor);}
+    float crown=smoothstep(1.59,1.61,p.y)*(1.-coverage);
+    vec4 cloth=paintView(vec3(-.07,1.60+.025*clamp((p.x+.18)/.36,0.,1.),p.z*.75),vec3(-1.,0.,0.),2.,false);
+    if(cloth.a>.001){diffuseColor.rgb=mix(diffuseColor.rgb,cloth.rgb/cloth.a,crown);filled=mix(filled,1.,crown);}
+   }`:''}
    // A +.25 UV phase turns the painted stripes clockwise viewed from tip toward root.
    ${tailTexture?`if(vPaintPart>7.5){vec2 tailUV=vec2(.50+atan(vTail.y,vTail.x)/6.28318530718,vTail.z);vec3 dx=dFdx(vTail),dy=dFdy(vTail);float radius2=max(dot(vTail.xy,vTail.xy),.000001);vec2 uvDx=vec2((vTail.x*dx.y-vTail.y*dx.x)/radius2/6.28318530718,dx.z),uvDy=vec2((vTail.x*dy.y-vTail.y*dy.x)/radius2/6.28318530718,dy.z);diffuseColor.rgb=textureGrad(uTailPaint,tailUV,uvDx,uvDy).rgb*(.83+.17*max(n.y,0.));coverage=1.;filled=1.;}`:''}
    ${species==='skunk'?`float strap=smoothstep(1.185,1.225,p.y)*(1.0-smoothstep(.035,.055,abs(abs(p.z)-.136)))*(1.0-step(.4,abs(vPaintPart-2.0)));
