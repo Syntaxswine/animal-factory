@@ -22,7 +22,8 @@ export function paintValidity(rgba,width,height){
  return valid;
 }
 
-export function createModelPaint(renderer,horse,texture,{species='horse',frame=PAINT_FRAME,tailTexture=null}={}){
+export function createModelPaint(renderer,horse,texture,{species='horse',frame=PAINT_FRAME,tailTexture=null,earTexture=null}={}){
+ if(earTexture){earTexture.colorSpace=THREE.SRGBColorSpace;earTexture.anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy());}
  if(tailTexture){tailTexture.colorSpace=THREE.SRGBColorSpace;tailTexture.wrapS=THREE.RepeatWrapping;tailTexture.anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy());}
  texture.colorSpace=THREE.SRGBColorSpace;texture.minFilter=THREE.LinearMipmapLinearFilter;texture.magFilter=THREE.LinearFilter;
  texture.anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy());
@@ -48,6 +49,7 @@ export function createModelPaint(renderer,horse,texture,{species='horse',frame=P
  const material=new THREE.MeshBasicMaterial({toneMapped:false});
  material.onBeforeCompile=shader=>{
   Object.assign(shader.uniforms,{uModelPaint:{value:texture},uPaintDepth:{value:target.depthTexture},uPaintParts:{value:target.texture},uPaintMask:{value:mask},uPaintDebug:debug,uGripForearm:gripForearm});
+  if(earTexture){shader.uniforms.uEarPaint={value:earTexture};shader.fragmentShader='uniform sampler2D uEarPaint;\n'+shader.fragmentShader;}
   if(tailTexture){shader.uniforms.uTailPaint={value:tailTexture};shader.vertexShader='attribute vec3 paintTail; varying vec3 vTail;\n'+shader.vertexShader;shader.vertexShader=shader.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\nvTail=paintTail;');shader.fragmentShader='uniform sampler2D uTailPaint; varying vec3 vTail;\n'+shader.fragmentShader;}
   shader.vertexShader=shader.vertexShader.replace('#include <common>','#include <common>\nattribute float paintPart; varying float vPaintPart; varying vec3 vPaintPosition; varying vec3 vPaintNormal;');
   shader.vertexShader=shader.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\nvPaintPosition=position;vPaintNormal=normal;vPaintPart=paintPart;');
@@ -185,6 +187,28 @@ export function createModelPaint(renderer,horse,texture,{species='horse',frame=P
     vec4 cloth=paintView(vec3(-.07,1.60+.025*clamp((p.x+.18)/.36,0.,1.),p.z*.75),vec3(-1.,0.,0.),2.,false);
     if(cloth.a>.001){diffuseColor.rgb=mix(diffuseColor.rgb,cloth.rgb/cloth.a,crown);filled=mix(filled,1.,crown);}
    }`:''}
+   ${earTexture?`// Broad ear artwork comes from the approved turnaround, locally registered
+   // to the revised solid flap. Other head and garment paint stays unchanged.
+   float innerEar=.133+.050*(1.-smoothstep(1.39,1.48,p.y));
+   float earMask=smoothstep(innerEar-.004,innerEar+.014,abs(p.z))*(1.-smoothstep(.005,.035,p.x))*smoothstep(1.37,1.395,p.y)*(1.-smoothstep(1.525,1.550,p.y))*(1.-step(.1,abs(vPaintPart-7.)));
+   // The previous projected profile included a narrow ear on the skull beneath
+   // the revised flap. Reuse adjacent pink cheek/neck paint on that buried patch.
+   float oldEar=smoothstep(.025,.070,abs(p.z))*(1.-smoothstep(-.015,.025,p.x))*smoothstep(1.365,1.395,p.y)*(1.-smoothstep(1.49,1.525,p.y))*(1.-step(.1,abs(vPaintPart-7.)))*(1.-earMask);
+   vec4 headPaint=paintView(vec3(-.04,1.365+(p.y-1.42)*.3,sign(p.z)*.13),vec3(0.,0.,sign(p.z)),p.z>0.?1.:3.,false);
+   if(headPaint.a>.001){diffuseColor.rgb=mix(diffuseColor.rgb,headPaint.rgb/headPaint.a,oldEar);coverage*=1.-oldEar;filled=mix(filled,1.,oldEar);}
+   vec2 earPixel=vec2(243.-p.z*500.,132.+(1.535-p.y)*452.);
+   vec2 earCenter=vec2(p.z>0.?149.:333.,166.);
+   vec3 earColor=vec3(0.);float earWeight=0.;
+   for(int i=0;i<5;i++){vec2 at=mix(earPixel,earCenter,.16+float(i)*.16);vec3 sampleColor=texture2D(uEarPaint,vec2(at.x/1774.,1.-at.y/887.)).rgb;float chroma=max(max(sampleColor.r,sampleColor.g),sampleColor.b)-min(min(sampleColor.r,sampleColor.g),sampleColor.b);float weight=smoothstep(.035,.08,chroma)*pow(.6,float(i));earColor+=sampleColor*weight;earWeight+=weight;}
+   float earValid=smoothstep(.01,.1,earWeight);earColor/=max(.001,earWeight);
+   // Painted root fold and turned lower rim: surface color only, no ear cavity.
+   float fold=exp(-pow((abs(p.z)-innerEar-.016)/.012,2.))*smoothstep(1.40,1.44,p.y)*(1.-smoothstep(1.515,1.54,p.y));
+   float rimY=1.389+.036*pow((abs(p.z)-.205)/.047,2.);
+   float rim=(1.-smoothstep(.004,.012,abs(p.y-rimY)))*(1.-smoothstep(1.444,1.46,p.y));
+   float turn=exp(-pow((p.y-rimY-.015)/.009,2.))*(1.-smoothstep(1.444,1.46,p.y));
+   earColor*=1.-.48*fold-.22*turn;earColor=mix(earColor,vec3(.90,.56,.40),rim*.55);
+   diffuseColor.rgb=mix(diffuseColor.rgb,earColor*(.90+.10*abs(n.x)),earMask*earValid);coverage*=1.-earMask;filled=mix(filled,earValid,earMask);
+   `:''}
    // A +.25 UV phase turns the painted stripes clockwise viewed from tip toward root.
    ${tailTexture?`if(vPaintPart>7.5){vec2 tailUV=vec2(.50+atan(vTail.y,vTail.x)/6.28318530718,vTail.z);vec3 dx=dFdx(vTail),dy=dFdy(vTail);float radius2=max(dot(vTail.xy,vTail.xy),.000001);vec2 uvDx=vec2((vTail.x*dx.y-vTail.y*dx.x)/radius2/6.28318530718,dx.z),uvDy=vec2((vTail.x*dy.y-vTail.y*dy.x)/radius2/6.28318530718,dy.z);diffuseColor.rgb=textureGrad(uTailPaint,tailUV,uvDx,uvDy).rgb*(.83+.17*max(n.y,0.));coverage=1.;filled=1.;}`:''}
    ${species==='skunk'?`float strap=smoothstep(1.185,1.225,p.y)*(1.0-smoothstep(.035,.055,abs(abs(p.z)-.136)))*(1.0-step(.4,abs(vPaintPart-2.0)));
@@ -214,7 +238,7 @@ export function createModelPaint(renderer,horse,texture,{species='horse',frame=P
    if(uPaintDebug>.5)diffuseColor.rgb=mix(mix(vec3(.8,.0,.55),vec3(.03,.18,.95),filled),vec3(.04,.8,.12),coverage);
   `);
  };
- material.customProgramCacheKey=()=> 'worker-model-projection-v4-'+species+'-'+JSON.stringify(frame)+'-'+Boolean(tailTexture);
+ material.customProgramCacheKey=()=> 'worker-model-projection-v4-'+species+'-'+JSON.stringify(frame)+'-'+Boolean(tailTexture)+'-'+Boolean(earTexture);
  let visibilityPixels;
  function visibility(p,part,view){
   if(!visibilityPixels){visibilityPixels=new Uint8Array(2048*1024*4);renderer.readRenderTargetPixels(target,0,0,2048,1024,visibilityPixels);}

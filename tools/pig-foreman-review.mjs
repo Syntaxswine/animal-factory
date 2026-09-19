@@ -1,5 +1,5 @@
 import fs from 'node:fs';import assert from 'node:assert/strict';import {createRequire} from 'node:module';import {fileURLToPath} from 'node:url';
-const grey=process.argv.includes('--grey'),dir=new URL('../docs/tactics/hybrid-review/pig-foreman/',import.meta.url);fs.mkdirSync(dir,{recursive:true});
+const grey=process.argv.includes('--grey'),dir=new URL('../docs/tactics/hybrid-review/'+(process.argv.includes('--ears')?'pig-foreman-ears':'pig-foreman')+'/',import.meta.url);fs.mkdirSync(dir,{recursive:true});
 const {chromium}=createRequire(import.meta.url)(process.env.PLAYWRIGHT_PATH||'playwright'),browser=await chromium.launch({headless:true,channel:'msedge'});
 try{const page=await browser.newPage({viewport:{width:1400,height:1050}}),errors=[],checks=[];page.on('pageerror',e=>errors.push(e.message));page.on('console',m=>{if(m.type()==='error')errors.push(m.text());});page.on('response',r=>{if(r.status()>=400)errors.push(r.url());});
  await page.goto('http://127.0.0.1:4389/tactics/pig-foreman.html?mesh=10k'+(grey?'&stage=grey':''));await page.waitForFunction(()=>window.lightHorseReady);

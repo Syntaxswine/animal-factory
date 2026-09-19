@@ -3,9 +3,13 @@
 Open `tactics/pig-foreman.html?mesh=10k`, or add `&stage=grey` for the form.
 The character reference gallery links to the study.
 
+Current review scope: the ear correction is approved by hostile review at **9/10**.
+The architect's broader body-proportion concern remains pending. The earlier
+whole-character review score did not establish reference fidelity.
+
 ## Construction
 
-The stored **29,988-triangle author** is reduced to **9,986 triangles**.
+The stored **29,990-triangle author** is reduced to **9,990 triangles**.
 Nine closed connected surfaces share the existing 17-bone worker rig.
 The foreman has a broad belly, buttoned shirt with braces, trousers, solid
 work boots, service cap, integrated snout and cheeks, and a small curled tail.
@@ -55,7 +59,7 @@ correctness; this remains a projected skin rather than a completed UV atlas.
 
 Grey hostile review reached **9/10** after correcting rigid ear shapes,
 collar edges and the waist join. Painted hostile review reached **9/10**
-after badge registration, forearm/brace clearance and projected lateral
+for the initial study after badge registration, forearm/brace clearance and projected lateral
 arm-shadow corrections. The reviewer inspected fresh turned and native views.
 Some lateral hip paint stretches at close range; this was accepted as
 nonblocking at gameplay size for this bounded static proof.
@@ -69,8 +73,8 @@ complete framing in all four reference cameras.
 
 **64 grey and 64 painted browser combinations** cover both meshes,
 neutral/carry poses, eight headings and native/close scales. No browser,
-shader or asset errors. Maximum classified flat fallback is **1.47% close**
-and **2.66% native**; native antialiasing makes this classifier coarse.
+shader or asset errors. Latest ear revision classified flat fallback is **1.37% close**
+and **2.31% native**; native antialiasing makes this classifier coarse.
 Horse, goat, bull and skunk browser regression views pass. The Pages
 distribution build passes; building does not publish it.
 
@@ -91,3 +95,41 @@ gameplay integration remain unproven. The sprite's illustrated pose differs
 from the model's neutral and relaxed carry poses. Delivery belongs to
 `sprite-migration`; canonical graphics integration and the separate
 published 3D project are outside this change.
+
+
+## Ear correction after architect review of 3ec1e7c
+
+The architect correctly identified pointed wedges in both mesh resolutions.
+This ear-only revision replaces the linear taper with a curved closed perimeter:
+a broad lower lobe hangs below the outward corner, and a backward sweep exposes
+the flap in profile and three-quarter views. The surfaces remain solid.
+Averaged mesh normals remove the spurious triangular creases along the thin rim.
+
+The existing approved turnaround supplies locally registered ear color, with
+painted root-fold shadow and a highlighted lower rim. Adjacent pink skin fills
+the old projected ear outline on the skull. No new raster asset was generated;
+the body skin is unchanged. Eight non-head parts, including garments, boots,
+cap and tail, remain byte-identical in both stored model resolutions.
+The facial field is unchanged; the connected head is remeshed with the new ears.
+
+The first shape was refined for profile visibility. Independent review then
+caught the rim shading and insufficient painted fold definition. Final **9/10** approval is
+specifically for the ear correction, not the pending heavier/compact body shape.
+No body-proportion changes are included in this pass.
+
+[Equal-height comparison](hybrid-review/pig-foreman-ears/ear-comparison.html)
+shows the reference, author grey, reduced grey and reduced painted model from
+front, profile, three-quarter and gameplay angles. Reference artwork is scaled
+to each model view's projected cap-to-sole height. Model scale and prototype
+camera remain unchanged. Front/profile use the approved turnaround; other
+views use the original sprite at its illustrated angle, which is approximate.
+There are 32 focused renders, including native 58 px/unit views. The model is
+neutral so that the ears remain unobscured.
+
+Six foreman tests now additionally guard a lower lobe below the outward corner
+and sufficient depth sweep for profile visibility. All **38 focused tests**,
+**64 grey + 64 painted browser configurations**, the four other character
+regression views and the distribution build pass. Reproduce fresh evidence
+with `node tools/pig-foreman-review.mjs --grey --ears`,
+`node tools/pig-foreman-review.mjs --ears` and
+`node tools/pig-foreman-ear-review.mjs`.

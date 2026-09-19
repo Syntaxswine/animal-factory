@@ -8,7 +8,7 @@ const boots=JSON.parse(fs.readFileSync(new URL('../dist/tactics/skunk-author-dat
 const geometries=[];function add(name,g){geometries.push({name,g});}
 function copy(part){const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(part.position,3));g.setAttribute('normal',new THREE.Float32BufferAttribute(part.normal,3));g.setIndex(part.index);add(part.name,g);}
 const abs=Math.abs,exp=Math.exp,edge=(...v)=>v.reduce((a,b)=>-blend(-a,-b,.008));
-// Signed polygon distance in a plane, for folded ears and pointed collar leaves.
+// Signed polygon distance in a plane, for broad ear outlines and collar leaves.
 function polygon(u,v,points){let distance=Infinity,inside=false;for(let i=0,j=points.length-1;i<points.length;j=i++){const a=points[j],b=points[i],dx=b[0]-a[0],dy=b[1]-a[1],t=THREE.MathUtils.clamp(((u-a[0])*dx+(v-a[1])*dy)/(dx*dx+dy*dy),0,1);distance=Math.min(distance,Math.hypot(u-a[0]-t*dx,v-a[1]-t*dy));if((a[1]>v)!==(b[1]>v)&&u<(b[0]-a[0])*(v-a[1])/(b[1]-a[1])+a[0])inside=!inside;}return distance*(inside?-1:1);}
 function shirt(x,y,z){
  let d=blend(E(x,y,z,[.010,1.064,0],[.241,.231,.264]),E(x,y,z,[-.035,1.216,0],[.173,.076,.240]),.041);
@@ -52,6 +52,20 @@ function trousers(x,y,z){
 add('connected trousers belt and braces',sculptSurface(trousers,[-.30,.13,-.40],[.35,1.34,.40],.006));
 for(const p of base.parts)if(p.name.includes('forearm'))copy(p);
 for(const p of boots.parts)if(p.name.includes('boot'))copy(p);
+// A curved outline rather than a taper to a point: the lower lobe hangs below
+// the outward-turned edge. Thickness stays solid; folds belong to the skin.
+const earOutline=new THREE.CatmullRomCurve3([
+ [.105,1.522],[.145,1.535],[.183,1.500],[.225,1.475],
+ [.255,1.461],[.239,1.426],[.205,1.389],[.170,1.408],
+ [.145,1.468],[.112,1.481]
+].map(([z,y])=>new THREE.Vector3(z,y,0)),true,'centripetal').getPoints(64).slice(0,-1).map(p=>[p.x,p.y]);
+function ear(x,y,z){
+ const spread=THREE.MathUtils.smoothstep(z,.13,.25),drop=THREE.MathUtils.smoothstep(1.505-y,0,.090);
+ const centerX=-.020-.110*spread-.020*drop+.018*spread*spread*spread;
+ const outline=polygon(z,y,earOutline),thickness=.016+.007*(1-spread);
+ // Rounded intersection gives a soft rim without cutting an ear cavity.
+ return edge(outline,abs(x-centerX)-thickness);
+}
 function head(x,y,z){
  let d=E(x,y,z,[-.048,1.292,0],[.138,.107,.153]);
  d=blend(d,E(x,y,z,[-.022,1.431,0],[.141,.141,.151]),.030);
@@ -66,9 +80,7 @@ function head(x,y,z){
   d=-blend(-d,E(x,y,z,[.088,1.468,s*.125],[.033,.018,.022]),.004);
   d=blend(d,E(x,y,z,[.083,1.466,s*.109],[.027,.013,.020]),.005);
   d=-blend(-d,E(x,y,z,[.231,1.432,s*.031],[.024,.022,.013]),.003);
-  // Overlapping oval sections form a soft drooping flap that narrows to its tip.
-  // Its thickness tapers as well as its outline; the interior stays solid.
-  for(let i=0;i<=8;i++){const t=i/8,earX=-.040+.024*t+.012*Math.sin(t*Math.PI);d=blend(d,E(x,y,z,[earX,1.503-.059*t,s*(.126+.108*t)],[.025-.015*t,.056*(1-t)+.010,.017]),.010);}
+  d=blend(d,ear(x,y,z*s),.009);
   // Inner-ear shading is painted; no sculpted recess or undercut.
  }
  d+=.0025*exp(-1*((y-1.376)/.007)**2)*THREE.MathUtils.smoothstep(x,.13,.20);
@@ -87,7 +99,7 @@ const capMesh=sculptSurface(cap,[-.24,1.49,-.22],[.25,1.72,.22],.0045);capMesh.c
 const order=['connected shirt and sleeves','connected trousers belt and braces','forearm and hand -1','work boot -1','forearm and hand 1','work boot 1','unified pig skull folded ears and snout','pig curly tail','skull service cap crown band and visor'];geometries.sort((a,b)=>order.indexOf(a.name)-order.indexOf(b.name));
 
 function reduce(name,g,target,tolerance){const positions=g.attributes.position.array;let [indices,error]=simplify.simplify(new Uint32Array(g.index.array),positions,3,Math.min(target*3,g.index.count),tolerance,['ErrorAbsolute']);const faces=new Map();for(let i=0;i<indices.length;i+=3){const key=Array.from(indices.subarray(i,i+3)).sort((a,b)=>a-b).join(':');if(!faces.has(key))faces.set(key,[]);faces.get(key).push(i);}const clean=[];for(const v of faces.values())if(v.length===1)clean.push(...indices.subarray(v[0],v[0]+3));indices=new Uint32Array(clean);
- const [remap,count]=simplify.compactMesh(indices),position=new Float32Array(count*3),normal=new Float32Array(count*3);for(let i=0;i<remap.length;i++)if(remap[i]!==0xffffffff){position.set(positions.subarray(i*3,i*3+3),remap[i]*3);normal.set(g.attributes.normal.array.subarray(i*3,i*3+3),remap[i]*3);}if(name.includes('boot')){let snap=0;for(let i=1;i<position.length;i+=3)if(position[i]<.0003){snap=Math.max(snap,Math.abs(position[i]));position[i]=0;}error+=snap;}if(name.includes('boot')){const smooth=new THREE.BufferGeometry();smooth.setAttribute('position',new THREE.BufferAttribute(position,3));smooth.setIndex(new THREE.BufferAttribute(indices,1));smooth.computeVertexNormals();normal.set(smooth.attributes.normal.array);smooth.dispose();}if(/shirt|trousers/.test(name)){const field=name.includes('shirt')?shirt:trousers,e=.009;for(let i=0;i<position.length;i+=3){const [x,y,z]=position.subarray(i,i+3),n=new THREE.Vector3(field(x+e,y,z)-field(x-e,y,z),field(x,y+e,z)-field(x,y-e,z),field(x,y,z+e)-field(x,y,z-e)).normalize();normal.set(n.toArray(),i);}}return {name,position:Array.from(position,v=>+v.toFixed(7)),normal:Array.from(normal,v=>+v.toFixed(6)),index:Array.from(indices),triangles:indices.length/3,sourceTriangles:g.index.count/3,errorWorld:error};}
+ const [remap,count]=simplify.compactMesh(indices),position=new Float32Array(count*3),normal=new Float32Array(count*3);for(let i=0;i<remap.length;i++)if(remap[i]!==0xffffffff){position.set(positions.subarray(i*3,i*3+3),remap[i]*3);normal.set(g.attributes.normal.array.subarray(i*3,i*3+3),remap[i]*3);}if(name.includes('boot')){let snap=0;for(let i=1;i<position.length;i+=3)if(position[i]<.0003){snap=Math.max(snap,Math.abs(position[i]));position[i]=0;}error+=snap;}if(name.includes('boot')){const smooth=new THREE.BufferGeometry();smooth.setAttribute('position',new THREE.BufferAttribute(position,3));smooth.setIndex(new THREE.BufferAttribute(indices,1));smooth.computeVertexNormals();normal.set(smooth.attributes.normal.array);smooth.dispose();}if(/shirt|trousers/.test(name)){const field=name.includes('shirt')?shirt:trousers,e=.009;for(let i=0;i<position.length;i+=3){const [x,y,z]=position.subarray(i,i+3),n=new THREE.Vector3(field(x+e,y,z)-field(x-e,y,z),field(x,y+e,z)-field(x,y-e,z),field(x,y,z+e)-field(x,y,z-e)).normalize();normal.set(n.toArray(),i);}}if(name.includes('folded ears')){const surface=new THREE.BufferGeometry();surface.setAttribute('position',new THREE.BufferAttribute(position,3));surface.setIndex(new THREE.BufferAttribute(indices,1));surface.computeVertexNormals();const averaged=surface.attributes.normal.array;for(let i=0;i<position.length;i+=3){const [x,y,z]=position.subarray(i,i+3);if(abs(z)>.135&&y>1.38&&x<.04)normal.set(averaged.subarray(i,i+3),i);}surface.dispose();}return {name,position:Array.from(position,v=>+v.toFixed(7)),normal:Array.from(normal,v=>+v.toFixed(6)),index:Array.from(indices),triangles:indices.length/3,sourceTriangles:g.index.count/3,errorWorld:error};}
 const author=geometries.map(({name,g})=>reduce(name,g,name.includes('cap')?2200:name.includes('skull')?5300:name.includes('tail')?900:name.includes('boot')?1200:name.includes('shirt')?5400:name.includes('trousers')?5200:4300,.006));
 function save(file,parts,sourceTriangles){const data={schema:1,species:'pig-foreman',source:'Pig foreman-specific shirt, belly, trousers, braces, folded ears, snout, cap and curled tail; shared worker arms and boots',sourceTriangles,triangles:parts.reduce((n,p)=>n+p.triangles,0),parts};fs.writeFileSync(new URL('../dist/tactics/'+file,import.meta.url),JSON.stringify(data)+'\n');console.log(file,data.triangles,parts.map(p=>[p.name,p.triangles,p.errorWorld]));return data;}
 const high=save('pig-foreman-author-data.json',author,geometries.reduce((n,p)=>n+p.g.index.count/3,0));
