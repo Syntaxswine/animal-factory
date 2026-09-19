@@ -12,7 +12,7 @@ Browse locally at `http://127.0.0.1:4389/tactics/character-model-references.html
 | Hen | [PNG](../../dist/assets/characters/model-references/hen-turnaround-v2.png) | [Prompt](character-reference-prompts/hen.txt) |
 | Pig Foreman | [PNG](../../dist/assets/characters/model-references/pig-foreman-turnaround-v2.png) | [Prompt](character-reference-prompts/pig-foreman.txt) |
 | Pig Director | [PNG](../../dist/assets/characters/model-references/pig-director-turnaround-v2.png) | [Prompt](character-reference-prompts/pig-director.txt) |
-| Skunk | [PNG](../../dist/assets/characters/model-references/skunk-turnaround-v1.png) | [Prompt](character-reference-prompts/skunk.txt) |
+| Skunk | [PNG](../../dist/assets/characters/model-references/skunk-turnaround-v2.png) | [Prompt](character-reference-prompts/skunk.txt) |
 
 ## Use and provenance
 
@@ -26,13 +26,14 @@ Existing horse and goat painted-model assets remain their own baselines. This ta
 
 All seven selected sheets reached **9/10 for usable concept/modeling reference**. Review checked species and outfit fidelity, cross-view anatomy and markings, uncropped framing, and graphic finish.
 
-- Sheep, cow and skunk passed their first versions.
+- Sheep and cow passed their first versions.
 - Donkey v2 removes the incorrectly repeated knee patch from the right-facing profile. The single patch stays on the anatomical left knee.
 - Hen v2 aligns the rear tail with the raised fan in both profiles.
 - Foreman v2 adds the missing tail in the right-facing profile.
 - Director v2 removes an extra ear-like crown shape in the front view.
+- Skunk v2 corrects the tail attachment missed in the initial review: the rear view now shows a central coccyx root below the waistband, with a continuous furred base into the raised plume. Both profiles use the same upper-pelvis attachment; the front root remains occluded.
 
-The four localized edit prompts are stored beside the generation prompts with the `-correction.txt` suffix. Only selected images are delivered in the gallery. This review is not approval of finished geometry, rigging, UV registration or animation.
+The five localized edit prompts are stored beside the generation prompts with the `-correction.txt` suffix. Only selected images are delivered in the gallery. This review is not approval of finished geometry, rigging, UV registration or animation.
 
 ## Validation
 
