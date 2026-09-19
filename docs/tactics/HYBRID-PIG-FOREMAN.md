@@ -3,13 +3,14 @@
 Open `tactics/pig-foreman.html?mesh=10k`, or add `&stage=grey` for the form.
 The character reference gallery links to the study.
 
-Current review scope: the ear correction is approved by hostile review at **9/10**.
-The architect's broader body-proportion concern remains pending. The earlier
-whole-character review score did not establish reference fidelity.
+Current proportions and validation are recorded in
+[the two-pig proportion pass](HYBRID-PIG-PROPORTIONS.md). The accepted ears are
+preserved; the body now has a lower waist, broader torso and fuller abdomen.
+Earlier review results below are historical evidence for their stated scope.
 
 ## Construction
 
-The stored **29,990-triangle author** is reduced to **9,990 triangles**.
+The stored **29,978-triangle author** is reduced to **9,988 triangles**.
 Nine closed connected surfaces share the existing 17-bone worker rig.
 The foreman has a broad belly, buttoned shirt with braces, trousers, solid
 work boots, service cap, integrated snout and cheeks, and a small curled tail.
@@ -21,9 +22,10 @@ eyelid shelves, jowls and the jaw provide the face's structural landmarks;
 paint supplies the finer expression and ear folds.
 
 Height stays **1.65 world units**, with the unchanged prototype isometric
-camera at **58 CSS pixels/world unit**. The author-to-reduced mesh reports
-maximum error 0.00320 world units, approximately 0.19 native pixels. This
-metric is not a guarantee of identical contours.
+camera at **58 CSS pixels/world unit**. Simplification error is recorded before
+the final local proportion deformation as `preProportionErrorWorld`; it is not
+a bound on the corrected final surfaces. Equal-height author/reduced renders
+provide the visual comparison.
 
 The separate rifle adds 480 triangles. Its carry moves forward to clear the
 belly, with forward elbow poles keeping forearms in front of the braces.

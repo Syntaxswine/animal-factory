@@ -33,7 +33,7 @@ export function createModelPaint(renderer,horse,texture,{species='horse',frame=P
  const scene=new THREE.Scene(),idMaterials=[];
  // Static copies use bind positions, so generating visibility never changes the rig's pose.
  for(let i=0;i<horse.parts.length;i++){
-  const source=horse.parts[i],id=i+1,material=new THREE.ShaderMaterial({uniforms:{partId:{value:id}},vertexShader:'void main(){gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}',fragmentShader:'uniform float partId;void main(){float d=floor(gl_FragCoord.z*65535.0+.5);gl_FragColor=vec4(partId/255.0,floor(d/256.0)/255.0,mod(d,256.0)/255.0,1.0);}',toneMapped:false});
+  const source=horse.parts[i],id=i+1,material=new THREE.ShaderMaterial({uniforms:{partId:{value:id}},vertexShader:'attribute vec3 paintPosition;void main(){gl_Position=projectionMatrix*modelViewMatrix*vec4(paintPosition,1.0);}',fragmentShader:'uniform float partId;void main(){float d=floor(gl_FragCoord.z*65535.0+.5);gl_FragColor=vec4(partId/255.0,floor(d/256.0)/255.0,mod(d,256.0)/255.0,1.0);}',toneMapped:false});
   const mesh=new THREE.Mesh(source.geometry,material);scene.add(mesh);idMaterials.push(material);
   source.geometry.setAttribute('paintPart',new THREE.Float32BufferAttribute(new Float32Array(source.geometry.attributes.position.count).fill(id),1));
  }
@@ -51,8 +51,8 @@ export function createModelPaint(renderer,horse,texture,{species='horse',frame=P
   Object.assign(shader.uniforms,{uModelPaint:{value:texture},uPaintDepth:{value:target.depthTexture},uPaintParts:{value:target.texture},uPaintMask:{value:mask},uPaintDebug:debug,uGripForearm:gripForearm});
   if(earTexture){shader.uniforms.uEarPaint={value:earTexture};shader.fragmentShader='uniform sampler2D uEarPaint;\n'+shader.fragmentShader;}
   if(tailTexture){shader.uniforms.uTailPaint={value:tailTexture};shader.vertexShader='attribute vec3 paintTail; varying vec3 vTail;\n'+shader.vertexShader;shader.vertexShader=shader.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\nvTail=paintTail;');shader.fragmentShader='uniform sampler2D uTailPaint; varying vec3 vTail;\n'+shader.fragmentShader;}
-  shader.vertexShader=shader.vertexShader.replace('#include <common>','#include <common>\nattribute float paintPart; varying float vPaintPart; varying vec3 vPaintPosition; varying vec3 vPaintNormal;');
-  shader.vertexShader=shader.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\nvPaintPosition=position;vPaintNormal=normal;vPaintPart=paintPart;');
+  shader.vertexShader=shader.vertexShader.replace('#include <common>','#include <common>\nattribute vec3 paintPosition,paintNormal; attribute float paintPart; varying float vPaintPart; varying vec3 vPaintPosition; varying vec3 vPaintNormal;');
+  shader.vertexShader=shader.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\nvPaintPosition=paintPosition;vPaintNormal=paintNormal;vPaintPart=paintPart;');
   shader.fragmentShader=shader.fragmentShader.replace('#include <common>',`#include <common>
    uniform sampler2D uModelPaint,uPaintDepth,uPaintParts,uPaintMask; uniform float uPaintDebug,uGripForearm;
    varying vec3 vPaintPosition,vPaintNormal; varying float vPaintPart;
@@ -176,6 +176,14 @@ export function createModelPaint(renderer,horse,texture,{species='horse',frame=P
    float filled=smoothstep(.002,.025,fill.a);
    vec3 base=mix(fallbackPaint(vPaintPart),fill.rgb/max(.00001,fill.a),filled);
    diffuseColor.rgb=mix(base,paint.rgb/max(.00001,paint.a),coverage);
+   ${species==='pig-foreman'?`// The wider carry exposes inner sleeve surfaces hidden in the old
+   // neutral painting. Reuse unoccluded rear shirt cloth there.
+   float innerSleeve=(1.-coverage)*(1.-filled)*step(vPaintPart,1.5);
+   vec4 sleeveFill=paintView(vec3(-.25,1.02+(p.y-.95),clamp(p.x*.65,-.13,.13)),vec3(-1.,0.,0.),2.,false);
+   if(sleeveFill.a>.001){diffuseColor.rgb=mix(diffuseColor.rgb,sleeveFill.rgb/sleeveFill.a*.86,innerSleeve);filled=max(filled,innerSleeve);}
+   float beltFill=(1.-coverage)*(1.-filled)*smoothstep(.87,.90,p.y)*(1.-smoothstep(.94,.96,p.y))*(1.-step(.1,abs(vPaintPart-2.)));
+   vec4 leatherFill=paintView(vec3(.28,.914,sign(p.z)*.22+p.x*.10),vec3(1.,0.,0.),0.,false);
+   if(leatherFill.a>.001){diffuseColor.rgb=mix(diffuseColor.rgb,leatherFill.rgb/leatherFill.a,beltFill);filled=max(filled,beltFill);}`:''}
    ${species==='pig-director'?`
    // Reuse central rear skull paint where profile ears overlap the bald head.
    float skullBack=(1.-smoothstep(-.07,-.015,p.x))*(1.-smoothstep(.12,.175,abs(p.z)))*smoothstep(1.35,1.40,p.y)*step(6.5,vPaintPart)*step(vPaintPart,7.5);
@@ -203,6 +211,14 @@ export function createModelPaint(renderer,horse,texture,{species='horse',frame=P
    if(hipPaint.a>.001){diffuseColor.rgb=mix(diffuseColor.rgb,hipPaint.rgb/hipPaint.a,hip);coverage*=1.-hip;filled=max(filled,hip);}
    `:''}
    ${species==='pig-foreman'?`
+   // Neutral sleeves hide the lateral shirt and belt. The compact carry exposes
+   // them: keep armband/brace artwork on those parts, reuse plain cloth beneath.
+   float underarm=smoothstep(.21,.255,abs(p.z))*(1.-smoothstep(.325,.36,abs(p.z)))*(1.-smoothstep(.11,.18,abs(p.x)))*smoothstep(.86,.90,p.y)*(1.-smoothstep(1.015,1.07,p.y))*step(vPaintPart,1.5);
+   vec4 sideShirt=paintView(vec3(-.25,1.02+(p.y-.95),clamp(p.x*.65,-.13,.13)),vec3(-1.,0.,0.),2.,false);
+   if(sideShirt.a>.001){diffuseColor.rgb=mix(diffuseColor.rgb,sideShirt.rgb/sideShirt.a*.86,underarm);coverage*=1.-underarm;filled=max(filled,underarm);}
+   float sideBelt=smoothstep(.205,.24,abs(p.z))*smoothstep(.883,.898,p.y)*(1.-smoothstep(.933,.95,p.y))*(1.-step(.1,abs(vPaintPart-2.)));
+   vec4 sideLeather=paintView(vec3(-.24,.914,sign(p.z)*(.10+p.x*.08)),vec3(-1.,0.,0.),2.,false);
+   if(sideLeather.a>.001){diffuseColor.rgb=mix(diffuseColor.rgb,sideLeather.rgb/sideLeather.a,sideBelt);coverage*=1.-sideBelt;filled=max(filled,sideBelt);}
    // Paint expanded the tail root slightly beyond its mesh silhouette. Keep that
    // pink edge on the tail rather than projecting a second curl onto trousers.
    float tailGhost=(1.-smoothstep(-.18,-.14,p.x))*(1.-smoothstep(.055,.09,abs(p.z)))*smoothstep(.78,.80,p.y)*(1.-smoothstep(.88,.90,p.y))*(1.-step(.1,abs(vPaintPart-2.)));

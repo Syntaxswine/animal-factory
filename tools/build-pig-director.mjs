@@ -1,3 +1,4 @@
+import {proportionData} from './pig-body-proportions.mjs';
 import fs from 'node:fs';
 import {createRequire} from 'node:module';
 import * as THREE from '../dist/tactics/vendor/three.module.js';
@@ -25,17 +26,17 @@ function shirt(x,y,z){
 }
 add('connected shirt waistcoat and sleeves',sculptSurface(shirt,[-.33,.73,-.57],[.44,1.40,.57],.0065));
 function trousers(x,y,z){
- let d=blend(E(x,y,z,[-.025,.763,0],[.271,.205,.320]),E(x,y,z,[.035,.760,0],[.300,.205,.320]),.035);
+ let d=E(x,y,z,[.055,.890,0],[.315,.335,.330]);
  const front=THREE.MathUtils.smoothstep(x,.05,.20),hem=.865-.073*exp(-1*((abs(z)-.16)/.095)**2)*front;
 
  for(const side of [-1,1]){
-  d=blend(d,C(x,y,z,[-.02,.73,side*.163],[.024,.43,side*.211],.180,.145),.042);
+  d=blend(d,C(x,y,z,[-.02,.73,side*.163],[.024,.43,side*.211],.180,.145),.070);
   d=blend(d,C(x,y,z,[.024,.43,side*.211],[-.024,.180,side*.232],.145,.108),.030);
   const front=exp(-1*((x-.12)/.08)**2)*exp(-1*((z-side*.211)/.1)**2);
   d+=.004*exp(-1*((y-.42-side*(z-side*.21)*.2)/.020)**2)*front;
  }
  const upper=E(x+.012,Math.max(y,.90),z,[.100,.957,0],[.299,.212,.338]);
- d=THREE.MathUtils.lerp(d,upper,THREE.MathUtils.smoothstep(y,.66,.86));
+ d=THREE.MathUtils.lerp(d,upper,THREE.MathUtils.smoothstep(y,.78,.87));
  return edge(d,y-hem-.012);
 }
 add('connected dress trousers',sculptSurface(trousers,[-.34,.04,-.43],[.43,1.03,.43],.006));
@@ -82,7 +83,7 @@ const order=['connected shirt waistcoat and sleeves','connected dress trousers',
 function reduce(name,g,target,tolerance){const positions=g.attributes.position.array;let [indices,error]=simplify.simplify(new Uint32Array(g.index.array),positions,3,Math.min(target*3,g.index.count),tolerance,['ErrorAbsolute']);const faces=new Map();for(let i=0;i<indices.length;i+=3){const key=Array.from(indices.subarray(i,i+3)).sort((a,b)=>a-b).join(':');if(!faces.has(key))faces.set(key,[]);faces.get(key).push(i);}const clean=[];for(const v of faces.values())if(v.length===1)clean.push(...indices.subarray(v[0],v[0]+3));indices=new Uint32Array(clean);
  const [remap,count]=simplify.compactMesh(indices),position=new Float32Array(count*3),normal=new Float32Array(count*3);for(let i=0;i<remap.length;i++)if(remap[i]!==0xffffffff){position.set(positions.subarray(i*3,i*3+3),remap[i]*3);normal.set(g.attributes.normal.array.subarray(i*3,i*3+3),remap[i]*3);}if(name.includes('boot')){let snap=0;for(let i=1;i<position.length;i+=3)if(position[i]<.0003){snap=Math.max(snap,Math.abs(position[i]));position[i]=0;}error+=snap;}if(name.includes('boot')){const smooth=new THREE.BufferGeometry();smooth.setAttribute('position',new THREE.BufferAttribute(position,3));smooth.setIndex(new THREE.BufferAttribute(indices,1));smooth.computeVertexNormals();normal.set(smooth.attributes.normal.array);smooth.dispose();}if(/shirt|trousers/.test(name)){const field=name.includes('shirt')?shirt:trousers,e=.012;for(let i=0;i<position.length;i+=3){const [x,originalY,z]=position.subarray(i,i+3);const hem=.865-.073*exp(-1*((abs(z)-.16)/.095)**2)*THREE.MathUtils.smoothstep(x,.05,.20);const y=name.includes("shirt")&&abs(z)<.35?Math.max(originalY,hem+.035):originalY;const n=new THREE.Vector3(field(x+e,y,z)-field(x-e,y,z),field(x,y+e,z)-field(x,y-e,z),field(x,y,z+e)-field(x,y,z-e)).normalize();normal.set(n.toArray(),i);}}if(name.includes('folded ears')){const surface=new THREE.BufferGeometry();surface.setAttribute('position',new THREE.BufferAttribute(position,3));surface.setIndex(new THREE.BufferAttribute(indices,1));surface.computeVertexNormals();const averaged=surface.attributes.normal.array;for(let i=0;i<position.length;i+=3){const [x,y,z]=position.subarray(i,i+3);if(abs(z)>.135&&y>1.38&&x<.04)normal.set(averaged.subarray(i,i+3),i);}surface.dispose();}return {name,position:Array.from(position,v=>+v.toFixed(7)),normal:Array.from(normal,v=>+v.toFixed(6)),index:Array.from(indices),triangles:indices.length/3,sourceTriangles:g.index.count/3,errorWorld:error};}
 const author=geometries.map(({name,g})=>reduce(name,g,name.includes('skull')?6100:name.includes('tail')?900:name.includes('boot')?1200:name.includes('shirt')?6800:name.includes('trousers')?5200:4300,.006));
-function save(file,parts,sourceTriangles){const data={schema:1,species:'pig-director',source:'Pig director-specific broad belly, waistcoat, dress trousers, heavy jowls, curved ears and snout; shared worker rig with widened arms and low shoes',sourceTriangles,triangles:parts.reduce((n,p)=>n+p.triangles,0),parts};fs.writeFileSync(new URL('../dist/tactics/'+file,import.meta.url),JSON.stringify(data)+'\n');console.log(file,data.triangles,parts.map(p=>[p.name,p.triangles,p.errorWorld]));return data;}
+function save(file,parts,sourceTriangles){const data={schema:1,species:'pig-director',source:'Pig director-specific broad belly, waistcoat, dress trousers, heavy jowls, curved ears and snout; shared worker rig with widened arms and low shoes',sourceTriangles,triangles:parts.reduce((n,p)=>n+p.triangles,0),parts};fs.writeFileSync(new URL('../dist/tactics/'+file,import.meta.url),JSON.stringify(proportionData(data))+'\n');console.log(file,data.triangles,parts.map(p=>[p.name,p.triangles,p.errorWorld]));return data;}
 const high=save('pig-director-author-data.json',author,geometries.reduce((n,p)=>n+p.g.index.count/3,0));
 const low=author.map(p=>{const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(p.position,3));g.setAttribute('normal',new THREE.Float32BufferAttribute(p.normal,3));g.setIndex(p.index);const target=p.name.includes('shirt')?2350:p.name.includes('trousers')?2100:p.name.includes('skull')?2150:p.name.includes('tail')?300:p.name.includes('boot')?600:950;const result=reduce(p.name,g,target,.008);g.dispose();return result;});
 save('pig-director-10k-data.json',low,high.triangles);for(const {g} of geometries)g.dispose();

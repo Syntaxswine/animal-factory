@@ -3,9 +3,13 @@
 Open `tactics/pig-director.html?mesh=10k`; add `&stage=grey` to inspect the form.
 The character reference gallery links to this study.
 
+The latest abdomen/seat correction and validation are recorded in
+[the two-pig proportion pass](HYBRID-PIG-PROPORTIONS.md). Earlier review results
+below are historical evidence for the initial study.
+
 ## Construction
 
-The stored **29,998-triangle author** reduces to **10,000 character triangles**.
+The stored **29,996-triangle author** reduces to **9,998 character triangles**.
 Eight closed connected surfaces use the shared 17-bone worker rig. The separate
 rifle adds 480 triangles. Height remains **1.65 world units**, with the prototype
 isometric camera unchanged at **58 CSS pixels per world unit**.

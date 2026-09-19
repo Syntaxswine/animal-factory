@@ -1,3 +1,4 @@
+import {proportionData} from './pig-body-proportions.mjs';
 import fs from 'node:fs';
 import {createRequire} from 'node:module';
 import * as THREE from '../dist/tactics/vendor/three.module.js';
@@ -32,16 +33,18 @@ function shirt(x,y,z){
 }
 add('connected shirt and sleeves',sculptSurface(shirt,[-.28,.80,-.49],[.34,1.36,.49],.0065));
 function trousers(x,y,z){
- let d=blend(E(x,y,z,[-.025,.789,0],[.226,.179,.269]),E(x,y,z,[.015,.896,0],[.237,.070,.264]),.033);
+ let d=E(x,y,z,[.020,.870,0],[.253,.270,.269]);
  for(const s of [-1,1]){
-  d=blend(d,C(x,y,z,[-.03,.77,s*.14],[.024,.475,s*.202],.151,.116),.040);
+  d=blend(d,C(x,y,z,[-.03,.77,s*.14],[.024,.475,s*.202],.151,.116),.065);
   d=blend(d,C(x,y,z,[.024,.475,s*.202],[-.035,.225,s*.232],.116,.085),.030);
   const local=z-s*.205,front=exp(-1*((x-.10)/.070)**2)*exp(-1*(local/.11)**2);
   d+=.0045*exp(-1*((y-.46-s*local*.32)/.016)**2)*front;
   d-=.0035*exp(-1*((y-.430+s*local*.22)/.023)**2)*front;
  }
+ // Trousers stop beneath the belt; only the braces continue above it.
+ d=edge(d,y-.932);
  // Belt and both braces belong to the same continuous garment surface.
- const belt=edge(shirt(x,y,z)-.014,abs(y-.913)-.024,abs(z)-.279);
+ const belt=edge(shirt(x,y,z)-.006,abs(y-.913)-.018,abs(z)-.279);
  d=blend(d,belt,.018);
  for(const s of [-1,1]){
   const strap=edge(shirt(x,y,z)-.012,abs(z-s*.178)-.017,.915-y);
@@ -101,7 +104,7 @@ const order=['connected shirt and sleeves','connected trousers belt and braces',
 function reduce(name,g,target,tolerance){const positions=g.attributes.position.array;let [indices,error]=simplify.simplify(new Uint32Array(g.index.array),positions,3,Math.min(target*3,g.index.count),tolerance,['ErrorAbsolute']);const faces=new Map();for(let i=0;i<indices.length;i+=3){const key=Array.from(indices.subarray(i,i+3)).sort((a,b)=>a-b).join(':');if(!faces.has(key))faces.set(key,[]);faces.get(key).push(i);}const clean=[];for(const v of faces.values())if(v.length===1)clean.push(...indices.subarray(v[0],v[0]+3));indices=new Uint32Array(clean);
  const [remap,count]=simplify.compactMesh(indices),position=new Float32Array(count*3),normal=new Float32Array(count*3);for(let i=0;i<remap.length;i++)if(remap[i]!==0xffffffff){position.set(positions.subarray(i*3,i*3+3),remap[i]*3);normal.set(g.attributes.normal.array.subarray(i*3,i*3+3),remap[i]*3);}if(name.includes('boot')){let snap=0;for(let i=1;i<position.length;i+=3)if(position[i]<.0003){snap=Math.max(snap,Math.abs(position[i]));position[i]=0;}error+=snap;}if(name.includes('boot')){const smooth=new THREE.BufferGeometry();smooth.setAttribute('position',new THREE.BufferAttribute(position,3));smooth.setIndex(new THREE.BufferAttribute(indices,1));smooth.computeVertexNormals();normal.set(smooth.attributes.normal.array);smooth.dispose();}if(/shirt|trousers/.test(name)){const field=name.includes('shirt')?shirt:trousers,e=.009;for(let i=0;i<position.length;i+=3){const [x,y,z]=position.subarray(i,i+3),n=new THREE.Vector3(field(x+e,y,z)-field(x-e,y,z),field(x,y+e,z)-field(x,y-e,z),field(x,y,z+e)-field(x,y,z-e)).normalize();normal.set(n.toArray(),i);}}if(name.includes('folded ears')){const surface=new THREE.BufferGeometry();surface.setAttribute('position',new THREE.BufferAttribute(position,3));surface.setIndex(new THREE.BufferAttribute(indices,1));surface.computeVertexNormals();const averaged=surface.attributes.normal.array;for(let i=0;i<position.length;i+=3){const [x,y,z]=position.subarray(i,i+3);if(abs(z)>.135&&y>1.38&&x<.04)normal.set(averaged.subarray(i,i+3),i);}surface.dispose();}return {name,position:Array.from(position,v=>+v.toFixed(7)),normal:Array.from(normal,v=>+v.toFixed(6)),index:Array.from(indices),triangles:indices.length/3,sourceTriangles:g.index.count/3,errorWorld:error};}
 const author=geometries.map(({name,g})=>reduce(name,g,name.includes('cap')?2200:name.includes('skull')?5300:name.includes('tail')?900:name.includes('boot')?1200:name.includes('shirt')?5400:name.includes('trousers')?5200:4300,.006));
-function save(file,parts,sourceTriangles){const data={schema:1,species:'pig-foreman',source:'Pig foreman-specific shirt, belly, trousers, braces, folded ears, snout, cap and curled tail; shared worker arms and boots',sourceTriangles,triangles:parts.reduce((n,p)=>n+p.triangles,0),parts};fs.writeFileSync(new URL('../dist/tactics/'+file,import.meta.url),JSON.stringify(data)+'\n');console.log(file,data.triangles,parts.map(p=>[p.name,p.triangles,p.errorWorld]));return data;}
+function save(file,parts,sourceTriangles){const data={schema:1,species:'pig-foreman',source:'Pig foreman-specific shirt, belly, trousers, braces, folded ears, snout, cap and curled tail; shared worker arms and boots',sourceTriangles,triangles:parts.reduce((n,p)=>n+p.triangles,0),parts};fs.writeFileSync(new URL('../dist/tactics/'+file,import.meta.url),JSON.stringify(proportionData(data))+'\n');console.log(file,data.triangles,parts.map(p=>[p.name,p.triangles,p.errorWorld]));return data;}
 const high=save('pig-foreman-author-data.json',author,geometries.reduce((n,p)=>n+p.g.index.count/3,0));
 const low=author.map(p=>{const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(p.position,3));g.setAttribute('normal',new THREE.Float32BufferAttribute(p.normal,3));g.setIndex(p.index);const target=p.name.includes('cap')?700:p.name.includes('shirt')?1850:p.name.includes('trousers')?2000:p.name.includes('skull')?2050:p.name.includes('tail')?300:p.name.includes('boot')?600:950;const result=reduce(p.name,g,target,.008);g.dispose();return result;});
 save('pig-foreman-10k-data.json',low,high.triangles);for(const {g} of geometries)g.dispose();
