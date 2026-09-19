@@ -26,9 +26,9 @@ const unit=h=>h/4294967296;
 // The daily rate: $100 x 100^grade, on a clean figure (tens under a thousand, hundreds under ten thousand).
 export function rateFor(grade){const raw=RATE_MIN*Math.pow(RATE_MAX/RATE_MIN,clamp(grade)),step=raw<1000?10:raw<10000?100:1000;return Math.min(RATE_MAX,Math.max(RATE_MIN,Math.round(raw/step)*step));}
 // The three prices for a daily rate and an archetype's commitment: the day, the week (about five days), the month (about twelve).
-export function pricesFor(rate,archetype){const c=COMMITMENT[archetype]??0;return {day:{...TERMS.day,price:Math.round(rate)},week:{...TERMS.week,days:5+c,price:Math.round(rate*(5+c))},month:{...TERMS.month,days:12+2*c,price:Math.round(rate*(12+2*c))}};}
+export function pricesFor(rate,archetype){const c=COMMITMENT[archetype]??0,week=TERMS.week.days+c,month=TERMS.month.days+2*c;return {day:{...TERMS.day,price:Math.round(rate)},week:{...TERMS.week,days:week,price:Math.round(rate*week)},month:{...TERMS.month,days:month,price:Math.round(rate*month)}};}
 
-// What the rate buys. The base stats a grade-0 recruit is built on, and a grade-1 recruit's; the four comrades (100 / 12 / 85 / 20) sit near grade .45.
+// What the rate buys. The base stats a grade-0 recruit is built on, and a grade-1 recruit's; the four comrades (100 / 12 / 85 / 20) sit between grades .40 and .45.
 export const BASE_LOW={hp:60,ap:9,accuracy:55,medical:0,stealth:10},BASE_HIGH={hp:160,ap:16,accuracy:115,medical:60,stealth:60};
 export const baseFor=grade=>Object.fromEntries(Object.keys(BASE_LOW).map(k=>[k,Math.round(BASE_LOW[k]+(BASE_HIGH[k]-BASE_LOW[k])*clamp(grade))]));
 export const levelFor=grade=>1+Math.round(9*clamp(grade));
@@ -58,10 +58,13 @@ export function build({name,species,archetype,grade,key=null,day=null,index=null
 export function candidate(seed,day,index,names=RECRUIT_NAMES){
  const h=salt=>hash(seed>>>0,day,index,salt);
  return build({key:`${day}:${index}`,day,index,grade:(index+unit(h('grade')))/SLATE,archetype:NAMES[h('archetype')%NAMES.length],species:RECRUIT_SPECIES[h('species')%RECRUIT_SPECIES.length],name:names[h('name')%names.length]});}
-// The day's slate, names unique among themselves and against `taken` (the roster): a taken name walks forward through the pool.
+// The day's slate, names unique among themselves and against `taken` (the roster): a taken name walks forward through the pool, and when the
+// pool has run dry (every name once on the roster stays taken: the ledger is keyed by name) the name takes a numeral (Marina II). The caller
+// leaves today's own hires out of `taken`, so signing one candidate never renames another card on the same day (review round 1).
+const ROMAN=['','I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII'],numeral=k=>ROMAN[k]||String(k);
 export function slate(seed,day,{taken=new Set(),count=SLATE}={}){
  const used=new Set(taken),out=[];
- for(let i=0;i<count;i++){const c=candidate(seed,day,i);let n=RECRUIT_NAMES.indexOf(c.name);for(let tries=0;used.has(RECRUIT_NAMES[n])&&tries<RECRUIT_NAMES.length;tries++)n=(n+1)%RECRUIT_NAMES.length;c.name=RECRUIT_NAMES[n];used.add(c.name);out.push(c);}
+ for(let i=0;i<count;i++){const c=candidate(seed,day,i);let n=RECRUIT_NAMES.indexOf(c.name);for(let tries=0;used.has(RECRUIT_NAMES[n])&&tries<RECRUIT_NAMES.length;tries++)n=(n+1)%RECRUIT_NAMES.length;let name=RECRUIT_NAMES[n];for(let k=2;used.has(name);k++)name=RECRUIT_NAMES[n]+' '+numeral(k);c.name=name;used.add(name);out.push(c);}
  return out;}
 
 // Getting along. Types this archetype works well with: liked both ways at the resting level. Types it does not: opposing either way.

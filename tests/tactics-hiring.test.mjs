@@ -1,7 +1,7 @@
 import test from 'node:test';import assert from 'node:assert/strict';
-import {createWorld,currentMap,travel,hire,renew,release,candidates,hiringReason,hiringDay,settleContracts,enlist,contracted,tickWorld,spendTime,advanceTime,renewReason} from '../dist/tactics/world.js';
-import {createGame,unit,roster,squad,guards,alive,refresh,move,stepMovement,moveGroup,canControl,WEAPONS,DEFAULT_CAST,combatCosts} from '../dist/tactics/engine.js';
-import {rateFor,pricesFor,build,slate,compatibility,fit,previewRecruit,describeKit,portraitCrop,contractMinutesLeft,contractPrices,payDay,KITS,RECRUIT_NAMES,RECRUIT_SPECIES,SLATE,ROSTER_MAX,TERMS,COMMITMENT,MERC_ID_BASE,DAY_MINUTES,SURCHARGE,BASE_LOW,BASE_HIGH,skillsFor,levelFor,kitFor} from '../dist/tactics/recruits.js';
+import {createWorld,currentMap,travel,hire,renew,release,candidates,hiringReason,hiringDay,settleContracts,enlist,contracted,tickWorld,spendTime,advanceTime,renewReason,releaseReason,leave,away,settleMorale} from '../dist/tactics/world.js';
+import {createGame,unit,roster,squad,guards,alive,refresh,move,stepMovement,moveGroup,canControl,WEAPONS,DEFAULT_CAST,combatCosts,quitMerc} from '../dist/tactics/engine.js';
+import {rateFor,pricesFor,build,slate,compatibility,fit,previewRecruit,describeKit,portraitCrop,contractMinutesLeft,contractPrices,payDay,KITS,RECRUIT_NAMES,RECRUIT_SPECIES,SLATE,ROSTER_MAX,TERMS,COMMITMENT,MERC_ID_BASE,DAY_MINUTES,SURCHARGE,BASE_LOW,BASE_HIGH,skillsFor,levelFor,kitFor,baseFor,dailyRate,candidate} from '../dist/tactics/recruits.js';
 import {bond,NAMES,liked,opposing,ARCHETYPES} from '../dist/tactics/archetypes.js';
 import {PERSONALITIES,personalityDescription,friendlyReaction} from '../dist/tactics/personalities.js';
 import {unitArt} from '../dist/tactics/red-hats-art.js';
@@ -44,7 +44,8 @@ test('the grade buys everything, monotonically: the $100 hand is a knife and the
  const e=previewRecruit(ace,WEAPONS);assert.equal(e.maxHp,160+10+ace.skills.vitality*5);assert.equal(e.accuracy,115+ace.skills.shooting*2);assert.ok(e.maxAp>=16);assert.match(describeKit(ace,WEAPONS),/Sniper rifle \(5 loaded, 15 reserve\), AK-47 \(30 loaded, 90 reserve\), Fragmentation grenade.*3 medkits, wire cutters/);
  let prev=null;for(let g=0;g<=1.0001;g+=.1){const c=build({name:'X',species:'sheep',archetype:'Everyman',grade:g}),p=previewRecruit(c,WEAPONS),k=KITS.indexOf(c.kit);
   if(prev){for(const key of ['maxHp','maxAp','accuracy','medical','stealth'])assert.ok(p[key]>=prev.p[key],key+' at '+g.toFixed(1));assert.ok(c.level>=prev.c.level);assert.ok(k>=prev.k);assert.ok(c.rate>=prev.c.rate);}prev={c,p,k};}
- assert.equal(levelFor(.45),5);assert.equal(rateFor(.45),790,'the comrades (100 HP, 12 AP, 85 accuracy) are worth about $800 a day');
+ assert.equal(levelFor(.45),5);assert.equal(levelFor(.5),6,'rounded, not floored');assert.equal(rateFor(.45),790);assert.equal(rateFor(.4),630,'the comrades (100 / 12 / 85) sit between grades .40 and .45');assert.deepEqual(baseFor(.45),{hp:105,ap:12,accuracy:82,medical:27,stealth:33},'rounded bases');
+ assert.deepEqual([d.stealth,d.medical,e.stealth,e.medical],[10,0,60,60],'the stealth and medical bases reach the unit');
  for(const a of NAMES){const sk=skillsFor(1,a,'goat');for(const v of Object.values(sk))assert.ok(v<=20&&v>=0);assert.ok(BASE_HIGH.medical+sk.medical*5<=100,a+' medical cap');assert.ok(BASE_HIGH.stealth+5+sk.stealth*5<=100,a+' stealth cap');}
  assert.equal(kitFor(.149).weapon,'knife');assert.equal(kitFor(.15).weapon,'pistol');assert.equal(kitFor(.9).extra[0],'grenade');
 });
@@ -54,7 +55,7 @@ test('who they get on with reads the archetype matrix: works well with is liked 
  for(const a of NAMES){const c=compatibility(a);for(const t of c.works)assert.ok(liked(bond(a,t))&&liked(bond(t,a)));for(const t of c.clashes)assert.ok(opposing(bond(a,t))||opposing(bond(t,a)));assert.ok(!c.works.includes(a)&&!c.clashes.includes(a));
   for(const t of NAMES.filter(t=>t!==a)){const inWorks=liked(bond(a,t))&&liked(bond(t,a)),inClash=opposing(bond(a,t))||opposing(bond(t,a));assert.equal(c.works.includes(t),inWorks,a+'/'+t);assert.equal(c.clashes.includes(t),inClash,a+'/'+t);}}
  const squadOf=[{name:'Yakov',archetype:'Ruler'},{name:'Anya',archetype:'Rebel'},{name:'Misha',archetype:'Creator'},{name:'Vera',archetype:'Caregiver'}];
- const f=fit('Rebel',squadOf);assert.deepEqual(f.rows.map(r=>r.label),['would clash with Yakov','would take time with Anya','would grate on Misha','would clash with Vera']);assert.deepEqual(f.trouble,['Yakov','Vera']);assert.equal(f.surcharge,SURCHARGE);
+ const f=fit('Rebel',squadOf);assert.deepEqual(f.rows.map(r=>r.label),['would clash with Yakov','would take time with Anya','would grate on Misha','would clash with Vera']);assert.deepEqual(f.trouble,['Yakov','Vera']);assert.equal(f.surcharge,SURCHARGE);assert.equal(SURCHARGE,1.2);assert.equal(dailyRate({rate:1000},f),1200,'a fifth more');
  const g=fit('Sage',[{name:'Misha',archetype:'Creator'}]);assert.deepEqual(g.rows.map(r=>r.label),['would get on with Misha']);assert.equal(g.surcharge,1);assert.deepEqual(g.trouble,[]);
  assert.deepEqual(fit('Hero',[]).rows,[]);
 });
@@ -106,8 +107,10 @@ test('a contract that runs out in a fight ends with the contact: the merc keeps 
  assert.ok(hire(w,candidates(w)[0].key,'day').ok);const id=MERC_ID_BASE;gather(s);assert.ok(travel(w,'yard').ok);const y=currentMap(w),u=unit(y,id);
  assert.equal(y.phase,'player','the horse guard beside the starts sees the squad: contact');assert.ok(alive(u));assert.ok(combatCosts(y));
  tickWorld(w,DAY_MINUTES*60*1000);assert.equal(u.contract.expired,true,'up');assert.ok(alive(u),'but not walking mid-fight');assert.ok(y.log.some(l=>l===u.name+"'s contract is up."));
- assert.equal(renew(w,id,'day').error,'Finish the fight first.');assert.equal(release(w,id).error,'Finish the fight first.');
- guards(y)[0].hp=0;refresh(y);assert.equal(y.phase,'won');assert.equal(u.casualty,'quit');assert.equal(u.contract.ended,'contract');assert.ok(y.log.some(l=>l.includes(u.name+"'s contract has ended")));
+ assert.equal(release(w,id).error,'Finish the fight first.','paying off waits for the quiet');assert.equal(releaseReason(w,u),'Finish the fight first.');
+ // Renewal is the one contract action allowed mid-fight: from now, since the contract had run out, and the walk is cancelled.
+ const price=contractPrices(u).day.price,money=w.money;assert.equal(renewReason(w,u),'');assert.ok(renew(w,id,'day').ok);assert.equal(w.money,money-price);assert.equal(u.contract.expired,false);assert.equal(u.contract.until,w.clock.minutes+DAY_MINUTES,'from now');
+ guards(y)[0].hp=0;refresh(y);assert.equal(y.phase,'won');assert.ok(alive(u),'renewed: it stays when the fight ends');assert.equal(u.casualty,null);
 });
 
 test('a hired merc travels: it keeps its id, numbers and contract across maps, lands on free ground beside the first start, walks and joins a group move by id, and the yard\'s guards stay addressable by theirs',()=>{
@@ -131,7 +134,7 @@ test('the four comrades and a plain game are untouched: DEFAULT_CAST in order, n
 
 test('the portrait is a 128-pixel square inside every standing sprite a recruit can wear, taken from the top of the figure',()=>{
  for(const species of RECRUIT_SPECIES)for(const weapon of ['knife','pistol','rifle','assault','sniper']){const frame=unitArt({species,weapon,stance:'standing'}),c=portraitCrop(frame);
-  assert.deepEqual([c.w,c.h],[128,128]);assert.ok(c.x>=0&&c.x+c.w<=frame.width,species+' '+weapon+' x');assert.ok(c.y>=0&&c.y+c.h<=frame.height,species+' '+weapon+' y');assert.ok(c.y<=8,'from the top of the content box');assert.equal(c.x+64,frame.anchor[0],'centred on the figure');}
+  assert.deepEqual([c.w,c.h],[128,128]);assert.ok(c.x>=0&&c.x+c.w<=frame.width,species+' '+weapon+' x');assert.ok(c.y>=0&&c.y+c.h<=frame.height,species+' '+weapon+' y');assert.equal(c.y,frame.anchor[1]-frame.contentHeight-4,'four pixels above the top of the content box');assert.equal(c.x+64,frame.anchor[0],'centred on the figure');}
 });
 
 test('a recruit\'s sheet and friendly-fire voice come from its archetype; the comrades keep their authored lines',()=>{
@@ -145,4 +148,50 @@ test('the desk numbers follow the roster, not the id: a departed contractor is s
  const {w,s}=campaign();assert.ok(hire(w,candidates(w)[0].key,'day').ok);const u=unit(s,MERC_ID_BASE);assert.equal(roster(s).indexOf(u),4,'fifth card');
  assert.ok(release(w,u.id).ok);assert.equal(roster(s).length,5);assert.equal(contracted(s).length,4);assert.ok(roster(s).filter(v=>!(v.casualty==='quit'&&v.hired)).length===4,'the desk hides a contractor who has gone');
  assert.equal(hiringDay(w),0);advanceTime(w,DAY_MINUTES);assert.equal(hiringDay(w),1);assert.notEqual(candidates(w)[0].key,'0:0','a new slate at midnight');
+});
+
+test('review round 1: a contract that runs out under an alert beyond reach (real time, AP charged) is a fight for the walk too: the merc waits, and leaves when the alert ends',()=>{
+ const yard=blankMap('Yard');yard.guards=[{x:200,y:200,z:0,species:'horse',weapon:'pistol'}];const {w,s}=campaign({yard});
+ assert.ok(hire(w,candidates(w)[0].key,'day').ok);const id=MERC_ID_BASE;gather(s);assert.ok(travel(w,'yard').ok);const y=currentMap(w),u=unit(y,id),g=guards(y)[0];
+ assert.equal(y.phase,'explore');g.alert=true;g.lastKnown={x:3,y:4,z:0};refresh(y);assert.equal(y.phase,'explore','two hundred tiles away: no contact');assert.ok(combatCosts(y),'but alerted: AP is charged');
+ tickWorld(w,DAY_MINUTES*60*1000);assert.equal(u.contract.expired,true);assert.ok(alive(u),'no walk while a guard is alert');
+ g.hp=0;refresh(y);assert.equal(y.phase,'won');assert.equal(u.casualty,'quit');assert.equal(u.contract.ended,'contract');assert.ok(y.log.some(l=>l.includes(u.name+"'s contract has ended")));
+ // Exactly the minute: the contract is up at now === until, not a minute later.
+ const {w:w2,s:s2}=campaign();assert.ok(hire(w2,candidates(w2)[1].key,'day').ok);const v=unit(s2,MERC_ID_BASE);advanceTime(w2,DAY_MINUTES);assert.equal(w2.clock.minutes,v.contract.until);settleContracts(w2,s2);assert.equal(v.contract.expired,true);assert.equal(v.casualty,'quit');
+ // quitMerc refuses a merc that is not on contract.
+ const d=unit(s2,1);d.hp=0;d.casualty='dead';assert.equal(quitMerc(s2,d),false);assert.equal(quitMerc(s2,v,'contract'),false);
+});
+
+test('review round 1: signing one candidate never renames another card that day, and the hired merc carries the name the card showed',()=>{
+ let walked=0;for(let seed=1;seed<=40;seed++){const {w,s}=campaign({seed,money:1e9});const before=Object.fromEntries(candidates(w).map(c=>[c.key,c.name]));
+  const raw=[0,1,2,3,4,5].map(i=>candidate(seed,0,i).name);if(raw.some((n,i)=>raw.indexOf(n)!==i))walked++;
+  const key='0:2';assert.ok(hire(w,key,'day').ok);const after=candidates(w);assert.equal(after.length,5);for(const c of after)assert.equal(c.name,before[c.key],'seed '+seed+' key '+c.key);
+  assert.equal(unit(s,MERC_ID_BASE).name,before[key]);const again=candidates(w);assert.deepEqual(again.map(c=>c.name),after.map(c=>c.name),'stable across renders');}
+ assert.ok(walked>=3,'the scan includes slates whose names walked ('+walked+')');
+ assert.equal(new Set(slate(1,0).map(c=>c.name)).size,SLATE,'seed 1 day 0 hashes two slots to the same name and the slate still has six');
+});
+
+test('review round 1: the pool of 36 runs dry under daily hiring and names take a numeral; no two mercs on the roster ever share a name; only today\'s signed keys are kept',()=>{
+ const {w,s}=campaign({money:1e9});let suffixed=0;
+ for(let day=0;day<15;day++){assert.equal(hiringDay(w),day);const cs=candidates(w);assert.equal(cs.length,SLATE);
+  for(const c of cs.slice(0,3)){assert.ok(hire(w,c.key,'day').ok,'day '+day+' '+c.name);if(/ (II|III|IV|V|VI|VII|VIII|IX|X)$/.test(c.name))suffixed++;}
+  const names=roster(s).map(u=>u.name);assert.equal(new Set(names).size,names.length,'day '+day+': '+names.join(','));assert.equal(contracted(s).length,7);assert.equal(world_hired(w).length,3);
+  advanceTime(w,DAY_MINUTES);settleContracts(w,s);assert.equal(contracted(s).length,4,'the three day contracts walked');}
+ assert.equal(roster(s).length,4+45);assert.ok(suffixed>=9,'the pool ran dry: '+suffixed+' numerals');assert.ok(roster(s).some(u=>/ II$/.test(u.name)));
+ candidates(w);assert.equal(w.hired.length,0,'yesterday\'s keys are pruned');
+ function world_hired(w){return w.hired;}
+});
+
+test('review round 1: the last body walking out is the defeat the G5 walk-out is, whether the contract or the meter sent it',()=>{
+ const {w,s}=campaign();assert.ok(hire(w,candidates(w)[0].key,'day').ok);const u=unit(s,MERC_ID_BASE);for(const c of s.units.slice(0,4)){c.hp=0;c.casualty='dead';}refresh(s);assert.equal(s.phase,'won');assert.equal(unit(s,s.selected),u);
+ tickWorld(w,DAY_MINUTES*60*1000);assert.equal(u.casualty,'quit');assert.equal(s.phase,'lost','an empty squad is a defeat');assert.ok(s.log.includes('The squad has walked out.'));assert.equal(hiringReason(w),'Clear this map before hiring.');
+ const {w:w2,s:s2}=campaign();assert.ok(hire(w2,candidates(w2)[0].key,'month').ok);const v=unit(s2,MERC_ID_BASE);for(const c of s2.units.slice(0,4)){c.hp=0;c.casualty='dead';}refresh(s2);
+ v.social.happiness=0;v.quitPending=true;settleMorale(w2,s2,0);assert.equal(v.casualty,'quit');assert.equal(s2.phase,'lost','the meter\'s walk declares it too');
+});
+
+test('review round 1: a merc waiting beyond an edge cannot be renewed, and its contract running out clears the crossing',()=>{
+ const {w,s}=campaign();assert.ok(hire(w,candidates(w)[2].key,'day').ok);const id=MERC_ID_BASE;gather(s);assert.ok(travel(w,'yard').ok);const y=currentMap(w),u=unit(y,id);
+ u.x=1;u.y=100;u.lastAt='1,100,0';refresh(y);assert.ok(leave(w,u,'west').ok);assert.ok(u.away);assert.equal(away(y).length,1);
+ assert.equal(renewReason(w,u),u.name+' is beyond the map edge.');assert.equal(renew(w,id,'week').ok,false);assert.equal(release(w,id).ok,false);
+ tickWorld(w,DAY_MINUTES*60*1000);assert.equal(u.casualty,'quit');assert.equal(u.away,undefined,'the crossing is cleared');assert.equal(away(y).length,0);assert.equal(y.phase,'won');assert.equal(hiringReason(w),'','nobody waits beyond the edge any more');
 });

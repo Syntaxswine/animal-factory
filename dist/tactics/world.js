@@ -46,7 +46,7 @@ export function tickWorld(world,elapsedMs,{paused=false}={}){
 // `now` is the clock at the END of the settled interval (a sliced downtime passes each slice's end).
 export function settleMorale(world,s,minutes,mapOf=u=>u.away?u.away.destination:world.current,now=world.clock.minutes){if(!s.rules?.social)return [];
  const {lines,quitting}=settleHappiness(s.units.filter(u=>u.team==='squad'),minutes,now,mapOf);for(const line of lines)log(s,line);
- if(['explore','won'].includes(s.phase)&&!combatCosts(s))for(const u of s.units)if(u.team==='squad'&&u.quitPending&&u.social?.happiness===0)quitMerc(s,u);return lines;} // calm means no guard alert and nothing engaged; otherwise the engine lets it go when the contact ends
+ let walked=false;if(['explore','won'].includes(s.phase)&&!combatCosts(s))for(const u of s.units)if(u.team==='squad'&&u.quitPending&&u.social?.happiness===0&&quitMerc(s,u))walked=true;if(walked)refresh(s);/* the same class as a contract walk: an empty squad is a defeat only refresh() declares */return lines;} // calm means no guard alert and nothing engaged; otherwise the engine lets it go when the contact ends
 export function downtimeReason(world,activity='resting or training'){
  const s=currentMap(world);
  if(s.phase!=='won'||guards(s).length)return 'Clear this map before '+activity+'.';
@@ -207,8 +207,10 @@ export const hiringReason=world=>downtimeReason(world,'hiring');
 // The squad members a candidate is measured against and counted with: on contract (standing or down), not dead, captured or gone.
 export const contracted=s=>s.units.filter(u=>u.team==='squad'&&onContract(u));
 // Today's slate: six candidates drawn from the roster seed and the campaign day, minus the ones already signed today; new faces at midnight.
-export function candidates(world){const s=currentMap(world),members=contracted(s),taken=new Set(s.units.filter(u=>u.team==='squad').map(u=>u.name));
- return slate(world.rosterSeed,hiringDay(world),{taken}).filter(c=>!world.hired.includes(c.key)).map(c=>{const f=fit(c.archetype,members),rate=dailyRate(c,f);return {...c,fit:f,rate,prices:pricesFor(rate,c.archetype)};});}
+export function candidates(world){const s=currentMap(world),members=contracted(s),today=hiringDay(world);
+ world.hired=world.hired.filter(k=>k.startsWith(today+':')); // yesterday's keys can never match again
+ const taken=new Set(s.units.filter(u=>u.team==='squad'&&u.hired?.day!==today).map(u=>u.name)); // today's own hires keep their slot's name, so signing one candidate never renames another
+ return slate(world.rosterSeed,today,{taken}).filter(c=>!world.hired.includes(c.key)).map(c=>{const f=fit(c.archetype,members),rate=dailyRate(c,f);return {...c,fit:f,rate,prices:pricesFor(rate,c.archetype)};});}
 // Spawn a candidate onto a map beside `at` (the selected comrade by default) as a full squad unit: inventory, progression, the candidate's build, its ledger.
 export function enlist(s,c,{id=MERC_ID_BASE,at=null,social=!!s.rules?.social}={}){
  const anchor=at||squad(s)[0]||s.definition.starts[0],occupied=new Set(s.units.filter(u=>alive(u)||incapacitated(u)).map(u=>tileKey(u.x,u.y,levelOf(u))));
@@ -226,7 +228,9 @@ export function hire(world,key,term){
  u.hired={key:c.key,day:c.day,grade:c.grade,rate:c.rate,signed:now};u.contract={term,from:now,until:now+t.minutes,paid:t.price,renewals:0,expired:false};
  refresh(s);log(s,`${u.name} signed on for a ${term} at $${t.price.toLocaleString()}${c.fit.trouble.length?' (asked more: expects trouble with '+c.fit.trouble.join(' and ')+')':''}.`);return {ok:true,unit:u,price:t.price};}
 // Renewal extends from the contract's end (nothing is lost by renewing early) or from now when it has run out; pay day lifts the meter (GUARDS.md G5's table).
-export function renewReason(world,u){const s=currentMap(world);if(!u?.hired||!onContract(u))return 'No such contract.';if(u.away)return u.name+' is beyond the map edge.';if(combatCosts(s))return 'Finish the fight first.';return '';}
+// Renewal is allowed mid-fight (it is the one moment an expired contract can be seen); paying off waits for the quiet, since the merc leaves at once.
+export function renewReason(world,u){if(!u?.hired||!onContract(u))return 'No such contract.';if(u.away)return u.name+' is beyond the map edge.';return '';}
+export function releaseReason(world,u){const reason=renewReason(world,u);if(reason)return reason;if(combatCosts(currentMap(world)))return 'Finish the fight first.';return '';}
 export function renew(world,id,term){
  const s=currentMap(world),u=unit(s,id),reason=renewReason(world,u);if(reason)return {ok:false,error:reason};
  const t=contractPrices(u)[term];if(!t)return {ok:false,error:'Choose a day, a week or a month.'};
@@ -235,11 +239,12 @@ export function renew(world,id,term){
  u.contract={...u.contract,term,until:from+t.minutes,paid:u.contract.paid+t.price,renewals:u.contract.renewals+1,expired:false};payDay(u);
  log(s,`${u.name} signed on for another ${term} at $${t.price.toLocaleString()}.`);s.revision++;return {ok:true,price:t.price};}
 // Paying a merc off ends the contract now, no refund; it leaves the way a merc that quit does.
-export function release(world,id){const s=currentMap(world),u=unit(s,id),reason=renewReason(world,u);if(reason)return {ok:false,error:reason};quitMerc(s,u,'released');return {ok:true};}
+export function release(world,id){const s=currentMap(world),u=unit(s,id),reason=releaseReason(world,u);if(reason)return {ok:false,error:reason};quitMerc(s,u,'released');refresh(s);return {ok:true};}
 // Every clock advance: a contract past its end is up; the merc walks at once on a calm map, otherwise when the contact ends (engine contactEnds).
 export function settleContracts(world,s,now=world.clock.minutes){const lines=[];
  for(const u of s.units)if(u.team==='squad'&&u.contract&&onContract(u)&&!u.contract.expired&&now>=u.contract.until){u.contract.expired=true;const line=u.name+"'s contract is up.";lines.push(line);log(s,line);}
- if(['explore','won'].includes(s.phase)&&!combatCosts(s))for(const u of s.units)if(u.team==='squad'&&u.contract?.expired&&onContract(u))quitMerc(s,u,'contract');
+ let walked=false;if(['explore','won'].includes(s.phase)&&!combatCosts(s))for(const u of s.units)if(u.team==='squad'&&u.contract?.expired&&onContract(u)&&quitMerc(s,u,'contract'))walked=true;
+ if(walked)refresh(s); // the last body walking out is a defeat only refresh() declares ("The squad has walked out."); nothing else would call it
  return lines;}
 // A map lost after some comrades crossed its edge ends the fight for those who stayed; the crossers still arrive.
 export function resolveRetreat(world){
