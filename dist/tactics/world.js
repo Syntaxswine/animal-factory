@@ -39,8 +39,9 @@ export function tickWorld(world,elapsedMs,{paused=false}={}){
 }
 // G5: happiness is settled whenever the campaign clock advances (exploration, downtime, travel). A waiting crosser counts as on its destination.
 // A merc whose meter has been at zero for a day quits here if the map is calm; otherwise the engine lets it go when the contact ends.
-export function settleMorale(world,s,minutes,mapOf=u=>u.away?u.away.destination:world.current){if(!s.rules?.social)return [];
- const {lines,quitting}=settleHappiness(s.units.filter(u=>u.team==='squad'),minutes,world.clock.minutes,mapOf);for(const line of lines)log(s,line);
+// `now` is the clock at the END of the settled interval (a sliced downtime passes each slice's end).
+export function settleMorale(world,s,minutes,mapOf=u=>u.away?u.away.destination:world.current,now=world.clock.minutes){if(!s.rules?.social)return [];
+ const {lines,quitting}=settleHappiness(s.units.filter(u=>u.team==='squad'),minutes,now,mapOf);for(const line of lines)log(s,line);
  if(['explore','won'].includes(s.phase)&&!combatCosts(s))for(const u of s.units)if(u.team==='squad'&&u.quitPending&&u.social?.happiness===0)quitMerc(s,u);return lines;} // calm means no guard alert and nothing engaged; otherwise the engine lets it go when the contact ends
 export function downtimeReason(world){
  const s=currentMap(world);
@@ -68,9 +69,12 @@ export function spendTime(world,activity,hours,medicId=null){
  if(treatment){let needed=treatment.kitsNeeded;for(const donor of troops){const used=Math.min(donor.medkits,needed);donor.medkits-=used;needed-=used;}for(const patient of treatment.needsKit)patient.medicalRestHours=MEDICAL_RECOVERY_HOURS;}
  const income=advanceTime(world,hours*60);
  let healed=0;
- const crossings=[];for(const u of troops){u.overwatch=null;if(activity!=='train'){restStrain(u,hours);if(s.rules?.social)crossings.push(...driftBonds(u,hours));const assisted=Math.min(hours,u.medicalRestHours||0),before=u.hp;recoverHealth(u,assisted/MEDICAL_RECOVERY_HOURS+(hours-assisted)/REST_RECOVERY_HOURS);u.medicalRestHours=u.hp===u.maxHp?0:Math.max(0,(u.medicalRestHours||0)-assisted);healed+=u.hp-before;u.ap=u.maxAp;}else if(u.level<10)awardXP(u,25*hours);}
+ // Rest drifts bonds and the meter settles in one-hour slices, so a rung boundary the drift crosses changes the rate at the same clock hour
+ // whether the player chose one 48-hour rest or two of 24 (Codex's G5 review); training drifts nothing and settles once.
+ const crossings=[];if(activity!=='train'&&s.rules?.social){const end=world.clock.minutes;for(let done=0;done<hours;done++){for(const u of troops)crossings.push(...driftBonds(u,1));settleMorale(world,s,60,undefined,end-(hours-done-1)*60);}}else settleMorale(world,s,hours*60);
+ for(const u of troops){u.overwatch=null;if(activity!=='train'){restStrain(u,hours);const assisted=Math.min(hours,u.medicalRestHours||0),before=u.hp;recoverHealth(u,assisted/MEDICAL_RECOVERY_HOURS+(hours-assisted)/REST_RECOVERY_HOURS);u.medicalRestHours=u.hp===u.maxHp?0:Math.max(0,(u.medicalRestHours||0)-assisted);healed+=u.hp-before;u.ap=u.maxAp;}else if(u.level<10)awardXP(u,25*hours);}
  const message=activity==='train'?`Squad trained for ${hours} hour${hours===1?'':'s'}; +${25*hours} XP per eligible troop.`:`Squad rested for ${hours} hour${hours===1?'':'s'}; restored ${healed} HP total.`+(treatment?` ${treatment.medic.name} provided care; used ${treatment.kitsNeeded} medkits.`:'');
- settleMorale(world,s,hours*60);refresh(s);log(s,message);for(const line of crossings)log(s,line);return {ok:true,income,message};
+ refresh(s);log(s,message);for(const line of crossings)log(s,line);return {ok:true,income,message};
 }
 function recoverHealth(u,fraction){
  if(u.hp>=u.maxHp){u.restHealing=0;return;}

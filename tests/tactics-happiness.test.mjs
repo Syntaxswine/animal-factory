@@ -169,9 +169,25 @@ test('ai-65 falsifier: a hand-over that lifts a bond across a rung pays once, an
  anya.social.bonds.Yakov=20;settleMorale(w,s,0);advanceTime(w,DAY);settleMorale(w,s,DAY);anya.social.happiness=50;helped(anya,yakov);settleMorale(w,s,0);assert.equal(happy(anya),55,'a day at cautious trust, then trusted again: reconciliation');
 });
 
+test('Codex review: quitting cannot depend on how downtime is divided; one 48-hour block, two of 24 and six of 8 agree to the minute, training and rest alike, and the 24-hour boundary is exact',()=>{
+ const run=(activity,chunks)=>{const {w,s,mercs:[u,...rest]}=world();u.social.happiness=2;for(const p of rest){pair(u,p,-100);u.social.resting[p.name]=-100;} // feuds with nowhere to drift, so no rung bonus can rescue him mid-rest
+  stamp(w,s);for(const h of chunks)assert.ok(spendTime(w,activity,h).ok,activity+' '+h);return {happiness:happy(u),zeroSince:u.social.zeroSince,minutes:w.clock.minutes,casualty:u.casualty};};
+ for(const activity of ['train','rest']){const plans=activity==='train'?[[48],[24,24]]:[[48],[24,24],[8,8,8,8,8,8]]; // downtime comes in 1/4/8/24/48-hour blocks, and six blocks of training would cap the squad at level 10 first
+  const [a,b,c]=plans.map(p=>run(activity,p));assert.equal(a.minutes,b.minutes);if(c)assert.equal(b.minutes,c.minutes);assert.equal(a.casualty,'quit',activity+': three feuds at −15 a day empty a meter of 2 in 192 minutes; a day later he walks');
+  for(const [name,x] of [['chunked in two',b],['chunked in blocks of 8',c]].filter(([,x])=>x)){assert.equal(x.happiness,a.happiness,name);near(x.zeroSince,a.zeroSince,activity+' '+name+': the zero stamp');assert.equal(x.casualty,a.casualty,name);}
+  near(a.zeroSince,480+2/15*DAY,activity+': stamped 192 minutes into the first block');}
+ // The exact boundary: emptied by an event, then trained 23 hours: not yet; the 24th hour: gone. In one block or two.
+ for(const chunks of [[24],[8,8,4,1,1,1,1],[8,8,8]]){const {w,s,mercs:[u,...rest]}=world();for(const p of rest)pair(u,p,-100);stamp(w,s);u.social.happiness=0;stamp(w,s);
+  let quitAt=null;for(const h of chunks){assert.ok(spendTime(w,'train',h).ok);if(u.casualty==='quit'&&quitAt===null)quitAt=w.clock.minutes;}assert.equal(quitAt,480+DAY,chunks.join('+')+': the 24th hour, to the minute');}
+ {const {w,s,mercs:[u,...rest]}=world();for(const p of rest)pair(u,p,-100);stamp(w,s);u.social.happiness=0;stamp(w,s);assert.ok(spendTime(w,'train',8).ok);assert.ok(spendTime(w,'train',8).ok);assert.ok(spendTime(w,'train',4).ok);assert.ok(spendTime(w,'train',1).ok);assert.ok(spendTime(w,'train',1).ok);assert.ok(spendTime(w,'train',1).ok);assert.equal(u.casualty,null,'23 hours: not yet');assert.ok(spendTime(w,'train',1).ok);assert.equal(u.casualty,'quit','the 24th');}
+ // A long rest whose drift crosses a rate boundary: two of 24 and one of 48 still agree, because the drift and the meter move hour by hour together.
+ {const runs=[[48],[24,24]].map(chunks=>{const {w,s,mercs:[y,a]}=world();pair(y,a,-38);stamp(w,s);y.social.happiness=30;for(const h of chunks)assert.ok(spendTime(w,'rest',h).ok);return [happy(y),y.social.bonds.Anya,y.social.zeroSince];});
+  near(runs[0][0],runs[1][0],'happiness');near(runs[0][1],runs[1][1],'the drifted bond');assert.equal(runs[0][2],runs[1][2]);assert.ok(runs[0][1]>-35,'the drift toward the authored +5 crossed out of resented during the rest');}
+});
+
 test('downtime rest settles the meter beside the bond drift, and the card shows the hours left when a merc is about to quit',()=>{
- const {w,s,mercs:[yakov,anya,misha,vera]}=world();pair(yakov,anya,-100);pair(yakov,misha,10);pair(yakov,vera,10);stamp(w,s);yakov.social.happiness=2; // no trusted partner to soften it; a feud deep enough that two days of rest drift (toward the authored +5) leave it opposing
- assert.ok(spendTime(w,'rest',24).ok);assert.equal(happy(yakov),0,'2 − 5');assert.equal(yakov.social.zeroSince,w.clock.minutes);near(quitHoursLeft(yakov,w.clock.minutes),QUIT_HOURS);
- assert.ok(spendTime(w,'rest',24).ok);assert.equal(yakov.casualty,'quit','a calm map: he walks at the end of the rest');
+ const {w,s,mercs:[yakov,anya,misha,vera]}=world();pair(yakov,anya,-100);yakov.social.resting.Anya=-100;pair(yakov,misha,10);pair(yakov,vera,10);stamp(w,s);yakov.social.happiness=2; // no trusted partner to soften it; a feud with no resting level to drift toward (drift out of feud after a day would pay the reconciliation +5 and rescue him)
+ const start=w.clock.minutes;assert.ok(spendTime(w,'rest',24).ok);assert.equal(happy(yakov),0,'2 − 5');near(yakov.social.zeroSince,start+2/5*DAY,'stamped where the line crossed zero: 576 minutes into the rest, not at its end');near(quitHoursLeft(yakov,w.clock.minutes),QUIT_HOURS-(DAY-2/5*DAY)/60);
+ assert.ok(spendTime(w,'rest',24).ok);assert.equal(yakov.casualty,'quit','a calm map: he walks during the second rest, the hour the day is up');
  assert.ok(s.log.some(l=>/Yakov has had enough of Anya/.test(l)));
 });

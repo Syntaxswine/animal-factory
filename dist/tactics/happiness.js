@@ -29,24 +29,31 @@ export function initHappiness(u){u.social.happiness=100;u.social.zeroSince=null;
 export const quitHoursLeft=(u,now)=>u?.social?.zeroSince==null?null:Math.max(0,QUIT_HOURS-(now-u.social.zeroSince)/60);
 
 // One settlement covering `minutes` of campaign clock that ends at `now`. mapOf(u) names the local map the merc counts as on (a waiting
-// crosser: its destination). Zero minutes still stamps the zero timer, so an event that empties the meter starts the clock at once.
+// crosser: its destination). The rung bonus is instantaneous at the start of the interval; the rest is a constant rate over it, so the
+// moment the meter empties is the crossing of that line, stamped where it falls inside the interval: a 48-hour rest and two 24-hour rests
+// agree to the minute (Codex's review). A meter an event emptied before the interval is stamped at the interval's start; zero minutes
+// stamps `now`.
 export function settleHappiness(units,minutes,now,mapOf=()=>'here'){
  const lines=[],quitting=[],days=Math.max(0,minutes||0)/DAY;
  for(const u of units){if(!hasMeter(u)||!onContract(u))continue;const m=u.social,here=mapOf(u),ps=partners(u,units);
   const opp=ps.filter(p=>opposing(bondTo(u,p))),oppHere=opp.filter(p=>mapOf(p)===here);
-  let delta=-DECAY_PER_DAY*oppHere.length*days;
-  if(!oppHere.length)delta+=(opp.length?APART_PER_DAY:CALM_PER_DAY)*days; // one rate, two tiers (decision 2)
-  for(const p of ps)if(mapOf(p)===here){const r=rungOf(bondTo(u,p)).name;if(LIKED_PER_DAY[r])delta+=LIKED_PER_DAY[r]*days;}
+  let rate=-DECAY_PER_DAY*oppHere.length,bonus=0; // rate per day, bonus at the start
+  if(!oppHere.length)rate+=opp.length?APART_PER_DAY:CALM_PER_DAY; // one rate, two tiers (decision 2)
+  for(const p of ps)if(mapOf(p)===here){const r=rungOf(bondTo(u,p)).name;if(LIKED_PER_DAY[r])rate+=LIKED_PER_DAY[r];}
+  const delta=rate*days;
   // A partner's rung rising lifts the meter when the rise is new ground for the pair, or ends a day or more at the lower rung (reconciliation);
   // the rise itself came from a hand-over, a rescue or rest. A wobble across one boundary pays nothing.
   for(const p of ps){if(!m.rungSeen)continue;const idx=rungIndex(bondTo(u,p)),st=m.rungSeen[p.name];
    if(!st||typeof st!=='object'){m.rungSeen[p.name]=rungMemory(idx,now);continue;}
    if(idx===st.at)continue;
-   if(idx<st.at&&(idx<st.best||now-st.since>=RECONCILE_MINUTES)){delta+=RUNG_UP;lines.push(`${u.name} is glad of ${p.name}: ${RUNGS[idx].name}.`);}
+   if(idx<st.at&&(idx<st.best||now-st.since>=RECONCILE_MINUTES)){bonus+=RUNG_UP;lines.push(`${u.name} is glad of ${p.name}: ${RUNGS[idx].name}.`);}
    if(idx<st.best)st.best=idx;st.at=idx;st.since=now;}
-  change(u,delta);
+  const start=now-Math.max(0,minutes||0),h0=clamp(m.happiness+bonus);let h=clamp(h0+delta);
+  if(h0>0&&rate<0&&h0+delta<=0){h=0;m.zeroSince=start+h0/(-rate)*DAY;} // emptied inside the interval: the crossing, to the minute
+  else if(h===0)m.zeroSince??=start;                                    // emptied before it (an event), or still empty: the earliest moment this settle can know
+  m.happiness=h;
   if(m.happiness>0){m.zeroSince=null;u.quitPending=false;} // the timer resets the moment the meter rises, and so does the decision to walk
-  else{m.zeroSince??=now;if(now-m.zeroSince>=QUIT_HOURS*60&&!u.quitPending){u.quitPending=true;const names=oppHere.map(p=>p.name).join(' and ')||'the squad';lines.push(`${u.name} has had enough of ${names} (${Math.round((now-m.zeroSince)/60)} hours at zero).`);quitting.push(u);}}
+  else if(now-m.zeroSince>=QUIT_HOURS*60&&!u.quitPending){u.quitPending=true;const names=oppHere.map(p=>p.name).join(' and ')||'the squad';lines.push(`${u.name} has had enough of ${names} (${Math.round((now-m.zeroSince)/60)} hours at zero).`);quitting.push(u);}
  }
  return {lines,quitting};
 }
