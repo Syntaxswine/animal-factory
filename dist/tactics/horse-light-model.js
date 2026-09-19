@@ -9,7 +9,8 @@ export function createLightHorse(data,texture=null){
  const root=new THREE.Group(),rig=new THREE.Group();root.add(rig);const bones=[],rest=[],lookup={};
  function bone(name,parent,world){const b=new THREE.Bone();b.name=name;const i=bones.length;bones.push(b);lookup[name]=i;rest.push(V(world));if(parent!==null){bones[parent].add(b);b.position.copy(rest[i]).sub(rest[parent]);}else {rig.add(b);b.position.copy(rest[i]);}return i;}
  const hips=bone('hips',null,[0,.80,0]),spine=bone('spine',hips,[-.025,1.08,0]),head=bone('head',spine,[-.065,1.30,0]);
- const limbs=[];for(const side of [-1,1]){const sh=bone('upperArm'+side,spine,[-.045,1.191,side*.205]),el=bone('forearm'+side,sh,[.022,.991,side*.344]),wr=bone('hand'+side,el,[.061,.742,side*.355]),finger=bone('fingers'+side,wr,[.072,.712,side*.355]);const th=bone('thigh'+side,hips,[-.03,.77,side*.12]),kn=bone('shin'+side,th,[.024,.475,side*.196]),ho=bone('hoof'+side,kn,[-.035,.12,side*.232]);limbs.push({side,sh,el,wr,finger,th,kn,ho});}
+ const armSpread=data.species==='pig-director'?.085:0;
+ const limbs=[];for(const side of [-1,1]){const sh=bone('upperArm'+side,spine,[-.045,1.191,side*(.205+armSpread)]),el=bone('forearm'+side,sh,[.022,.991,side*(.344+armSpread)]),wr=bone('hand'+side,el,[.061,.742,side*(.355+armSpread)]),finger=bone('fingers'+side,wr,[.072,.712,side*(.355+armSpread)]);const th=bone('thigh'+side,hips,[-.03,.77,side*.12]),kn=bone('shin'+side,th,[.024,.475,side*.196]),ho=bone('hoof'+side,kn,[-.035,.12,side*.232]);limbs.push({side,sh,el,wr,finger,th,kn,ho});}
  root.updateMatrixWorld(true);const skeleton=new THREE.Skeleton(bones);skeleton.calculateInverses();
  const material=new THREE.MeshStandardMaterial({map:texture,color:0xffffff,vertexColors:true,roughness:.92}),grey=new THREE.MeshStandardMaterial({color:0x999999,roughness:.88}),parts=[];
  const graphicUniform={value:1};
@@ -62,10 +63,11 @@ export function createLightHorse(data,texture=null){
   `);
  };
  material.customProgramCacheKey=()=> 'horse-light-graphic-paint-v2';
+ function directorSleeve(x,y,z){const t=clamp(((x+.035)*.056+(y-1.217)*-.201+(Math.abs(z)-.285)*.144)/(.056**2+.201**2+.144**2),0,1);return (1-smooth(.108,.152,Math.hypot(x+.035-.056*t,y-1.217+.201*t,Math.abs(z)-.285-.144*t)))*smooth(.25,.32,Math.abs(z));}
  function weights(name,p){const [x,y,z]=p,l=limbs[z<0?0:1];if(name.includes('tail'))return [[hips,1]];if(name.includes('mane')||name.includes('beard'))return [[head,1]];if(name.includes('skull')){const t=smooth(1.22,1.38,y);return [[spine,1-t],[head,t]];}
   if(name.includes('hoof')||name.includes('boot'))return [[l.ho,1]];
   if(name.includes('forearm')){const h=1-smooth(.725,.81,y),f=(1-smooth(.682,.724,y))*.82;const u=smooth(.98,1.06,y);return [[l.sh,(1-h)*u],[l.el,(1-h)*(1-u)],[l.wr,h*(1-f)],[l.finger,h*f]];}
-  if(name.includes('shirt')){const sleeve=data.species==='pig-foreman'?smooth(.270,.335,Math.abs(z)):Math.max(smooth(.16,.255,Math.abs(z)),smooth(.20,.25,Math.abs(z))*(1-smooth(1.03,1.11,y))),elbow=1-smooth(.98,1.06,y);return [[spine,1-sleeve],[l.sh,sleeve*(1-elbow)],[l.el,sleeve*elbow]];}
+  if(name.includes('shirt')){const sleeve=data.species==='pig-director'?directorSleeve(x,y,z):data.species==='pig-foreman'?smooth(.270,.335,Math.abs(z)):Math.max(smooth(.16,.255,Math.abs(z)),smooth(.20,.25,Math.abs(z))*(1-smooth(1.03,1.11,y))),elbow=1-smooth(.98,1.06,y);return [[spine,1-sleeve],[l.sh,sleeve*(1-elbow)],[l.el,sleeve*elbow]];}
   if(y>.86){const t=smooth(.86,1.02,y);return [[hips,1-t],[spine,t]];}const leg=1-smooth(.69,.83,y),knee=1-smooth(.42,.53,y),ankle=1-smooth(.17,.27,y);return [[hips,1-leg],[l.th,leg*(1-knee)],[l.kn,leg*knee*(1-ankle)],[l.ho,leg*knee*ankle]];
  }
  function uvColor(name,p,n,forcedPanel=null){const [x,y,z]=p;let panel=0,u=0,v=0,color=[1,1,1];
