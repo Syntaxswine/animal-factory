@@ -53,6 +53,12 @@ export function createModelPaint(renderer,horse,texture,{species='horse'}={}){
    uniform sampler2D uModelPaint,uPaintDepth,uPaintParts,uPaintMask; uniform float uPaintDebug,uGripForearm;
    varying vec3 vPaintPosition,vPaintNormal; varying float vPaintPart;
    vec3 fallbackPaint(float part){
+    ${species==='bull'?`if(part<1.5)return vec3(.67,.61,.43);
+    if(part<2.5)return vec3(.09,.14,.10);
+    if(abs(part-3.0)<.1||abs(part-5.0)<.1)return vPaintPosition.y>.918?vec3(.67,.61,.43):(vPaintPosition.y<.775?vec3(.065,.040,.025):vec3(.44,.18,.07));
+    if(part<6.5)return vec3(.075,.050,.029);
+    if(part<7.5)return vPaintPosition.y>1.54?vec3(.44,.28,.10):vec3(.44,.18,.07);
+    return vPaintPosition.y<.415?vec3(.66,.49,.23):vec3(.38,.13,.038);`:''}
     ${species==='goat'?`if(part<1.5)return vec3(.52,.28,.055);
     if(part<2.5)return vec3(.13,.17,.058);
     if(abs(part-3.0)<.1||abs(part-5.0)<.1)return vPaintPosition.y>.918?vec3(.52,.28,.055):vec3(.60,.49,.30);
@@ -72,8 +78,12 @@ export function createModelPaint(renderer,horse,texture,{species='horse'}={}){
     float facing=view<.5?n.x:(view<1.5?n.z:(view<2.5?-n.x:-n.z));
     // The frontal painting owns the blaze; side paintings own cheeks/eyes.
     // This prevents two separately painted ridge edges from becoming two stripes.
-    float blazeOwner=${species==='goat'?'0.0':'(1.0-smoothstep(.024,.065,abs(p.z)))*smoothstep(1.375,1.415,p.y)*smoothstep(.0,.04,p.x)*step(6.5,vPaintPart)*step(vPaintPart,7.5)'};
+    float blazeOwner=${species==='goat'?'0.0':species==='bull'?'(1.0-smoothstep(.024,.065,abs(p.z)))*smoothstep(1.435,1.455,p.y)*smoothstep(.0,.04,p.x)*step(6.5,vPaintPart)*step(vPaintPart,7.5)':'(1.0-smoothstep(.024,.065,abs(p.z)))*smoothstep(1.375,1.415,p.y)*smoothstep(.0,.04,p.x)*step(6.5,vPaintPart)*step(vPaintPart,7.5)'};
     facing=view<.5?mix(facing,1.0,blazeOwner):facing*(1.0-blazeOwner);
+    ${species==='bull'?`// Register each eye from its own profile without competing front contours.
+    float eyeOwner=(1.0-smoothstep(.75,1.15,length((p.xy-vec2(.050,1.447))/vec2(.050,.035))))*smoothstep(.070,.100,abs(p.z))*step(6.5,vPaintPart)*step(vPaintPart,7.5);
+    float sideView=p.z>0.0?1.0:3.0;
+    facing=abs(view-sideView)<.1?mix(facing,1.0,eyeOwner):facing*(1.0-eyeOwner);`:''}
     ${species==='goat'?`// Side paintings own the eye and horn markings; frontal projection otherwise
     // smears their separately painted contours across the oblique surface.
     float eyeOwner=(1.0-smoothstep(.75,1.15,length((p.xy-vec2(.048,1.485))/vec2(.055,.040))))*smoothstep(.047,.065,abs(p.z));
@@ -108,10 +118,19 @@ export function createModelPaint(renderer,horse,texture,{species='horse'}={}){
    if(vPaintPart<2.5&&vPaintPart>1.5&&p.y<.86){float center=.12+clamp(.8-p.y,0.0,.67)*.17;fillPosition.z=mix(p.z,sign(p.z)*center,.16);}
    if(abs(vPaintPart-4.0)<.1||abs(vPaintPart-6.0)<.1)fillPosition.z=mix(p.z,sign(p.z)*.232,.18);
    vec4 fill=paintView(fillPosition,n,0.0,false)+paintView(fillPosition,n,2.0,false);
-   ${species==='goat'?`fill+=paintView(fillPosition,n,1.0,false)+paintView(fillPosition,n,3.0,false);`:''}
+   ${species==='goat'||species==='bull'?`fill+=paintView(fillPosition,n,1.0,false)+paintView(fillPosition,n,3.0,false);`:''}
    float filled=smoothstep(.002,.025,fill.a);
    vec3 base=mix(fallbackPaint(vPaintPart),fill.rgb/max(.00001,fill.a),filled);
    diffuseColor.rgb=mix(base,paint.rgb/max(.00001,paint.a),coverage);
+   ${species==='bull'?`// The edited profiles provide plain pink shading. Reuse the frontal nasal
+   // painting around the rounded pad with a broad feather into that compatible color.
+   float nose=smoothstep(.155,.215,p.x)*(1.0-smoothstep(1.416,1.438,p.y))*smoothstep(1.348,1.37,p.y)*step(6.5,vPaintPart)*step(vPaintPart,7.5);
+   vec4 nosePaint=paintView(vec3(.23,p.y,atan(p.z,max(.025,p.x-.15))*.058),vec3(1.,0.,0.),0.,false);
+   if(nosePaint.a>.001){diffuseColor.rgb=mix(diffuseColor.rgb,nosePaint.rgb/nosePaint.a,nose);coverage*=1.-nose;filled=mix(filled,1.,nose);}`:''}
+   ${species==='bull'?`// Reuse the same broad strap's front painting across its hidden upper turn.
+   float strap=smoothstep(1.185,1.225,p.y)*(1.0-smoothstep(.035,.055,abs(abs(p.z)-.143)))*(1.0-step(.4,abs(vPaintPart-2.0)));
+   vec4 strapPaint=paintView(vec3(.17,1.18,sign(p.z)*.143),vec3(1.,0.,0.),0.,false);
+   if(strapPaint.a>.001){diffuseColor.rgb=mix(diffuseColor.rgb,strapPaint.rgb/strapPaint.a*(.86+.14*max(n.y,0.)),strap);coverage*=1.-strap;filled=mix(filled,1.,strap);}`:''}
    ${species==='goat'?`// The top of a strap is hidden in all four level reference views. Reuse
    // the same strap's front paint continuously; keep this blue in coverage mode.
    float strap=smoothstep(1.185,1.225,p.y)*(1.0-smoothstep(.035,.055,abs(abs(p.z)-.13)))*(1.0-step(.4,abs(vPaintPart-2.0)));

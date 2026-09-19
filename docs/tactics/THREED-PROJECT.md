@@ -4,6 +4,8 @@ This is a separate experimental project and deployment. It preserves the committ
 
 ## Available now
 
+- Bull worker: `tactics/bull-worker.html?mesh=10k`, built at `30b7662` and integrated through `7844ae8`. The 9,998-triangle version uses the existing rig and rifle. Independent review passed 64 browser combinations plus horse/goat regression views. Its leaner proportions versus the stockier sprite remain an art note, not a prototype blocker. Tail animation and equipment beyond rifle carry remain untested. The skunk has a corrected turnaround reference, not a completed model in this release.
+
 - Goat worker: `tactics/goat-worker.html?mesh=10k`, through `b5a47d6`. The 9,994-triangle model reuses the worker rig and the existing rifle at unchanged scale. Independently checked 64 mesh/pose/heading/scale combinations and the horse shader regression. Accepted for the static prototype; hand detail and the small collar transition remain polish. Other goat equipment poses, animation and real-world weapon dimensions are not validated by this review.
 
 - Weapon workshop: `tactics/horse-weapons.html?weapon=hmg`, integrated through `156665a`. Correct hand placement is the current acceptance criterion; hand anatomy, cuffs and weapon finishes remain polish. The HMG upper handle and grasp pass the dedicated clearance checks. All 391 repository tests pass. Shotgun and flamethrower remain the accepted weapon baselines. This is static equipment inspection, not firing or animation integration.
