@@ -16,7 +16,7 @@
       ],
       "max": [
         0.23488540157334192,
-        1.6519365310668945,
+        1.7619365453720093,
         0.4353555142879486
       ],
       "contacts": [],
@@ -28,10 +28,10 @@
       "close": true,
       "heading": 0,
       "coverage": {
-        "mappedPixels": 51517,
-        "borrowedPixels": 5580,
-        "fallbackPixels": 232,
-        "fallbackPercent": 0.4046817492019746
+        "mappedPixels": 51714,
+        "borrowedPixels": 7499,
+        "fallbackPixels": 219,
+        "fallbackPercent": 0.36848835644097455
       }
     },
     {
@@ -48,7 +48,7 @@
       ],
       "max": [
         0.35464834464416256,
-        1.6519365310668945,
+        1.7619365453720093,
         0.3195004841393106
       ],
       "contacts": [],
@@ -60,10 +60,10 @@
       "close": true,
       "heading": 45,
       "coverage": {
-        "mappedPixels": 37492,
-        "borrowedPixels": 2384,
-        "fallbackPixels": 184,
-        "fallbackPercent": 0.45931103344982527
+        "mappedPixels": 37121,
+        "borrowedPixels": 4875,
+        "fallbackPixels": 206,
+        "fallbackPercent": 0.4881285247144685
       }
     },
     {
@@ -80,7 +80,7 @@
       ],
       "max": [
         0.4353555142879486,
-        1.6519365310668945,
+        1.7619365453720093,
         0.3277263939380646
       ],
       "contacts": [],
@@ -92,10 +92,10 @@
       "close": true,
       "heading": 90,
       "coverage": {
-        "mappedPixels": 50147,
-        "borrowedPixels": 5358,
-        "fallbackPixels": 425,
-        "fallbackPercent": 0.7598784194528876
+        "mappedPixels": 49777,
+        "borrowedPixels": 7346,
+        "fallbackPixels": 442,
+        "fallbackPercent": 0.7678276730652306
       }
     },
     {
@@ -112,7 +112,7 @@
       ],
       "max": [
         0.3195004841393108,
-        1.6519365310668945,
+        1.7619365453720093,
         0.3184639225723916
       ],
       "contacts": [],
@@ -124,10 +124,10 @@
       "close": true,
       "heading": 135,
       "coverage": {
-        "mappedPixels": 59539,
-        "borrowedPixels": 3369,
-        "fallbackPixels": 372,
-        "fallbackPercent": 0.5878634639696586
+        "mappedPixels": 59337,
+        "borrowedPixels": 4771,
+        "fallbackPixels": 370,
+        "fallbackPercent": 0.5738391389311083
       }
     },
     {
@@ -144,7 +144,7 @@
       ],
       "max": [
         0.3277263939380646,
-        1.6519365310668945,
+        1.7619365453720093,
         0.4354814887046814
       ],
       "contacts": [],
@@ -156,10 +156,10 @@
       "close": true,
       "heading": 180,
       "coverage": {
-        "mappedPixels": 50497,
-        "borrowedPixels": 5018,
-        "fallbackPixels": 422,
-        "fallbackPercent": 0.7544201512415754
+        "mappedPixels": 50097,
+        "borrowedPixels": 7010,
+        "fallbackPixels": 438,
+        "fallbackPercent": 0.7611434529498653
       }
     },
     {
@@ -176,7 +176,7 @@
       ],
       "max": [
         0.31846392257239176,
-        1.6519365310668945,
+        1.7619365453720093,
         0.35546046699976297
       ],
       "contacts": [],
@@ -188,10 +188,10 @@
       "close": true,
       "heading": -135,
       "coverage": {
-        "mappedPixels": 37553,
-        "borrowedPixels": 2320,
-        "fallbackPixels": 189,
-        "fallbackPercent": 0.4717687584244421
+        "mappedPixels": 37174,
+        "borrowedPixels": 4808,
+        "fallbackPixels": 215,
+        "fallbackPercent": 0.5095148944237742
       }
     },
     {
@@ -208,7 +208,7 @@
       ],
       "max": [
         0.4354814887046814,
-        1.6519365310668945,
+        1.7619365453720093,
         0.23488540157334192
       ],
       "contacts": [],
@@ -220,10 +220,10 @@
       "close": true,
       "heading": -90,
       "coverage": {
-        "mappedPixels": 51904,
-        "borrowedPixels": 5266,
-        "fallbackPixels": 226,
-        "fallbackPercent": 0.39375566241549936
+        "mappedPixels": 52100,
+        "borrowedPixels": 7183,
+        "fallbackPixels": 222,
+        "fallbackPercent": 0.37307789261406604
       }
     },
     {
@@ -240,7 +240,7 @@
       ],
       "max": [
         0.35546046699976286,
-        1.6519365310668945,
+        1.7619365453720093,
         0.3546483446441625
       ],
       "contacts": [],
@@ -252,10 +252,10 @@
       "close": true,
       "heading": -45,
       "coverage": {
-        "mappedPixels": 62394,
-        "borrowedPixels": 3911,
+        "mappedPixels": 62812,
+        "borrowedPixels": 4765,
         "fallbackPixels": 313,
-        "fallbackPercent": 0.4698429853793269
+        "fallbackPercent": 0.461039917513625
       }
     },
     {
@@ -272,7 +272,7 @@
       ],
       "max": [
         0.33559604852423974,
-        1.6519365310668945,
+        1.7619365453720093,
         0.33088941368131053
       ],
       "contacts": [
@@ -313,10 +313,10 @@
       "close": true,
       "heading": 0,
       "coverage": {
-        "mappedPixels": 43507,
-        "borrowedPixels": 5995,
-        "fallbackPixels": 213,
-        "fallbackPercent": 0.42844212008448157
+        "mappedPixels": 43732,
+        "borrowedPixels": 7894,
+        "fallbackPixels": 200,
+        "fallbackPercent": 0.38590668776289894
       }
     },
     {
@@ -333,7 +333,7 @@
       ],
       "max": [
         0.2746617763173165,
-        1.6519365310668945,
+        1.7619365453720093,
         0.28328006717363685
       ],
       "contacts": [
@@ -374,10 +374,10 @@
       "close": true,
       "heading": 45,
       "coverage": {
-        "mappedPixels": 37486,
-        "borrowedPixels": 3827,
-        "fallbackPixels": 438,
-        "fallbackPercent": 1.0490766688223037
+        "mappedPixels": 37115,
+        "borrowedPixels": 6318,
+        "fallbackPixels": 460,
+        "fallbackPercent": 1.0480030984439432
       }
     },
     {
@@ -394,7 +394,7 @@
       ],
       "max": [
         0.33088941368131053,
-        1.6519365310668945,
+        1.7619365453720093,
         0.3277263939380646
       ],
       "contacts": [
@@ -435,10 +435,10 @@
       "close": true,
       "heading": 90,
       "coverage": {
-        "mappedPixels": 44688,
-        "borrowedPixels": 5358,
-        "fallbackPixels": 617,
-        "fallbackPercent": 1.2178512918698063
+        "mappedPixels": 44317,
+        "borrowedPixels": 7348,
+        "fallbackPixels": 636,
+        "fallbackPercent": 1.2160379342651193
       }
     },
     {
@@ -455,7 +455,7 @@
       ],
       "max": [
         0.2832800671736369,
-        1.6519365310668945,
+        1.7619365453720093,
         0.2833332459613304
       ],
       "contacts": [
@@ -496,10 +496,10 @@
       "close": true,
       "heading": 135,
       "coverage": {
-        "mappedPixels": 52417,
-        "borrowedPixels": 3398,
-        "fallbackPixels": 704,
-        "fallbackPercent": 1.2455988251738352
+        "mappedPixels": 52215,
+        "borrowedPixels": 4800,
+        "fallbackPixels": 702,
+        "fallbackPercent": 1.2162794324029316
       }
     },
     {
@@ -516,7 +516,7 @@
       ],
       "max": [
         0.3277263939380646,
-        1.6519365310668945,
+        1.7619365453720093,
         0.3809467573932771
       ],
       "contacts": [
@@ -557,10 +557,10 @@
       "close": true,
       "heading": 180,
       "coverage": {
-        "mappedPixels": 46966,
-        "borrowedPixels": 5077,
-        "fallbackPixels": 656,
-        "fallbackPercent": 1.244805404277121
+        "mappedPixels": 46566,
+        "borrowedPixels": 7069,
+        "fallbackPixels": 672,
+        "fallbackPercent": 1.2374095420479865
       }
     },
     {
@@ -577,7 +577,7 @@
       ],
       "max": [
         0.2833332459613304,
-        1.6519365310668945,
+        1.7619365453720093,
         0.3916430385688296
       ],
       "contacts": [
@@ -618,10 +618,10 @@
       "close": true,
       "heading": -135,
       "coverage": {
-        "mappedPixels": 38053,
-        "borrowedPixels": 3472,
-        "fallbackPixels": 415,
-        "fallbackPercent": 0.9895088221268479
+        "mappedPixels": 37674,
+        "borrowedPixels": 5960,
+        "fallbackPixels": 441,
+        "fallbackPercent": 1.0005672149744753
       }
     },
     {
@@ -638,7 +638,7 @@
       ],
       "max": [
         0.3809467573932771,
-        1.6519365310668945,
+        1.7619365453720093,
         0.3355960485242397
       ],
       "contacts": [
@@ -679,10 +679,10 @@
       "close": true,
       "heading": -90,
       "coverage": {
-        "mappedPixels": 45575,
-        "borrowedPixels": 5220,
-        "fallbackPixels": 204,
-        "fallbackPercent": 0.40000784329104494
+        "mappedPixels": 45821,
+        "borrowedPixels": 7098,
+        "fallbackPixels": 200,
+        "fallbackPercent": 0.3765131120691278
       }
     },
     {
@@ -699,7 +699,7 @@
       ],
       "max": [
         0.39164303856882954,
-        1.6519365310668945,
+        1.7619365453720093,
         0.2746617763173165
       ],
       "contacts": [
@@ -740,10 +740,10 @@
       "close": true,
       "heading": -45,
       "coverage": {
-        "mappedPixels": 51603,
-        "borrowedPixels": 3520,
+        "mappedPixels": 52021,
+        "borrowedPixels": 4374,
         "fallbackPixels": 228,
-        "fallbackPercent": 0.41191667720547054
+        "fallbackPercent": 0.40266322872331034
       }
     },
     {
@@ -760,7 +760,7 @@
       ],
       "max": [
         0.23472798661208172,
-        1.6519365310668945,
+        1.7619365453720093,
         0.4345848858356476
       ],
       "contacts": [],
@@ -772,10 +772,10 @@
       "close": true,
       "heading": 0,
       "coverage": {
-        "mappedPixels": 51432,
-        "borrowedPixels": 5571,
-        "fallbackPixels": 222,
-        "fallbackPercent": 0.38794233289646135
+        "mappedPixels": 51635,
+        "borrowedPixels": 7494,
+        "fallbackPixels": 215,
+        "fallbackPercent": 0.36229441898085735
       }
     },
     {
@@ -792,7 +792,7 @@
       ],
       "max": [
         0.35464834464416256,
-        1.6519365310668945,
+        1.7619365453720093,
         0.3195004841393106
       ],
       "contacts": [],
@@ -804,10 +804,10 @@
       "close": true,
       "heading": 45,
       "coverage": {
-        "mappedPixels": 37290,
-        "borrowedPixels": 2464,
-        "fallbackPixels": 192,
-        "fallbackPercent": 0.4806488759825765
+        "mappedPixels": 36952,
+        "borrowedPixels": 4940,
+        "fallbackPixels": 207,
+        "fallbackPercent": 0.4916981400983396
       }
     },
     {
@@ -824,7 +824,7 @@
       ],
       "max": [
         0.4345848858356476,
-        1.6519365310668945,
+        1.7619365453720093,
         0.3277263939380646
       ],
       "contacts": [],
@@ -836,10 +836,10 @@
       "close": true,
       "heading": 90,
       "coverage": {
-        "mappedPixels": 50054,
-        "borrowedPixels": 5332,
-        "fallbackPixels": 411,
-        "fallbackPercent": 0.7365987418678424
+        "mappedPixels": 49691,
+        "borrowedPixels": 7304,
+        "fallbackPixels": 424,
+        "fallbackPercent": 0.7384315296330483
       }
     },
     {
@@ -856,7 +856,7 @@
       ],
       "max": [
         0.3195004841393108,
-        1.6519365310668945,
+        1.7619365453720093,
         0.3184639225723916
       ],
       "contacts": [],
@@ -868,10 +868,10 @@
       "close": true,
       "heading": 135,
       "coverage": {
-        "mappedPixels": 59458,
-        "borrowedPixels": 3345,
-        "fallbackPixels": 332,
-        "fallbackPercent": 0.5258572899342678
+        "mappedPixels": 59262,
+        "borrowedPixels": 4760,
+        "fallbackPixels": 330,
+        "fallbackPercent": 0.5128045748383888
       }
     },
     {
@@ -888,7 +888,7 @@
       ],
       "max": [
         0.3277263939380646,
-        1.6519365310668945,
+        1.7619365453720093,
         0.4348742961883545
       ],
       "contacts": [],
@@ -900,10 +900,10 @@
       "close": true,
       "heading": 180,
       "coverage": {
-        "mappedPixels": 50428,
-        "borrowedPixels": 4961,
-        "fallbackPixels": 421,
-        "fallbackPercent": 0.754345099444544
+        "mappedPixels": 50053,
+        "borrowedPixels": 6963,
+        "fallbackPixels": 427,
+        "fallbackPercent": 0.7433455773549431
       }
     },
     {
@@ -920,7 +920,7 @@
       ],
       "max": [
         0.31846392257239176,
-        1.6519365310668945,
+        1.7619365453720093,
         0.35529323357322784
       ],
       "contacts": [],
@@ -932,10 +932,10 @@
       "close": true,
       "heading": -135,
       "coverage": {
-        "mappedPixels": 37471,
-        "borrowedPixels": 2330,
-        "fallbackPixels": 166,
-        "fallbackPercent": 0.4153426576925964
+        "mappedPixels": 37108,
+        "borrowedPixels": 4825,
+        "fallbackPixels": 182,
+        "fallbackPercent": 0.43215006529739997
       }
     },
     {
@@ -952,7 +952,7 @@
       ],
       "max": [
         0.4348742961883545,
-        1.6519365310668945,
+        1.7619365453720093,
         0.23472798661208172
       ],
       "contacts": [],
@@ -964,10 +964,10 @@
       "close": true,
       "heading": -90,
       "coverage": {
-        "mappedPixels": 51801,
-        "borrowedPixels": 5222,
-        "fallbackPixels": 224,
-        "fallbackPercent": 0.39128687966181636
+        "mappedPixels": 52013,
+        "borrowedPixels": 7160,
+        "fallbackPixels": 215,
+        "fallbackPercent": 0.36202599851821915
       }
     },
     {
@@ -984,7 +984,7 @@
       ],
       "max": [
         0.35529323357322773,
-        1.6519365310668945,
+        1.7619365453720093,
         0.3546483446441625
       ],
       "contacts": [],
@@ -996,10 +996,10 @@
       "close": true,
       "heading": -45,
       "coverage": {
-        "mappedPixels": 62215,
-        "borrowedPixels": 3963,
-        "fallbackPixels": 305,
-        "fallbackPercent": 0.45876389452942856
+        "mappedPixels": 62639,
+        "borrowedPixels": 4783,
+        "fallbackPixels": 299,
+        "fallbackPercent": 0.441517402282896
       }
     },
     {
@@ -1016,7 +1016,7 @@
       ],
       "max": [
         0.33559604852423974,
-        1.6519365310668945,
+        1.7619365453720093,
         0.33088941368131053
       ],
       "contacts": [
@@ -1057,10 +1057,10 @@
       "close": true,
       "heading": 0,
       "coverage": {
-        "mappedPixels": 43363,
-        "borrowedPixels": 6005,
-        "fallbackPixels": 219,
-        "fallbackPercent": 0.4416480125839434
+        "mappedPixels": 43598,
+        "borrowedPixels": 7901,
+        "fallbackPixels": 212,
+        "fallbackPercent": 0.4099707992496761
       }
     },
     {
@@ -1077,7 +1077,7 @@
       ],
       "max": [
         0.2746617763173165,
-        1.6519365310668945,
+        1.7619365453720093,
         0.2825936699133481
       ],
       "contacts": [
@@ -1118,10 +1118,10 @@
       "close": true,
       "heading": 45,
       "coverage": {
-        "mappedPixels": 37210,
-        "borrowedPixels": 3947,
-        "fallbackPixels": 466,
-        "fallbackPercent": 1.1195733128318477
+        "mappedPixels": 36872,
+        "borrowedPixels": 6423,
+        "fallbackPixels": 481,
+        "fallbackPercent": 1.0987755847953216
       }
     },
     {
@@ -1138,7 +1138,7 @@
       ],
       "max": [
         0.33088941368131053,
-        1.6519365310668945,
+        1.7619365453720093,
         0.3277263939380646
       ],
       "contacts": [
@@ -1179,10 +1179,10 @@
       "close": true,
       "heading": 90,
       "coverage": {
-        "mappedPixels": 44407,
-        "borrowedPixels": 5408,
-        "fallbackPixels": 654,
-        "fallbackPercent": 1.2958449741425428
+        "mappedPixels": 44043,
+        "borrowedPixels": 7383,
+        "fallbackPixels": 668,
+        "fallbackPercent": 1.2822973854954505
       }
     },
     {
@@ -1199,7 +1199,7 @@
       ],
       "max": [
         0.2825936699133482,
-        1.6519365310668945,
+        1.7619365453720093,
         0.2833332459613304
       ],
       "contacts": [
@@ -1240,10 +1240,10 @@
       "close": true,
       "heading": 135,
       "coverage": {
-        "mappedPixels": 51983,
-        "borrowedPixels": 3579,
-        "fallbackPixels": 701,
-        "fallbackPercent": 1.2459342729680252
+        "mappedPixels": 51787,
+        "borrowedPixels": 4994,
+        "fallbackPixels": 699,
+        "fallbackPercent": 1.2160751565762005
       }
     },
     {
@@ -1260,7 +1260,7 @@
       ],
       "max": [
         0.3277263939380646,
-        1.6519365310668945,
+        1.7619365453720093,
         0.3809467573932771
       ],
       "contacts": [
@@ -1301,10 +1301,10 @@
       "close": true,
       "heading": 180,
       "coverage": {
-        "mappedPixels": 46617,
-        "borrowedPixels": 5155,
-        "fallbackPixels": 693,
-        "fallbackPercent": 1.3208805870580387
+        "mappedPixels": 46242,
+        "borrowedPixels": 7157,
+        "fallbackPixels": 699,
+        "fallbackPercent": 1.2920995230877297
       }
     },
     {
@@ -1321,7 +1321,7 @@
       ],
       "max": [
         0.2833332459613304,
-        1.6519365310668945,
+        1.7619365453720093,
         0.3916430385688296
       ],
       "contacts": [
@@ -1362,10 +1362,10 @@
       "close": true,
       "heading": -135,
       "coverage": {
-        "mappedPixels": 37839,
-        "borrowedPixels": 3543,
-        "fallbackPixels": 415,
-        "fallbackPercent": 0.992894226858387
+        "mappedPixels": 37476,
+        "borrowedPixels": 6038,
+        "fallbackPixels": 431,
+        "fallbackPercent": 0.9807714188189782
       }
     },
     {
@@ -1382,7 +1382,7 @@
       ],
       "max": [
         0.3809467573932771,
-        1.6519365310668945,
+        1.7619365453720093,
         0.3355960485242397
       ],
       "contacts": [
@@ -1423,10 +1423,10 @@
       "close": true,
       "heading": -90,
       "coverage": {
-        "mappedPixels": 45428,
-        "borrowedPixels": 5185,
-        "fallbackPixels": 239,
-        "fallbackPercent": 0.4699913474396287
+        "mappedPixels": 45692,
+        "borrowedPixels": 7088,
+        "fallbackPixels": 230,
+        "fallbackPercent": 0.4338803999245425
       }
     },
     {
@@ -1443,7 +1443,7 @@
       ],
       "max": [
         0.39164303856882954,
-        1.6519365310668945,
+        1.7619365453720093,
         0.2746617763173165
       ],
       "contacts": [
@@ -1484,10 +1484,10 @@
       "close": true,
       "heading": -45,
       "coverage": {
-        "mappedPixels": 51410,
-        "borrowedPixels": 3575,
-        "fallbackPixels": 234,
-        "fallbackPercent": 0.42376718158604826
+        "mappedPixels": 51834,
+        "borrowedPixels": 4395,
+        "fallbackPixels": 228,
+        "fallbackPercent": 0.40384717572665924
       }
     },
     {
@@ -1504,7 +1504,7 @@
       ],
       "max": [
         0.23488540157334192,
-        1.6519365310668945,
+        1.7619365453720093,
         0.4353555142879486
       ],
       "contacts": [],
@@ -1516,10 +1516,10 @@
       "close": false,
       "heading": 0,
       "coverage": {
-        "mappedPixels": 1973,
-        "borrowedPixels": 206,
-        "fallbackPixels": 24,
-        "fallbackPercent": 1.0894235133908308
+        "mappedPixels": 1976,
+        "borrowedPixels": 280,
+        "fallbackPixels": 26,
+        "fallbackPercent": 1.1393514460999123
       }
     },
     {
@@ -1536,7 +1536,7 @@
       ],
       "max": [
         0.35464834464416256,
-        1.6519365310668945,
+        1.7619365453720093,
         0.3195004841393106
       ],
       "contacts": [],
@@ -1548,10 +1548,10 @@
       "close": false,
       "heading": 45,
       "coverage": {
-        "mappedPixels": 1450,
-        "borrowedPixels": 83,
-        "fallbackPixels": 25,
-        "fallbackPercent": 1.6046213093709885
+        "mappedPixels": 1437,
+        "borrowedPixels": 180,
+        "fallbackPixels": 32,
+        "fallbackPercent": 1.9405700424499697
       }
     },
     {
@@ -1568,7 +1568,7 @@
       ],
       "max": [
         0.4353555142879486,
-        1.6519365310668945,
+        1.7619365453720093,
         0.3277263939380646
       ],
       "contacts": [],
@@ -1580,10 +1580,10 @@
       "close": false,
       "heading": 90,
       "coverage": {
-        "mappedPixels": 1912,
-        "borrowedPixels": 188,
+        "mappedPixels": 1895,
+        "borrowedPixels": 268,
         "fallbackPixels": 36,
-        "fallbackPercent": 1.6853932584269662
+        "fallbackPercent": 1.6371077762619373
       }
     },
     {
@@ -1600,7 +1600,7 @@
       ],
       "max": [
         0.3195004841393108,
-        1.6519365310668945,
+        1.7619365453720093,
         0.3184639225723916
       ],
       "contacts": [],
@@ -1612,10 +1612,10 @@
       "close": false,
       "heading": 135,
       "coverage": {
-        "mappedPixels": 2266,
-        "borrowedPixels": 122,
-        "fallbackPixels": 34,
-        "fallbackPercent": 1.4037985136251032
+        "mappedPixels": 2265,
+        "borrowedPixels": 184,
+        "fallbackPixels": 33,
+        "fallbackPercent": 1.3295729250604351
       }
     },
     {
@@ -1632,7 +1632,7 @@
       ],
       "max": [
         0.3277263939380646,
-        1.6519365310668945,
+        1.7619365453720093,
         0.4354814887046814
       ],
       "contacts": [],
@@ -1644,10 +1644,10 @@
       "close": false,
       "heading": 180,
       "coverage": {
-        "mappedPixels": 1931,
-        "borrowedPixels": 182,
-        "fallbackPixels": 40,
-        "fallbackPercent": 1.8578727357176033
+        "mappedPixels": 1916,
+        "borrowedPixels": 257,
+        "fallbackPixels": 39,
+        "fallbackPercent": 1.7631103074141048
       }
     },
     {
@@ -1664,7 +1664,7 @@
       ],
       "max": [
         0.31846392257239176,
-        1.6519365310668945,
+        1.7619365453720093,
         0.35546046699976297
       ],
       "contacts": [],
@@ -1676,10 +1676,10 @@
       "close": false,
       "heading": -135,
       "coverage": {
-        "mappedPixels": 1455,
-        "borrowedPixels": 80,
-        "fallbackPixels": 27,
-        "fallbackPercent": 1.7285531370038412
+        "mappedPixels": 1436,
+        "borrowedPixels": 175,
+        "fallbackPixels": 32,
+        "fallbackPercent": 1.9476567255021302
       }
     },
     {
@@ -1696,7 +1696,7 @@
       ],
       "max": [
         0.4354814887046814,
-        1.6519365310668945,
+        1.7619365453720093,
         0.23488540157334192
       ],
       "contacts": [],
@@ -1708,10 +1708,10 @@
       "close": false,
       "heading": -90,
       "coverage": {
-        "mappedPixels": 1993,
-        "borrowedPixels": 192,
+        "mappedPixels": 2006,
+        "borrowedPixels": 267,
         "fallbackPixels": 26,
-        "fallbackPercent": 1.1759384893713252
+        "fallbackPercent": 1.1309264897781643
       }
     },
     {
@@ -1728,7 +1728,7 @@
       ],
       "max": [
         0.35546046699976286,
-        1.6519365310668945,
+        1.7619365453720093,
         0.3546483446441625
       ],
       "contacts": [],
@@ -1740,10 +1740,10 @@
       "close": false,
       "heading": -45,
       "coverage": {
-        "mappedPixels": 2357,
-        "borrowedPixels": 146,
-        "fallbackPixels": 45,
-        "fallbackPercent": 1.7660910518053374
+        "mappedPixels": 2377,
+        "borrowedPixels": 182,
+        "fallbackPixels": 47,
+        "fallbackPercent": 1.8035303146584805
       }
     },
     {
@@ -1760,7 +1760,7 @@
       ],
       "max": [
         0.33559604852423974,
-        1.6519365310668945,
+        1.7619365453720093,
         0.33088941368131053
       ],
       "contacts": [
@@ -1801,10 +1801,10 @@
       "close": false,
       "heading": 0,
       "coverage": {
-        "mappedPixels": 1690,
-        "borrowedPixels": 220,
-        "fallbackPixels": 21,
-        "fallbackPercent": 1.0875194199896427
+        "mappedPixels": 1694,
+        "borrowedPixels": 294,
+        "fallbackPixels": 23,
+        "fallbackPercent": 1.1437095972153157
       }
     },
     {
@@ -1821,7 +1821,7 @@
       ],
       "max": [
         0.2746617763173165,
-        1.6519365310668945,
+        1.7619365453720093,
         0.28328006717363685
       ],
       "contacts": [
@@ -1862,10 +1862,10 @@
       "close": false,
       "heading": 45,
       "coverage": {
-        "mappedPixels": 1454,
-        "borrowedPixels": 134,
-        "fallbackPixels": 35,
-        "fallbackPercent": 2.1565003080714726
+        "mappedPixels": 1441,
+        "borrowedPixels": 231,
+        "fallbackPixels": 42,
+        "fallbackPercent": 2.4504084014002334
       }
     },
     {
@@ -1882,7 +1882,7 @@
       ],
       "max": [
         0.33088941368131053,
-        1.6519365310668945,
+        1.7619365453720093,
         0.3277263939380646
       ],
       "contacts": [
@@ -1923,10 +1923,10 @@
       "close": false,
       "heading": 90,
       "coverage": {
-        "mappedPixels": 1711,
-        "borrowedPixels": 190,
+        "mappedPixels": 1694,
+        "borrowedPixels": 270,
         "fallbackPixels": 41,
-        "fallbackPercent": 2.111225540679712
+        "fallbackPercent": 2.0448877805486285
       }
     },
     {
@@ -1943,7 +1943,7 @@
       ],
       "max": [
         0.2832800671736369,
-        1.6519365310668945,
+        1.7619365453720093,
         0.2833332459613304
       ],
       "contacts": [
@@ -1984,10 +1984,10 @@
       "close": false,
       "heading": 135,
       "coverage": {
-        "mappedPixels": 2001,
-        "borrowedPixels": 119,
-        "fallbackPixels": 39,
-        "fallbackPercent": 1.8063918480778138
+        "mappedPixels": 2000,
+        "borrowedPixels": 181,
+        "fallbackPixels": 38,
+        "fallbackPercent": 1.7124831004957188
       }
     },
     {
@@ -2004,7 +2004,7 @@
       ],
       "max": [
         0.3277263939380646,
-        1.6519365310668945,
+        1.7619365453720093,
         0.3809467573932771
       ],
       "contacts": [
@@ -2045,10 +2045,10 @@
       "close": false,
       "heading": 180,
       "coverage": {
-        "mappedPixels": 1795,
-        "borrowedPixels": 183,
-        "fallbackPixels": 49,
-        "fallbackPercent": 2.4173655648741983
+        "mappedPixels": 1780,
+        "borrowedPixels": 258,
+        "fallbackPixels": 48,
+        "fallbackPercent": 2.3010546500479387
       }
     },
     {
@@ -2065,7 +2065,7 @@
       ],
       "max": [
         0.2833332459613304,
-        1.6519365310668945,
+        1.7619365453720093,
         0.3916430385688296
       ],
       "contacts": [
@@ -2106,10 +2106,10 @@
       "close": false,
       "heading": -135,
       "coverage": {
-        "mappedPixels": 1473,
-        "borrowedPixels": 118,
-        "fallbackPixels": 32,
-        "fallbackPercent": 1.9716574245224892
+        "mappedPixels": 1454,
+        "borrowedPixels": 213,
+        "fallbackPixels": 37,
+        "fallbackPercent": 2.171361502347418
       }
     },
     {
@@ -2126,7 +2126,7 @@
       ],
       "max": [
         0.3809467573932771,
-        1.6519365310668945,
+        1.7619365453720093,
         0.3355960485242397
       ],
       "contacts": [
@@ -2167,10 +2167,10 @@
       "close": false,
       "heading": -90,
       "coverage": {
-        "mappedPixels": 1767,
-        "borrowedPixels": 188,
+        "mappedPixels": 1784,
+        "borrowedPixels": 262,
         "fallbackPixels": 21,
-        "fallbackPercent": 1.062753036437247
+        "fallbackPercent": 1.0159651669085632
       }
     },
     {
@@ -2187,7 +2187,7 @@
       ],
       "max": [
         0.39164303856882954,
-        1.6519365310668945,
+        1.7619365453720093,
         0.2746617763173165
       ],
       "contacts": [
@@ -2228,10 +2228,10 @@
       "close": false,
       "heading": -45,
       "coverage": {
-        "mappedPixels": 1974,
-        "borrowedPixels": 134,
-        "fallbackPixels": 31,
-        "fallbackPercent": 1.4492753623188406
+        "mappedPixels": 1994,
+        "borrowedPixels": 170,
+        "fallbackPixels": 33,
+        "fallbackPercent": 1.5020482476103778
       }
     },
     {
@@ -2248,7 +2248,7 @@
       ],
       "max": [
         0.23472798661208172,
-        1.6519365310668945,
+        1.7619365453720093,
         0.4345848858356476
       ],
       "contacts": [],
@@ -2260,10 +2260,10 @@
       "close": false,
       "heading": 0,
       "coverage": {
-        "mappedPixels": 1971,
-        "borrowedPixels": 205,
-        "fallbackPixels": 24,
-        "fallbackPercent": 1.0909090909090908
+        "mappedPixels": 1975,
+        "borrowedPixels": 280,
+        "fallbackPixels": 25,
+        "fallbackPercent": 1.0964912280701755
       }
     },
     {
@@ -2280,7 +2280,7 @@
       ],
       "max": [
         0.35464834464416256,
-        1.6519365310668945,
+        1.7619365453720093,
         0.3195004841393106
       ],
       "contacts": [],
@@ -2292,10 +2292,10 @@
       "close": false,
       "heading": 45,
       "coverage": {
-        "mappedPixels": 1448,
-        "borrowedPixels": 91,
-        "fallbackPixels": 22,
-        "fallbackPercent": 1.4093529788597052
+        "mappedPixels": 1428,
+        "borrowedPixels": 187,
+        "fallbackPixels": 26,
+        "fallbackPercent": 1.5843997562461913
       }
     },
     {
@@ -2312,7 +2312,7 @@
       ],
       "max": [
         0.4345848858356476,
-        1.6519365310668945,
+        1.7619365453720093,
         0.3277263939380646
       ],
       "contacts": [],
@@ -2324,10 +2324,10 @@
       "close": false,
       "heading": 90,
       "coverage": {
-        "mappedPixels": 1910,
-        "borrowedPixels": 195,
-        "fallbackPixels": 38,
-        "fallbackPercent": 1.7732151189920673
+        "mappedPixels": 1896,
+        "borrowedPixels": 272,
+        "fallbackPixels": 35,
+        "fallbackPercent": 1.5887426236949613
       }
     },
     {
@@ -2344,7 +2344,7 @@
       ],
       "max": [
         0.3195004841393108,
-        1.6519365310668945,
+        1.7619365453720093,
         0.3184639225723916
       ],
       "contacts": [],
@@ -2356,10 +2356,10 @@
       "close": false,
       "heading": 135,
       "coverage": {
-        "mappedPixels": 2258,
-        "borrowedPixels": 128,
-        "fallbackPixels": 32,
-        "fallbackPercent": 1.3234077750206783
+        "mappedPixels": 2251,
+        "borrowedPixels": 188,
+        "fallbackPixels": 33,
+        "fallbackPercent": 1.3349514563106797
       }
     },
     {
@@ -2376,7 +2376,7 @@
       ],
       "max": [
         0.3277263939380646,
-        1.6519365310668945,
+        1.7619365453720093,
         0.4348742961883545
       ],
       "contacts": [],
@@ -2388,10 +2388,10 @@
       "close": false,
       "heading": 180,
       "coverage": {
-        "mappedPixels": 1924,
-        "borrowedPixels": 183,
-        "fallbackPixels": 39,
-        "fallbackPercent": 1.8173345759552657
+        "mappedPixels": 1917,
+        "borrowedPixels": 258,
+        "fallbackPixels": 40,
+        "fallbackPercent": 1.8058690744920993
       }
     },
     {
@@ -2408,7 +2408,7 @@
       ],
       "max": [
         0.31846392257239176,
-        1.6519365310668945,
+        1.7619365453720093,
         0.35529323357322784
       ],
       "contacts": [],
@@ -2420,10 +2420,10 @@
       "close": false,
       "heading": -135,
       "coverage": {
-        "mappedPixels": 1449,
-        "borrowedPixels": 86,
-        "fallbackPixels": 26,
-        "fallbackPercent": 1.6655989750160154
+        "mappedPixels": 1434,
+        "borrowedPixels": 182,
+        "fallbackPixels": 30,
+        "fallbackPercent": 1.8226002430133657
       }
     },
     {
@@ -2440,7 +2440,7 @@
       ],
       "max": [
         0.4348742961883545,
-        1.6519365310668945,
+        1.7619365453720093,
         0.23472798661208172
       ],
       "contacts": [],
@@ -2452,10 +2452,10 @@
       "close": false,
       "heading": -90,
       "coverage": {
-        "mappedPixels": 1996,
-        "borrowedPixels": 185,
-        "fallbackPixels": 25,
-        "fallbackPercent": 1.1332728921124207
+        "mappedPixels": 2006,
+        "borrowedPixels": 259,
+        "fallbackPixels": 24,
+        "fallbackPercent": 1.0484927916120577
       }
     },
     {
@@ -2472,7 +2472,7 @@
       ],
       "max": [
         0.35529323357322773,
-        1.6519365310668945,
+        1.7619365453720093,
         0.3546483446441625
       ],
       "contacts": [],
@@ -2484,10 +2484,10 @@
       "close": false,
       "heading": -45,
       "coverage": {
-        "mappedPixels": 2353,
-        "borrowedPixels": 145,
-        "fallbackPixels": 43,
-        "fallbackPercent": 1.6922471467926012
+        "mappedPixels": 2370,
+        "borrowedPixels": 185,
+        "fallbackPixels": 47,
+        "fallbackPercent": 1.80630284396618
       }
     },
     {
@@ -2504,7 +2504,7 @@
       ],
       "max": [
         0.33559604852423974,
-        1.6519365310668945,
+        1.7619365453720093,
         0.33088941368131053
       ],
       "contacts": [
@@ -2545,10 +2545,10 @@
       "close": false,
       "heading": 0,
       "coverage": {
-        "mappedPixels": 1694,
-        "borrowedPixels": 218,
-        "fallbackPixels": 19,
-        "fallbackPercent": 0.983946141895391
+        "mappedPixels": 1698,
+        "borrowedPixels": 293,
+        "fallbackPixels": 21,
+        "fallbackPercent": 1.0437375745526838
       }
     },
     {
@@ -2565,7 +2565,7 @@
       ],
       "max": [
         0.2746617763173165,
-        1.6519365310668945,
+        1.7619365453720093,
         0.2825936699133481
       ],
       "contacts": [
@@ -2606,10 +2606,10 @@
       "close": false,
       "heading": 45,
       "coverage": {
-        "mappedPixels": 1449,
-        "borrowedPixels": 144,
-        "fallbackPixels": 32,
-        "fallbackPercent": 1.9692307692307693
+        "mappedPixels": 1429,
+        "borrowedPixels": 240,
+        "fallbackPixels": 36,
+        "fallbackPercent": 2.1114369501466275
       }
     },
     {
@@ -2626,7 +2626,7 @@
       ],
       "max": [
         0.33088941368131053,
-        1.6519365310668945,
+        1.7619365453720093,
         0.3277263939380646
       ],
       "contacts": [
@@ -2667,10 +2667,10 @@
       "close": false,
       "heading": 90,
       "coverage": {
-        "mappedPixels": 1698,
-        "borrowedPixels": 199,
-        "fallbackPixels": 42,
-        "fallbackPercent": 2.1660649819494586
+        "mappedPixels": 1684,
+        "borrowedPixels": 276,
+        "fallbackPixels": 39,
+        "fallbackPercent": 1.9509754877438719
       }
     },
     {
@@ -2687,7 +2687,7 @@
       ],
       "max": [
         0.2825936699133482,
-        1.6519365310668945,
+        1.7619365453720093,
         0.2833332459613304
       ],
       "contacts": [
@@ -2728,10 +2728,10 @@
       "close": false,
       "heading": 135,
       "coverage": {
-        "mappedPixels": 1982,
-        "borrowedPixels": 134,
-        "fallbackPixels": 35,
-        "fallbackPercent": 1.6271501627150162
+        "mappedPixels": 1975,
+        "borrowedPixels": 194,
+        "fallbackPixels": 36,
+        "fallbackPercent": 1.6326530612244898
       }
     },
     {
@@ -2748,7 +2748,7 @@
       ],
       "max": [
         0.3277263939380646,
-        1.6519365310668945,
+        1.7619365453720093,
         0.3809467573932771
       ],
       "contacts": [
@@ -2789,10 +2789,10 @@
       "close": false,
       "heading": 180,
       "coverage": {
-        "mappedPixels": 1778,
-        "borrowedPixels": 184,
-        "fallbackPixels": 49,
-        "fallbackPercent": 2.43659870711089
+        "mappedPixels": 1770,
+        "borrowedPixels": 259,
+        "fallbackPixels": 50,
+        "fallbackPercent": 2.405002405002405
       }
     },
     {
@@ -2809,7 +2809,7 @@
       ],
       "max": [
         0.2833332459613304,
-        1.6519365310668945,
+        1.7619365453720093,
         0.3916430385688296
       ],
       "contacts": [
@@ -2850,10 +2850,10 @@
       "close": false,
       "heading": -135,
       "coverage": {
-        "mappedPixels": 1463,
-        "borrowedPixels": 128,
-        "fallbackPixels": 30,
-        "fallbackPercent": 1.8507094386181369
+        "mappedPixels": 1448,
+        "borrowedPixels": 224,
+        "fallbackPixels": 34,
+        "fallbackPercent": 1.9929660023446658
       }
     },
     {
@@ -2870,7 +2870,7 @@
       ],
       "max": [
         0.3809467573932771,
-        1.6519365310668945,
+        1.7619365453720093,
         0.3355960485242397
       ],
       "contacts": [
@@ -2911,10 +2911,10 @@
       "close": false,
       "heading": -90,
       "coverage": {
-        "mappedPixels": 1766,
-        "borrowedPixels": 187,
-        "fallbackPixels": 23,
-        "fallbackPercent": 1.1639676113360324
+        "mappedPixels": 1780,
+        "borrowedPixels": 259,
+        "fallbackPixels": 22,
+        "fallbackPercent": 1.0674429888403687
       }
     },
     {
@@ -2931,7 +2931,7 @@
       ],
       "max": [
         0.39164303856882954,
-        1.6519365310668945,
+        1.7619365453720093,
         0.2746617763173165
       ],
       "contacts": [
@@ -2972,10 +2972,10 @@
       "close": false,
       "heading": -45,
       "coverage": {
-        "mappedPixels": 1968,
-        "borrowedPixels": 137,
-        "fallbackPixels": 25,
-        "fallbackPercent": 1.1737089201877935
+        "mappedPixels": 1985,
+        "borrowedPixels": 177,
+        "fallbackPixels": 29,
+        "fallbackPercent": 1.3235965312642628
       }
     }
   ]

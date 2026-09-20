@@ -10,7 +10,15 @@ First painted donkey study on the shared 17-bone worker rig. The original sprite
 
 ## Validation
 
-All 440 project tests passed. Donkey tests check closed connected surfaces, scale, both ears, muzzle and bounded mane; normalized skin weights, foot stability, actual hand proximity to the rifle grips and return to neutral. The low mesh retains every author component.
+### Neck revision
+
+The throat now lengthens smoothly from the jacket to the jaw. The upper skull, muzzle, ears and mane move up 0.11 world units without enlarging the head. The scarf wrap is compressed downward around its front attachment, removing its tall rear collar. Both meshes retain their triangle counts and topology. A profile ray test verifies exposed neck above the clothing, and the jaw clears the highest scarf fold by at least 0.015 world units.
+
+Original paint positions and normals remain registered to the existing sheet. Newly exposed neck and shoulder areas borrow fur and jacket paint and are marked blue in coverage mode. No new painting was generated. Face shape, body width and jacket silhouette are separate follow-up work; this revision addresses the missing neck first.
+
+The original `neutral-paint-reference.png` remains the source of the current texture. `neck-grey-reference.png` records the revised geometry with a wider frame (width 1.025, height 2.05, center Y 0.875) to include the taller ears. It is not the registration frame for the existing paint.
+
+All 441 project tests passed. Donkey tests check closed connected surfaces, scale, both ears, muzzle and bounded mane; normalized skin weights, foot stability, actual hand proximity to the rifle grips and return to neutral. The low mesh retains every author component.
 
 `tools/donkey-browser-review.mjs` checks both meshes at eight headings, two poses and close/native scales (64 combinations), saves screenshots and coverage data, and checks horse/goat rendering after the shared shader changes. Set `PLAYWRIGHT_PATH` to the installed Playwright module and optionally `REVIEW_ORIGIN` (defaults to localhost:4423). Serve with `PORT=4423 node tools/serve.mjs`. Browser run passed without console, resource or shader errors.
 
