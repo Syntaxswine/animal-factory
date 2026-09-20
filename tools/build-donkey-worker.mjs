@@ -70,11 +70,29 @@ function reduce(name,g,target,tolerance){const positions=g.attributes.position.a
  const [remap,count]=simplify.compactMesh(indices),position=new Float32Array(count*3),normal=new Float32Array(count*3);for(let i=0;i<remap.length;i++)if(remap[i]!==0xffffffff){position.set(positions.subarray(i*3,i*3+3),remap[i]*3);normal.set(g.attributes.normal.array.subarray(i*3,i*3+3),remap[i]*3);}return {name,position:Array.from(position,v=>+v.toFixed(7)),normal:Array.from(normal,v=>+v.toFixed(6)),index:Array.from(indices),triangles:indices.length/3,sourceTriangles:g.index.count/3,errorWorld:error};}
 const author=geometries.map(({name,g})=>reduce(name,g,name.includes('skull')?7000:name.includes('mane')?600:name.includes('tail')?700:name.includes('hoof')?700:name.includes('shirt')?4800:name.includes('trousers')?4700:4550,.006));
 // Preserve the registered artwork and bind weights while extending the neck.
-// Above the throat this is a translation, so skull, muzzle and ears keep their size.
+// The throat tapers between its flared base and jaw; upper skull and ears keep their size.
 function neckRevision(part){
- if(!/skull|mane|neckerchief wrap/.test(part.name))return part;
+ if(!/skull|mane|neckerchief wrap|shirt|forearm/.test(part.name))return part;
  const position=part.position.slice();
- for(let i=0;i<position.length;i+=3){const y=position[i+1];position[i+1]=part.name.includes('wrap')?1.26+(y-1.26)*.65:y+.11*smooth(y,1.18,1.30);}
+ for(let i=0;i<position.length;i+=3){
+  const x=position[i],y=position[i+1],z=position[i+2];
+  if(/skull|mane/.test(part.name))position[i+1]=y+.11*smooth(y,1.18,1.30);
+  if(part.name.includes('skull')){
+   const throat=smooth(y,1.19,1.25)*(1-smooth(y,1.27,1.33))*(1-smooth(x,.015,.09));
+   position[i]=-.055+(x+.055)*(1-.16*throat);position[i+2]=z*(1-.20*throat);
+  }
+  if(part.name.includes('wrap'))position[i+1]=1.26+(y-1.26)*.65;
+  if(part.name.includes('shirt')){
+   const shoulder=smooth(y,1.03,1.19)*smooth(abs(z),.09,.22);
+   position[i+2]=z*(1-.08*shoulder);
+   position[i]=-.025+(x+.025)*(1-.04*shoulder);
+  }
+  if(part.name.includes('forearm')){
+   const t=clamp((.991-y)/(.991-.742),0,1),cx=.022+.039*t,cz=Math.sign(z)*(.344+.011*t);
+   const taper=.18*smooth(y,.77,.83)*(1-smooth(y,.96,1.015));
+   position[i]=cx+(x-cx)*(1-taper);position[i+2]=cz+(z-cz)*(1-taper);
+  }
+ }
  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(position,3));g.setIndex(part.index);g.computeVertexNormals();
  const result={...part,position:Array.from(g.attributes.position.array),normal:Array.from(g.attributes.normal.array),paintPosition:part.position,paintNormal:part.normal};g.dispose();return result;
 }
