@@ -1,0 +1,1862 @@
+{
+  "browser": "153.0.4234.48",
+  "errors": [],
+  "checks": [
+    {
+      "triangles": 29952,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.5439448952674866,
+        0,
+        -0.45223237716459064
+      ],
+      "max": [
+        0.36441120505332947,
+        1.6499252319335938,
+        0.4521203175819011
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "neutral",
+      "modelPaint": true,
+      "mesh": "28k",
+      "close": true,
+      "heading": 0,
+      "coverage": {
+        "mappedPixels": 29652,
+        "borrowedPixels": 41557,
+        "fallbackPixels": 1003,
+        "fallbackPercent": 1.388965822854927
+      }
+    },
+    {
+      "triangles": 29952,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.5169540094652747,
+        0,
+        -0.3654979971220794
+      ],
+      "max": [
+        0.36575324897337347,
+        1.6499252319335938,
+        0.5172008635496461
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "neutral",
+      "modelPaint": true,
+      "mesh": "28k",
+      "close": true,
+      "heading": 45,
+      "coverage": {
+        "mappedPixels": 29246,
+        "borrowedPixels": 33743,
+        "fallbackPixels": 801,
+        "fallbackPercent": 1.2556827088885405
+      }
+    },
+    {
+      "triangles": 29952,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.45223237716459075,
+        0,
+        -0.36441120505332947
+      ],
+      "max": [
+        0.45212031758190097,
+        1.6499252319335938,
+        0.5439448952674866
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "neutral",
+      "modelPaint": true,
+      "mesh": "28k",
+      "close": true,
+      "heading": 90,
+      "coverage": {
+        "mappedPixels": 26720,
+        "borrowedPixels": 36624,
+        "fallbackPixels": 281,
+        "fallbackPercent": 0.44165029469548134
+      }
+    },
+    {
+      "triangles": 29952,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.36549799712207953,
+        0,
+        -0.36575324897337363
+      ],
+      "max": [
+        0.5172008635496463,
+        1.6499252319335938,
+        0.5169540094652747
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "neutral",
+      "modelPaint": true,
+      "mesh": "28k",
+      "close": true,
+      "heading": 135,
+      "coverage": {
+        "mappedPixels": 23894,
+        "borrowedPixels": 43974,
+        "fallbackPixels": 162,
+        "fallbackPercent": 0.23813023666029692
+      }
+    },
+    {
+      "triangles": 29952,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.36441120505332947,
+        0,
+        -0.45212031758190097
+      ],
+      "max": [
+        0.5439448952674866,
+        1.6499252319335938,
+        0.45223237716459075
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "neutral",
+      "modelPaint": true,
+      "mesh": "28k",
+      "close": true,
+      "heading": 180,
+      "coverage": {
+        "mappedPixels": 26618,
+        "borrowedPixels": 36528,
+        "fallbackPixels": 246,
+        "fallbackPercent": 0.3880615850580515
+      }
+    },
+    {
+      "triangles": 29952,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.36575324897337363,
+        0,
+        -0.5172008635496463
+      ],
+      "max": [
+        0.5169540094652747,
+        1.6499252319335938,
+        0.36549799712207953
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "neutral",
+      "modelPaint": true,
+      "mesh": "28k",
+      "close": true,
+      "heading": -135,
+      "coverage": {
+        "mappedPixels": 29266,
+        "borrowedPixels": 33657,
+        "fallbackPixels": 793,
+        "fallbackPercent": 1.24458534747944
+      }
+    },
+    {
+      "triangles": 29952,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.4521203175819012,
+        0,
+        -0.5439448952674866
+      ],
+      "max": [
+        0.4522323771645905,
+        1.6499252319335938,
+        0.36441120505332947
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "neutral",
+      "modelPaint": true,
+      "mesh": "28k",
+      "close": true,
+      "heading": -90,
+      "coverage": {
+        "mappedPixels": 29680,
+        "borrowedPixels": 41589,
+        "fallbackPixels": 990,
+        "fallbackPercent": 1.3700715481808494
+      }
+    },
+    {
+      "triangles": 29952,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.5172008635496463,
+        0,
+        -0.5169540094652747
+      ],
+      "max": [
+        0.3654979971220794,
+        1.6499252319335938,
+        0.3657532489733735
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "neutral",
+      "modelPaint": true,
+      "mesh": "28k",
+      "close": true,
+      "heading": -45,
+      "coverage": {
+        "mappedPixels": 25982,
+        "borrowedPixels": 41102,
+        "fallbackPixels": 1018,
+        "fallbackPercent": 1.4948165986314645
+      }
+    },
+    {
+      "triangles": 29952,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.5439448952674866,
+        0,
+        -0.5692130163884996
+      ],
+      "max": [
+        0.36441120505332947,
+        1.6499252319335938,
+        0.5696526420978543
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "spread",
+      "modelPaint": true,
+      "mesh": "28k",
+      "close": true,
+      "heading": 0,
+      "coverage": {
+        "mappedPixels": 31709,
+        "borrowedPixels": 43346,
+        "fallbackPixels": 1006,
+        "fallbackPercent": 1.3226226318349745
+      }
+    },
+    {
+      "triangles": 29952,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.5860298829289605,
+        0,
+        -0.38759852835385117
+      ],
+      "max": [
+        0.3881344742069109,
+        1.6499252319335938,
+        0.5860175040470722
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "spread",
+      "modelPaint": true,
+      "mesh": "28k",
+      "close": true,
+      "heading": 45,
+      "coverage": {
+        "mappedPixels": 29916,
+        "borrowedPixels": 33231,
+        "fallbackPixels": 798,
+        "fallbackPercent": 1.2479474548440066
+      }
+    },
+    {
+      "triangles": 29952,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.5692130163884996,
+        0,
+        -0.36441120505332947
+      ],
+      "max": [
+        0.5696526420978543,
+        1.6499252319335938,
+        0.5439448952674866
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "spread",
+      "modelPaint": true,
+      "mesh": "28k",
+      "close": true,
+      "heading": 90,
+      "coverage": {
+        "mappedPixels": 28554,
+        "borrowedPixels": 37409,
+        "fallbackPixels": 316,
+        "fallbackPercent": 0.476772431690279
+      }
+    },
+    {
+      "triangles": 29952,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.38759852835385133,
+        0,
+        -0.3881344742069108
+      ],
+      "max": [
+        0.5860175040470724,
+        1.6499252319335938,
+        0.5860298829289607
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "spread",
+      "modelPaint": true,
+      "mesh": "28k",
+      "close": true,
+      "heading": 135,
+      "coverage": {
+        "mappedPixels": 25400,
+        "borrowedPixels": 45858,
+        "fallbackPixels": 214,
+        "fallbackPercent": 0.2994179538840385
+      }
+    },
+    {
+      "triangles": 29952,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.36441120505332947,
+        0,
+        -0.5696526420978543
+      ],
+      "max": [
+        0.5439448952674866,
+        1.6499252319335938,
+        0.5692130163884996
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "spread",
+      "modelPaint": true,
+      "mesh": "28k",
+      "close": true,
+      "heading": 180,
+      "coverage": {
+        "mappedPixels": 28508,
+        "borrowedPixels": 37391,
+        "fallbackPixels": 264,
+        "fallbackPercent": 0.3990145549627435
+      }
+    },
+    {
+      "triangles": 29952,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.38813447420691094,
+        0,
+        -0.5860175040470722
+      ],
+      "max": [
+        0.5860298829289609,
+        1.6499252319335938,
+        0.3875985283538512
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "spread",
+      "modelPaint": true,
+      "mesh": "28k",
+      "close": true,
+      "heading": -135,
+      "coverage": {
+        "mappedPixels": 29949,
+        "borrowedPixels": 33136,
+        "fallbackPixels": 796,
+        "fallbackPercent": 1.246066905652698
+      }
+    },
+    {
+      "triangles": 29952,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.5696526420978543,
+        0,
+        -0.5439448952674866
+      ],
+      "max": [
+        0.5692130163884996,
+        1.6499252319335938,
+        0.36441120505332947
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "spread",
+      "modelPaint": true,
+      "mesh": "28k",
+      "close": true,
+      "heading": -90,
+      "coverage": {
+        "mappedPixels": 31689,
+        "borrowedPixels": 43427,
+        "fallbackPixels": 994,
+        "fallbackPercent": 1.3060044672184996
+      }
+    },
+    {
+      "triangles": 29952,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.5860175040470722,
+        0,
+        -0.5860298829289605
+      ],
+      "max": [
+        0.3875985283538512,
+        1.6499252319335938,
+        0.3881344742069107
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "spread",
+      "modelPaint": true,
+      "mesh": "28k",
+      "close": true,
+      "heading": -45,
+      "coverage": {
+        "mappedPixels": 29176,
+        "borrowedPixels": 42348,
+        "fallbackPixels": 1048,
+        "fallbackPercent": 1.444083117455768
+      }
+    },
+    {
+      "triangles": 10348,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.5439448952674866,
+        0,
+        -0.45223237716459064
+      ],
+      "max": [
+        0.36393439769744873,
+        1.6491827964782715,
+        0.45145660638809204
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "neutral",
+      "modelPaint": true,
+      "mesh": "10k",
+      "close": true,
+      "heading": 0,
+      "coverage": {
+        "mappedPixels": 29644,
+        "borrowedPixels": 41630,
+        "fallbackPixels": 664,
+        "fallbackPercent": 0.9230170424532236
+      }
+    },
+    {
+      "triangles": 10348,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.5169540094652747,
+        0,
+        -0.36523112327730844
+      ],
+      "max": [
+        0.3649398569439618,
+        1.6491827964782715,
+        0.5172008635496461
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "neutral",
+      "modelPaint": true,
+      "mesh": "10k",
+      "close": true,
+      "heading": 45,
+      "coverage": {
+        "mappedPixels": 29279,
+        "borrowedPixels": 33785,
+        "fallbackPixels": 464,
+        "fallbackPercent": 0.73038660118373
+      }
+    },
+    {
+      "triangles": 10348,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.45223237716459075,
+        0,
+        -0.36393439769744873
+      ],
+      "max": [
+        0.45145660638809193,
+        1.6491827964782715,
+        0.5439448952674866
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "neutral",
+      "modelPaint": true,
+      "mesh": "10k",
+      "close": true,
+      "heading": 90,
+      "coverage": {
+        "mappedPixels": 26776,
+        "borrowedPixels": 36502,
+        "fallbackPixels": 153,
+        "fallbackPercent": 0.24120698081379768
+      }
+    },
+    {
+      "triangles": 10348,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.36523112327730856,
+        0,
+        -0.3649398569439619
+      ],
+      "max": [
+        0.5172008635496463,
+        1.6491827964782715,
+        0.5169540094652747
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "neutral",
+      "modelPaint": true,
+      "mesh": "10k",
+      "close": true,
+      "heading": 135,
+      "coverage": {
+        "mappedPixels": 23909,
+        "borrowedPixels": 43850,
+        "fallbackPixels": 81,
+        "fallbackPercent": 0.11939858490566038
+      }
+    },
+    {
+      "triangles": 10348,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.36393439769744873,
+        0,
+        -0.45145660638809193
+      ],
+      "max": [
+        0.5439448952674866,
+        1.6491827964782715,
+        0.45223237716459075
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "neutral",
+      "modelPaint": true,
+      "mesh": "10k",
+      "close": true,
+      "heading": 180,
+      "coverage": {
+        "mappedPixels": 26677,
+        "borrowedPixels": 36395,
+        "fallbackPixels": 141,
+        "fallbackPercent": 0.2230553841773053
+      }
+    },
+    {
+      "triangles": 10348,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.3649398569439618,
+        0,
+        -0.5172008635496463
+      ],
+      "max": [
+        0.5169540094652747,
+        1.6491827964782715,
+        0.36523112327730856
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "neutral",
+      "modelPaint": true,
+      "mesh": "10k",
+      "close": true,
+      "heading": -135,
+      "coverage": {
+        "mappedPixels": 29379,
+        "borrowedPixels": 33667,
+        "fallbackPixels": 472,
+        "fallbackPercent": 0.7430964451021758
+      }
+    },
+    {
+      "triangles": 10348,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.45145660638809215,
+        0,
+        -0.5439448952674866
+      ],
+      "max": [
+        0.4522323771645905,
+        1.6491827964782715,
+        0.36393439769744873
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "neutral",
+      "modelPaint": true,
+      "mesh": "10k",
+      "close": true,
+      "heading": -90,
+      "coverage": {
+        "mappedPixels": 29721,
+        "borrowedPixels": 41723,
+        "fallbackPixels": 598,
+        "fallbackPercent": 0.8300713472696483
+      }
+    },
+    {
+      "triangles": 10348,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.5172008635496463,
+        0,
+        -0.5169540094652747
+      ],
+      "max": [
+        0.36523112327730844,
+        1.6491827964782715,
+        0.3649398569439618
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "neutral",
+      "modelPaint": true,
+      "mesh": "10k",
+      "close": true,
+      "heading": -45,
+      "coverage": {
+        "mappedPixels": 26029,
+        "borrowedPixels": 41303,
+        "fallbackPixels": 634,
+        "fallbackPercent": 0.9328193508518965
+      }
+    },
+    {
+      "triangles": 10348,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.5439448952674866,
+        0,
+        -0.5692130163884996
+      ],
+      "max": [
+        0.36393439769744873,
+        1.6491827964782715,
+        0.5696526420978543
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "spread",
+      "modelPaint": true,
+      "mesh": "10k",
+      "close": true,
+      "heading": 0,
+      "coverage": {
+        "mappedPixels": 31679,
+        "borrowedPixels": 43432,
+        "fallbackPixels": 659,
+        "fallbackPercent": 0.8697373630724561
+      }
+    },
+    {
+      "triangles": 10348,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.585999184476212,
+        0,
+        -0.38759852835385117
+      ],
+      "max": [
+        0.3874420050885013,
+        1.6491827964782715,
+        0.5847694162286674
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "spread",
+      "modelPaint": true,
+      "mesh": "10k",
+      "close": true,
+      "heading": 45,
+      "coverage": {
+        "mappedPixels": 29962,
+        "borrowedPixels": 33270,
+        "fallbackPixels": 461,
+        "fallbackPercent": 0.7237844033096259
+      }
+    },
+    {
+      "triangles": 10348,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.5692130163884996,
+        0,
+        -0.36393439769744873
+      ],
+      "max": [
+        0.5696526420978543,
+        1.6491827964782715,
+        0.5439448952674866
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "spread",
+      "modelPaint": true,
+      "mesh": "10k",
+      "close": true,
+      "heading": 90,
+      "coverage": {
+        "mappedPixels": 28612,
+        "borrowedPixels": 37264,
+        "fallbackPixels": 140,
+        "fallbackPercent": 0.21206980126030053
+      }
+    },
+    {
+      "triangles": 10348,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.38759852835385133,
+        0,
+        -0.38744200508850135
+      ],
+      "max": [
+        0.5847694162286674,
+        1.6491827964782715,
+        0.5859991844762119
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "spread",
+      "modelPaint": true,
+      "mesh": "10k",
+      "close": true,
+      "heading": 135,
+      "coverage": {
+        "mappedPixels": 25390,
+        "borrowedPixels": 45752,
+        "fallbackPixels": 87,
+        "fallbackPercent": 0.12214126268795013
+      }
+    },
+    {
+      "triangles": 10348,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.36393439769744873,
+        0,
+        -0.5696526420978543
+      ],
+      "max": [
+        0.5439448952674866,
+        1.6491827964782715,
+        0.5692130163884996
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "spread",
+      "modelPaint": true,
+      "mesh": "10k",
+      "close": true,
+      "heading": 180,
+      "coverage": {
+        "mappedPixels": 28631,
+        "borrowedPixels": 37184,
+        "fallbackPixels": 147,
+        "fallbackPercent": 0.22285558351778298
+      }
+    },
+    {
+      "triangles": 10348,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.38744200508850146,
+        0,
+        -0.5847694162286674
+      ],
+      "max": [
+        0.585999184476212,
+        1.6491827964782715,
+        0.3875985283538512
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "spread",
+      "modelPaint": true,
+      "mesh": "10k",
+      "close": true,
+      "heading": -135,
+      "coverage": {
+        "mappedPixels": 30086,
+        "borrowedPixels": 33138,
+        "fallbackPixels": 472,
+        "fallbackPercent": 0.7410198442602361
+      }
+    },
+    {
+      "triangles": 10348,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.5696526420978543,
+        0,
+        -0.5439448952674866
+      ],
+      "max": [
+        0.5692130163884996,
+        1.6491827964782715,
+        0.36393439769744873
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "spread",
+      "modelPaint": true,
+      "mesh": "10k",
+      "close": true,
+      "heading": -90,
+      "coverage": {
+        "mappedPixels": 31705,
+        "borrowedPixels": 43548,
+        "fallbackPixels": 598,
+        "fallbackPercent": 0.788387760214104
+      }
+    },
+    {
+      "triangles": 10348,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.5847694162286673,
+        0,
+        -0.5859991844762117
+      ],
+      "max": [
+        0.3875985283538512,
+        1.6491827964782715,
+        0.38744200508850124
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "spread",
+      "modelPaint": true,
+      "mesh": "10k",
+      "close": true,
+      "heading": -45,
+      "coverage": {
+        "mappedPixels": 29176,
+        "borrowedPixels": 42545,
+        "fallbackPixels": 645,
+        "fallbackPercent": 0.8913025453942459
+      }
+    },
+    {
+      "triangles": 29952,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.5439448952674866,
+        0,
+        -0.45223237716459064
+      ],
+      "max": [
+        0.36441120505332947,
+        1.6499252319335938,
+        0.4521203175819011
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 58,
+      "pose": "neutral",
+      "modelPaint": true,
+      "mesh": "28k",
+      "close": false,
+      "heading": 0,
+      "coverage": {
+        "mappedPixels": 1121,
+        "borrowedPixels": 1550,
+        "fallbackPixels": 57,
+        "fallbackPercent": 2.089442815249267
+      }
+    },
+    {
+      "triangles": 29952,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.5169540094652747,
+        0,
+        -0.3654979971220794
+      ],
+      "max": [
+        0.36575324897337347,
+        1.6499252319335938,
+        0.5172008635496461
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 58,
+      "pose": "neutral",
+      "modelPaint": true,
+      "mesh": "28k",
+      "close": false,
+      "heading": 45,
+      "coverage": {
+        "mappedPixels": 1095,
+        "borrowedPixels": 1265,
+        "fallbackPixels": 47,
+        "fallbackPercent": 1.9526381387619443
+      }
+    },
+    {
+      "triangles": 29952,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.45223237716459075,
+        0,
+        -0.36441120505332947
+      ],
+      "max": [
+        0.45212031758190097,
+        1.6499252319335938,
+        0.5439448952674866
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 58,
+      "pose": "neutral",
+      "modelPaint": true,
+      "mesh": "28k",
+      "close": false,
+      "heading": 90,
+      "coverage": {
+        "mappedPixels": 1014,
+        "borrowedPixels": 1354,
+        "fallbackPixels": 25,
+        "fallbackPercent": 1.0447137484329294
+      }
+    },
+    {
+      "triangles": 29952,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.36549799712207953,
+        0,
+        -0.36575324897337363
+      ],
+      "max": [
+        0.5172008635496463,
+        1.6499252319335938,
+        0.5169540094652747
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 58,
+      "pose": "neutral",
+      "modelPaint": true,
+      "mesh": "28k",
+      "close": false,
+      "heading": 135,
+      "coverage": {
+        "mappedPixels": 921,
+        "borrowedPixels": 1644,
+        "fallbackPixels": 17,
+        "fallbackPercent": 0.6584043377226956
+      }
+    },
+    {
+      "triangles": 29952,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.36441120505332947,
+        0,
+        -0.45212031758190097
+      ],
+      "max": [
+        0.5439448952674866,
+        1.6499252319335938,
+        0.45223237716459075
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 58,
+      "pose": "neutral",
+      "modelPaint": true,
+      "mesh": "28k",
+      "close": false,
+      "heading": 180,
+      "coverage": {
+        "mappedPixels": 1000,
+        "borrowedPixels": 1343,
+        "fallbackPixels": 22,
+        "fallbackPercent": 0.9302325581395349
+      }
+    },
+    {
+      "triangles": 29952,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.36575324897337363,
+        0,
+        -0.5172008635496463
+      ],
+      "max": [
+        0.5169540094652747,
+        1.6499252319335938,
+        0.36549799712207953
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 58,
+      "pose": "neutral",
+      "modelPaint": true,
+      "mesh": "28k",
+      "close": false,
+      "heading": -135,
+      "coverage": {
+        "mappedPixels": 1099,
+        "borrowedPixels": 1253,
+        "fallbackPixels": 48,
+        "fallbackPercent": 2
+      }
+    },
+    {
+      "triangles": 29952,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.4521203175819012,
+        0,
+        -0.5439448952674866
+      ],
+      "max": [
+        0.4522323771645905,
+        1.6499252319335938,
+        0.36441120505332947
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 58,
+      "pose": "neutral",
+      "modelPaint": true,
+      "mesh": "28k",
+      "close": false,
+      "heading": -90,
+      "coverage": {
+        "mappedPixels": 1123,
+        "borrowedPixels": 1557,
+        "fallbackPixels": 54,
+        "fallbackPercent": 1.9751280175566934
+      }
+    },
+    {
+      "triangles": 29952,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.5172008635496463,
+        0,
+        -0.5169540094652747
+      ],
+      "max": [
+        0.3654979971220794,
+        1.6499252319335938,
+        0.3657532489733735
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 58,
+      "pose": "neutral",
+      "modelPaint": true,
+      "mesh": "28k",
+      "close": false,
+      "heading": -45,
+      "coverage": {
+        "mappedPixels": 989,
+        "borrowedPixels": 1525,
+        "fallbackPixels": 61,
+        "fallbackPercent": 2.3689320388349513
+      }
+    },
+    {
+      "triangles": 29952,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.5439448952674866,
+        0,
+        -0.5692130163884996
+      ],
+      "max": [
+        0.36441120505332947,
+        1.6499252319335938,
+        0.5696526420978543
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 58,
+      "pose": "spread",
+      "modelPaint": true,
+      "mesh": "28k",
+      "close": false,
+      "heading": 0,
+      "coverage": {
+        "mappedPixels": 1198,
+        "borrowedPixels": 1626,
+        "fallbackPixels": 55,
+        "fallbackPercent": 1.9103855505383813
+      }
+    },
+    {
+      "triangles": 29952,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.5860298829289605,
+        0,
+        -0.38759852835385117
+      ],
+      "max": [
+        0.3881344742069109,
+        1.6499252319335938,
+        0.5860175040470722
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 58,
+      "pose": "spread",
+      "modelPaint": true,
+      "mesh": "28k",
+      "close": false,
+      "heading": 45,
+      "coverage": {
+        "mappedPixels": 1119,
+        "borrowedPixels": 1246,
+        "fallbackPixels": 48,
+        "fallbackPercent": 1.989225031081641
+      }
+    },
+    {
+      "triangles": 29952,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.5692130163884996,
+        0,
+        -0.36441120505332947
+      ],
+      "max": [
+        0.5696526420978543,
+        1.6499252319335938,
+        0.5439448952674866
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 58,
+      "pose": "spread",
+      "modelPaint": true,
+      "mesh": "28k",
+      "close": false,
+      "heading": 90,
+      "coverage": {
+        "mappedPixels": 1093,
+        "borrowedPixels": 1389,
+        "fallbackPixels": 24,
+        "fallbackPercent": 0.9577015163607342
+      }
+    },
+    {
+      "triangles": 29952,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.38759852835385133,
+        0,
+        -0.3881344742069108
+      ],
+      "max": [
+        0.5860175040470724,
+        1.6499252319335938,
+        0.5860298829289607
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 58,
+      "pose": "spread",
+      "modelPaint": true,
+      "mesh": "28k",
+      "close": false,
+      "heading": 135,
+      "coverage": {
+        "mappedPixels": 975,
+        "borrowedPixels": 1725,
+        "fallbackPixels": 21,
+        "fallbackPercent": 0.7717750826901875
+      }
+    },
+    {
+      "triangles": 29952,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.36441120505332947,
+        0,
+        -0.5696526420978543
+      ],
+      "max": [
+        0.5439448952674866,
+        1.6499252319335938,
+        0.5692130163884996
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 58,
+      "pose": "spread",
+      "modelPaint": true,
+      "mesh": "28k",
+      "close": false,
+      "heading": 180,
+      "coverage": {
+        "mappedPixels": 1086,
+        "borrowedPixels": 1381,
+        "fallbackPixels": 26,
+        "fallbackPercent": 1.0429201764941838
+      }
+    },
+    {
+      "triangles": 29952,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.38813447420691094,
+        0,
+        -0.5860175040470722
+      ],
+      "max": [
+        0.5860298829289609,
+        1.6499252319335938,
+        0.3875985283538512
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 58,
+      "pose": "spread",
+      "modelPaint": true,
+      "mesh": "28k",
+      "close": false,
+      "heading": -135,
+      "coverage": {
+        "mappedPixels": 1124,
+        "borrowedPixels": 1236,
+        "fallbackPixels": 48,
+        "fallbackPercent": 1.9933554817275747
+      }
+    },
+    {
+      "triangles": 29952,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.5696526420978543,
+        0,
+        -0.5439448952674866
+      ],
+      "max": [
+        0.5692130163884996,
+        1.6499252319335938,
+        0.36441120505332947
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 58,
+      "pose": "spread",
+      "modelPaint": true,
+      "mesh": "28k",
+      "close": false,
+      "heading": -90,
+      "coverage": {
+        "mappedPixels": 1205,
+        "borrowedPixels": 1632,
+        "fallbackPixels": 55,
+        "fallbackPercent": 1.9017980636237897
+      }
+    },
+    {
+      "triangles": 29952,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.5860175040470722,
+        0,
+        -0.5860298829289605
+      ],
+      "max": [
+        0.3875985283538512,
+        1.6499252319335938,
+        0.3881344742069107
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 58,
+      "pose": "spread",
+      "modelPaint": true,
+      "mesh": "28k",
+      "close": false,
+      "heading": -45,
+      "coverage": {
+        "mappedPixels": 1108,
+        "borrowedPixels": 1588,
+        "fallbackPixels": 61,
+        "fallbackPercent": 2.212549873050417
+      }
+    },
+    {
+      "triangles": 10348,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.5439448952674866,
+        0,
+        -0.45223237716459064
+      ],
+      "max": [
+        0.36393439769744873,
+        1.6491827964782715,
+        0.45145660638809204
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 58,
+      "pose": "neutral",
+      "modelPaint": true,
+      "mesh": "10k",
+      "close": false,
+      "heading": 0,
+      "coverage": {
+        "mappedPixels": 1123,
+        "borrowedPixels": 1545,
+        "fallbackPixels": 54,
+        "fallbackPercent": 1.9838354151359294
+      }
+    },
+    {
+      "triangles": 10348,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.5169540094652747,
+        0,
+        -0.36523112327730844
+      ],
+      "max": [
+        0.3649398569439618,
+        1.6491827964782715,
+        0.5172008635496461
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 58,
+      "pose": "neutral",
+      "modelPaint": true,
+      "mesh": "10k",
+      "close": false,
+      "heading": 45,
+      "coverage": {
+        "mappedPixels": 1099,
+        "borrowedPixels": 1264,
+        "fallbackPixels": 35,
+        "fallbackPercent": 1.4595496246872393
+      }
+    },
+    {
+      "triangles": 10348,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.45223237716459075,
+        0,
+        -0.36393439769744873
+      ],
+      "max": [
+        0.45145660638809193,
+        1.6491827964782715,
+        0.5439448952674866
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 58,
+      "pose": "neutral",
+      "modelPaint": true,
+      "mesh": "10k",
+      "close": false,
+      "heading": 90,
+      "coverage": {
+        "mappedPixels": 1006,
+        "borrowedPixels": 1344,
+        "fallbackPixels": 19,
+        "fallbackPercent": 0.8020261713803293
+      }
+    },
+    {
+      "triangles": 10348,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.36523112327730856,
+        0,
+        -0.3649398569439619
+      ],
+      "max": [
+        0.5172008635496463,
+        1.6491827964782715,
+        0.5169540094652747
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 58,
+      "pose": "neutral",
+      "modelPaint": true,
+      "mesh": "10k",
+      "close": false,
+      "heading": 135,
+      "coverage": {
+        "mappedPixels": 916,
+        "borrowedPixels": 1639,
+        "fallbackPixels": 13,
+        "fallbackPercent": 0.5062305295950156
+      }
+    },
+    {
+      "triangles": 10348,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.36393439769744873,
+        0,
+        -0.45145660638809193
+      ],
+      "max": [
+        0.5439448952674866,
+        1.6491827964782715,
+        0.45223237716459075
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 58,
+      "pose": "neutral",
+      "modelPaint": true,
+      "mesh": "10k",
+      "close": false,
+      "heading": 180,
+      "coverage": {
+        "mappedPixels": 1004,
+        "borrowedPixels": 1338,
+        "fallbackPixels": 25,
+        "fallbackPercent": 1.0561892691170258
+      }
+    },
+    {
+      "triangles": 10348,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.3649398569439618,
+        0,
+        -0.5172008635496463
+      ],
+      "max": [
+        0.5169540094652747,
+        1.6491827964782715,
+        0.36523112327730856
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 58,
+      "pose": "neutral",
+      "modelPaint": true,
+      "mesh": "10k",
+      "close": false,
+      "heading": -135,
+      "coverage": {
+        "mappedPixels": 1103,
+        "borrowedPixels": 1243,
+        "fallbackPixels": 34,
+        "fallbackPercent": 1.4285714285714286
+      }
+    },
+    {
+      "triangles": 10348,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.45145660638809215,
+        0,
+        -0.5439448952674866
+      ],
+      "max": [
+        0.4522323771645905,
+        1.6491827964782715,
+        0.36393439769744873
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 58,
+      "pose": "neutral",
+      "modelPaint": true,
+      "mesh": "10k",
+      "close": false,
+      "heading": -90,
+      "coverage": {
+        "mappedPixels": 1119,
+        "borrowedPixels": 1554,
+        "fallbackPixels": 41,
+        "fallbackPercent": 1.5106853352984524
+      }
+    },
+    {
+      "triangles": 10348,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.5172008635496463,
+        0,
+        -0.5169540094652747
+      ],
+      "max": [
+        0.36523112327730844,
+        1.6491827964782715,
+        0.3649398569439618
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 58,
+      "pose": "neutral",
+      "modelPaint": true,
+      "mesh": "10k",
+      "close": false,
+      "heading": -45,
+      "coverage": {
+        "mappedPixels": 980,
+        "borrowedPixels": 1529,
+        "fallbackPixels": 50,
+        "fallbackPercent": 1.9538882375928097
+      }
+    },
+    {
+      "triangles": 10348,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.5439448952674866,
+        0,
+        -0.5692130163884996
+      ],
+      "max": [
+        0.36393439769744873,
+        1.6491827964782715,
+        0.5696526420978543
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 58,
+      "pose": "spread",
+      "modelPaint": true,
+      "mesh": "10k",
+      "close": false,
+      "heading": 0,
+      "coverage": {
+        "mappedPixels": 1202,
+        "borrowedPixels": 1619,
+        "fallbackPixels": 52,
+        "fallbackPercent": 1.8099547511312217
+      }
+    },
+    {
+      "triangles": 10348,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.585999184476212,
+        0,
+        -0.38759852835385117
+      ],
+      "max": [
+        0.3874420050885013,
+        1.6491827964782715,
+        0.5847694162286674
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 58,
+      "pose": "spread",
+      "modelPaint": true,
+      "mesh": "10k",
+      "close": false,
+      "heading": 45,
+      "coverage": {
+        "mappedPixels": 1125,
+        "borrowedPixels": 1245,
+        "fallbackPixels": 35,
+        "fallbackPercent": 1.4553014553014554
+      }
+    },
+    {
+      "triangles": 10348,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.5692130163884996,
+        0,
+        -0.36393439769744873
+      ],
+      "max": [
+        0.5696526420978543,
+        1.6491827964782715,
+        0.5439448952674866
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 58,
+      "pose": "spread",
+      "modelPaint": true,
+      "mesh": "10k",
+      "close": false,
+      "heading": 90,
+      "coverage": {
+        "mappedPixels": 1090,
+        "borrowedPixels": 1374,
+        "fallbackPixels": 19,
+        "fallbackPercent": 0.7652033830044301
+      }
+    },
+    {
+      "triangles": 10348,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.38759852835385133,
+        0,
+        -0.38744200508850135
+      ],
+      "max": [
+        0.5847694162286674,
+        1.6491827964782715,
+        0.5859991844762119
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 58,
+      "pose": "spread",
+      "modelPaint": true,
+      "mesh": "10k",
+      "close": false,
+      "heading": 135,
+      "coverage": {
+        "mappedPixels": 982,
+        "borrowedPixels": 1722,
+        "fallbackPixels": 12,
+        "fallbackPercent": 0.4418262150220913
+      }
+    },
+    {
+      "triangles": 10348,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.36393439769744873,
+        0,
+        -0.5696526420978543
+      ],
+      "max": [
+        0.5439448952674866,
+        1.6491827964782715,
+        0.5692130163884996
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 58,
+      "pose": "spread",
+      "modelPaint": true,
+      "mesh": "10k",
+      "close": false,
+      "heading": 180,
+      "coverage": {
+        "mappedPixels": 1093,
+        "borrowedPixels": 1375,
+        "fallbackPixels": 24,
+        "fallbackPercent": 0.9630818619582665
+      }
+    },
+    {
+      "triangles": 10348,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.38744200508850146,
+        0,
+        -0.5847694162286674
+      ],
+      "max": [
+        0.585999184476212,
+        1.6491827964782715,
+        0.3875985283538512
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 58,
+      "pose": "spread",
+      "modelPaint": true,
+      "mesh": "10k",
+      "close": false,
+      "heading": -135,
+      "coverage": {
+        "mappedPixels": 1130,
+        "borrowedPixels": 1225,
+        "fallbackPixels": 34,
+        "fallbackPercent": 1.4231896190874842
+      }
+    },
+    {
+      "triangles": 10348,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.5696526420978543,
+        0,
+        -0.5439448952674866
+      ],
+      "max": [
+        0.5692130163884996,
+        1.6491827964782715,
+        0.36393439769744873
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 58,
+      "pose": "spread",
+      "modelPaint": true,
+      "mesh": "10k",
+      "close": false,
+      "heading": -90,
+      "coverage": {
+        "mappedPixels": 1196,
+        "borrowedPixels": 1629,
+        "fallbackPixels": 43,
+        "fallbackPercent": 1.499302649930265
+      }
+    },
+    {
+      "triangles": 10348,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.5847694162286673,
+        0,
+        -0.5859991844762117
+      ],
+      "max": [
+        0.3875985283538512,
+        1.6491827964782715,
+        0.38744200508850124
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 58,
+      "pose": "spread",
+      "modelPaint": true,
+      "mesh": "10k",
+      "close": false,
+      "heading": -45,
+      "coverage": {
+        "mappedPixels": 1104,
+        "borrowedPixels": 1588,
+        "fallbackPixels": 49,
+        "fallbackPercent": 1.787668734038672
+      }
+    }
+  ]
+}
