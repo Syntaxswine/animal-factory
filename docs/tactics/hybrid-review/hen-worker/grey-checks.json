@@ -1,0 +1,1478 @@
+{
+  "browser": "153.0.4234.48",
+  "errors": [],
+  "checks": [
+    {
+      "triangles": 29952,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.5439448952674866,
+        0,
+        -0.45223237716459064
+      ],
+      "max": [
+        0.36441120505332947,
+        1.6499252319335938,
+        0.4521203175819011
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "neutral",
+      "modelPaint": false,
+      "mesh": "28k",
+      "close": true,
+      "heading": 0
+    },
+    {
+      "triangles": 29952,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.5169540094652747,
+        0,
+        -0.3654979971220794
+      ],
+      "max": [
+        0.36575324897337347,
+        1.6499252319335938,
+        0.5172008635496461
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "neutral",
+      "modelPaint": false,
+      "mesh": "28k",
+      "close": true,
+      "heading": 45
+    },
+    {
+      "triangles": 29952,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.45223237716459075,
+        0,
+        -0.36441120505332947
+      ],
+      "max": [
+        0.45212031758190097,
+        1.6499252319335938,
+        0.5439448952674866
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "neutral",
+      "modelPaint": false,
+      "mesh": "28k",
+      "close": true,
+      "heading": 90
+    },
+    {
+      "triangles": 29952,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.36549799712207953,
+        0,
+        -0.36575324897337363
+      ],
+      "max": [
+        0.5172008635496463,
+        1.6499252319335938,
+        0.5169540094652747
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "neutral",
+      "modelPaint": false,
+      "mesh": "28k",
+      "close": true,
+      "heading": 135
+    },
+    {
+      "triangles": 29952,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.36441120505332947,
+        0,
+        -0.45212031758190097
+      ],
+      "max": [
+        0.5439448952674866,
+        1.6499252319335938,
+        0.45223237716459075
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "neutral",
+      "modelPaint": false,
+      "mesh": "28k",
+      "close": true,
+      "heading": 180
+    },
+    {
+      "triangles": 29952,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.36575324897337363,
+        0,
+        -0.5172008635496463
+      ],
+      "max": [
+        0.5169540094652747,
+        1.6499252319335938,
+        0.36549799712207953
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "neutral",
+      "modelPaint": false,
+      "mesh": "28k",
+      "close": true,
+      "heading": -135
+    },
+    {
+      "triangles": 29952,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.4521203175819012,
+        0,
+        -0.5439448952674866
+      ],
+      "max": [
+        0.4522323771645905,
+        1.6499252319335938,
+        0.36441120505332947
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "neutral",
+      "modelPaint": false,
+      "mesh": "28k",
+      "close": true,
+      "heading": -90
+    },
+    {
+      "triangles": 29952,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.5172008635496463,
+        0,
+        -0.5169540094652747
+      ],
+      "max": [
+        0.3654979971220794,
+        1.6499252319335938,
+        0.3657532489733735
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "neutral",
+      "modelPaint": false,
+      "mesh": "28k",
+      "close": true,
+      "heading": -45
+    },
+    {
+      "triangles": 29952,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.5439448952674866,
+        0,
+        -0.5692130163884996
+      ],
+      "max": [
+        0.36441120505332947,
+        1.6499252319335938,
+        0.5696526420978543
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "spread",
+      "modelPaint": false,
+      "mesh": "28k",
+      "close": true,
+      "heading": 0
+    },
+    {
+      "triangles": 29952,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.5860298829289605,
+        0,
+        -0.38759852835385117
+      ],
+      "max": [
+        0.3881344742069109,
+        1.6499252319335938,
+        0.5860175040470722
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "spread",
+      "modelPaint": false,
+      "mesh": "28k",
+      "close": true,
+      "heading": 45
+    },
+    {
+      "triangles": 29952,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.5692130163884996,
+        0,
+        -0.36441120505332947
+      ],
+      "max": [
+        0.5696526420978543,
+        1.6499252319335938,
+        0.5439448952674866
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "spread",
+      "modelPaint": false,
+      "mesh": "28k",
+      "close": true,
+      "heading": 90
+    },
+    {
+      "triangles": 29952,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.38759852835385133,
+        0,
+        -0.3881344742069108
+      ],
+      "max": [
+        0.5860175040470724,
+        1.6499252319335938,
+        0.5860298829289607
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "spread",
+      "modelPaint": false,
+      "mesh": "28k",
+      "close": true,
+      "heading": 135
+    },
+    {
+      "triangles": 29952,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.36441120505332947,
+        0,
+        -0.5696526420978543
+      ],
+      "max": [
+        0.5439448952674866,
+        1.6499252319335938,
+        0.5692130163884996
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "spread",
+      "modelPaint": false,
+      "mesh": "28k",
+      "close": true,
+      "heading": 180
+    },
+    {
+      "triangles": 29952,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.38813447420691094,
+        0,
+        -0.5860175040470722
+      ],
+      "max": [
+        0.5860298829289609,
+        1.6499252319335938,
+        0.3875985283538512
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "spread",
+      "modelPaint": false,
+      "mesh": "28k",
+      "close": true,
+      "heading": -135
+    },
+    {
+      "triangles": 29952,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.5696526420978543,
+        0,
+        -0.5439448952674866
+      ],
+      "max": [
+        0.5692130163884996,
+        1.6499252319335938,
+        0.36441120505332947
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "spread",
+      "modelPaint": false,
+      "mesh": "28k",
+      "close": true,
+      "heading": -90
+    },
+    {
+      "triangles": 29952,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.5860175040470722,
+        0,
+        -0.5860298829289605
+      ],
+      "max": [
+        0.3875985283538512,
+        1.6499252319335938,
+        0.3881344742069107
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "spread",
+      "modelPaint": false,
+      "mesh": "28k",
+      "close": true,
+      "heading": -45
+    },
+    {
+      "triangles": 10348,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.5439448952674866,
+        0,
+        -0.45223237716459064
+      ],
+      "max": [
+        0.36393439769744873,
+        1.6491827964782715,
+        0.45145660638809204
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "neutral",
+      "modelPaint": false,
+      "mesh": "10k",
+      "close": true,
+      "heading": 0
+    },
+    {
+      "triangles": 10348,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.5169540094652747,
+        0,
+        -0.36523112327730844
+      ],
+      "max": [
+        0.3649398569439618,
+        1.6491827964782715,
+        0.5172008635496461
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "neutral",
+      "modelPaint": false,
+      "mesh": "10k",
+      "close": true,
+      "heading": 45
+    },
+    {
+      "triangles": 10348,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.45223237716459075,
+        0,
+        -0.36393439769744873
+      ],
+      "max": [
+        0.45145660638809193,
+        1.6491827964782715,
+        0.5439448952674866
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "neutral",
+      "modelPaint": false,
+      "mesh": "10k",
+      "close": true,
+      "heading": 90
+    },
+    {
+      "triangles": 10348,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.36523112327730856,
+        0,
+        -0.3649398569439619
+      ],
+      "max": [
+        0.5172008635496463,
+        1.6491827964782715,
+        0.5169540094652747
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "neutral",
+      "modelPaint": false,
+      "mesh": "10k",
+      "close": true,
+      "heading": 135
+    },
+    {
+      "triangles": 10348,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.36393439769744873,
+        0,
+        -0.45145660638809193
+      ],
+      "max": [
+        0.5439448952674866,
+        1.6491827964782715,
+        0.45223237716459075
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "neutral",
+      "modelPaint": false,
+      "mesh": "10k",
+      "close": true,
+      "heading": 180
+    },
+    {
+      "triangles": 10348,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.3649398569439618,
+        0,
+        -0.5172008635496463
+      ],
+      "max": [
+        0.5169540094652747,
+        1.6491827964782715,
+        0.36523112327730856
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "neutral",
+      "modelPaint": false,
+      "mesh": "10k",
+      "close": true,
+      "heading": -135
+    },
+    {
+      "triangles": 10348,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.45145660638809215,
+        0,
+        -0.5439448952674866
+      ],
+      "max": [
+        0.4522323771645905,
+        1.6491827964782715,
+        0.36393439769744873
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "neutral",
+      "modelPaint": false,
+      "mesh": "10k",
+      "close": true,
+      "heading": -90
+    },
+    {
+      "triangles": 10348,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.5172008635496463,
+        0,
+        -0.5169540094652747
+      ],
+      "max": [
+        0.36523112327730844,
+        1.6491827964782715,
+        0.3649398569439618
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "neutral",
+      "modelPaint": false,
+      "mesh": "10k",
+      "close": true,
+      "heading": -45
+    },
+    {
+      "triangles": 10348,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.5439448952674866,
+        0,
+        -0.5692130163884996
+      ],
+      "max": [
+        0.36393439769744873,
+        1.6491827964782715,
+        0.5696526420978543
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "spread",
+      "modelPaint": false,
+      "mesh": "10k",
+      "close": true,
+      "heading": 0
+    },
+    {
+      "triangles": 10348,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.585999184476212,
+        0,
+        -0.38759852835385117
+      ],
+      "max": [
+        0.3874420050885013,
+        1.6491827964782715,
+        0.5847694162286674
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "spread",
+      "modelPaint": false,
+      "mesh": "10k",
+      "close": true,
+      "heading": 45
+    },
+    {
+      "triangles": 10348,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.5692130163884996,
+        0,
+        -0.36393439769744873
+      ],
+      "max": [
+        0.5696526420978543,
+        1.6491827964782715,
+        0.5439448952674866
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "spread",
+      "modelPaint": false,
+      "mesh": "10k",
+      "close": true,
+      "heading": 90
+    },
+    {
+      "triangles": 10348,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.38759852835385133,
+        0,
+        -0.38744200508850135
+      ],
+      "max": [
+        0.5847694162286674,
+        1.6491827964782715,
+        0.5859991844762119
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "spread",
+      "modelPaint": false,
+      "mesh": "10k",
+      "close": true,
+      "heading": 135
+    },
+    {
+      "triangles": 10348,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.36393439769744873,
+        0,
+        -0.5696526420978543
+      ],
+      "max": [
+        0.5439448952674866,
+        1.6491827964782715,
+        0.5692130163884996
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "spread",
+      "modelPaint": false,
+      "mesh": "10k",
+      "close": true,
+      "heading": 180
+    },
+    {
+      "triangles": 10348,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.38744200508850146,
+        0,
+        -0.5847694162286674
+      ],
+      "max": [
+        0.585999184476212,
+        1.6491827964782715,
+        0.3875985283538512
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "spread",
+      "modelPaint": false,
+      "mesh": "10k",
+      "close": true,
+      "heading": -135
+    },
+    {
+      "triangles": 10348,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.5696526420978543,
+        0,
+        -0.5439448952674866
+      ],
+      "max": [
+        0.5692130163884996,
+        1.6491827964782715,
+        0.36393439769744873
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "spread",
+      "modelPaint": false,
+      "mesh": "10k",
+      "close": true,
+      "heading": -90
+    },
+    {
+      "triangles": 10348,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.5847694162286673,
+        0,
+        -0.5859991844762117
+      ],
+      "max": [
+        0.3875985283538512,
+        1.6491827964782715,
+        0.38744200508850124
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "spread",
+      "modelPaint": false,
+      "mesh": "10k",
+      "close": true,
+      "heading": -45
+    },
+    {
+      "triangles": 29952,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.5439448952674866,
+        0,
+        -0.45223237716459064
+      ],
+      "max": [
+        0.36441120505332947,
+        1.6499252319335938,
+        0.4521203175819011
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 58,
+      "pose": "neutral",
+      "modelPaint": false,
+      "mesh": "28k",
+      "close": false,
+      "heading": 0
+    },
+    {
+      "triangles": 29952,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.5169540094652747,
+        0,
+        -0.3654979971220794
+      ],
+      "max": [
+        0.36575324897337347,
+        1.6499252319335938,
+        0.5172008635496461
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 58,
+      "pose": "neutral",
+      "modelPaint": false,
+      "mesh": "28k",
+      "close": false,
+      "heading": 45
+    },
+    {
+      "triangles": 29952,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.45223237716459075,
+        0,
+        -0.36441120505332947
+      ],
+      "max": [
+        0.45212031758190097,
+        1.6499252319335938,
+        0.5439448952674866
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 58,
+      "pose": "neutral",
+      "modelPaint": false,
+      "mesh": "28k",
+      "close": false,
+      "heading": 90
+    },
+    {
+      "triangles": 29952,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.36549799712207953,
+        0,
+        -0.36575324897337363
+      ],
+      "max": [
+        0.5172008635496463,
+        1.6499252319335938,
+        0.5169540094652747
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 58,
+      "pose": "neutral",
+      "modelPaint": false,
+      "mesh": "28k",
+      "close": false,
+      "heading": 135
+    },
+    {
+      "triangles": 29952,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.36441120505332947,
+        0,
+        -0.45212031758190097
+      ],
+      "max": [
+        0.5439448952674866,
+        1.6499252319335938,
+        0.45223237716459075
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 58,
+      "pose": "neutral",
+      "modelPaint": false,
+      "mesh": "28k",
+      "close": false,
+      "heading": 180
+    },
+    {
+      "triangles": 29952,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.36575324897337363,
+        0,
+        -0.5172008635496463
+      ],
+      "max": [
+        0.5169540094652747,
+        1.6499252319335938,
+        0.36549799712207953
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 58,
+      "pose": "neutral",
+      "modelPaint": false,
+      "mesh": "28k",
+      "close": false,
+      "heading": -135
+    },
+    {
+      "triangles": 29952,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.4521203175819012,
+        0,
+        -0.5439448952674866
+      ],
+      "max": [
+        0.4522323771645905,
+        1.6499252319335938,
+        0.36441120505332947
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 58,
+      "pose": "neutral",
+      "modelPaint": false,
+      "mesh": "28k",
+      "close": false,
+      "heading": -90
+    },
+    {
+      "triangles": 29952,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.5172008635496463,
+        0,
+        -0.5169540094652747
+      ],
+      "max": [
+        0.3654979971220794,
+        1.6499252319335938,
+        0.3657532489733735
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 58,
+      "pose": "neutral",
+      "modelPaint": false,
+      "mesh": "28k",
+      "close": false,
+      "heading": -45
+    },
+    {
+      "triangles": 29952,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.5439448952674866,
+        0,
+        -0.5692130163884996
+      ],
+      "max": [
+        0.36441120505332947,
+        1.6499252319335938,
+        0.5696526420978543
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 58,
+      "pose": "spread",
+      "modelPaint": false,
+      "mesh": "28k",
+      "close": false,
+      "heading": 0
+    },
+    {
+      "triangles": 29952,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.5860298829289605,
+        0,
+        -0.38759852835385117
+      ],
+      "max": [
+        0.3881344742069109,
+        1.6499252319335938,
+        0.5860175040470722
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 58,
+      "pose": "spread",
+      "modelPaint": false,
+      "mesh": "28k",
+      "close": false,
+      "heading": 45
+    },
+    {
+      "triangles": 29952,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.5692130163884996,
+        0,
+        -0.36441120505332947
+      ],
+      "max": [
+        0.5696526420978543,
+        1.6499252319335938,
+        0.5439448952674866
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 58,
+      "pose": "spread",
+      "modelPaint": false,
+      "mesh": "28k",
+      "close": false,
+      "heading": 90
+    },
+    {
+      "triangles": 29952,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.38759852835385133,
+        0,
+        -0.3881344742069108
+      ],
+      "max": [
+        0.5860175040470724,
+        1.6499252319335938,
+        0.5860298829289607
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 58,
+      "pose": "spread",
+      "modelPaint": false,
+      "mesh": "28k",
+      "close": false,
+      "heading": 135
+    },
+    {
+      "triangles": 29952,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.36441120505332947,
+        0,
+        -0.5696526420978543
+      ],
+      "max": [
+        0.5439448952674866,
+        1.6499252319335938,
+        0.5692130163884996
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 58,
+      "pose": "spread",
+      "modelPaint": false,
+      "mesh": "28k",
+      "close": false,
+      "heading": 180
+    },
+    {
+      "triangles": 29952,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.38813447420691094,
+        0,
+        -0.5860175040470722
+      ],
+      "max": [
+        0.5860298829289609,
+        1.6499252319335938,
+        0.3875985283538512
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 58,
+      "pose": "spread",
+      "modelPaint": false,
+      "mesh": "28k",
+      "close": false,
+      "heading": -135
+    },
+    {
+      "triangles": 29952,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.5696526420978543,
+        0,
+        -0.5439448952674866
+      ],
+      "max": [
+        0.5692130163884996,
+        1.6499252319335938,
+        0.36441120505332947
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 58,
+      "pose": "spread",
+      "modelPaint": false,
+      "mesh": "28k",
+      "close": false,
+      "heading": -90
+    },
+    {
+      "triangles": 29952,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.5860175040470722,
+        0,
+        -0.5860298829289605
+      ],
+      "max": [
+        0.3875985283538512,
+        1.6499252319335938,
+        0.3881344742069107
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 58,
+      "pose": "spread",
+      "modelPaint": false,
+      "mesh": "28k",
+      "close": false,
+      "heading": -45
+    },
+    {
+      "triangles": 10348,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.5439448952674866,
+        0,
+        -0.45223237716459064
+      ],
+      "max": [
+        0.36393439769744873,
+        1.6491827964782715,
+        0.45145660638809204
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 58,
+      "pose": "neutral",
+      "modelPaint": false,
+      "mesh": "10k",
+      "close": false,
+      "heading": 0
+    },
+    {
+      "triangles": 10348,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.5169540094652747,
+        0,
+        -0.36523112327730844
+      ],
+      "max": [
+        0.3649398569439618,
+        1.6491827964782715,
+        0.5172008635496461
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 58,
+      "pose": "neutral",
+      "modelPaint": false,
+      "mesh": "10k",
+      "close": false,
+      "heading": 45
+    },
+    {
+      "triangles": 10348,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.45223237716459075,
+        0,
+        -0.36393439769744873
+      ],
+      "max": [
+        0.45145660638809193,
+        1.6491827964782715,
+        0.5439448952674866
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 58,
+      "pose": "neutral",
+      "modelPaint": false,
+      "mesh": "10k",
+      "close": false,
+      "heading": 90
+    },
+    {
+      "triangles": 10348,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.36523112327730856,
+        0,
+        -0.3649398569439619
+      ],
+      "max": [
+        0.5172008635496463,
+        1.6491827964782715,
+        0.5169540094652747
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 58,
+      "pose": "neutral",
+      "modelPaint": false,
+      "mesh": "10k",
+      "close": false,
+      "heading": 135
+    },
+    {
+      "triangles": 10348,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.36393439769744873,
+        0,
+        -0.45145660638809193
+      ],
+      "max": [
+        0.5439448952674866,
+        1.6491827964782715,
+        0.45223237716459075
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 58,
+      "pose": "neutral",
+      "modelPaint": false,
+      "mesh": "10k",
+      "close": false,
+      "heading": 180
+    },
+    {
+      "triangles": 10348,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.3649398569439618,
+        0,
+        -0.5172008635496463
+      ],
+      "max": [
+        0.5169540094652747,
+        1.6491827964782715,
+        0.36523112327730856
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 58,
+      "pose": "neutral",
+      "modelPaint": false,
+      "mesh": "10k",
+      "close": false,
+      "heading": -135
+    },
+    {
+      "triangles": 10348,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.45145660638809215,
+        0,
+        -0.5439448952674866
+      ],
+      "max": [
+        0.4522323771645905,
+        1.6491827964782715,
+        0.36393439769744873
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 58,
+      "pose": "neutral",
+      "modelPaint": false,
+      "mesh": "10k",
+      "close": false,
+      "heading": -90
+    },
+    {
+      "triangles": 10348,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.5172008635496463,
+        0,
+        -0.5169540094652747
+      ],
+      "max": [
+        0.36523112327730844,
+        1.6491827964782715,
+        0.3649398569439618
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 58,
+      "pose": "neutral",
+      "modelPaint": false,
+      "mesh": "10k",
+      "close": false,
+      "heading": -45
+    },
+    {
+      "triangles": 10348,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.5439448952674866,
+        0,
+        -0.5692130163884996
+      ],
+      "max": [
+        0.36393439769744873,
+        1.6491827964782715,
+        0.5696526420978543
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 58,
+      "pose": "spread",
+      "modelPaint": false,
+      "mesh": "10k",
+      "close": false,
+      "heading": 0
+    },
+    {
+      "triangles": 10348,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.585999184476212,
+        0,
+        -0.38759852835385117
+      ],
+      "max": [
+        0.3874420050885013,
+        1.6491827964782715,
+        0.5847694162286674
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 58,
+      "pose": "spread",
+      "modelPaint": false,
+      "mesh": "10k",
+      "close": false,
+      "heading": 45
+    },
+    {
+      "triangles": 10348,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.5692130163884996,
+        0,
+        -0.36393439769744873
+      ],
+      "max": [
+        0.5696526420978543,
+        1.6491827964782715,
+        0.5439448952674866
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 58,
+      "pose": "spread",
+      "modelPaint": false,
+      "mesh": "10k",
+      "close": false,
+      "heading": 90
+    },
+    {
+      "triangles": 10348,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.38759852835385133,
+        0,
+        -0.38744200508850135
+      ],
+      "max": [
+        0.5847694162286674,
+        1.6491827964782715,
+        0.5859991844762119
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 58,
+      "pose": "spread",
+      "modelPaint": false,
+      "mesh": "10k",
+      "close": false,
+      "heading": 135
+    },
+    {
+      "triangles": 10348,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.36393439769744873,
+        0,
+        -0.5696526420978543
+      ],
+      "max": [
+        0.5439448952674866,
+        1.6491827964782715,
+        0.5692130163884996
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 58,
+      "pose": "spread",
+      "modelPaint": false,
+      "mesh": "10k",
+      "close": false,
+      "heading": 180
+    },
+    {
+      "triangles": 10348,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.38744200508850146,
+        0,
+        -0.5847694162286674
+      ],
+      "max": [
+        0.585999184476212,
+        1.6491827964782715,
+        0.3875985283538512
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 58,
+      "pose": "spread",
+      "modelPaint": false,
+      "mesh": "10k",
+      "close": false,
+      "heading": -135
+    },
+    {
+      "triangles": 10348,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.5696526420978543,
+        0,
+        -0.5439448952674866
+      ],
+      "max": [
+        0.5692130163884996,
+        1.6491827964782715,
+        0.36393439769744873
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 58,
+      "pose": "spread",
+      "modelPaint": false,
+      "mesh": "10k",
+      "close": false,
+      "heading": -90
+    },
+    {
+      "triangles": 10348,
+      "bones": 11,
+      "skinnedMeshes": 13,
+      "min": [
+        -0.5847694162286673,
+        0,
+        -0.5859991844762117
+      ],
+      "max": [
+        0.3875985283538512,
+        1.6491827964782715,
+        0.38744200508850124
+      ],
+      "contacts": [],
+      "rifleTriangles": 0,
+      "pixelsPerUnit": 58,
+      "pose": "spread",
+      "modelPaint": false,
+      "mesh": "10k",
+      "close": false,
+      "heading": -45
+    }
+  ]
+}
