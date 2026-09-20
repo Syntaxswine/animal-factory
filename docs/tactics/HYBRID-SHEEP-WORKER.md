@@ -6,8 +6,8 @@ the hen before authorizing this next character.
 
 ## Form and reduction
 
-**29,972 author triangles → 10,188 reduced triangles.** The reduced character
-derives from the stored author mesh, preserving ten closed connected surfaces
+**30,756 author triangles → 10,476 reduced triangles.** The reduced character
+derives from the stored author mesh, preserving thirteen closed connected surfaces
 and the shared 17-bone worker rig. Height is **1.65 world units**; the prototype
 isometric camera and **58 CSS pixels/world unit** remain unchanged.
 
@@ -94,14 +94,14 @@ and `PLAYWRIGHT_PATH` set, run `node tools/sheep-worker-review.mjs --grey`,
 This branch contains a presentation prototype. Building the distribution does
 not publish it or merge the graphics branch into canonical gameplay.
 
-## Neckline correction after user markup
+## Previous neckline correction after user markup (72e4ad9)
 
 The user identified the exposed angular shirt wedge and marked the intended
 descending vest edge. The front opening now slopes from the inner shoulders
 toward the knot, while retaining the enclosed armholes and shoulder bridges.
 A closed, fitted neckerchief wrap adds 288 author / 192 reduced triangles;
 its front tapers beneath the chin so the existing painted knot remains visible.
-The counts at the top of this document include this wrap.
+The current counts above include the later scarf replacement described below.
 
 The wrap reuses the red cloth from the existing skin. Newly exposed shirt
 receives cream cloth, and one frontal painting owns the red knot and tails
@@ -118,3 +118,36 @@ used 59 tests; the localized correction reran the 13 relevant tests.
 
 Run `node tools/sheep-neckline-review.mjs` for the 16 close neckline renders
 saved beside the full-body evidence as `neck-*.png`.
+
+## Volumetric scarf correction
+
+The architect held 72e4ad9 for its stiff wrap and flat painted tie. This pass
+changes only the scarf geometry and its local paint ownership. The first nine
+body/head/garment parts are byte-identical in both stored meshes.
+
+The wrap is a thin closed strip with varying width and shallow gathering toward
+a flattened knot. Two closed cloth ends follow the shirt and cross the physical
+waistcoat rim with positive clearance. Their paint now belongs to those forms;
+the old chest copies are cleared with cream shirt and olive cloth painting.
+The small cream interruption at the ends is removed. No raster painting changed.
+
+The author is now about 30.8k and the reduced model 10,476 triangles. The added
+cloth uses 1,072 author / 480 reduced triangles, avoiding any extra reduction
+of the accepted sheep sculpt. The shared rig and prototype display scale stay
+unchanged. This remains a neutral/carry presentation proof, not general cloth
+simulation or a gameplay-ready animation rig.
+
+Fourteen focused checks pass, including a new geometry regression for outward
+cloth winding, positive volume and clearance from both actual garments in both
+mesh budgets. The neckline renderer now includes profile, producing 20 close
+views across both meshes and materials.
+
+The localized correction cleared the independent **9/10** hostile gate after
+rejecting cord-like form and discontinuous paint in earlier attempts. The final
+review accepts the gathered strip, slimmer knot, real ends and clean vest
+crossing; simplified scarf shading remains a close-view limitation.
+
+Final validation: **14 focused tests**, **64 painted + 64 grey browser
+configurations**, seven earlier-character render checks, 20 neckline close-ups
+and the distribution build pass. Only the working branch is delivered;
+canonical merging and publication remain pending the architect review.

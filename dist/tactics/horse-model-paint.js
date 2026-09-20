@@ -250,7 +250,7 @@ export function createModelPaint(renderer,horse,texture,{species='horse',frame=P
    if(frontCloth.a>.001){diffuseColor.rgb=mix(diffuseColor.rgb,frontCloth.rgb/frontCloth.a,chainZone);coverage*=1.-chainZone;filled=max(filled,chainZone);}
    // The neutral arm obscures the side of the waistcoat. Reuse unoccluded
    // burgundy cloth, rather than projecting the painted arm's outline onto it.
-   float sleeveT=clamp(dot(vec3(p.x+.035,p.y-1.217,abs(p.z)-.285),vec3(.056,-.201,.144))/.064225,0.,1.);
+   float sleeveT=clamp(dot(vec3(p.x+.045,p.y-1.217,abs(p.z)-.285),vec3(.056,-.201,.144))/.064225,0.,1.);
    float sleeveShape=1.-smoothstep(.108,.146,length(vec3(p.x+.035,p.y-1.217,abs(p.z)-.285)-sleeveT*vec3(.056,-.201,.144)));
    float sideCoat=smoothstep(.20,.28,abs(p.z))*smoothstep(.80,.85,p.y)*(1.-smoothstep(1.21,1.28,p.y))*step(vPaintPart,1.5)*(1.-sleeveShape);
    vec4 coatPaint=paintView(vec3(.25,.99+(p.y-.90)*.7,-.19+p.x*.18),vec3(1.,0.,0.),0.,false);
@@ -343,16 +343,34 @@ export function createModelPaint(renderer,horse,texture,{species='horse',frame=P
     if(armPaint.a>.001)diffuseColor.rgb=mix(diffuseColor.rgb,armPaint.rgb/armPaint.a*(.80+.20*abs(n.x)),armMask);
    }
    ${species==='sheep'?`
-   // Preserve the frontal red knot/tails while clearing old vest artwork
-   // from the shirt newly revealed by the wider neckline.
-   vec2 tieUV=vec2((.5-p.z/.925)/4.,.5+(p.y-.825)/1.85);
-   vec3 tieColor=texture2D(uModelPaint,tieUV).rgb;
-   float tie=max(step(vPaintPart,1.5),1.-step(.1,abs(vPaintPart-9.)))*smoothstep(-.01,.015,p.x)*(1.-smoothstep(.10,.13,abs(p.z)))*smoothstep(1.08,1.12,p.y)*(1.-smoothstep(1.32,1.34,p.y))*smoothstep(1.8,2.1,tieColor.r/max(.001,tieColor.g))*smoothstep(1.8,2.1,tieColor.r/max(.001,tieColor.b));
-   diffuseColor.rgb=mix(diffuseColor.rgb,tieColor,tie);coverage*=1.-tie;filled=max(filled,tie);
-   if(vPaintPart>9.5){
-    float a=atan(p.z/.16,(p.x+.05)/.14),t=clamp((p.y-1.275)/.040,0.,1.);
-    vec2 scarfUV=vec2((610.+10.*sin(a))/1774.,1.-(208.-7.*t)/887.);
-    diffuseColor.rgb=texture2D(uModelPaint,scarfUV).rgb*(.86+.14*max(0.,n.y));coverage=0.;filled=1.;
+   // Real scarf forms own the red paint; clear the previous chest copies.
+   float chest=smoothstep(.01,.05,p.x)*(1.-smoothstep(.105,.14,abs(p.z)))*smoothstep(1.09,1.125,p.y)*(1.-smoothstep(1.32,1.34,p.y));
+   if(vPaintPart<1.5){
+    vec3 cream=texture2D(uModelPaint,vec2((344.+p.z*200.)/1774.,1.-(299.+(1.25-p.y)*550.)/887.)).rgb;
+    diffuseColor.rgb=mix(diffuseColor.rgb,cream,chest);coverage*=1.-chest;filled=max(filled,chest);
+   }
+   if(abs(vPaintPart-9.)<.1){
+    vec4 cloth=sheepCloth(vec3(-.18,1.17+(p.y-1.20)*.25,p.z*.5),vec3(-1.,0.,0.),2.);
+    if(cloth.a>.001){diffuseColor.rgb=mix(diffuseColor.rgb,cloth.rgb/cloth.a,chest);coverage*=1.-chest;filled=max(filled,chest);}
+   }
+   if(abs(vPaintPart-10.)<.1){
+    float a=atan(p.z/.16,(p.x+.03)/.145),front=pow(max(0.,cos(a)),3.),t=clamp(.5+(p.y-1.304+.041*front)/(.026+.018*pow(sin(a),2.)),0.,1.);
+    // One continuous all-red cloth footprint; no color-key boundary on folds.
+    vec2 scarfUV=vec2((608.+10.*sin(a*2.)*sin(t*3.14159))/1774.,1.-(212.-10.*t-2.*cos(a*3.)*sin(t*3.14159))/887.);
+    diffuseColor.rgb=texture2D(uModelPaint,scarfUV).rgb*(.82+.18*max(0.,n.y));coverage=0.;filled=1.;
+   }
+   if(abs(vPaintPart-7.)<.1&&p.y<1.35){
+    float ghost=smoothstep(1.7,2.1,diffuseColor.r/max(.001,max(diffuseColor.g,diffuseColor.b)));
+    vec3 wool=texture2D(uModelPaint,vec2((221.+p.z*300.)/1774.,1.-(199.+(1.33-p.y)*180.)/887.)).rgb;
+    diffuseColor.rgb=mix(diffuseColor.rgb,wool,ghost);coverage*=1.-ghost;filled=max(filled,ghost);
+   }
+   if(vPaintPart>10.5){
+    vec2 tieUV=vec2((.5-p.z/.925)/4.,.5+(p.y-.825)/1.85);
+    vec3 color=texture2D(uModelPaint,tieUV).rgb;
+    // Turned edges reuse their red cloth interior, never the cream background.
+    float red=smoothstep(1.7,2.1,color.r/max(.001,max(color.g,color.b)));
+    vec3 inset=texture2D(uModelPaint,vec2((vPaintPart<11.5?222.:p.z>0.?202.:244.)/1774.,1.-(vPaintPart<11.5?238.:269.)/887.)).rgb;
+    diffuseColor.rgb=mix(inset,color,red)*(.80+.20*max(0.,n.x));coverage=0.;filled=1.;
    }`:''}
    if(uPaintDebug>.5)diffuseColor.rgb=mix(mix(vec3(.8,.0,.55),vec3(.03,.18,.95),filled),vec3(.04,.8,.12),coverage);
   `);
