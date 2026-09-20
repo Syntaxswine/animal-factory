@@ -58,6 +58,18 @@ export function createModelPaint(renderer,horse,texture,{species='horse',frame=P
    uniform sampler2D uModelPaint,uPaintDepth,uPaintParts,uPaintMask; uniform float uPaintDebug,uGripForearm;
    varying vec3 vPaintPosition,vPaintNormal; varying float vPaintPart;
    vec3 fallbackPaint(float part){
+    ${species==='donkey'?`if(part<1.5)return vec3(.16,.19,.075);
+    if(part<2.5)return vec3(.24,.13,.055);
+    if(abs(part-3.)<.1||abs(part-5.)<.1)return vPaintPosition.y>.775?vec3(.34,.27,.19):vec3(.055,.039,.026);
+    if(abs(part-4.)<.1||abs(part-6.)<.1)return vec3(.055,.039,.026);
+    if(part<7.5)return vPaintPosition.x>.14?vec3(.67,.59,.44):vec3(.34,.27,.19);
+    if(part<9.5)return vec3(.055,.039,.026);return vec3(.87,.47,.025);`:''}
+    ${species==='sheep'?`if(part<1.5)return vec3(.72,.65,.49);
+    if(part<2.5)return vec3(.30,.17,.075);
+    if(abs(part-3.)<.1||abs(part-5.)<.1)return vPaintPosition.y>.775?vec3(.76,.66,.45):vec3(.075,.065,.050);
+    if(abs(part-4.)<.1||abs(part-6.)<.1)return vPaintPosition.y>.112?vec3(.76,.66,.45):vec3(.075,.065,.050);
+    if(part<7.5)return vPaintPosition.x>.0&&vPaintPosition.y<1.57?vec3(.23,.21,.17):vec3(.76,.66,.45);
+    if(part<8.5)return vec3(.76,.66,.45);return vec3(.15,.18,.045);`:''}
     ${species==='hen'?`if(abs(part-3.)<.1||abs(part-5.)<.1)return vec3(.50,.035,.014);
     if(abs(part-4.)<.1||abs(part-11.)<.1||abs(part-12.)<.1)return vec3(.72,.35,.035);
     if(abs(part-6.)<.1)return vec3(.16,.18,.055);
@@ -106,8 +118,12 @@ export function createModelPaint(renderer,horse,texture,{species='horse',frame=P
     float facing=view<.5?n.x:(view<1.5?n.z:(view<2.5?-n.x:-n.z));
     // The frontal painting owns the blaze; side paintings own cheeks/eyes.
     // This prevents two separately painted ridge edges from becoming two stripes.
-    float blazeOwner=${species==='hen'||species==='goat'||species==='pig-foreman'||species==='pig-director'?'0.0':species==='bull'?'(1.0-smoothstep(.024,.065,abs(p.z)))*smoothstep(1.435,1.455,p.y)*smoothstep(.0,.04,p.x)*step(6.5,vPaintPart)*step(vPaintPart,7.5)':'(1.0-smoothstep(.024,.065,abs(p.z)))*smoothstep(1.375,1.415,p.y)*smoothstep(.0,.04,p.x)*step(6.5,vPaintPart)*step(vPaintPart,7.5)'};
+    float blazeOwner=${species==='donkey'||species==='sheep'||species==='hen'||species==='goat'||species==='pig-foreman'||species==='pig-director'?'0.0':species==='bull'?'(1.0-smoothstep(.024,.065,abs(p.z)))*smoothstep(1.435,1.455,p.y)*smoothstep(.0,.04,p.x)*step(6.5,vPaintPart)*step(vPaintPart,7.5)':'(1.0-smoothstep(.024,.065,abs(p.z)))*smoothstep(1.375,1.415,p.y)*smoothstep(.0,.04,p.x)*step(6.5,vPaintPart)*step(vPaintPart,7.5)'};
     facing=view<.5?mix(facing,1.0,blazeOwner):facing*(1.0-blazeOwner);
+    ${species==='donkey'?`// Each orbital surface has one profile owner, including the frontal turn.
+    float eyeOwner=(1.-smoothstep(.75,1.2,length((p.xy-vec2(.027,1.397))/vec2(.065,.038))))*smoothstep(.036,.059,abs(p.z))*step(6.5,vPaintPart)*step(vPaintPart,7.5);
+    float sideView=p.z>0.?1.:3.;
+    facing=abs(view-sideView)<.1?mix(facing,1.,eyeOwner):facing*(1.-eyeOwner);`:''}
     ${species==='hen'?`// One angular mapping around each orbit prevents front/profile
     // projections from painting two irises on the same curved cheek.
     float eyeOwner=smoothstep(.020,.040,abs(p.z))*smoothstep(1.37,1.395,p.y)*(1.-smoothstep(1.495,1.515,p.y))*smoothstep(-.03,0.,p.x)*step(1.5,vPaintPart)*step(vPaintPart,2.5);
@@ -132,6 +148,8 @@ export function createModelPaint(renderer,horse,texture,{species='horse',frame=P
     float eyeOwner=(1.0-smoothstep(.75,1.15,length((p.xy-vec2(.050,1.447))/vec2(.050,.035))))*smoothstep(.070,.100,abs(p.z))*step(6.5,vPaintPart)*step(vPaintPart,7.5);
     float sideView=p.z>0.0?1.0:3.0;
     facing=abs(view-sideView)<.1?mix(facing,1.0,eyeOwner):facing*(1.0-eyeOwner);`:''}
+    ${species==='sheep'?`float eyeOwner=(1.-smoothstep(.70,1.15,length((p.xy-vec2(.075,1.505))/vec2(.090,.055))))*smoothstep(.058,.086,abs(p.z))*step(6.5,vPaintPart)*step(vPaintPart,7.5);
+    float sideView=p.z>0.?1.:3.;facing=abs(view-sideView)<.1?mix(facing,1.,eyeOwner):facing*(1.-eyeOwner);`:''}
     ${species==='goat'?`// Side paintings own the eye and horn markings; frontal projection otherwise
     // smears their separately painted contours across the oblique surface.
     float eyeOwner=(1.0-smoothstep(.75,1.15,length((p.xy-vec2(.048,1.485))/vec2(.055,.040))))*smoothstep(.047,.065,abs(p.z));
@@ -146,6 +164,11 @@ export function createModelPaint(renderer,horse,texture,{species='horse',frame=P
     // A sleeve underlap may borrow shirt paint, but never skin or overall paint.
     ${species!=='hen'?`if(!direct&&p.y>.925&&(abs(vPaintPart-3.0)<.1||abs(vPaintPart-5.0)<.1))samePart=max(samePart,1.0-step(.4,abs(sourcePart-1.0)));`:''}
     vec2 colorUV=uv;
+    ${species==='donkey'?`if(abs(view-sideView)<.1){float eyeX=.027+.08*(atan(p.x+.015,abs(p.z))-.48);colorUV.x+=(view<2.?1.:-1.)*(eyeX-p.x)/(${frame.width.toFixed(6)}*4.)*eyeOwner;}`:''}
+    ${species==='sheep'?`
+    // Wrap each profile iris around its orbital surface, with one owner per eye.
+    if(abs(view-sideView)<.1){float eyeX=.052+.10*(atan(p.x+.012,abs(p.z))-.96);colorUV.x+=(view<2.?1.:-1.)*(eyeX-p.x)/(${frame.width.toFixed(6)}*4.)*eyeOwner;}
+    `:''}
     ${species==='hen'?`// The narrow painted waistband sits slightly above the grey strip.
     if(abs(vPaintPart-13.)<.1)colorUV.y+=(p.x<-.24&&abs(p.z)<.13)?-.024:.006;
     if(abs(view-sideView)<.1){float eyeX=.063+.10*(atan(p.x-.005,abs(p.z))-.65);colorUV.x+=(view<2.?1.:-1.)*(eyeX-p.x)/(${frame.width.toFixed(6)}*4.)*eyeOwner;colorUV.y+=.012*eyeOwner;}
@@ -188,10 +211,40 @@ export function createModelPaint(renderer,horse,texture,{species='horse',frame=P
    ${species!=='hen'?`if(vPaintPart<2.5&&vPaintPart>1.5&&p.y<.86){float center=.12+clamp(.8-p.y,0.0,.67)*.17;fillPosition.z=mix(p.z,sign(p.z)*center,.16);}
    if(abs(vPaintPart-4.0)<.1||abs(vPaintPart-6.0)<.1)fillPosition.z=mix(p.z,sign(p.z)*.232,.18);`:''}
    vec4 fill=paintView(fillPosition,n,0.0,false)+paintView(fillPosition,n,2.0,false);
-   ${species==='hen'||species==='goat'||species==='bull'||species==='skunk'||species==='pig-foreman'||species==='pig-director'?`fill+=paintView(fillPosition,n,1.0,false)+paintView(fillPosition,n,3.0,false);`:''}
+   ${species==='donkey'||species==='sheep'||species==='hen'||species==='goat'||species==='bull'||species==='skunk'||species==='pig-foreman'||species==='pig-director'?`fill+=paintView(fillPosition,n,1.0,false)+paintView(fillPosition,n,3.0,false);`:''}
    float filled=smoothstep(.002,.025,fill.a);
    vec3 base=mix(fallbackPaint(vPaintPart),fill.rgb/max(.00001,fill.a),filled);
    diffuseColor.rgb=mix(base,paint.rgb/max(.00001,paint.a),coverage);
+   ${species==='donkey'?`
+   // Folded scarf edges reuse gold cloth, rather than projecting competing
+   // front/profile outlines across the thin wrap and knot.
+   if(vPaintPart>9.5){
+    vec2 uv=vec2((.5-p.z/.925)/4.,.5+(p.y-.825)/1.85);
+    vec3 scarf=texture2D(uModelPaint,uv).rgb;
+    float gold=smoothstep(1.35,1.8,scarf.g/max(.001,scarf.b))*smoothstep(1.05,1.2,scarf.r/max(.001,scarf.g));
+    float a=atan(p.z/.11,(p.x+.04)/.10),t=clamp((p.y-1.265)/.06,0.,1.);
+    vec3 inset=texture2D(uModelPaint,vec2((620.+12.*sin(a*2.))/1774.,1.-(221.+5.*cos(t*6.28+a))/887.)).rgb;
+    float front=vPaintPart>10.5?gold:0.;
+    diffuseColor.rgb=mix(inset,scarf,front)*(.82+.18*max(n.x,0.));coverage=0.;filled=1.;
+   }`:''}
+   ${species==='sheep'?`
+   float shoulder=step(vPaintPart,1.5)*smoothstep(.055,.080,abs(p.z))*(1.-smoothstep(.26,.32,abs(p.z)))*smoothstep(1.10,1.17,p.y);
+   vec4 shirtPaint=paintView(vec3(.12,p.y-.02,sign(p.z)*(.24+(1.26-p.y)*.55+p.x*.25)),vec3(1.,0.,0.),0.,false);
+   if(shirtPaint.a>.001){diffuseColor.rgb=mix(diffuseColor.rgb,shirtPaint.rgb/shirtPaint.a,shoulder);coverage*=1.-shoulder;filled=max(filled,shoulder);}
+   float collar=step(vPaintPart,1.5)*smoothstep(1.20,1.25,p.y);
+   vec4 collarPaint=paintView(vec3(.12,1.13+(p.y-1.27)*.5,.30+p.z*.3),vec3(1.,0.,0.),0.,false);
+   if(collarPaint.a>.001){diffuseColor.rgb=mix(diffuseColor.rgb,collarPaint.rgb/collarPaint.a,collar);coverage*=1.-collar;filled=max(filled,collar);}
+   float neck=(1.-coverage)*(1.-filled)*(1.-smoothstep(1.29,1.33,p.y))*step(6.5,vPaintPart)*step(vPaintPart,7.5);
+   vec4 neckPaint=paintView(vec3(p.x,p.y+.045,p.z),n,2.,false);
+   if(neckPaint.a>.001){diffuseColor.rgb=mix(diffuseColor.rgb,neckPaint.rgb/neckPaint.a,neck);filled=max(filled,neck);}
+   float crown=(1.-coverage)*(1.-filled)*smoothstep(1.55,1.60,p.y)*step(6.5,vPaintPart)*step(vPaintPart,7.5);
+   vec4 woolPaint=paintView(vec3(-.10,1.57,p.z*.55),vec3(-1.,0.,0.),2.,false);
+   if(woolPaint.a>.001){diffuseColor.rgb=mix(diffuseColor.rgb,woolPaint.rgb/woolPaint.a,crown);filled=max(filled,crown);}
+   // Ear interior paint belongs on the flap, not the wool behind its root.
+   float earGhost=(1.-smoothstep(-.07,.005,p.x))*smoothstep(1.43,1.47,p.y)*(1.-smoothstep(1.55,1.58,p.y))*(1.-smoothstep(.11,.16,abs(p.z)))*step(6.5,vPaintPart)*step(vPaintPart,7.5);
+   vec4 rearWool=paintView(vec3(-.15,p.y,atan(p.z,max(.06,-p.x))*.105),vec3(-1.,0.,0.),2.,false);
+   if(rearWool.a>.001){diffuseColor.rgb=mix(diffuseColor.rgb,rearWool.rgb/rearWool.a,earGhost);coverage*=1.-earGhost;filled=max(filled,earGhost);}
+   `:''}
    ${species==='hen'?`
    // Keep the painted red wattles on their own geometry, not the neck behind.
    float wattleGhost=step(1.5,vPaintPart)*step(vPaintPart,2.5)*smoothstep(.04,.09,p.x)*(1.-smoothstep(1.335,1.37,p.y))*smoothstep(1.20,1.24,p.y);
@@ -220,7 +273,7 @@ export function createModelPaint(renderer,horse,texture,{species='horse',frame=P
    if(frontCloth.a>.001){diffuseColor.rgb=mix(diffuseColor.rgb,frontCloth.rgb/frontCloth.a,chainZone);coverage*=1.-chainZone;filled=max(filled,chainZone);}
    // The neutral arm obscures the side of the waistcoat. Reuse unoccluded
    // burgundy cloth, rather than projecting the painted arm's outline onto it.
-   float sleeveT=clamp(dot(vec3(p.x+.035,p.y-1.217,abs(p.z)-.285),vec3(.056,-.201,.144))/.064225,0.,1.);
+   float sleeveT=clamp(dot(vec3(p.x+.045,p.y-1.217,abs(p.z)-.285),vec3(.056,-.201,.144))/.064225,0.,1.);
    float sleeveShape=1.-smoothstep(.108,.146,length(vec3(p.x+.035,p.y-1.217,abs(p.z)-.285)-sleeveT*vec3(.056,-.201,.144)));
    float sideCoat=smoothstep(.20,.28,abs(p.z))*smoothstep(.80,.85,p.y)*(1.-smoothstep(1.21,1.28,p.y))*step(vPaintPart,1.5)*(1.-sleeveShape);
    vec4 coatPaint=paintView(vec3(.25,.99+(p.y-.90)*.7,-.19+p.x*.18),vec3(1.,0.,0.),0.,false);
@@ -312,6 +365,36 @@ export function createModelPaint(renderer,horse,texture,{species='horse',frame=P
     float armMask=smoothstep(.765,.785,p.y)*(1.-smoothstep(.903,.918,p.y));
     if(armPaint.a>.001)diffuseColor.rgb=mix(diffuseColor.rgb,armPaint.rgb/armPaint.a*(.80+.20*abs(n.x)),armMask);
    }
+   ${species==='sheep'?`
+   // Real scarf forms own the red paint; clear the previous chest copies.
+   float chest=smoothstep(.01,.05,p.x)*(1.-smoothstep(.105,.14,abs(p.z)))*smoothstep(1.09,1.125,p.y)*(1.-smoothstep(1.32,1.34,p.y));
+   if(vPaintPart<1.5){
+    vec3 cream=texture2D(uModelPaint,vec2((344.+p.z*200.)/1774.,1.-(299.+(1.25-p.y)*550.)/887.)).rgb;
+    diffuseColor.rgb=mix(diffuseColor.rgb,cream,chest);coverage*=1.-chest;filled=max(filled,chest);
+   }
+   if(abs(vPaintPart-9.)<.1){
+    vec4 cloth=sheepCloth(vec3(-.18,1.17+(p.y-1.20)*.25,p.z*.5),vec3(-1.,0.,0.),2.);
+    if(cloth.a>.001){diffuseColor.rgb=mix(diffuseColor.rgb,cloth.rgb/cloth.a,chest);coverage*=1.-chest;filled=max(filled,chest);}
+   }
+   if(abs(vPaintPart-10.)<.1){
+    float a=atan(p.z/.16,(p.x+.03)/.145),front=pow(max(0.,cos(a)),3.),t=clamp(.5+(p.y-1.304+.041*front)/(.026+.018*pow(sin(a),2.)),0.,1.);
+    // One continuous all-red cloth footprint; no color-key boundary on folds.
+    vec2 scarfUV=vec2((608.+10.*sin(a*2.)*sin(t*3.14159))/1774.,1.-(212.-10.*t-2.*cos(a*3.)*sin(t*3.14159))/887.);
+    diffuseColor.rgb=texture2D(uModelPaint,scarfUV).rgb*(.82+.18*max(0.,n.y));coverage=0.;filled=1.;
+   }
+   if(abs(vPaintPart-7.)<.1&&p.y<1.35){
+    float ghost=smoothstep(1.7,2.1,diffuseColor.r/max(.001,max(diffuseColor.g,diffuseColor.b)));
+    vec3 wool=texture2D(uModelPaint,vec2((221.+p.z*300.)/1774.,1.-(199.+(1.33-p.y)*180.)/887.)).rgb;
+    diffuseColor.rgb=mix(diffuseColor.rgb,wool,ghost);coverage*=1.-ghost;filled=max(filled,ghost);
+   }
+   if(vPaintPart>10.5){
+    vec2 tieUV=vec2((.5-p.z/.925)/4.,.5+(p.y-.825)/1.85);
+    vec3 color=texture2D(uModelPaint,tieUV).rgb;
+    // Turned edges reuse their red cloth interior, never the cream background.
+    float red=smoothstep(1.7,2.1,color.r/max(.001,max(color.g,color.b)));
+    vec3 inset=texture2D(uModelPaint,vec2((vPaintPart<11.5?222.:p.z>0.?202.:244.)/1774.,1.-(vPaintPart<11.5?238.:269.)/887.)).rgb;
+    diffuseColor.rgb=mix(inset,color,red)*(.80+.20*max(0.,n.x));coverage=0.;filled=1.;
+   }`:''}
    if(uPaintDebug>.5)diffuseColor.rgb=mix(mix(vec3(.8,.0,.55),vec3(.03,.18,.95),filled),vec3(.04,.8,.12),coverage);
   `);
  };
