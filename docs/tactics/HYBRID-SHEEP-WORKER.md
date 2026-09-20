@@ -6,8 +6,8 @@ the hen before authorizing this next character.
 
 ## Form and reduction
 
-**29,684 author triangles → 9,996 reduced triangles.** The reduced character
-derives from the stored author mesh, preserving nine closed connected surfaces
+**29,972 author triangles → 10,188 reduced triangles.** The reduced character
+derives from the stored author mesh, preserving ten closed connected surfaces
 and the shared 17-bone worker rig. Height is **1.65 world units**; the prototype
 isometric camera and **58 CSS pixels/world unit** remain unchanged.
 
@@ -93,3 +93,28 @@ and `PLAYWRIGHT_PATH` set, run `node tools/sheep-worker-review.mjs --grey`,
 
 This branch contains a presentation prototype. Building the distribution does
 not publish it or merge the graphics branch into canonical gameplay.
+
+## Neckline correction after user markup
+
+The user identified the exposed angular shirt wedge and marked the intended
+descending vest edge. The front opening now slopes from the inner shoulders
+toward the knot, while retaining the enclosed armholes and shoulder bridges.
+A closed, fitted neckerchief wrap adds 288 author / 192 reduced triangles;
+its front tapers beneath the chin so the existing painted knot remains visible.
+The counts at the top of this document include this wrap.
+
+The wrap reuses the red cloth from the existing skin. Newly exposed shirt
+receives cream cloth, and one frontal painting owns the red knot and tails
+across both shirt and waistcoat. This avoids the red/cream discontinuity at
+the physical V rim. Reused scarf paint remains blue in coverage mode.
+
+The correction cleared a fresh independent **9/10** hostile review using
+front and both three-quarter views of both meshes. A small physical rim remains
+visible between the tails at close range. Thirteen focused sheep, shared rig
+and projection tests pass, as do 64 grey and 64 painted browser configurations
+and seven earlier-character render checks. The five sheep tests now also
+verify that the scarf is a closed band. The original full character pass above
+used 59 tests; the localized correction reran the 13 relevant tests.
+
+Run `node tools/sheep-neckline-review.mjs` for the 16 close neckline renders
+saved beside the full-body evidence as `neck-*.png`.

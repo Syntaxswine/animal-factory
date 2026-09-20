@@ -205,12 +205,12 @@ export function createModelPaint(renderer,horse,texture,{species='horse',frame=P
    vec3 base=mix(fallbackPaint(vPaintPart),fill.rgb/max(.00001,fill.a),filled);
    diffuseColor.rgb=mix(base,paint.rgb/max(.00001,paint.a),coverage);
    ${species==='sheep'?`
-   float shoulder=step(vPaintPart,1.5)*smoothstep(.085,.12,abs(p.z))*(1.-smoothstep(.26,.32,abs(p.z)))*smoothstep(1.10,1.17,p.y);
+   float shoulder=step(vPaintPart,1.5)*smoothstep(.055,.080,abs(p.z))*(1.-smoothstep(.26,.32,abs(p.z)))*smoothstep(1.10,1.17,p.y);
    vec4 shirtPaint=paintView(vec3(.12,p.y-.02,sign(p.z)*(.24+(1.26-p.y)*.55+p.x*.25)),vec3(1.,0.,0.),0.,false);
    if(shirtPaint.a>.001){diffuseColor.rgb=mix(diffuseColor.rgb,shirtPaint.rgb/shirtPaint.a,shoulder);coverage*=1.-shoulder;filled=max(filled,shoulder);}
-   float collar=(1.-coverage)*(1.-filled)*step(vPaintPart,1.5)*smoothstep(1.20,1.25,p.y);
+   float collar=step(vPaintPart,1.5)*smoothstep(1.20,1.25,p.y);
    vec4 collarPaint=paintView(vec3(.12,1.13+(p.y-1.27)*.5,.30+p.z*.3),vec3(1.,0.,0.),0.,false);
-   if(collarPaint.a>.001){diffuseColor.rgb=mix(diffuseColor.rgb,collarPaint.rgb/collarPaint.a,collar);filled=max(filled,collar);}
+   if(collarPaint.a>.001){diffuseColor.rgb=mix(diffuseColor.rgb,collarPaint.rgb/collarPaint.a,collar);coverage*=1.-collar;filled=max(filled,collar);}
    float neck=(1.-coverage)*(1.-filled)*(1.-smoothstep(1.29,1.33,p.y))*step(6.5,vPaintPart)*step(vPaintPart,7.5);
    vec4 neckPaint=paintView(vec3(p.x,p.y+.045,p.z),n,2.,false);
    if(neckPaint.a>.001){diffuseColor.rgb=mix(diffuseColor.rgb,neckPaint.rgb/neckPaint.a,neck);filled=max(filled,neck);}
@@ -342,6 +342,18 @@ export function createModelPaint(renderer,horse,texture,{species='horse',frame=P
     float armMask=smoothstep(.765,.785,p.y)*(1.-smoothstep(.903,.918,p.y));
     if(armPaint.a>.001)diffuseColor.rgb=mix(diffuseColor.rgb,armPaint.rgb/armPaint.a*(.80+.20*abs(n.x)),armMask);
    }
+   ${species==='sheep'?`
+   // Preserve the frontal red knot/tails while clearing old vest artwork
+   // from the shirt newly revealed by the wider neckline.
+   vec2 tieUV=vec2((.5-p.z/.925)/4.,.5+(p.y-.825)/1.85);
+   vec3 tieColor=texture2D(uModelPaint,tieUV).rgb;
+   float tie=max(step(vPaintPart,1.5),1.-step(.1,abs(vPaintPart-9.)))*smoothstep(-.01,.015,p.x)*(1.-smoothstep(.10,.13,abs(p.z)))*smoothstep(1.08,1.12,p.y)*(1.-smoothstep(1.32,1.34,p.y))*smoothstep(1.8,2.1,tieColor.r/max(.001,tieColor.g))*smoothstep(1.8,2.1,tieColor.r/max(.001,tieColor.b));
+   diffuseColor.rgb=mix(diffuseColor.rgb,tieColor,tie);coverage*=1.-tie;filled=max(filled,tie);
+   if(vPaintPart>9.5){
+    float a=atan(p.z/.16,(p.x+.05)/.14),t=clamp((p.y-1.275)/.040,0.,1.);
+    vec2 scarfUV=vec2((610.+10.*sin(a))/1774.,1.-(208.-7.*t)/887.);
+    diffuseColor.rgb=texture2D(uModelPaint,scarfUV).rgb*(.86+.14*max(0.,n.y));coverage=0.;filled=1.;
+   }`:''}
    if(uPaintDebug>.5)diffuseColor.rgb=mix(mix(vec3(.8,.0,.55),vec3(.03,.18,.95),filled),vec3(.04,.8,.12),coverage);
   `);
  };
