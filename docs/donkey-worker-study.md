@@ -16,6 +16,12 @@ The throat now lengthens smoothly from the jacket to the jaw. The upper skull, m
 
 Original paint positions and normals remain registered to the existing sheet. Newly exposed neck and shoulder areas borrow fur and jacket paint and are marked blue in coverage mode. No new painting was generated. Face shape, body width and jacket silhouette are separate follow-up work; this revision addresses the missing neck first.
 
+### Local proportion refinement
+
+The accepted neck height and lowered scarf remain the baseline. A smooth narrowing through the throat now blends into the broader neck base and jaw. The upper jacket narrows by up to 8% across the shoulders, fading toward the cuffs and central chest. Forearm thickness decreases by up to 18% around the existing arm centerlines, fading into the elbow and wrist; hands and rifle grip locations stay fixed. No upper-skull enlargement or new paint asset was needed. Newly exposed cuff undersides borrow rolled-sleeve paint and remain marked as borrowed coverage.
+
+Both author and reduced meshes pass geometry, rig and neck-clearance tests, plus 64 grey and 64 painted browser combinations. Reviewed front, profile, three-quarter and gameplay views against the sprite. The changes are localized; detailed facial shaping and jacket tailoring remain future polish.
+
 The original `neutral-paint-reference.png` remains the source of the current texture. `neck-grey-reference.png` records the revised geometry with a wider frame (width 1.025, height 2.05, center Y 0.875) to include the taller ears. It is not the registration frame for the existing paint.
 
 All 441 project tests passed. Donkey tests check closed connected surfaces, scale, both ears, muzzle and bounded mane; normalized skin weights, foot stability, actual hand proximity to the rifle grips and return to neutral. The low mesh retains every author component.

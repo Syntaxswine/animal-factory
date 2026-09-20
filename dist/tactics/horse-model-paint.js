@@ -221,6 +221,10 @@ export function createModelPaint(renderer,horse,texture,{species='horse',frame=P
     float shoulder=smoothstep(1.18,1.23,p.y)*(1.-coverage);
     vec4 cloth=paintView(vec3(-.15,1.16,p.z*.4),vec3(-1.,0.,0.),2.,false);
     if(cloth.a>.001){diffuseColor.rgb=mix(diffuseColor.rgb,cloth.rgb/cloth.a,shoulder);filled=max(filled,shoulder);}
+    // Slimmer forearms reveal the underside of the rolled jacket cuffs.
+    float cuff=(1.-smoothstep(1.025,1.065,p.y))*smoothstep(.25,.29,abs(p.z))*(1.-coverage);
+    vec4 sleeve=paintView(vec3(.13,1.045,sign(p.z)*.31),vec3(1.,0.,0.),0.,false);
+    if(sleeve.a>.001){diffuseColor.rgb=mix(diffuseColor.rgb,sleeve.rgb/sleeve.a*(.80+.20*max(n.y,0.)),cuff);filled=max(filled,cuff);}
    }
    // The lengthened throat was hidden by the old scarf. Reuse an unoccluded
    // cheek-fur patch, with a soft transition into the existing jaw painting.
