@@ -216,6 +216,21 @@ export function createModelPaint(renderer,horse,texture,{species='horse',frame=P
    vec3 base=mix(fallbackPaint(vPaintPart),fill.rgb/max(.00001,fill.a),filled);
    diffuseColor.rgb=mix(base,paint.rgb/max(.00001,paint.a),coverage);
    ${species==='donkey'?`
+   // Lifting the head reveals the jacket's previously occluded shoulder tops.
+   if(vPaintPart<1.5){
+    float shoulder=smoothstep(1.18,1.23,p.y)*(1.-coverage);
+    vec4 cloth=paintView(vec3(-.15,1.16,p.z*.4),vec3(-1.,0.,0.),2.,false);
+    if(cloth.a>.001){diffuseColor.rgb=mix(diffuseColor.rgb,cloth.rgb/cloth.a,shoulder);filled=max(filled,shoulder);}
+   }
+   // The lengthened throat was hidden by the old scarf. Reuse an unoccluded
+   // cheek-fur patch, with a soft transition into the existing jaw painting.
+   if(abs(vPaintPart-7.)<.1){
+    float neck=(1.-smoothstep(1.325,1.365,p.y))*(1.-smoothstep(.08,.15,p.x)),a=atan(p.z,p.x+.055);
+    neck=max(neck,(1.-coverage)*(1.-filled)*(1.-smoothstep(1.33,1.36,p.y)));
+    vec2 furUV=vec2((630.+14.*sin(a*2.))/1774.,1.-(199.-(p.y-1.20)*140.)/887.);
+    vec3 fur=texture2D(uModelPaint,furUV).rgb*(.82+.18*max(n.x,0.));
+    diffuseColor.rgb=mix(diffuseColor.rgb,fur,neck);coverage*=1.-neck;filled=max(filled,neck);
+   }
    // Folded scarf edges reuse gold cloth, rather than projecting competing
    // front/profile outlines across the thin wrap and knot.
    if(vPaintPart>9.5){

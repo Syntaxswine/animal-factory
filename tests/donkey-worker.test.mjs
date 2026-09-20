@@ -16,11 +16,11 @@ for(const data of [author,low]){
    assert.ok(part.errorWorld<.005,part.name);g.dispose();
   }
   const h=createDonkeyWorker(data);try{
-   const d=h.diagnostics();assert.ok(Math.abs(d.min[1])<1e-6);assert.ok(d.max[1]>1.64&&d.max[1]<1.66);
+   const d=h.diagnostics();assert.ok(Math.abs(d.min[1])<1e-6);assert.ok(d.max[1]>1.75&&d.max[1]<1.77);
    const skull=h.parts[6].geometry.attributes.position,ears=[0,0];let nose=-Infinity;
    for(let i=0;i<skull.count;i++){if(skull.getY(i)>1.53&&Math.abs(skull.getZ(i))>.06)ears[skull.getZ(i)<0?0:1]++;nose=Math.max(nose,skull.getX(i));}
    assert.ok(ears.every(n=>n>20),'both long ears survive reduction');assert.ok(nose>.22&&nose<.25,'broad projecting donkey muzzle');
-   const mane=h.parts[7].geometry.attributes.position;for(let i=0;i<mane.count;i++)assert.ok(mane.getY(i)>1.23&&mane.getY(i)<1.49,'short crest stays bounded behind head');
+   const mane=h.parts[7].geometry.attributes.position;for(let i=0;i<mane.count;i++)assert.ok(mane.getY(i)>1.29&&mane.getY(i)<1.60,'short crest stays bounded behind head');
   }finally{h.dispose();}
  });
  test(`donkey ${data.triangles}: rig weights, stable feet and rifle contact`,()=>{
@@ -33,3 +33,20 @@ for(const data of [author,low]){
  });
 }
 test('donkey reduction preserves all author components',()=>{assert.equal(low.sourceTriangles,author.triangles);assert.ok(low.triangles/author.triangles<.36);for(let i=0;i<author.parts.length;i++){assert.equal(low.parts[i].name,author.parts[i].name);assert.equal(low.parts[i].sourceTriangles,author.parts[i].triangles);}});
+test('neck separates jaw from scarf while preserving the skull size and paint registration',()=>{
+ for(const data of [author,low]){
+  const head=data.parts[6],wrap=data.parts[9];let jaw=Infinity,collar=-Infinity;
+  for(let i=0;i<head.position.length;i+=3){
+   const p=head.position,original=head.paintPosition;
+   assert.ok(Math.abs(p[i]-original[i])<1e-7);assert.ok(Math.abs(p[i+2]-original[i+2])<1e-7);
+   if(original[i+1]>=1.30)assert.ok(Math.abs(p[i+1]-original[i+1]-.11)<1e-6,'upper head is translated without scaling');
+   if(p[i]>.12)jaw=Math.min(jaw,p[i+1]);
+  }
+  for(let i=1;i<wrap.position.length;i+=3)collar=Math.max(collar,wrap.position[i]);
+  assert.ok(jaw-collar>.015,'jaw clears even the highest scarf fold');
+  const worker=createDonkeyWorker(data);try{
+   const ray=new THREE.Raycaster(new THREE.Vector3(-.04,1.33,.5),new THREE.Vector3(0,0,-1));
+   const hit=ray.intersectObjects(worker.parts)[0];assert.ok(hit);assert.equal(hit.object.name,head.name,'neck is exposed above clothing in profile');
+  }finally{worker.dispose();}
+ }
+});
