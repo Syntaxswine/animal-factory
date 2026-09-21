@@ -1,0 +1,293 @@
+{
+  "browser": "153.0.4234.48",
+  "errors": [],
+  "checks": [
+    {
+      "mesh": "10k",
+      "pose": "neutral",
+      "view": "front",
+      "triangles": 10446,
+      "coverage": {
+        "mappedPixels": 249216,
+        "borrowedPixels": 26488,
+        "fallbackPixels": 9,
+        "fallbackPercent": 0.003264263926619347
+      }
+    },
+    {
+      "mesh": "10k",
+      "pose": "neutral",
+      "view": "side",
+      "triangles": 10446,
+      "coverage": {
+        "mappedPixels": 151591,
+        "borrowedPixels": 12313,
+        "fallbackPixels": 4,
+        "fallbackPercent": 0.002440393391414696
+      }
+    },
+    {
+      "mesh": "10k",
+      "pose": "neutral",
+      "view": "back",
+      "triangles": 10446,
+      "coverage": {
+        "mappedPixels": 259753,
+        "borrowedPixels": 17979,
+        "fallbackPixels": 8,
+        "fallbackPercent": 0.0028803917332757257
+      }
+    },
+    {
+      "mesh": "10k",
+      "pose": "neutral",
+      "view": "three",
+      "triangles": 10446,
+      "coverage": {
+        "mappedPixels": 212409,
+        "borrowedPixels": 38053,
+        "fallbackPixels": 11,
+        "fallbackPercent": 0.004391690920777888
+      }
+    },
+    {
+      "mesh": "10k",
+      "pose": "neutral",
+      "view": "game",
+      "triangles": 10446,
+      "coverage": {
+        "mappedPixels": 189324,
+        "borrowedPixels": 35682,
+        "fallbackPixels": 9,
+        "fallbackPercent": 0.003999733351109926
+      }
+    },
+    {
+      "mesh": "10k",
+      "pose": "carry",
+      "view": "front",
+      "triangles": 10446,
+      "coverage": {
+        "mappedPixels": 211037,
+        "borrowedPixels": 26439,
+        "fallbackPixels": 2,
+        "fallbackPercent": 0.0008421832759245067
+      }
+    },
+    {
+      "mesh": "10k",
+      "pose": "carry",
+      "view": "side",
+      "triangles": 10446,
+      "coverage": {
+        "mappedPixels": 148084,
+        "borrowedPixels": 20395,
+        "fallbackPixels": 9,
+        "fallbackPercent": 0.005341626703385404
+      }
+    },
+    {
+      "mesh": "10k",
+      "pose": "carry",
+      "view": "back",
+      "triangles": 10446,
+      "coverage": {
+        "mappedPixels": 233681,
+        "borrowedPixels": 19915,
+        "fallbackPixels": 5,
+        "fallbackPercent": 0.001971601058355448
+      }
+    },
+    {
+      "mesh": "10k",
+      "pose": "carry",
+      "view": "three",
+      "triangles": 10446,
+      "coverage": {
+        "mappedPixels": 190584,
+        "borrowedPixels": 35755,
+        "fallbackPixels": 7,
+        "fallbackPercent": 0.003092610428282364
+      }
+    },
+    {
+      "mesh": "10k",
+      "pose": "carry",
+      "view": "game",
+      "triangles": 10446,
+      "coverage": {
+        "mappedPixels": 168094,
+        "borrowedPixels": 34770,
+        "fallbackPixels": 10,
+        "fallbackPercent": 0.004929167857882232
+      }
+    },
+    {
+      "mesh": "28k",
+      "pose": "neutral",
+      "view": "front",
+      "triangles": 29850,
+      "coverage": {
+        "mappedPixels": 249040,
+        "borrowedPixels": 27096,
+        "fallbackPixels": 9,
+        "fallbackPercent": 0.0032591573267667347
+      }
+    },
+    {
+      "mesh": "28k",
+      "pose": "neutral",
+      "view": "side",
+      "triangles": 29850,
+      "coverage": {
+        "mappedPixels": 151819,
+        "borrowedPixels": 12286,
+        "fallbackPixels": 2,
+        "fallbackPercent": 0.001218717056554565
+      }
+    },
+    {
+      "mesh": "28k",
+      "pose": "neutral",
+      "view": "back",
+      "triangles": 29850,
+      "coverage": {
+        "mappedPixels": 259948,
+        "borrowedPixels": 18380,
+        "fallbackPixels": 10,
+        "fallbackPercent": 0.0035927541334636304
+      }
+    },
+    {
+      "mesh": "28k",
+      "pose": "neutral",
+      "view": "three",
+      "triangles": 29850,
+      "coverage": {
+        "mappedPixels": 212283,
+        "borrowedPixels": 38537,
+        "fallbackPixels": 9,
+        "fallbackPercent": 0.0035881018542513027
+      }
+    },
+    {
+      "mesh": "28k",
+      "pose": "neutral",
+      "view": "game",
+      "triangles": 29850,
+      "coverage": {
+        "mappedPixels": 188448,
+        "borrowedPixels": 36605,
+        "fallbackPixels": 11,
+        "fallbackPercent": 0.004887498667045818
+      }
+    },
+    {
+      "mesh": "28k",
+      "pose": "carry",
+      "view": "front",
+      "triangles": 29850,
+      "coverage": {
+        "mappedPixels": 210974,
+        "borrowedPixels": 26943,
+        "fallbackPixels": 1,
+        "fallbackPercent": 0.0004203128809085483
+      }
+    },
+    {
+      "mesh": "28k",
+      "pose": "carry",
+      "view": "side",
+      "triangles": 29850,
+      "coverage": {
+        "mappedPixels": 148402,
+        "borrowedPixels": 20291,
+        "fallbackPixels": 6,
+        "fallbackPercent": 0.003556630448313268
+      }
+    },
+    {
+      "mesh": "28k",
+      "pose": "carry",
+      "view": "back",
+      "triangles": 29850,
+      "coverage": {
+        "mappedPixels": 233688,
+        "borrowedPixels": 20290,
+        "fallbackPixels": 6,
+        "fallbackPercent": 0.002362353534080887
+      }
+    },
+    {
+      "mesh": "28k",
+      "pose": "carry",
+      "view": "three",
+      "triangles": 29850,
+      "coverage": {
+        "mappedPixels": 190642,
+        "borrowedPixels": 36107,
+        "fallbackPixels": 4,
+        "fallbackPercent": 0.0017640339929350438
+      }
+    },
+    {
+      "mesh": "28k",
+      "pose": "carry",
+      "view": "game",
+      "triangles": 29850,
+      "coverage": {
+        "mappedPixels": 167463,
+        "borrowedPixels": 35531,
+        "fallbackPixels": 5,
+        "fallbackPercent": 0.0024630663205237463
+      }
+    }
+  ],
+  "regressions": [
+    {
+      "species": "horse-light",
+      "coverage": {
+        "mappedPixels": 182086,
+        "borrowedPixels": 12643,
+        "fallbackPixels": 3459,
+        "fallbackPercent": 1.7453125315357136
+      }
+    },
+    {
+      "species": "goat-worker",
+      "coverage": {
+        "mappedPixels": 168439,
+        "borrowedPixels": 20894,
+        "fallbackPixels": 589,
+        "fallbackPercent": 0.3101273154242268
+      }
+    },
+    {
+      "species": "bull-worker",
+      "coverage": {
+        "mappedPixels": 171909,
+        "borrowedPixels": 24411,
+        "fallbackPixels": 465,
+        "fallbackPercent": 0.23629849836115557
+      }
+    },
+    {
+      "species": "cow-worker",
+      "coverage": {
+        "mappedPixels": 138149,
+        "borrowedPixels": 49712,
+        "fallbackPixels": 336,
+        "fallbackPercent": 0.17853632098279995
+      }
+    },
+    {
+      "species": "rabbit-worker",
+      "coverage": {
+        "mappedPixels": 146341,
+        "borrowedPixels": 48279,
+        "fallbackPixels": 766,
+        "fallbackPercent": 0.3920444658266201
+      }
+    }
+  ]
+}
