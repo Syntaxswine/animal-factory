@@ -1,0 +1,2598 @@
+{
+  "browser": "153.0.4234.48",
+  "errors": [],
+  "checks": [
+    {
+      "triangles": 29850,
+      "rifleTriangles": 480,
+      "weapon": "rifle",
+      "weaponTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 17,
+      "min": [
+        -0.41295140981674194,
+        0,
+        -0.42901267322860104
+      ],
+      "max": [
+        0.22302089631557465,
+        1.6959718465805054,
+        0.4290632137377024
+      ],
+      "contacts": [],
+      "sourceTriangles": 751966,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "neutral",
+      "modelPaint": false,
+      "mesh": "28k",
+      "close": true,
+      "heading": 0
+    },
+    {
+      "triangles": 29850,
+      "rifleTriangles": 480,
+      "weapon": "rifle",
+      "weaponTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 17,
+      "min": [
+        -0.31295669405820026,
+        0,
+        -0.3531552767424603
+      ],
+      "max": [
+        0.3530695131766527,
+        1.6959718465805054,
+        0.3246669574166274
+      ],
+      "contacts": [],
+      "sourceTriangles": 751966,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "neutral",
+      "modelPaint": false,
+      "mesh": "28k",
+      "close": true,
+      "heading": 45
+    },
+    {
+      "triangles": 29850,
+      "rifleTriangles": 480,
+      "weapon": "rifle",
+      "weaponTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 17,
+      "min": [
+        -0.42901267322860104,
+        0,
+        -0.22302089631557465
+      ],
+      "max": [
+        0.4290632137377024,
+        1.6959718465805054,
+        0.41295140981674194
+      ],
+      "contacts": [],
+      "sourceTriangles": 751966,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "neutral",
+      "modelPaint": false,
+      "mesh": "28k",
+      "close": true,
+      "heading": 90
+    },
+    {
+      "triangles": 29850,
+      "rifleTriangles": 480,
+      "weapon": "rifle",
+      "weaponTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 17,
+      "min": [
+        -0.35315527674246033,
+        0,
+        -0.35306951317665275
+      ],
+      "max": [
+        0.3246669574166274,
+        1.6959718465805054,
+        0.3129566940582002
+      ],
+      "contacts": [],
+      "sourceTriangles": 751966,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "neutral",
+      "modelPaint": false,
+      "mesh": "28k",
+      "close": true,
+      "heading": 135
+    },
+    {
+      "triangles": 29850,
+      "rifleTriangles": 480,
+      "weapon": "rifle",
+      "weaponTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 17,
+      "min": [
+        -0.22302089631557465,
+        0,
+        -0.4290632137377024
+      ],
+      "max": [
+        0.41295140981674194,
+        1.6959718465805054,
+        0.42901267322860104
+      ],
+      "contacts": [],
+      "sourceTriangles": 751966,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "neutral",
+      "modelPaint": false,
+      "mesh": "28k",
+      "close": true,
+      "heading": 180
+    },
+    {
+      "triangles": 29850,
+      "rifleTriangles": 480,
+      "weapon": "rifle",
+      "weaponTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 17,
+      "min": [
+        -0.35306951317665275,
+        0,
+        -0.32466695741662743
+      ],
+      "max": [
+        0.3129566940582003,
+        1.6959718465805054,
+        0.3531552767424604
+      ],
+      "contacts": [],
+      "sourceTriangles": 751966,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "neutral",
+      "modelPaint": false,
+      "mesh": "28k",
+      "close": true,
+      "heading": -135
+    },
+    {
+      "triangles": 29850,
+      "rifleTriangles": 480,
+      "weapon": "rifle",
+      "weaponTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 17,
+      "min": [
+        -0.4290632137377024,
+        0,
+        -0.41295140981674194
+      ],
+      "max": [
+        0.42901267322860104,
+        1.6959718465805054,
+        0.22302089631557465
+      ],
+      "contacts": [],
+      "sourceTriangles": 751966,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "neutral",
+      "modelPaint": false,
+      "mesh": "28k",
+      "close": true,
+      "heading": -90
+    },
+    {
+      "triangles": 29850,
+      "rifleTriangles": 480,
+      "weapon": "rifle",
+      "weaponTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 17,
+      "min": [
+        -0.3246669574166273,
+        0,
+        -0.31295669405820015
+      ],
+      "max": [
+        0.3531552767424603,
+        1.6959718465805054,
+        0.3530695131766527
+      ],
+      "contacts": [],
+      "sourceTriangles": 751966,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "neutral",
+      "modelPaint": false,
+      "mesh": "28k",
+      "close": true,
+      "heading": -45
+    },
+    {
+      "triangles": 29850,
+      "rifleTriangles": 480,
+      "weapon": "rifle",
+      "weaponTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 17,
+      "min": [
+        -0.41295140981674194,
+        0,
+        -0.4200549942174885
+      ],
+      "max": [
+        0.33559604852423974,
+        1.6959718465805054,
+        0.41955584153055137
+      ],
+      "contacts": [
+        {
+          "side": -1,
+          "grip": [
+            0.30189354523107487,
+            1.052062399895948,
+            -0.18067410501671907
+          ],
+          "palm": [
+            0.3018935452310748,
+            1.0520623998959477,
+            -0.1806741050167191
+          ],
+          "error": 2.3055512673781017e-16
+        },
+        {
+          "side": 1,
+          "grip": [
+            0.2540393654121038,
+            0.9515210033249355,
+            0.04323972896725789
+          ],
+          "palm": [
+            0.25403936541210387,
+            0.9515210033249356,
+            0.043239728967257855
+          ],
+          "error": 1.2888423398670571e-16
+        }
+      ],
+      "sourceTriangles": 751966,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "carry",
+      "modelPaint": false,
+      "mesh": "28k",
+      "close": true,
+      "heading": 0
+    },
+    {
+      "triangles": 29850,
+      "rifleTriangles": 480,
+      "weapon": "rifle",
+      "weaponTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 17,
+      "min": [
+        -0.30256371320943054,
+        0,
+        -0.3916430385688294
+      ],
+      "max": [
+        0.3355625621449211,
+        1.6959718465805054,
+        0.3246669574166274
+      ],
+      "contacts": [
+        {
+          "side": -1,
+          "grip": [
+            0.08571508818720824,
+            1.052062399895948,
+            -0.3412268578714733
+          ],
+          "palm": [
+            0.08571508818720805,
+            1.0520623998959477,
+            -0.34122685787147317
+          ],
+          "error": 3.152427400121712e-16
+        },
+        {
+          "side": 1,
+          "grip": [
+            0.21020806354064234,
+            0.9515210033249355,
+            -0.14905785240180947
+          ],
+          "palm": [
+            0.2102080635406423,
+            0.9515210033249356,
+            -0.14905785240180944
+          ],
+          "error": 1.1775693440128312e-16
+        }
+      ],
+      "sourceTriangles": 751966,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "carry",
+      "modelPaint": false,
+      "mesh": "28k",
+      "close": true,
+      "heading": 45
+    },
+    {
+      "triangles": 29850,
+      "rifleTriangles": 480,
+      "weapon": "rifle",
+      "weaponTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 17,
+      "min": [
+        -0.4200549942174885,
+        0,
+        -0.3355960485242398
+      ],
+      "max": [
+        0.41955584153055137,
+        1.6959718465805054,
+        0.41295140981674194
+      ],
+      "contacts": [
+        {
+          "side": -1,
+          "grip": [
+            -0.18067410501671902,
+            1.052062399895948,
+            -0.3018935452310749
+          ],
+          "palm": [
+            -0.18067410501671904,
+            1.0520623998959477,
+            -0.3018935452310748
+          ],
+          "error": 2.498001805406602e-16
+        },
+        {
+          "side": 1,
+          "grip": [
+            0.04323972896725795,
+            0.9515210033249355,
+            -0.2540393654121038
+          ],
+          "palm": [
+            0.043239728967257925,
+            0.9515210033249356,
+            -0.25403936541210387
+          ],
+          "error": 1.2719202621569003e-16
+        }
+      ],
+      "sourceTriangles": 751966,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "carry",
+      "modelPaint": false,
+      "mesh": "28k",
+      "close": true,
+      "heading": 90
+    },
+    {
+      "triangles": 29850,
+      "rifleTriangles": 480,
+      "weapon": "rifle",
+      "weaponTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 17,
+      "min": [
+        -0.39164303856882954,
+        0,
+        -0.3355625621449212
+      ],
+      "max": [
+        0.3246669574166274,
+        1.6959718465805054,
+        0.30256371320943054
+      ],
+      "contacts": [
+        {
+          "side": -1,
+          "grip": [
+            -0.3412268578714732,
+            1.052062399895948,
+            -0.08571508818720833
+          ],
+          "palm": [
+            -0.34122685787147317,
+            1.0520623998959477,
+            -0.08571508818720823
+          ],
+          "error": 2.486410087150353e-16
+        },
+        {
+          "side": 1,
+          "grip": [
+            -0.1490578524018094,
+            0.9515210033249355,
+            -0.2102080635406424
+          ],
+          "palm": [
+            -0.1490578524018095,
+            0.9515210033249356,
+            -0.21020806354064236
+          ],
+          "error": 1.415262216750919e-16
+        }
+      ],
+      "sourceTriangles": 751966,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "carry",
+      "modelPaint": false,
+      "mesh": "28k",
+      "close": true,
+      "heading": 135
+    },
+    {
+      "triangles": 29850,
+      "rifleTriangles": 480,
+      "weapon": "rifle",
+      "weaponTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 17,
+      "min": [
+        -0.33559604852423974,
+        0,
+        -0.41955584153055137
+      ],
+      "max": [
+        0.41295140981674194,
+        1.6959718465805054,
+        0.4200549942174885
+      ],
+      "contacts": [
+        {
+          "side": -1,
+          "grip": [
+            -0.3018935452310749,
+            1.052062399895948,
+            0.18067410501671904
+          ],
+          "palm": [
+            -0.3018935452310748,
+            1.0520623998959477,
+            0.1806741050167191
+          ],
+          "error": 2.5438405243138006e-16
+        },
+        {
+          "side": 1,
+          "grip": [
+            -0.2540393654121038,
+            0.9515210033249355,
+            -0.043239728967257925
+          ],
+          "palm": [
+            -0.25403936541210387,
+            0.9515210033249356,
+            -0.04323972896725792
+          ],
+          "error": 1.2432050435751766e-16
+        }
+      ],
+      "sourceTriangles": 751966,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "carry",
+      "modelPaint": false,
+      "mesh": "28k",
+      "close": true,
+      "heading": 180
+    },
+    {
+      "triangles": 29850,
+      "rifleTriangles": 480,
+      "weapon": "rifle",
+      "weaponTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 17,
+      "min": [
+        -0.3355625621449212,
+        0,
+        -0.32466695741662743
+      ],
+      "max": [
+        0.30256371320943065,
+        1.6959718465805054,
+        0.3916430385688296
+      ],
+      "contacts": [
+        {
+          "side": -1,
+          "grip": [
+            -0.08571508818720827,
+            1.052062399895948,
+            0.34122685787147333
+          ],
+          "palm": [
+            -0.08571508818720809,
+            1.0520623998959477,
+            0.3412268578714732
+          ],
+          "error": 3.06884301130794e-16
+        },
+        {
+          "side": 1,
+          "grip": [
+            -0.21020806354064236,
+            0.9515210033249355,
+            0.1490578524018095
+          ],
+          "palm": [
+            -0.21020806354064225,
+            0.9515210033249356,
+            0.1490578524018095
+          ],
+          "error": 1.5700924586837752e-16
+        }
+      ],
+      "sourceTriangles": 751966,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "carry",
+      "modelPaint": false,
+      "mesh": "28k",
+      "close": true,
+      "heading": -135
+    },
+    {
+      "triangles": 29850,
+      "rifleTriangles": 480,
+      "weapon": "rifle",
+      "weaponTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 17,
+      "min": [
+        -0.41955584153055137,
+        0,
+        -0.41295140981674194
+      ],
+      "max": [
+        0.4200549942174885,
+        1.6959718465805054,
+        0.3355960485242397
+      ],
+      "contacts": [
+        {
+          "side": -1,
+          "grip": [
+            0.18067410501671913,
+            1.052062399895948,
+            0.3018935452310748
+          ],
+          "palm": [
+            0.18067410501671916,
+            1.0520623998959477,
+            0.3018935452310747
+          ],
+          "error": 2.498001805406602e-16
+        },
+        {
+          "side": 1,
+          "grip": [
+            -0.043239728967257834,
+            0.9515210033249355,
+            0.25403936541210387
+          ],
+          "palm": [
+            -0.04323972896725779,
+            0.9515210033249356,
+            0.25403936541210387
+          ],
+          "error": 1.1857187100668868e-16
+        }
+      ],
+      "sourceTriangles": 751966,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "carry",
+      "modelPaint": false,
+      "mesh": "28k",
+      "close": true,
+      "heading": -90
+    },
+    {
+      "triangles": 29850,
+      "rifleTriangles": 480,
+      "weapon": "rifle",
+      "weaponTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 17,
+      "min": [
+        -0.3246669574166273,
+        0,
+        -0.30256371320943054
+      ],
+      "max": [
+        0.39164303856882954,
+        1.6959718465805054,
+        0.3355625621449211
+      ],
+      "contacts": [
+        {
+          "side": -1,
+          "grip": [
+            0.3412268578714732,
+            1.052062399895948,
+            0.0857150881872083
+          ],
+          "palm": [
+            0.34122685787147317,
+            1.0520623998959477,
+            0.08571508818720816
+          ],
+          "error": 2.6766507790745728e-16
+        },
+        {
+          "side": 1,
+          "grip": [
+            0.14905785240180944,
+            0.9515210033249355,
+            0.21020806354064236
+          ],
+          "palm": [
+            0.14905785240180947,
+            0.9515210033249356,
+            0.21020806354064234
+          ],
+          "error": 1.1775693440128312e-16
+        }
+      ],
+      "sourceTriangles": 751966,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "carry",
+      "modelPaint": false,
+      "mesh": "28k",
+      "close": true,
+      "heading": -45
+    },
+    {
+      "triangles": 10446,
+      "rifleTriangles": 480,
+      "weapon": "rifle",
+      "weaponTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 17,
+      "min": [
+        -0.4124552011489868,
+        0,
+        -0.42901267322860104
+      ],
+      "max": [
+        0.22302089631557465,
+        1.6959718465805054,
+        0.4290632137377024
+      ],
+      "contacts": [],
+      "sourceTriangles": 29850,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "neutral",
+      "modelPaint": false,
+      "mesh": "10k",
+      "close": true,
+      "heading": 0
+    },
+    {
+      "triangles": 10446,
+      "rifleTriangles": 480,
+      "weapon": "rifle",
+      "weaponTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 17,
+      "min": [
+        -0.31295669405820026,
+        0,
+        -0.3531552767424603
+      ],
+      "max": [
+        0.3530695131766527,
+        1.6959718465805054,
+        0.3246669574166274
+      ],
+      "contacts": [],
+      "sourceTriangles": 29850,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "neutral",
+      "modelPaint": false,
+      "mesh": "10k",
+      "close": true,
+      "heading": 45
+    },
+    {
+      "triangles": 10446,
+      "rifleTriangles": 480,
+      "weapon": "rifle",
+      "weaponTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 17,
+      "min": [
+        -0.42901267322860104,
+        0,
+        -0.22302089631557465
+      ],
+      "max": [
+        0.4290632137377024,
+        1.6959718465805054,
+        0.4124552011489868
+      ],
+      "contacts": [],
+      "sourceTriangles": 29850,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "neutral",
+      "modelPaint": false,
+      "mesh": "10k",
+      "close": true,
+      "heading": 90
+    },
+    {
+      "triangles": 10446,
+      "rifleTriangles": 480,
+      "weapon": "rifle",
+      "weaponTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 17,
+      "min": [
+        -0.35315527674246033,
+        0,
+        -0.35306951317665275
+      ],
+      "max": [
+        0.3246669574166274,
+        1.6959718465805054,
+        0.3129566940582002
+      ],
+      "contacts": [],
+      "sourceTriangles": 29850,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "neutral",
+      "modelPaint": false,
+      "mesh": "10k",
+      "close": true,
+      "heading": 135
+    },
+    {
+      "triangles": 10446,
+      "rifleTriangles": 480,
+      "weapon": "rifle",
+      "weaponTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 17,
+      "min": [
+        -0.22302089631557465,
+        0,
+        -0.4290632137377024
+      ],
+      "max": [
+        0.4124552011489868,
+        1.6959718465805054,
+        0.42901267322860104
+      ],
+      "contacts": [],
+      "sourceTriangles": 29850,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "neutral",
+      "modelPaint": false,
+      "mesh": "10k",
+      "close": true,
+      "heading": 180
+    },
+    {
+      "triangles": 10446,
+      "rifleTriangles": 480,
+      "weapon": "rifle",
+      "weaponTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 17,
+      "min": [
+        -0.35306951317665275,
+        0,
+        -0.32466695741662743
+      ],
+      "max": [
+        0.3129566940582003,
+        1.6959718465805054,
+        0.3531552767424604
+      ],
+      "contacts": [],
+      "sourceTriangles": 29850,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "neutral",
+      "modelPaint": false,
+      "mesh": "10k",
+      "close": true,
+      "heading": -135
+    },
+    {
+      "triangles": 10446,
+      "rifleTriangles": 480,
+      "weapon": "rifle",
+      "weaponTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 17,
+      "min": [
+        -0.4290632137377024,
+        0,
+        -0.4124552011489868
+      ],
+      "max": [
+        0.42901267322860104,
+        1.6959718465805054,
+        0.22302089631557465
+      ],
+      "contacts": [],
+      "sourceTriangles": 29850,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "neutral",
+      "modelPaint": false,
+      "mesh": "10k",
+      "close": true,
+      "heading": -90
+    },
+    {
+      "triangles": 10446,
+      "rifleTriangles": 480,
+      "weapon": "rifle",
+      "weaponTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 17,
+      "min": [
+        -0.3246669574166273,
+        0,
+        -0.31295669405820015
+      ],
+      "max": [
+        0.3531552767424603,
+        1.6959718465805054,
+        0.3530695131766527
+      ],
+      "contacts": [],
+      "sourceTriangles": 29850,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "neutral",
+      "modelPaint": false,
+      "mesh": "10k",
+      "close": true,
+      "heading": -45
+    },
+    {
+      "triangles": 10446,
+      "rifleTriangles": 480,
+      "weapon": "rifle",
+      "weaponTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 17,
+      "min": [
+        -0.4124552011489868,
+        0,
+        -0.4200549942174885
+      ],
+      "max": [
+        0.33559604852423974,
+        1.6959718465805054,
+        0.41780585936236
+      ],
+      "contacts": [
+        {
+          "side": -1,
+          "grip": [
+            0.30189354523107487,
+            1.052062399895948,
+            -0.18067410501671907
+          ],
+          "palm": [
+            0.3018935452310748,
+            1.0520623998959477,
+            -0.1806741050167191
+          ],
+          "error": 2.3055512673781017e-16
+        },
+        {
+          "side": 1,
+          "grip": [
+            0.2540393654121038,
+            0.9515210033249355,
+            0.04323972896725789
+          ],
+          "palm": [
+            0.25403936541210387,
+            0.9515210033249356,
+            0.043239728967257855
+          ],
+          "error": 1.2888423398670571e-16
+        }
+      ],
+      "sourceTriangles": 29850,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "carry",
+      "modelPaint": false,
+      "mesh": "10k",
+      "close": true,
+      "heading": 0
+    },
+    {
+      "triangles": 10446,
+      "rifleTriangles": 480,
+      "weapon": "rifle",
+      "weaponTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 17,
+      "min": [
+        -0.30256371320943054,
+        0,
+        -0.3916430385688294
+      ],
+      "max": [
+        0.33535371444826617,
+        1.6959718465805054,
+        0.3246669574166274
+      ],
+      "contacts": [
+        {
+          "side": -1,
+          "grip": [
+            0.08571508818720824,
+            1.052062399895948,
+            -0.3412268578714733
+          ],
+          "palm": [
+            0.08571508818720805,
+            1.0520623998959477,
+            -0.34122685787147317
+          ],
+          "error": 3.152427400121712e-16
+        },
+        {
+          "side": 1,
+          "grip": [
+            0.21020806354064234,
+            0.9515210033249355,
+            -0.14905785240180947
+          ],
+          "palm": [
+            0.2102080635406423,
+            0.9515210033249356,
+            -0.14905785240180944
+          ],
+          "error": 1.1775693440128312e-16
+        }
+      ],
+      "sourceTriangles": 29850,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "carry",
+      "modelPaint": false,
+      "mesh": "10k",
+      "close": true,
+      "heading": 45
+    },
+    {
+      "triangles": 10446,
+      "rifleTriangles": 480,
+      "weapon": "rifle",
+      "weaponTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 17,
+      "min": [
+        -0.4200549942174885,
+        0,
+        -0.3355960485242398
+      ],
+      "max": [
+        0.41780585936236,
+        1.6959718465805054,
+        0.4124552011489868
+      ],
+      "contacts": [
+        {
+          "side": -1,
+          "grip": [
+            -0.18067410501671902,
+            1.052062399895948,
+            -0.3018935452310749
+          ],
+          "palm": [
+            -0.18067410501671904,
+            1.0520623998959477,
+            -0.3018935452310748
+          ],
+          "error": 2.498001805406602e-16
+        },
+        {
+          "side": 1,
+          "grip": [
+            0.04323972896725795,
+            0.9515210033249355,
+            -0.2540393654121038
+          ],
+          "palm": [
+            0.043239728967257925,
+            0.9515210033249356,
+            -0.25403936541210387
+          ],
+          "error": 1.2719202621569003e-16
+        }
+      ],
+      "sourceTriangles": 29850,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "carry",
+      "modelPaint": false,
+      "mesh": "10k",
+      "close": true,
+      "heading": 90
+    },
+    {
+      "triangles": 10446,
+      "rifleTriangles": 480,
+      "weapon": "rifle",
+      "weaponTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 17,
+      "min": [
+        -0.39164303856882954,
+        0,
+        -0.3353537144482662
+      ],
+      "max": [
+        0.3246669574166274,
+        1.6959718465805054,
+        0.30256371320943054
+      ],
+      "contacts": [
+        {
+          "side": -1,
+          "grip": [
+            -0.3412268578714732,
+            1.052062399895948,
+            -0.08571508818720833
+          ],
+          "palm": [
+            -0.34122685787147317,
+            1.0520623998959477,
+            -0.08571508818720823
+          ],
+          "error": 2.486410087150353e-16
+        },
+        {
+          "side": 1,
+          "grip": [
+            -0.1490578524018094,
+            0.9515210033249355,
+            -0.2102080635406424
+          ],
+          "palm": [
+            -0.1490578524018095,
+            0.9515210033249356,
+            -0.21020806354064236
+          ],
+          "error": 1.415262216750919e-16
+        }
+      ],
+      "sourceTriangles": 29850,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "carry",
+      "modelPaint": false,
+      "mesh": "10k",
+      "close": true,
+      "heading": 135
+    },
+    {
+      "triangles": 10446,
+      "rifleTriangles": 480,
+      "weapon": "rifle",
+      "weaponTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 17,
+      "min": [
+        -0.33559604852423974,
+        0,
+        -0.41780585936236
+      ],
+      "max": [
+        0.4124552011489868,
+        1.6959718465805054,
+        0.4200549942174885
+      ],
+      "contacts": [
+        {
+          "side": -1,
+          "grip": [
+            -0.3018935452310749,
+            1.052062399895948,
+            0.18067410501671904
+          ],
+          "palm": [
+            -0.3018935452310748,
+            1.0520623998959477,
+            0.1806741050167191
+          ],
+          "error": 2.5438405243138006e-16
+        },
+        {
+          "side": 1,
+          "grip": [
+            -0.2540393654121038,
+            0.9515210033249355,
+            -0.043239728967257925
+          ],
+          "palm": [
+            -0.25403936541210387,
+            0.9515210033249356,
+            -0.04323972896725792
+          ],
+          "error": 1.2432050435751766e-16
+        }
+      ],
+      "sourceTriangles": 29850,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "carry",
+      "modelPaint": false,
+      "mesh": "10k",
+      "close": true,
+      "heading": 180
+    },
+    {
+      "triangles": 10446,
+      "rifleTriangles": 480,
+      "weapon": "rifle",
+      "weaponTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 17,
+      "min": [
+        -0.3353537144482663,
+        0,
+        -0.32466695741662743
+      ],
+      "max": [
+        0.30256371320943065,
+        1.6959718465805054,
+        0.3916430385688296
+      ],
+      "contacts": [
+        {
+          "side": -1,
+          "grip": [
+            -0.08571508818720827,
+            1.052062399895948,
+            0.34122685787147333
+          ],
+          "palm": [
+            -0.08571508818720809,
+            1.0520623998959477,
+            0.3412268578714732
+          ],
+          "error": 3.06884301130794e-16
+        },
+        {
+          "side": 1,
+          "grip": [
+            -0.21020806354064236,
+            0.9515210033249355,
+            0.1490578524018095
+          ],
+          "palm": [
+            -0.21020806354064225,
+            0.9515210033249356,
+            0.1490578524018095
+          ],
+          "error": 1.5700924586837752e-16
+        }
+      ],
+      "sourceTriangles": 29850,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "carry",
+      "modelPaint": false,
+      "mesh": "10k",
+      "close": true,
+      "heading": -135
+    },
+    {
+      "triangles": 10446,
+      "rifleTriangles": 480,
+      "weapon": "rifle",
+      "weaponTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 17,
+      "min": [
+        -0.41780585936236,
+        0,
+        -0.4124552011489868
+      ],
+      "max": [
+        0.4200549942174885,
+        1.6959718465805054,
+        0.3355960485242397
+      ],
+      "contacts": [
+        {
+          "side": -1,
+          "grip": [
+            0.18067410501671913,
+            1.052062399895948,
+            0.3018935452310748
+          ],
+          "palm": [
+            0.18067410501671916,
+            1.0520623998959477,
+            0.3018935452310747
+          ],
+          "error": 2.498001805406602e-16
+        },
+        {
+          "side": 1,
+          "grip": [
+            -0.043239728967257834,
+            0.9515210033249355,
+            0.25403936541210387
+          ],
+          "palm": [
+            -0.04323972896725779,
+            0.9515210033249356,
+            0.25403936541210387
+          ],
+          "error": 1.1857187100668868e-16
+        }
+      ],
+      "sourceTriangles": 29850,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "carry",
+      "modelPaint": false,
+      "mesh": "10k",
+      "close": true,
+      "heading": -90
+    },
+    {
+      "triangles": 10446,
+      "rifleTriangles": 480,
+      "weapon": "rifle",
+      "weaponTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 17,
+      "min": [
+        -0.3246669574166273,
+        0,
+        -0.30256371320943054
+      ],
+      "max": [
+        0.39164303856882954,
+        1.6959718465805054,
+        0.3353537144482661
+      ],
+      "contacts": [
+        {
+          "side": -1,
+          "grip": [
+            0.3412268578714732,
+            1.052062399895948,
+            0.0857150881872083
+          ],
+          "palm": [
+            0.34122685787147317,
+            1.0520623998959477,
+            0.08571508818720816
+          ],
+          "error": 2.6766507790745728e-16
+        },
+        {
+          "side": 1,
+          "grip": [
+            0.14905785240180944,
+            0.9515210033249355,
+            0.21020806354064236
+          ],
+          "palm": [
+            0.14905785240180947,
+            0.9515210033249356,
+            0.21020806354064234
+          ],
+          "error": 1.1775693440128312e-16
+        }
+      ],
+      "sourceTriangles": 29850,
+      "pixelsPerUnit": 299.99999999999994,
+      "pose": "carry",
+      "modelPaint": false,
+      "mesh": "10k",
+      "close": true,
+      "heading": -45
+    },
+    {
+      "triangles": 29850,
+      "rifleTriangles": 480,
+      "weapon": "rifle",
+      "weaponTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 17,
+      "min": [
+        -0.41295140981674194,
+        0,
+        -0.42901267322860104
+      ],
+      "max": [
+        0.22302089631557465,
+        1.6959718465805054,
+        0.4290632137377024
+      ],
+      "contacts": [],
+      "sourceTriangles": 751966,
+      "pixelsPerUnit": 58,
+      "pose": "neutral",
+      "modelPaint": false,
+      "mesh": "28k",
+      "close": false,
+      "heading": 0
+    },
+    {
+      "triangles": 29850,
+      "rifleTriangles": 480,
+      "weapon": "rifle",
+      "weaponTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 17,
+      "min": [
+        -0.31295669405820026,
+        0,
+        -0.3531552767424603
+      ],
+      "max": [
+        0.3530695131766527,
+        1.6959718465805054,
+        0.3246669574166274
+      ],
+      "contacts": [],
+      "sourceTriangles": 751966,
+      "pixelsPerUnit": 58,
+      "pose": "neutral",
+      "modelPaint": false,
+      "mesh": "28k",
+      "close": false,
+      "heading": 45
+    },
+    {
+      "triangles": 29850,
+      "rifleTriangles": 480,
+      "weapon": "rifle",
+      "weaponTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 17,
+      "min": [
+        -0.42901267322860104,
+        0,
+        -0.22302089631557465
+      ],
+      "max": [
+        0.4290632137377024,
+        1.6959718465805054,
+        0.41295140981674194
+      ],
+      "contacts": [],
+      "sourceTriangles": 751966,
+      "pixelsPerUnit": 58,
+      "pose": "neutral",
+      "modelPaint": false,
+      "mesh": "28k",
+      "close": false,
+      "heading": 90
+    },
+    {
+      "triangles": 29850,
+      "rifleTriangles": 480,
+      "weapon": "rifle",
+      "weaponTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 17,
+      "min": [
+        -0.35315527674246033,
+        0,
+        -0.35306951317665275
+      ],
+      "max": [
+        0.3246669574166274,
+        1.6959718465805054,
+        0.3129566940582002
+      ],
+      "contacts": [],
+      "sourceTriangles": 751966,
+      "pixelsPerUnit": 58,
+      "pose": "neutral",
+      "modelPaint": false,
+      "mesh": "28k",
+      "close": false,
+      "heading": 135
+    },
+    {
+      "triangles": 29850,
+      "rifleTriangles": 480,
+      "weapon": "rifle",
+      "weaponTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 17,
+      "min": [
+        -0.22302089631557465,
+        0,
+        -0.4290632137377024
+      ],
+      "max": [
+        0.41295140981674194,
+        1.6959718465805054,
+        0.42901267322860104
+      ],
+      "contacts": [],
+      "sourceTriangles": 751966,
+      "pixelsPerUnit": 58,
+      "pose": "neutral",
+      "modelPaint": false,
+      "mesh": "28k",
+      "close": false,
+      "heading": 180
+    },
+    {
+      "triangles": 29850,
+      "rifleTriangles": 480,
+      "weapon": "rifle",
+      "weaponTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 17,
+      "min": [
+        -0.35306951317665275,
+        0,
+        -0.32466695741662743
+      ],
+      "max": [
+        0.3129566940582003,
+        1.6959718465805054,
+        0.3531552767424604
+      ],
+      "contacts": [],
+      "sourceTriangles": 751966,
+      "pixelsPerUnit": 58,
+      "pose": "neutral",
+      "modelPaint": false,
+      "mesh": "28k",
+      "close": false,
+      "heading": -135
+    },
+    {
+      "triangles": 29850,
+      "rifleTriangles": 480,
+      "weapon": "rifle",
+      "weaponTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 17,
+      "min": [
+        -0.4290632137377024,
+        0,
+        -0.41295140981674194
+      ],
+      "max": [
+        0.42901267322860104,
+        1.6959718465805054,
+        0.22302089631557465
+      ],
+      "contacts": [],
+      "sourceTriangles": 751966,
+      "pixelsPerUnit": 58,
+      "pose": "neutral",
+      "modelPaint": false,
+      "mesh": "28k",
+      "close": false,
+      "heading": -90
+    },
+    {
+      "triangles": 29850,
+      "rifleTriangles": 480,
+      "weapon": "rifle",
+      "weaponTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 17,
+      "min": [
+        -0.3246669574166273,
+        0,
+        -0.31295669405820015
+      ],
+      "max": [
+        0.3531552767424603,
+        1.6959718465805054,
+        0.3530695131766527
+      ],
+      "contacts": [],
+      "sourceTriangles": 751966,
+      "pixelsPerUnit": 58,
+      "pose": "neutral",
+      "modelPaint": false,
+      "mesh": "28k",
+      "close": false,
+      "heading": -45
+    },
+    {
+      "triangles": 29850,
+      "rifleTriangles": 480,
+      "weapon": "rifle",
+      "weaponTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 17,
+      "min": [
+        -0.41295140981674194,
+        0,
+        -0.4200549942174885
+      ],
+      "max": [
+        0.33559604852423974,
+        1.6959718465805054,
+        0.41955584153055137
+      ],
+      "contacts": [
+        {
+          "side": -1,
+          "grip": [
+            0.30189354523107487,
+            1.052062399895948,
+            -0.18067410501671907
+          ],
+          "palm": [
+            0.3018935452310748,
+            1.0520623998959477,
+            -0.1806741050167191
+          ],
+          "error": 2.3055512673781017e-16
+        },
+        {
+          "side": 1,
+          "grip": [
+            0.2540393654121038,
+            0.9515210033249355,
+            0.04323972896725789
+          ],
+          "palm": [
+            0.25403936541210387,
+            0.9515210033249356,
+            0.043239728967257855
+          ],
+          "error": 1.2888423398670571e-16
+        }
+      ],
+      "sourceTriangles": 751966,
+      "pixelsPerUnit": 58,
+      "pose": "carry",
+      "modelPaint": false,
+      "mesh": "28k",
+      "close": false,
+      "heading": 0
+    },
+    {
+      "triangles": 29850,
+      "rifleTriangles": 480,
+      "weapon": "rifle",
+      "weaponTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 17,
+      "min": [
+        -0.30256371320943054,
+        0,
+        -0.3916430385688294
+      ],
+      "max": [
+        0.3355625621449211,
+        1.6959718465805054,
+        0.3246669574166274
+      ],
+      "contacts": [
+        {
+          "side": -1,
+          "grip": [
+            0.08571508818720824,
+            1.052062399895948,
+            -0.3412268578714733
+          ],
+          "palm": [
+            0.08571508818720805,
+            1.0520623998959477,
+            -0.34122685787147317
+          ],
+          "error": 3.152427400121712e-16
+        },
+        {
+          "side": 1,
+          "grip": [
+            0.21020806354064234,
+            0.9515210033249355,
+            -0.14905785240180947
+          ],
+          "palm": [
+            0.2102080635406423,
+            0.9515210033249356,
+            -0.14905785240180944
+          ],
+          "error": 1.1775693440128312e-16
+        }
+      ],
+      "sourceTriangles": 751966,
+      "pixelsPerUnit": 58,
+      "pose": "carry",
+      "modelPaint": false,
+      "mesh": "28k",
+      "close": false,
+      "heading": 45
+    },
+    {
+      "triangles": 29850,
+      "rifleTriangles": 480,
+      "weapon": "rifle",
+      "weaponTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 17,
+      "min": [
+        -0.4200549942174885,
+        0,
+        -0.3355960485242398
+      ],
+      "max": [
+        0.41955584153055137,
+        1.6959718465805054,
+        0.41295140981674194
+      ],
+      "contacts": [
+        {
+          "side": -1,
+          "grip": [
+            -0.18067410501671902,
+            1.052062399895948,
+            -0.3018935452310749
+          ],
+          "palm": [
+            -0.18067410501671904,
+            1.0520623998959477,
+            -0.3018935452310748
+          ],
+          "error": 2.498001805406602e-16
+        },
+        {
+          "side": 1,
+          "grip": [
+            0.04323972896725795,
+            0.9515210033249355,
+            -0.2540393654121038
+          ],
+          "palm": [
+            0.043239728967257925,
+            0.9515210033249356,
+            -0.25403936541210387
+          ],
+          "error": 1.2719202621569003e-16
+        }
+      ],
+      "sourceTriangles": 751966,
+      "pixelsPerUnit": 58,
+      "pose": "carry",
+      "modelPaint": false,
+      "mesh": "28k",
+      "close": false,
+      "heading": 90
+    },
+    {
+      "triangles": 29850,
+      "rifleTriangles": 480,
+      "weapon": "rifle",
+      "weaponTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 17,
+      "min": [
+        -0.39164303856882954,
+        0,
+        -0.3355625621449212
+      ],
+      "max": [
+        0.3246669574166274,
+        1.6959718465805054,
+        0.30256371320943054
+      ],
+      "contacts": [
+        {
+          "side": -1,
+          "grip": [
+            -0.3412268578714732,
+            1.052062399895948,
+            -0.08571508818720833
+          ],
+          "palm": [
+            -0.34122685787147317,
+            1.0520623998959477,
+            -0.08571508818720823
+          ],
+          "error": 2.486410087150353e-16
+        },
+        {
+          "side": 1,
+          "grip": [
+            -0.1490578524018094,
+            0.9515210033249355,
+            -0.2102080635406424
+          ],
+          "palm": [
+            -0.1490578524018095,
+            0.9515210033249356,
+            -0.21020806354064236
+          ],
+          "error": 1.415262216750919e-16
+        }
+      ],
+      "sourceTriangles": 751966,
+      "pixelsPerUnit": 58,
+      "pose": "carry",
+      "modelPaint": false,
+      "mesh": "28k",
+      "close": false,
+      "heading": 135
+    },
+    {
+      "triangles": 29850,
+      "rifleTriangles": 480,
+      "weapon": "rifle",
+      "weaponTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 17,
+      "min": [
+        -0.33559604852423974,
+        0,
+        -0.41955584153055137
+      ],
+      "max": [
+        0.41295140981674194,
+        1.6959718465805054,
+        0.4200549942174885
+      ],
+      "contacts": [
+        {
+          "side": -1,
+          "grip": [
+            -0.3018935452310749,
+            1.052062399895948,
+            0.18067410501671904
+          ],
+          "palm": [
+            -0.3018935452310748,
+            1.0520623998959477,
+            0.1806741050167191
+          ],
+          "error": 2.5438405243138006e-16
+        },
+        {
+          "side": 1,
+          "grip": [
+            -0.2540393654121038,
+            0.9515210033249355,
+            -0.043239728967257925
+          ],
+          "palm": [
+            -0.25403936541210387,
+            0.9515210033249356,
+            -0.04323972896725792
+          ],
+          "error": 1.2432050435751766e-16
+        }
+      ],
+      "sourceTriangles": 751966,
+      "pixelsPerUnit": 58,
+      "pose": "carry",
+      "modelPaint": false,
+      "mesh": "28k",
+      "close": false,
+      "heading": 180
+    },
+    {
+      "triangles": 29850,
+      "rifleTriangles": 480,
+      "weapon": "rifle",
+      "weaponTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 17,
+      "min": [
+        -0.3355625621449212,
+        0,
+        -0.32466695741662743
+      ],
+      "max": [
+        0.30256371320943065,
+        1.6959718465805054,
+        0.3916430385688296
+      ],
+      "contacts": [
+        {
+          "side": -1,
+          "grip": [
+            -0.08571508818720827,
+            1.052062399895948,
+            0.34122685787147333
+          ],
+          "palm": [
+            -0.08571508818720809,
+            1.0520623998959477,
+            0.3412268578714732
+          ],
+          "error": 3.06884301130794e-16
+        },
+        {
+          "side": 1,
+          "grip": [
+            -0.21020806354064236,
+            0.9515210033249355,
+            0.1490578524018095
+          ],
+          "palm": [
+            -0.21020806354064225,
+            0.9515210033249356,
+            0.1490578524018095
+          ],
+          "error": 1.5700924586837752e-16
+        }
+      ],
+      "sourceTriangles": 751966,
+      "pixelsPerUnit": 58,
+      "pose": "carry",
+      "modelPaint": false,
+      "mesh": "28k",
+      "close": false,
+      "heading": -135
+    },
+    {
+      "triangles": 29850,
+      "rifleTriangles": 480,
+      "weapon": "rifle",
+      "weaponTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 17,
+      "min": [
+        -0.41955584153055137,
+        0,
+        -0.41295140981674194
+      ],
+      "max": [
+        0.4200549942174885,
+        1.6959718465805054,
+        0.3355960485242397
+      ],
+      "contacts": [
+        {
+          "side": -1,
+          "grip": [
+            0.18067410501671913,
+            1.052062399895948,
+            0.3018935452310748
+          ],
+          "palm": [
+            0.18067410501671916,
+            1.0520623998959477,
+            0.3018935452310747
+          ],
+          "error": 2.498001805406602e-16
+        },
+        {
+          "side": 1,
+          "grip": [
+            -0.043239728967257834,
+            0.9515210033249355,
+            0.25403936541210387
+          ],
+          "palm": [
+            -0.04323972896725779,
+            0.9515210033249356,
+            0.25403936541210387
+          ],
+          "error": 1.1857187100668868e-16
+        }
+      ],
+      "sourceTriangles": 751966,
+      "pixelsPerUnit": 58,
+      "pose": "carry",
+      "modelPaint": false,
+      "mesh": "28k",
+      "close": false,
+      "heading": -90
+    },
+    {
+      "triangles": 29850,
+      "rifleTriangles": 480,
+      "weapon": "rifle",
+      "weaponTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 17,
+      "min": [
+        -0.3246669574166273,
+        0,
+        -0.30256371320943054
+      ],
+      "max": [
+        0.39164303856882954,
+        1.6959718465805054,
+        0.3355625621449211
+      ],
+      "contacts": [
+        {
+          "side": -1,
+          "grip": [
+            0.3412268578714732,
+            1.052062399895948,
+            0.0857150881872083
+          ],
+          "palm": [
+            0.34122685787147317,
+            1.0520623998959477,
+            0.08571508818720816
+          ],
+          "error": 2.6766507790745728e-16
+        },
+        {
+          "side": 1,
+          "grip": [
+            0.14905785240180944,
+            0.9515210033249355,
+            0.21020806354064236
+          ],
+          "palm": [
+            0.14905785240180947,
+            0.9515210033249356,
+            0.21020806354064234
+          ],
+          "error": 1.1775693440128312e-16
+        }
+      ],
+      "sourceTriangles": 751966,
+      "pixelsPerUnit": 58,
+      "pose": "carry",
+      "modelPaint": false,
+      "mesh": "28k",
+      "close": false,
+      "heading": -45
+    },
+    {
+      "triangles": 10446,
+      "rifleTriangles": 480,
+      "weapon": "rifle",
+      "weaponTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 17,
+      "min": [
+        -0.4124552011489868,
+        0,
+        -0.42901267322860104
+      ],
+      "max": [
+        0.22302089631557465,
+        1.6959718465805054,
+        0.4290632137377024
+      ],
+      "contacts": [],
+      "sourceTriangles": 29850,
+      "pixelsPerUnit": 58,
+      "pose": "neutral",
+      "modelPaint": false,
+      "mesh": "10k",
+      "close": false,
+      "heading": 0
+    },
+    {
+      "triangles": 10446,
+      "rifleTriangles": 480,
+      "weapon": "rifle",
+      "weaponTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 17,
+      "min": [
+        -0.31295669405820026,
+        0,
+        -0.3531552767424603
+      ],
+      "max": [
+        0.3530695131766527,
+        1.6959718465805054,
+        0.3246669574166274
+      ],
+      "contacts": [],
+      "sourceTriangles": 29850,
+      "pixelsPerUnit": 58,
+      "pose": "neutral",
+      "modelPaint": false,
+      "mesh": "10k",
+      "close": false,
+      "heading": 45
+    },
+    {
+      "triangles": 10446,
+      "rifleTriangles": 480,
+      "weapon": "rifle",
+      "weaponTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 17,
+      "min": [
+        -0.42901267322860104,
+        0,
+        -0.22302089631557465
+      ],
+      "max": [
+        0.4290632137377024,
+        1.6959718465805054,
+        0.4124552011489868
+      ],
+      "contacts": [],
+      "sourceTriangles": 29850,
+      "pixelsPerUnit": 58,
+      "pose": "neutral",
+      "modelPaint": false,
+      "mesh": "10k",
+      "close": false,
+      "heading": 90
+    },
+    {
+      "triangles": 10446,
+      "rifleTriangles": 480,
+      "weapon": "rifle",
+      "weaponTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 17,
+      "min": [
+        -0.35315527674246033,
+        0,
+        -0.35306951317665275
+      ],
+      "max": [
+        0.3246669574166274,
+        1.6959718465805054,
+        0.3129566940582002
+      ],
+      "contacts": [],
+      "sourceTriangles": 29850,
+      "pixelsPerUnit": 58,
+      "pose": "neutral",
+      "modelPaint": false,
+      "mesh": "10k",
+      "close": false,
+      "heading": 135
+    },
+    {
+      "triangles": 10446,
+      "rifleTriangles": 480,
+      "weapon": "rifle",
+      "weaponTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 17,
+      "min": [
+        -0.22302089631557465,
+        0,
+        -0.4290632137377024
+      ],
+      "max": [
+        0.4124552011489868,
+        1.6959718465805054,
+        0.42901267322860104
+      ],
+      "contacts": [],
+      "sourceTriangles": 29850,
+      "pixelsPerUnit": 58,
+      "pose": "neutral",
+      "modelPaint": false,
+      "mesh": "10k",
+      "close": false,
+      "heading": 180
+    },
+    {
+      "triangles": 10446,
+      "rifleTriangles": 480,
+      "weapon": "rifle",
+      "weaponTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 17,
+      "min": [
+        -0.35306951317665275,
+        0,
+        -0.32466695741662743
+      ],
+      "max": [
+        0.3129566940582003,
+        1.6959718465805054,
+        0.3531552767424604
+      ],
+      "contacts": [],
+      "sourceTriangles": 29850,
+      "pixelsPerUnit": 58,
+      "pose": "neutral",
+      "modelPaint": false,
+      "mesh": "10k",
+      "close": false,
+      "heading": -135
+    },
+    {
+      "triangles": 10446,
+      "rifleTriangles": 480,
+      "weapon": "rifle",
+      "weaponTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 17,
+      "min": [
+        -0.4290632137377024,
+        0,
+        -0.4124552011489868
+      ],
+      "max": [
+        0.42901267322860104,
+        1.6959718465805054,
+        0.22302089631557465
+      ],
+      "contacts": [],
+      "sourceTriangles": 29850,
+      "pixelsPerUnit": 58,
+      "pose": "neutral",
+      "modelPaint": false,
+      "mesh": "10k",
+      "close": false,
+      "heading": -90
+    },
+    {
+      "triangles": 10446,
+      "rifleTriangles": 480,
+      "weapon": "rifle",
+      "weaponTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 17,
+      "min": [
+        -0.3246669574166273,
+        0,
+        -0.31295669405820015
+      ],
+      "max": [
+        0.3531552767424603,
+        1.6959718465805054,
+        0.3530695131766527
+      ],
+      "contacts": [],
+      "sourceTriangles": 29850,
+      "pixelsPerUnit": 58,
+      "pose": "neutral",
+      "modelPaint": false,
+      "mesh": "10k",
+      "close": false,
+      "heading": -45
+    },
+    {
+      "triangles": 10446,
+      "rifleTriangles": 480,
+      "weapon": "rifle",
+      "weaponTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 17,
+      "min": [
+        -0.4124552011489868,
+        0,
+        -0.4200549942174885
+      ],
+      "max": [
+        0.33559604852423974,
+        1.6959718465805054,
+        0.41780585936236
+      ],
+      "contacts": [
+        {
+          "side": -1,
+          "grip": [
+            0.30189354523107487,
+            1.052062399895948,
+            -0.18067410501671907
+          ],
+          "palm": [
+            0.3018935452310748,
+            1.0520623998959477,
+            -0.1806741050167191
+          ],
+          "error": 2.3055512673781017e-16
+        },
+        {
+          "side": 1,
+          "grip": [
+            0.2540393654121038,
+            0.9515210033249355,
+            0.04323972896725789
+          ],
+          "palm": [
+            0.25403936541210387,
+            0.9515210033249356,
+            0.043239728967257855
+          ],
+          "error": 1.2888423398670571e-16
+        }
+      ],
+      "sourceTriangles": 29850,
+      "pixelsPerUnit": 58,
+      "pose": "carry",
+      "modelPaint": false,
+      "mesh": "10k",
+      "close": false,
+      "heading": 0
+    },
+    {
+      "triangles": 10446,
+      "rifleTriangles": 480,
+      "weapon": "rifle",
+      "weaponTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 17,
+      "min": [
+        -0.30256371320943054,
+        0,
+        -0.3916430385688294
+      ],
+      "max": [
+        0.33535371444826617,
+        1.6959718465805054,
+        0.3246669574166274
+      ],
+      "contacts": [
+        {
+          "side": -1,
+          "grip": [
+            0.08571508818720824,
+            1.052062399895948,
+            -0.3412268578714733
+          ],
+          "palm": [
+            0.08571508818720805,
+            1.0520623998959477,
+            -0.34122685787147317
+          ],
+          "error": 3.152427400121712e-16
+        },
+        {
+          "side": 1,
+          "grip": [
+            0.21020806354064234,
+            0.9515210033249355,
+            -0.14905785240180947
+          ],
+          "palm": [
+            0.2102080635406423,
+            0.9515210033249356,
+            -0.14905785240180944
+          ],
+          "error": 1.1775693440128312e-16
+        }
+      ],
+      "sourceTriangles": 29850,
+      "pixelsPerUnit": 58,
+      "pose": "carry",
+      "modelPaint": false,
+      "mesh": "10k",
+      "close": false,
+      "heading": 45
+    },
+    {
+      "triangles": 10446,
+      "rifleTriangles": 480,
+      "weapon": "rifle",
+      "weaponTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 17,
+      "min": [
+        -0.4200549942174885,
+        0,
+        -0.3355960485242398
+      ],
+      "max": [
+        0.41780585936236,
+        1.6959718465805054,
+        0.4124552011489868
+      ],
+      "contacts": [
+        {
+          "side": -1,
+          "grip": [
+            -0.18067410501671902,
+            1.052062399895948,
+            -0.3018935452310749
+          ],
+          "palm": [
+            -0.18067410501671904,
+            1.0520623998959477,
+            -0.3018935452310748
+          ],
+          "error": 2.498001805406602e-16
+        },
+        {
+          "side": 1,
+          "grip": [
+            0.04323972896725795,
+            0.9515210033249355,
+            -0.2540393654121038
+          ],
+          "palm": [
+            0.043239728967257925,
+            0.9515210033249356,
+            -0.25403936541210387
+          ],
+          "error": 1.2719202621569003e-16
+        }
+      ],
+      "sourceTriangles": 29850,
+      "pixelsPerUnit": 58,
+      "pose": "carry",
+      "modelPaint": false,
+      "mesh": "10k",
+      "close": false,
+      "heading": 90
+    },
+    {
+      "triangles": 10446,
+      "rifleTriangles": 480,
+      "weapon": "rifle",
+      "weaponTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 17,
+      "min": [
+        -0.39164303856882954,
+        0,
+        -0.3353537144482662
+      ],
+      "max": [
+        0.3246669574166274,
+        1.6959718465805054,
+        0.30256371320943054
+      ],
+      "contacts": [
+        {
+          "side": -1,
+          "grip": [
+            -0.3412268578714732,
+            1.052062399895948,
+            -0.08571508818720833
+          ],
+          "palm": [
+            -0.34122685787147317,
+            1.0520623998959477,
+            -0.08571508818720823
+          ],
+          "error": 2.486410087150353e-16
+        },
+        {
+          "side": 1,
+          "grip": [
+            -0.1490578524018094,
+            0.9515210033249355,
+            -0.2102080635406424
+          ],
+          "palm": [
+            -0.1490578524018095,
+            0.9515210033249356,
+            -0.21020806354064236
+          ],
+          "error": 1.415262216750919e-16
+        }
+      ],
+      "sourceTriangles": 29850,
+      "pixelsPerUnit": 58,
+      "pose": "carry",
+      "modelPaint": false,
+      "mesh": "10k",
+      "close": false,
+      "heading": 135
+    },
+    {
+      "triangles": 10446,
+      "rifleTriangles": 480,
+      "weapon": "rifle",
+      "weaponTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 17,
+      "min": [
+        -0.33559604852423974,
+        0,
+        -0.41780585936236
+      ],
+      "max": [
+        0.4124552011489868,
+        1.6959718465805054,
+        0.4200549942174885
+      ],
+      "contacts": [
+        {
+          "side": -1,
+          "grip": [
+            -0.3018935452310749,
+            1.052062399895948,
+            0.18067410501671904
+          ],
+          "palm": [
+            -0.3018935452310748,
+            1.0520623998959477,
+            0.1806741050167191
+          ],
+          "error": 2.5438405243138006e-16
+        },
+        {
+          "side": 1,
+          "grip": [
+            -0.2540393654121038,
+            0.9515210033249355,
+            -0.043239728967257925
+          ],
+          "palm": [
+            -0.25403936541210387,
+            0.9515210033249356,
+            -0.04323972896725792
+          ],
+          "error": 1.2432050435751766e-16
+        }
+      ],
+      "sourceTriangles": 29850,
+      "pixelsPerUnit": 58,
+      "pose": "carry",
+      "modelPaint": false,
+      "mesh": "10k",
+      "close": false,
+      "heading": 180
+    },
+    {
+      "triangles": 10446,
+      "rifleTriangles": 480,
+      "weapon": "rifle",
+      "weaponTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 17,
+      "min": [
+        -0.3353537144482663,
+        0,
+        -0.32466695741662743
+      ],
+      "max": [
+        0.30256371320943065,
+        1.6959718465805054,
+        0.3916430385688296
+      ],
+      "contacts": [
+        {
+          "side": -1,
+          "grip": [
+            -0.08571508818720827,
+            1.052062399895948,
+            0.34122685787147333
+          ],
+          "palm": [
+            -0.08571508818720809,
+            1.0520623998959477,
+            0.3412268578714732
+          ],
+          "error": 3.06884301130794e-16
+        },
+        {
+          "side": 1,
+          "grip": [
+            -0.21020806354064236,
+            0.9515210033249355,
+            0.1490578524018095
+          ],
+          "palm": [
+            -0.21020806354064225,
+            0.9515210033249356,
+            0.1490578524018095
+          ],
+          "error": 1.5700924586837752e-16
+        }
+      ],
+      "sourceTriangles": 29850,
+      "pixelsPerUnit": 58,
+      "pose": "carry",
+      "modelPaint": false,
+      "mesh": "10k",
+      "close": false,
+      "heading": -135
+    },
+    {
+      "triangles": 10446,
+      "rifleTriangles": 480,
+      "weapon": "rifle",
+      "weaponTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 17,
+      "min": [
+        -0.41780585936236,
+        0,
+        -0.4124552011489868
+      ],
+      "max": [
+        0.4200549942174885,
+        1.6959718465805054,
+        0.3355960485242397
+      ],
+      "contacts": [
+        {
+          "side": -1,
+          "grip": [
+            0.18067410501671913,
+            1.052062399895948,
+            0.3018935452310748
+          ],
+          "palm": [
+            0.18067410501671916,
+            1.0520623998959477,
+            0.3018935452310747
+          ],
+          "error": 2.498001805406602e-16
+        },
+        {
+          "side": 1,
+          "grip": [
+            -0.043239728967257834,
+            0.9515210033249355,
+            0.25403936541210387
+          ],
+          "palm": [
+            -0.04323972896725779,
+            0.9515210033249356,
+            0.25403936541210387
+          ],
+          "error": 1.1857187100668868e-16
+        }
+      ],
+      "sourceTriangles": 29850,
+      "pixelsPerUnit": 58,
+      "pose": "carry",
+      "modelPaint": false,
+      "mesh": "10k",
+      "close": false,
+      "heading": -90
+    },
+    {
+      "triangles": 10446,
+      "rifleTriangles": 480,
+      "weapon": "rifle",
+      "weaponTriangles": 480,
+      "bones": 17,
+      "skinnedMeshes": 17,
+      "min": [
+        -0.3246669574166273,
+        0,
+        -0.30256371320943054
+      ],
+      "max": [
+        0.39164303856882954,
+        1.6959718465805054,
+        0.3353537144482661
+      ],
+      "contacts": [
+        {
+          "side": -1,
+          "grip": [
+            0.3412268578714732,
+            1.052062399895948,
+            0.0857150881872083
+          ],
+          "palm": [
+            0.34122685787147317,
+            1.0520623998959477,
+            0.08571508818720816
+          ],
+          "error": 2.6766507790745728e-16
+        },
+        {
+          "side": 1,
+          "grip": [
+            0.14905785240180944,
+            0.9515210033249355,
+            0.21020806354064236
+          ],
+          "palm": [
+            0.14905785240180947,
+            0.9515210033249356,
+            0.21020806354064234
+          ],
+          "error": 1.1775693440128312e-16
+        }
+      ],
+      "sourceTriangles": 29850,
+      "pixelsPerUnit": 58,
+      "pose": "carry",
+      "modelPaint": false,
+      "mesh": "10k",
+      "close": false,
+      "heading": -45
+    }
+  ]
+}
