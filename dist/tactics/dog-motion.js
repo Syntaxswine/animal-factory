@@ -6,7 +6,11 @@ export function dogMotionState(time){
  const t=clamp(time,0,DOG_MOTION_DURATION),walk=ease(t/3),distance=1.0*walk;
  const kneel=ease((t-3.6)/1.4)*(1-ease((t-8)/1.6));
  const aim=ease((t-5)/1.1)*(1-ease((t-7.6)/1.5));
- const r=t-DOG_SHOT_TIME-.055,recoil=r>0&&r<.65?Math.sin(Math.PI*r/.65)**2*Math.exp(-3*r):0;
+ // Impulse begins at discharge: a 25ms kick inside the flash, then 525ms to settle.
+ const r=t-DOG_SHOT_TIME,recoil=r<=0||r>=.55?0:r<.025?ease(r/.025):1-ease((r-.025)/.525);
+ // The pelvis moves toward the planted paw; shoulders counter-turn over it.
+ // Fade the six-step rhythm in/out so settling does not snap to a neutral pose.
+ const gait=ease(t/.35)*(1-ease((t-2.65)/.55)),transfer=Math.sin(t*Math.PI*2)*gait;
  const feet={};
  for(const side of [-1,1]){
   let x=-.035,lift=0,planted=true;
@@ -17,7 +21,7 @@ export function dogMotionState(time){
   if(t>=3.6&&side===-1){x-=.42*kneel;const q=t<5?clamp((t-3.6)/1.4,0,1):t>=8?clamp((t-8)/1.6,0,1):1;lift=.07*Math.sin(Math.PI*q)**2;planted=q===0||q===1;}
   feet[side]={x,lift,planted};
  }
- return {time:t,distance,kneel,aim,recoil,feet,bob:t<3?.014*Math.sin(t*Math.PI*2)**2:0,
+ return {time:t,distance,kneel,aim,recoil,feet,transfer,gait,bob:.014*Math.sin(t*Math.PI*2)**2*gait,
   phase:t<3?'Walk':t<3.6?'Settle':t<5?'Kneel':t<6.6?'Aim':t<7.4?'Fire / recover':t<8?'Lower rifle':t<9.6?'Stand':'Standing',
   flash:t>=DOG_SHOT_TIME&&t<DOG_SHOT_TIME+.05,trace:t>=DOG_SHOT_TIME&&t<DOG_SHOT_TIME+.15};
 }
@@ -78,9 +82,12 @@ export function createDogMotion(worker){
   state=dogMotionState(time);heading=options.heading??0;pitch=clamp(options.pitch??0,-15,20);
   root.position.set(0,0,0);root.rotation.set(0,0,0);worker.pose('neutral');for(const b of tailBones)b.quaternion.identity();
   const walkCrouch=.065*ease(state.time/.25)*(1-ease((state.time-3)/.6));
-  named.hips.position.add(V(-.10*state.kneel,-.375*state.kneel-state.bob-walkCrouch,0));
+  named.hips.position.add(V(-.10*state.kneel,-.375*state.kneel-state.bob-walkCrouch,.032*state.transfer));
+  named.hips.rotation.x=.025*state.transfer;
+  named.hips.rotation.y=-.045*state.transfer;
   named.spine.rotation.z=-.07*state.kneel-.020*state.recoil;
-  named.spine.rotation.x=.16*state.aim;
+  named.spine.rotation.x=.16*state.aim-.065*state.transfer;
+  named.spine.rotation.y=.10*state.transfer;
   named.head.rotation.z=(pitch*Math.PI/180*1.5-.9)*state.aim;
   named.head.rotation.y=(25+.4*pitch)*Math.PI/180*state.aim;
   tailBones[0].rotation.z=-.95*state.kneel;tailBones[0].rotation.x=.075*Math.sin(state.time*4)*Math.sin(Math.PI*clamp(state.time/3,0,1));
@@ -95,7 +102,7 @@ export function createDogMotion(worker){
   const stock=named['upperArm1'].getWorldPosition(V()).add(V(-.045,.070,-.035).applyQuaternion(spineQ));
   const aimPosition=stock.clone().sub(rifle.anchors.stock.position.clone().applyQuaternion(aimQ));
   rifle.root.quaternion.copy(spineQ.clone().multiply(carryQ)).slerp(aimQ,state.aim);
-  rifle.root.position.copy(carryPosition).lerp(aimPosition,state.aim).addScaledVector(axis,-.028*state.recoil);
+  rifle.root.position.copy(carryPosition).lerp(aimPosition,state.aim).addScaledVector(axis,-.038*state.recoil);
   rifle.root.visible=true;root.updateMatrixWorld(true);contacts=[];
   const gunAxis=V(1,0,0).applyQuaternion(rifle.root.quaternion),handQ=new T.Quaternion().setFromUnitVectors(V(0,-1,0),gunAxis);
   for(const l of limbs){const name=l.side===1?'grip':'support',target=rifle.anchors[name].getWorldPosition(V()),wrist=target.clone().sub(palm.clone().applyQuaternion(handQ));limb(l.shoulder,l.elbow,l.hand,wrist,V(-.12,-1,l.side*.55));rotation(l.hand,handQ);l.finger.rotation.z=-.9;contacts.push({side:l.side,name});}

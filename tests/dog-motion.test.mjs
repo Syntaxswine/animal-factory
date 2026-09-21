@@ -23,15 +23,32 @@ test('dog motion: dense sampling preserves bone lengths, actual paw support, gri
   m.motion.apply(6.5);const trousers=m.worker.parts[1],rearKnee=points(trousers,(a,i)=>a.getZ(i)<0&&a.getY(i)>.39&&a.getY(i)<.54);assert.ok(Math.min(...rearKnee.map(p=>p.y))<.008,'rear knee cloth reaches floor');
  }finally{m.dispose();}
 });
-test('dog shot uses physical barrel, continuous heading/elevation and recoil after discharge',()=>{
+test('dog shot uses physical barrel, continuous heading/elevation and sharp recoil during the flash',()=>{
  const m=create();try{for(const heading of [-179,-43.7,0,22.5,137.2,180])for(const pitch of [-15,0,20]){
   for(const time of [0,4.2,5.3,6.6,6.8,8.3,11])m.motion.apply(time,{heading,pitch});
   m.motion.apply(DOG_SHOT_TIME,{heading,pitch});const d=m.motion.diagnostics();assert.equal(d.recoil,0);assert.equal(d.aim,1);
   const bore=m.worker.rifle.parts.find(p=>p.name==='muzzle opening').getWorldPosition(new T.Vector3());assert.ok(bore.distanceTo(v(d.shot.origin))<.0002,'physical muzzle opening');
   const a=heading*Math.PI/180,p=pitch*Math.PI/180,expected=new T.Vector3(Math.cos(a)*Math.cos(p),Math.sin(p),Math.sin(a)*Math.cos(p));assert.ok(expected.distanceTo(v(d.shot.direction))<1e-7);
-  const before=d.muzzle.origin;m.motion.apply(6.86,{heading,pitch});assert.ok(distance(before,m.motion.diagnostics().muzzle.origin)>.005,'rifle recoils');
+  const before=d.muzzle.origin;
+  m.motion.apply(DOG_SHOT_TIME+.01,{heading,pitch});const early=m.motion.diagnostics();assert.ok(early.flash&&distance(before,early.muzzle.origin)>.008,'kick is visible in first10ms of flash');
+  m.motion.apply(DOG_SHOT_TIME+.025,{heading,pitch});const peak=m.motion.diagnostics(),kick=distance(before,peak.muzzle.origin);assert.ok(peak.flash&&kick>.03,'sharp peak occurs inside flash');
+  for(const dt of [.06,.12,.2,.3,.4,.55]){m.motion.apply(DOG_SHOT_TIME+dt,{heading,pitch});const recovered=distance(before,m.motion.diagnostics().muzzle.origin);assert.ok(recovered<=kick+1e-7,'no second kick');if(dt===.2)assert.ok(recovered>kick*.65,'recovery lasts much longer than attack');}
+  m.motion.apply(6.86,{heading,pitch});assert.ok(distance(before,m.motion.diagnostics().muzzle.origin)>.005,'rifle recovers gradually');
   m.motion.apply(7.4,{heading,pitch});assert.ok(distance(before,m.motion.diagnostics().muzzle.origin)<1e-7,'rifle recovers before lowering');
  }}finally{m.dispose();}
+});
+test('walking shifts the actual pelvis toward support with opposing shoulder rotation',()=>{
+ const m=create();try{
+  for(const time of [.25,.75,1.25,1.75,2.25,2.75]){
+   m.motion.apply(time);const d=m.motion.diagnostics(),local=a=>m.worker.root.worldToLocal(v(a)),support=d.feet[1].planted?1:-1;
+   const hips=[-1,1].map(s=>local(d.joints[s].hip)),shoulders=[-1,1].map(s=>local(d.joints[s].shoulder)),center=hips[0].clone().add(hips[1]).multiplyScalar(.5);
+   assert.ok(center.z*support>.014,'pelvis transfers toward the planted paw');
+   const hipAxis=hips[1].clone().sub(hips[0]).normalize(),shoulderAxis=shoulders[1].clone().sub(shoulders[0]).normalize();
+   assert.ok(hipAxis.x*shoulderAxis.x<-.0002,'shoulder and pelvis turn in opposite directions');
+   assert.ok(Math.abs(shoulderAxis.y-hipAxis.y)>.02,'torso counterbalances pelvic roll');
+  }
+  for(const time of [0,3.3,6.6,11]){m.motion.apply(time);const d=m.motion.diagnostics(),hips=[-1,1].map(s=>m.worker.root.worldToLocal(v(d.joints[s].hip)));assert.ok(Math.abs((hips[0].z+hips[1].z)/2)<1e-8,'walk sway settles before kneeling');}
+ }finally{m.dispose();}
 });
 test('scrubbing is deterministic and restoring the approved neutral surface removes all deformation',()=>{
  const m=create();try{const samples=[0,.23,1.7,3.6,4.43,5.5,6.6,6.82,8.61,11],expected=samples.map(t=>{m.motion.apply(t,{heading:37.3,pitch:12});return JSON.stringify(m.motion.diagnostics());});for(let i=samples.length-1;i>=0;i--){m.motion.apply(samples[i],{heading:37.3,pitch:12});assert.equal(JSON.stringify(m.motion.diagnostics()),expected[i]);}

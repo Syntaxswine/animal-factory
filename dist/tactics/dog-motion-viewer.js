@@ -26,7 +26,8 @@ function render(){
  const {azimuth:az,elevation:el}=view==='game'?GAME_CAMERA:{azimuth:{front:Math.PI/2-a,side:-a,back:-Math.PI/2-a,three:Math.PI/4-a}[view],elevation:view==='three'?.12:0};
  camera.left=-w/ppu/2;camera.right=w/ppu/2;camera.top=h/ppu/2;camera.bottom=-h/ppu/2;camera.near=.1;camera.far=30;camera.position.copy(focus).add(new T.Vector3(Math.sin(az)*Math.cos(el),Math.sin(el),Math.cos(az)*Math.cos(el)).multiplyScalar(7));camera.lookAt(focus);camera.updateProjectionMatrix();
  lastD=motion.diagnostics();const origin=new T.Vector3(...lastD.shot.origin),direction=new T.Vector3(...lastD.shot.direction);
- flash.visible=s.flash;flash.position.copy(origin);flash.quaternion.setFromUnitVectors(new T.Vector3(1,0,0),direction);
+ // The flash follows the recoiling barrel; the emitted trace stays at discharge.
+ flash.visible=s.flash;flash.position.fromArray(lastD.muzzle.origin);flash.quaternion.setFromUnitVectors(new T.Vector3(1,0,0),new T.Vector3(...lastD.muzzle.direction));
  trace.visible=s.trace;trace.geometry.attributes.position.setXYZ(0,...origin.toArray());trace.geometry.attributes.position.setXYZ(1,...origin.clone().addScaledVector(direction,1.5).toArray());trace.geometry.attributes.position.needsUpdate=true;trace.geometry.computeBoundingSphere();
  guides.visible=$('guides').checked;for(const [i,side] of [-1,1].entries()){dots[i].position.fromArray(lastD.joints[side].ankle);dots[i].position.y=.02;dots[i].material.color.setHex(s.feet[side].planted?0x4ade80:0xfacc15);dots[i+2].position.fromArray(lastD.contacts[i].grip);}
  renderer.render(scene,camera);$('phase').textContent=s.phase;$('time').textContent=current.toFixed(2)+' s';$('timeline').value=current;$('play').textContent=playing?'Pause':'Play';$('heading-value').value=heading+'°';$('pitch-value').value=pitch+'°';
@@ -37,4 +38,4 @@ $('play').onclick=()=>{if(current>=DOG_MOTION_DURATION)current=0;playing=!playin
 for(const id of ['view','close','grey','guides','heading','pitch'])$(id).addEventListener('input',render);
 new ResizeObserver(render).observe(host);
 function frame(now){try{if(playing){current=Math.min(DOG_MOTION_DURATION,current+(now-last)/1000*+$('speed').value);if(current===DOG_MOTION_DURATION)playing=false;render();}last=now;requestAnimationFrame(frame);}catch(e){playing=false;$('error').textContent=e.message;throw e;}}
-render();requestAnimationFrame(frame);window.dogMotionReady=true;window.dogMotion={worker,motion,renderer,scene,camera,seek,render,diagnostics:()=>({...lastD,pixelsPerUnit:host.clientHeight/(camera.top-camera.bottom),playing})};
+render();requestAnimationFrame(frame);window.dogMotionReady=true;window.dogMotion={worker,motion,renderer,scene,camera,seek,render,diagnostics:()=>({...lastD,pixelsPerUnit:host.clientHeight/(camera.top-camera.bottom),playing,flashPosition:flash.position.toArray(),flashVisible:flash.visible,traceOrigin:Array.from(trace.geometry.attributes.position.array).slice(0,3)})};
