@@ -15,9 +15,12 @@ export function surfacePixels(kind,size=128){
    color=a<.018||b<.015?[111,107,88]:[151+course%3*7,101+course%2*5,73];
   }else if(kind==='metal'){const rib=(Math.floor(u*16)%4===0)?-25:0;color=[111+rib,125+rib,117+rib];}
   else if(kind==='wood'){const grain=((Math.floor(u*48)+Math.floor(v*7))%7)*2;color=[120+grain,95+grain,62+grain];}
+  else if(kind==='steel'){const wear=((x*17+y*31)%113===0)?-12:0;color=[128+wear,148+wear,136+wear];}
   else if(kind==='grass')color=[92,109,72];
   else if(kind==='sand')color=[151,139,102];
   else if(kind==='foliage')color=[48,93,48];
+  else if(kind==='leaf-light')color=[93,130,55];
+  else if(kind==='pine')color=[34,70,48];
   else if(kind==='water')color=[47,91,118];
   else if(kind==='linen')color=[193,204,180];
   else if(kind==='screen')color=[43,133,130];
@@ -32,7 +35,7 @@ export function surfacePixels(kind,size=128){
  return {data,width:size,height:size};
 }
 export function materialKind(box){
- if(['foliage','water','linen','screen','dark-metal','rust','red','olive','metal','wood','sand'].includes(box.material))return box.material;
+ if(['steel','leaf-light','pine','foliage','water','linen','screen','dark-metal','rust','red','olive','metal','wood','sand'].includes(box.material))return box.material;
  if(box.material==='woodland')return 'foliage';
  if(box.material==='ground-asphalt'||box.material==='bridge')return 'asphalt';
  if(box.material==='ground-dirt'||box.material==='ground-gravel')return 'sand';

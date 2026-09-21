@@ -2,6 +2,8 @@
 
 Independent 3D experiment for Animal Factory Tactics: painted animal characters and isometric industrial environments.
 
+The [environment workshop](https://syntaxswine.github.io/animal-factory-tactics-3d/tactics/environment-gallery.html) now includes 76 inspectable scenery, terrain and access entries plus courtyard and clinic scenes. The modeled scenery is also used by the older hybrid game/editor. See [environment validation and limits](docs/tactics/ENVIRONMENT-MODELS.md).
+
 [Open the experimental site](https://syntaxswine.github.io/animal-factory-tactics-3d/) · [Main game source](https://github.com/Syntaxswine/animal-factory/tree/tactics-prototype)
 
 The approved horse is currently a character/carry demo. It is not yet integrated into a playable battle. The site also retains an older hybrid prototype with sprite characters and experimental collision rules; that prototype does not establish gameplay parity.
