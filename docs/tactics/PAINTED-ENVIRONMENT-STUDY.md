@@ -33,7 +33,7 @@ native scale. The viewer also permits either scene alone and environment wirefra
 The brick opening remains clear through the same one-tile width and 1.65 height.
 The decorative coping adds approximately .07 above the two-unit wall. The study
 does not install these meshes as collision volumes or alter game outcomes.
-Scenery totals 26,764 triangles; visual approval is about paint/form coherence,
+Scenery totals 25,092 triangles; visual approval is about paint/form coherence,
 not polygon count. This is not a many-object performance budget.
 
 ## Review
@@ -51,6 +51,21 @@ opened the live scene, orbited front/back and checked scale switches without
 browser errors. Regular brick courses and some repeated crate grain remain
 nonblocking polish. This is not architect/user signoff or catalog propagation
 approval.
+
+The follow-up to `a831925` is limited to the wall and existing trim. Twelve subtly
+varied courses replace eight uniform courses; typical brick length is .325–.385
+rather than .5 world units. Joints, surface depth and exposed corners vary within
+small limits while the wall outline and clear doorway remain intact. Stone uses
+six quieter tints, chipped corners, foot-level dirt, localized runoff and worn
+coping undersides. The same authored atlas is retained. Simpler masonry bevels
+reduce the total triangle count despite the smaller units. Crate, drum, horse,
+floor, camera, lighting and the old prototype comparison are unchanged.
+
+The independent local review scored this wall/trim refinement **9/10**, with no
+visual blockers after fresh native/close and front/back browser inspection.
+Smaller masonry and weathered trim were accepted; slightly dashed mortar
+highlights at native scale remain minor polish. All 462 tests, asset validation,
+browser captures and the build passed again after this refinement.
 
 Final validation: `npm run check` passed all **462 tests** and asset validation;
 `npm run build:tactics-3d` passed. The asset checker explicitly validates the new
