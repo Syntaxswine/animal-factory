@@ -1,6 +1,7 @@
 import * as THREE from './vendor/three.module.js';
 import {createCowWorker,COW_PAINT} from './cow-worker.js';
 import {createModelPaint} from './horse-model-paint.js';
+import {COW_NECK_PAINT,cowNeckPaint} from './cow-neck-paint.js';
 import {GAME_CAMERA} from './hybrid-world.js';
 import {unitArt} from './red-hats-art.js';
 import {alphaBounds,rigidSpriteVertex} from './hybrid-sprites.js';
@@ -8,8 +9,8 @@ const $=id=>document.getElementById(id),host=$('scene'),renderer=new THREE.WebGL
 const scene=new THREE.Scene(),camera=new THREE.OrthographicCamera();scene.add(new THREE.HemisphereLight(0xfff9ec,0x737775,2));const light=new THREE.DirectionalLight(0xfff2dc,2.3);light.position.set(3,5,4);scene.add(light);const fill=new THREE.DirectionalLight(0xffffff,.7);fill.position.set(-2,2,-3);scene.add(fill);
 const loader=new THREE.TextureLoader(),greyStage=new URLSearchParams(location.search).get('stage')==='grey';
 const rifleTexture=await loader.loadAsync('../assets/characters/lowpoly-proof/horse-worker-light-atlas.png');rifleTexture.colorSpace=THREE.SRGBColorSpace;
-const paintedTexture=greyStage?null:await loader.loadAsync(COW_PAINT),variants={};
-for(const [key,file] of [['28k','cow-author-data.json'],['10k','cow-10k-data.json']]){const data=await(await fetch('./'+file)).json(),horse=createCowWorker(data,rifleTexture);scene.add(horse.root);variants[key]={data,horse,modelPaint:paintedTexture?createModelPaint(renderer,horse,paintedTexture,{species:'cow'}):{material:horse.grey,setDebug(){}}};}
+const paintedTexture=greyStage?null:await loader.loadAsync(COW_PAINT),neckTexture=greyStage?null:await loader.loadAsync(COW_NECK_PAINT),variants={};
+for(const [key,file] of [['28k','cow-author-data.json'],['10k','cow-10k-data.json']]){const data=await(await fetch('./'+file)).json(),horse=createCowWorker(data,rifleTexture);scene.add(horse.root);variants[key]={data,horse,modelPaint:paintedTexture?createModelPaint(renderer,horse,paintedTexture,{species:'cow',paintLayers:cowNeckPaint(neckTexture,renderer)}):{material:horse.grey,setDebug(){}}};}
 if(new URLSearchParams(location.search).get('mesh')==='10k'){$('mesh').value='10k';}
 let {data,horse,modelPaint}=variants[$('mesh').value];
 const sprites={};for(const weapon of ['rifle','unarmed']){const art=unitArt({species:'cow',outfit:'normal',weapon,stance:'standing'}),texture=await loader.loadAsync(art.src);texture.colorSpace=THREE.SRGBColorSpace;texture.minFilter=texture.magFilter=THREE.NearestFilter;texture.generateMipmaps=false;
