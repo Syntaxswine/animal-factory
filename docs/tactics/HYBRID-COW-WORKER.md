@@ -64,6 +64,34 @@ paint mismatch. Local projection footprints resolved those defects without
 changing the approved geometry. The final review accepts the static neutral/carry
 prototype; borrowed cloth and throat fur remain simplified at close range.
 
+### Scarf and throat close-up polish
+
+The subsequent architect review accepted the lighter build and face but requested
+closer scarf/throat polish. A dedicated ImageGen atlas,
+`dist/assets/characters/lowpoly-proof/cow-neck-detail-v1.png`, supplies directional
+cream fur and bright red gathered-cloth folds. The exact prompt is in
+`COW-NECK-DETAIL-PROMPT.txt`. `cow-neck-paint.js` maps these details in bind space,
+keeps cream paint off the turned knot/ends, and clears the duplicated scarf paint
+from the rear neck and shirt collar. The original character painting is retained.
+
+Only the knot's hidden upper rear half extends toward the wrap to close a small
+physical gap. Every other stored mesh part is byte-for-byte unchanged, including
+the face and body; triangle totals remain 29,988 and 10,184. Existing grey evidence
+and the registered paint target show the original knot, before this local fit.
+
+The high-resolution inspection also exposed an existing projection-atlas bug:
+Three.js scales viewport/scissor setters by device pixel ratio even when drawing
+into a fixed-size texture. The visibility bake now compensates for that scale.
+`cow-neck-review.mjs` checks 20 cow close-ups at 2× device pixel ratio and three
+additional horse/goat/bull paint regressions, including actual paint coverage.
+These pass with the 18 focused tests and the 64 standard browser combinations.
+This follow-up does not broaden approval beyond the neutral/carry prototype.
+The localized hostile review progressed **8 → 8.5 → 9/10**, accepting the final
+fur/cloth boundary, nape cleanup, attached knot and red folds in both mesh budgets.
+Existing eye/forelock paint artifacts identified at extreme zoom are outside this
+scarf/throat approval. Maximum flat fallback in the 20 high-DPI cow views is 0.86%
+(rounded up); the three additional character checks are each below 3%.
+
 Validation passed: **18 focused tests**, **64 grey browser combinations** and
 **64 painted browser combinations**, with no browser, shader or asset errors.
 Maximum classified flat fallback was 1.02% close and 1.90% native (rounded up);
@@ -90,6 +118,7 @@ With `tools/serve.mjs` serving this worktree on port 4424 and Playwright availab
 ```
 node tools/cow-worker-review.mjs --grey
 node tools/cow-worker-review.mjs
+node tools/cow-neck-review.mjs
 node tools/build-tactics-pages.mjs
 ```
 

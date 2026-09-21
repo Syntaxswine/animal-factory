@@ -28,10 +28,10 @@
       "close": true,
       "heading": 0,
       "coverage": {
-        "mappedPixels": 42961,
-        "borrowedPixels": 11228,
-        "fallbackPixels": 422,
-        "fallbackPercent": 0.7727380930581751
+        "mappedPixels": 42790,
+        "borrowedPixels": 11341,
+        "fallbackPixels": 406,
+        "fallbackPercent": 0.7444487228853806
       }
     },
     {
@@ -60,10 +60,10 @@
       "close": true,
       "heading": 45,
       "coverage": {
-        "mappedPixels": 29898,
-        "borrowedPixels": 7301,
-        "fallbackPixels": 84,
-        "fallbackPercent": 0.22530375774481667
+        "mappedPixels": 29286,
+        "borrowedPixels": 7810,
+        "fallbackPixels": 83,
+        "fallbackPercent": 0.22324430458054279
       }
     },
     {
@@ -92,10 +92,10 @@
       "close": true,
       "heading": 90,
       "coverage": {
-        "mappedPixels": 41872,
-        "borrowedPixels": 10035,
-        "fallbackPixels": 499,
-        "fallbackPercent": 0.9521810479716063
+        "mappedPixels": 40556,
+        "borrowedPixels": 11110,
+        "fallbackPixels": 494,
+        "fallbackPercent": 0.9470858895705522
       }
     },
     {
@@ -124,10 +124,10 @@
       "close": true,
       "heading": 135,
       "coverage": {
-        "mappedPixels": 50717,
-        "borrowedPixels": 8597,
-        "fallbackPixels": 312,
-        "fallbackPercent": 0.5232616643746016
+        "mappedPixels": 49123,
+        "borrowedPixels": 9918,
+        "fallbackPixels": 291,
+        "fallbackPercent": 0.49046045978561315
       }
     },
     {
@@ -156,10 +156,10 @@
       "close": true,
       "heading": 180,
       "coverage": {
-        "mappedPixels": 41859,
-        "borrowedPixels": 10430,
-        "fallbackPixels": 534,
-        "fallbackPercent": 1.0109232720595196
+        "mappedPixels": 40549,
+        "borrowedPixels": 11507,
+        "fallbackPixels": 526,
+        "fallbackPercent": 1.0003423224677646
       }
     },
     {
@@ -188,10 +188,10 @@
       "close": true,
       "heading": -135,
       "coverage": {
-        "mappedPixels": 29855,
-        "borrowedPixels": 7243,
-        "fallbackPixels": 121,
-        "fallbackPercent": 0.32510277009054517
+        "mappedPixels": 29231,
+        "borrowedPixels": 7778,
+        "fallbackPixels": 110,
+        "fallbackPercent": 0.29634419030685094
       }
     },
     {
@@ -220,10 +220,10 @@
       "close": true,
       "heading": -90,
       "coverage": {
-        "mappedPixels": 42612,
-        "borrowedPixels": 11084,
-        "fallbackPixels": 427,
-        "fallbackPercent": 0.7889437023077065
+        "mappedPixels": 42442,
+        "borrowedPixels": 11205,
+        "fallbackPixels": 406,
+        "fallbackPercent": 0.7511146467356113
       }
     },
     {
@@ -313,10 +313,10 @@
       "close": true,
       "heading": 0,
       "coverage": {
-        "mappedPixels": 35032,
-        "borrowedPixels": 12331,
-        "fallbackPixels": 124,
-        "fallbackPercent": 0.2611240971213174
+        "mappedPixels": 34861,
+        "borrowedPixels": 12444,
+        "fallbackPixels": 108,
+        "fallbackPercent": 0.227785628414148
       }
     },
     {
@@ -374,10 +374,10 @@
       "close": true,
       "heading": 45,
       "coverage": {
-        "mappedPixels": 29115,
-        "borrowedPixels": 9750,
-        "fallbackPixels": 74,
-        "fallbackPercent": 0.19004083309792238
+        "mappedPixels": 28503,
+        "borrowedPixels": 10259,
+        "fallbackPixels": 73,
+        "fallbackPercent": 0.1879747650315437
       }
     },
     {
@@ -435,10 +435,10 @@
       "close": true,
       "heading": 90,
       "coverage": {
-        "mappedPixels": 37271,
-        "borrowedPixels": 10038,
-        "fallbackPixels": 113,
-        "fallbackPercent": 0.23828602758213488
+        "mappedPixels": 35955,
+        "borrowedPixels": 11111,
+        "fallbackPixels": 108,
+        "fallbackPercent": 0.22893967015729003
       }
     },
     {
@@ -496,10 +496,10 @@
       "close": true,
       "heading": 135,
       "coverage": {
-        "mappedPixels": 45474,
-        "borrowedPixels": 8302,
-        "fallbackPixels": 221,
-        "fallbackPercent": 0.4092819971479897
+        "mappedPixels": 43880,
+        "borrowedPixels": 9623,
+        "fallbackPixels": 200,
+        "fallbackPercent": 0.37241867307226784
       }
     },
     {
@@ -557,10 +557,10 @@
       "close": true,
       "heading": 180,
       "coverage": {
-        "mappedPixels": 38747,
-        "borrowedPixels": 10602,
-        "fallbackPixels": 306,
-        "fallbackPercent": 0.6162521397643742
+        "mappedPixels": 37437,
+        "borrowedPixels": 11679,
+        "fallbackPixels": 298,
+        "fallbackPercent": 0.6030679564495892
       }
     },
     {
@@ -618,10 +618,10 @@
       "close": true,
       "heading": -135,
       "coverage": {
-        "mappedPixels": 29486,
-        "borrowedPixels": 9485,
-        "fallbackPixels": 114,
-        "fallbackPercent": 0.2916719969297685
+        "mappedPixels": 28862,
+        "borrowedPixels": 10020,
+        "fallbackPixels": 103,
+        "fallbackPercent": 0.2642041810952931
       }
     },
     {
@@ -679,10 +679,10 @@
       "close": true,
       "heading": -90,
       "coverage": {
-        "mappedPixels": 36622,
-        "borrowedPixels": 11486,
-        "fallbackPixels": 130,
-        "fallbackPercent": 0.2694970769932418
+        "mappedPixels": 36452,
+        "borrowedPixels": 11607,
+        "fallbackPixels": 109,
+        "fallbackPercent": 0.22629131373525993
       }
     },
     {
@@ -772,10 +772,10 @@
       "close": true,
       "heading": 0,
       "coverage": {
-        "mappedPixels": 42891,
-        "borrowedPixels": 11197,
-        "fallbackPixels": 419,
-        "fallbackPercent": 0.7687086062340617
+        "mappedPixels": 42712,
+        "borrowedPixels": 11317,
+        "fallbackPixels": 403,
+        "fallbackPercent": 0.7403733098177543
       }
     },
     {
@@ -804,10 +804,10 @@
       "close": true,
       "heading": 45,
       "coverage": {
-        "mappedPixels": 29811,
-        "borrowedPixels": 7272,
-        "fallbackPixels": 95,
-        "fallbackPercent": 0.25552746247780944
+        "mappedPixels": 29182,
+        "borrowedPixels": 7791,
+        "fallbackPixels": 90,
+        "fallbackPercent": 0.24282977632679492
       }
     },
     {
@@ -836,10 +836,10 @@
       "close": true,
       "heading": 90,
       "coverage": {
-        "mappedPixels": 41693,
-        "borrowedPixels": 10063,
-        "fallbackPixels": 511,
-        "fallbackPercent": 0.9776723362733656
+        "mappedPixels": 40368,
+        "borrowedPixels": 11158,
+        "fallbackPixels": 499,
+        "fallbackPercent": 0.9591542527630946
       }
     },
     {
@@ -868,10 +868,10 @@
       "close": true,
       "heading": 135,
       "coverage": {
-        "mappedPixels": 50520,
-        "borrowedPixels": 8655,
-        "fallbackPixels": 310,
-        "fallbackPercent": 0.5211397831386063
+        "mappedPixels": 48912,
+        "borrowedPixels": 9979,
+        "fallbackPixels": 297,
+        "fallbackPercent": 0.5017909035615328
       }
     },
     {
@@ -900,10 +900,10 @@
       "close": true,
       "heading": 180,
       "coverage": {
-        "mappedPixels": 41781,
-        "borrowedPixels": 10411,
-        "fallbackPixels": 518,
-        "fallbackPercent": 0.9827357237715804
+        "mappedPixels": 40466,
+        "borrowedPixels": 11509,
+        "fallbackPixels": 504,
+        "fallbackPercent": 0.9603841536614646
       }
     },
     {
@@ -932,10 +932,10 @@
       "close": true,
       "heading": -135,
       "coverage": {
-        "mappedPixels": 29796,
-        "borrowedPixels": 7228,
-        "fallbackPixels": 111,
-        "fallbackPercent": 0.2989093846775279
+        "mappedPixels": 29163,
+        "borrowedPixels": 7764,
+        "fallbackPixels": 99,
+        "fallbackPercent": 0.26737967914438504
       }
     },
     {
@@ -964,10 +964,10 @@
       "close": true,
       "heading": -90,
       "coverage": {
-        "mappedPixels": 42571,
-        "borrowedPixels": 11023,
-        "fallbackPixels": 402,
-        "fallbackPercent": 0.744499592562412
+        "mappedPixels": 42397,
+        "borrowedPixels": 11137,
+        "fallbackPixels": 383,
+        "fallbackPercent": 0.7103510952018843
       }
     },
     {
@@ -1057,10 +1057,10 @@
       "close": true,
       "heading": 0,
       "coverage": {
-        "mappedPixels": 34894,
-        "borrowedPixels": 12293,
-        "fallbackPixels": 126,
-        "fallbackPercent": 0.2663115845539281
+        "mappedPixels": 34715,
+        "borrowedPixels": 12413,
+        "fallbackPixels": 110,
+        "fallbackPercent": 0.23286337270841273
       }
     },
     {
@@ -1118,10 +1118,10 @@
       "close": true,
       "heading": 45,
       "coverage": {
-        "mappedPixels": 29013,
-        "borrowedPixels": 9736,
-        "fallbackPixels": 85,
-        "fallbackPercent": 0.21888036256888294
+        "mappedPixels": 28384,
+        "borrowedPixels": 10255,
+        "fallbackPixels": 80,
+        "fallbackPercent": 0.2066169064283685
       }
     },
     {
@@ -1179,10 +1179,10 @@
       "close": true,
       "heading": 90,
       "coverage": {
-        "mappedPixels": 37010,
-        "borrowedPixels": 10119,
-        "fallbackPixels": 122,
-        "fallbackPercent": 0.25819559374404777
+        "mappedPixels": 35685,
+        "borrowedPixels": 11213,
+        "fallbackPixels": 111,
+        "fallbackPercent": 0.23612499734093473
       }
     },
     {
@@ -1240,10 +1240,10 @@
       "close": true,
       "heading": 135,
       "coverage": {
-        "mappedPixels": 45096,
-        "borrowedPixels": 8488,
-        "fallbackPixels": 224,
-        "fallbackPercent": 0.416294974724948
+        "mappedPixels": 43488,
+        "borrowedPixels": 9812,
+        "fallbackPixels": 211,
+        "fallbackPercent": 0.39431144998224665
       }
     },
     {
@@ -1301,10 +1301,10 @@
       "close": true,
       "heading": 180,
       "coverage": {
-        "mappedPixels": 38491,
-        "borrowedPixels": 10647,
-        "fallbackPixels": 319,
-        "fallbackPercent": 0.6450047516024021
+        "mappedPixels": 37176,
+        "borrowedPixels": 11745,
+        "fallbackPixels": 305,
+        "fallbackPercent": 0.6195912729045626
       }
     },
     {
@@ -1362,10 +1362,10 @@
       "close": true,
       "heading": -135,
       "coverage": {
-        "mappedPixels": 29359,
-        "borrowedPixels": 9489,
-        "fallbackPixels": 109,
-        "fallbackPercent": 0.2797956721513464
+        "mappedPixels": 28726,
+        "borrowedPixels": 10025,
+        "fallbackPixels": 97,
+        "fallbackPercent": 0.24969110378912684
       }
     },
     {
@@ -1423,10 +1423,10 @@
       "close": true,
       "heading": -90,
       "coverage": {
-        "mappedPixels": 36527,
-        "borrowedPixels": 11422,
-        "fallbackPixels": 123,
-        "fallbackPercent": 0.25586620069895155
+        "mappedPixels": 36353,
+        "borrowedPixels": 11536,
+        "fallbackPixels": 104,
+        "fallbackPercent": 0.21669826849748922
       }
     },
     {
@@ -1516,10 +1516,10 @@
       "close": false,
       "heading": 0,
       "coverage": {
-        "mappedPixels": 1625,
-        "borrowedPixels": 416,
+        "mappedPixels": 1618,
+        "borrowedPixels": 420,
         "fallbackPixels": 32,
-        "fallbackPercent": 1.5436565364206465
+        "fallbackPercent": 1.5458937198067633
       }
     },
     {
@@ -1548,10 +1548,10 @@
       "close": false,
       "heading": 45,
       "coverage": {
-        "mappedPixels": 1151,
-        "borrowedPixels": 274,
+        "mappedPixels": 1127,
+        "borrowedPixels": 292,
         "fallbackPixels": 18,
-        "fallbackPercent": 1.2474012474012475
+        "fallbackPercent": 1.2526096033402923
       }
     },
     {
@@ -1580,10 +1580,10 @@
       "close": false,
       "heading": 90,
       "coverage": {
-        "mappedPixels": 1588,
-        "borrowedPixels": 360,
+        "mappedPixels": 1539,
+        "borrowedPixels": 403,
         "fallbackPixels": 33,
-        "fallbackPercent": 1.6658253407370016
+        "fallbackPercent": 1.6708860759493671
       }
     },
     {
@@ -1612,10 +1612,10 @@
       "close": false,
       "heading": 135,
       "coverage": {
-        "mappedPixels": 1903,
-        "borrowedPixels": 322,
-        "fallbackPixels": 43,
-        "fallbackPercent": 1.8959435626102292
+        "mappedPixels": 1853,
+        "borrowedPixels": 374,
+        "fallbackPixels": 40,
+        "fallbackPercent": 1.76444640494045
       }
     },
     {
@@ -1644,10 +1644,10 @@
       "close": false,
       "heading": 180,
       "coverage": {
-        "mappedPixels": 1595,
-        "borrowedPixels": 383,
-        "fallbackPixels": 27,
-        "fallbackPercent": 1.346633416458853
+        "mappedPixels": 1550,
+        "borrowedPixels": 424,
+        "fallbackPixels": 26,
+        "fallbackPercent": 1.3
       }
     },
     {
@@ -1676,10 +1676,10 @@
       "close": false,
       "heading": -135,
       "coverage": {
-        "mappedPixels": 1156,
-        "borrowedPixels": 273,
+        "mappedPixels": 1133,
+        "borrowedPixels": 293,
         "fallbackPixels": 19,
-        "fallbackPercent": 1.3121546961325967
+        "fallbackPercent": 1.314878892733564
       }
     },
     {
@@ -1708,10 +1708,10 @@
       "close": false,
       "heading": -90,
       "coverage": {
-        "mappedPixels": 1618,
-        "borrowedPixels": 414,
-        "fallbackPixels": 24,
-        "fallbackPercent": 1.1673151750972763
+        "mappedPixels": 1611,
+        "borrowedPixels": 419,
+        "fallbackPixels": 23,
+        "fallbackPercent": 1.1203117389186557
       }
     },
     {
@@ -1801,10 +1801,10 @@
       "close": false,
       "heading": 0,
       "coverage": {
-        "mappedPixels": 1348,
-        "borrowedPixels": 458,
+        "mappedPixels": 1341,
+        "borrowedPixels": 462,
         "fallbackPixels": 17,
-        "fallbackPercent": 0.9325287986834887
+        "fallbackPercent": 0.9340659340659341
       }
     },
     {
@@ -1862,10 +1862,10 @@
       "close": false,
       "heading": 45,
       "coverage": {
-        "mappedPixels": 1136,
-        "borrowedPixels": 361,
+        "mappedPixels": 1112,
+        "borrowedPixels": 379,
         "fallbackPixels": 17,
-        "fallbackPercent": 1.1228533685601056
+        "fallbackPercent": 1.1273209549071619
       }
     },
     {
@@ -1923,10 +1923,10 @@
       "close": false,
       "heading": 90,
       "coverage": {
-        "mappedPixels": 1415,
-        "borrowedPixels": 356,
-        "fallbackPixels": 19,
-        "fallbackPercent": 1.0614525139664805
+        "mappedPixels": 1366,
+        "borrowedPixels": 399,
+        "fallbackPixels": 18,
+        "fallbackPercent": 1.0095344924284912
       }
     },
     {
@@ -1984,10 +1984,10 @@
       "close": false,
       "heading": 135,
       "coverage": {
-        "mappedPixels": 1706,
-        "borrowedPixels": 308,
-        "fallbackPixels": 37,
-        "fallbackPercent": 1.8039980497318382
+        "mappedPixels": 1656,
+        "borrowedPixels": 360,
+        "fallbackPixels": 34,
+        "fallbackPercent": 1.6585365853658536
       }
     },
     {
@@ -2045,10 +2045,10 @@
       "close": false,
       "heading": 180,
       "coverage": {
-        "mappedPixels": 1466,
-        "borrowedPixels": 388,
-        "fallbackPixels": 20,
-        "fallbackPercent": 1.0672358591248665
+        "mappedPixels": 1421,
+        "borrowedPixels": 429,
+        "fallbackPixels": 19,
+        "fallbackPercent": 1.0165864098448367
       }
     },
     {
@@ -2106,10 +2106,10 @@
       "close": false,
       "heading": -135,
       "coverage": {
-        "mappedPixels": 1140,
-        "borrowedPixels": 359,
+        "mappedPixels": 1117,
+        "borrowedPixels": 379,
         "fallbackPixels": 17,
-        "fallbackPercent": 1.121372031662269
+        "fallbackPercent": 1.1235955056179776
       }
     },
     {
@@ -2167,10 +2167,10 @@
       "close": false,
       "heading": -90,
       "coverage": {
-        "mappedPixels": 1399,
-        "borrowedPixels": 429,
-        "fallbackPixels": 17,
-        "fallbackPercent": 0.9214092140921409
+        "mappedPixels": 1392,
+        "borrowedPixels": 434,
+        "fallbackPixels": 16,
+        "fallbackPercent": 0.8686210640608035
       }
     },
     {
@@ -2260,10 +2260,10 @@
       "close": false,
       "heading": 0,
       "coverage": {
-        "mappedPixels": 1623,
-        "borrowedPixels": 424,
+        "mappedPixels": 1615,
+        "borrowedPixels": 428,
         "fallbackPixels": 29,
-        "fallbackPercent": 1.3969171483622351
+        "fallbackPercent": 1.3996138996138996
       }
     },
     {
@@ -2292,10 +2292,10 @@
       "close": false,
       "heading": 45,
       "coverage": {
-        "mappedPixels": 1150,
-        "borrowedPixels": 268,
+        "mappedPixels": 1127,
+        "borrowedPixels": 286,
         "fallbackPixels": 19,
-        "fallbackPercent": 1.3221990257480862
+        "fallbackPercent": 1.3268156424581006
       }
     },
     {
@@ -2324,10 +2324,10 @@
       "close": false,
       "heading": 90,
       "coverage": {
-        "mappedPixels": 1580,
-        "borrowedPixels": 359,
+        "mappedPixels": 1530,
+        "borrowedPixels": 403,
         "fallbackPixels": 33,
-        "fallbackPercent": 1.6734279918864097
+        "fallbackPercent": 1.6785350966429298
       }
     },
     {
@@ -2356,10 +2356,10 @@
       "close": false,
       "heading": 135,
       "coverage": {
-        "mappedPixels": 1898,
-        "borrowedPixels": 328,
+        "mappedPixels": 1843,
+        "borrowedPixels": 381,
         "fallbackPixels": 40,
-        "fallbackPercent": 1.7652250661959399
+        "fallbackPercent": 1.7667844522968197
       }
     },
     {
@@ -2388,10 +2388,10 @@
       "close": false,
       "heading": 180,
       "coverage": {
-        "mappedPixels": 1576,
-        "borrowedPixels": 380,
-        "fallbackPixels": 31,
-        "fallbackPercent": 1.560140915953699
+        "mappedPixels": 1531,
+        "borrowedPixels": 424,
+        "fallbackPixels": 29,
+        "fallbackPercent": 1.4616935483870968
       }
     },
     {
@@ -2420,10 +2420,10 @@
       "close": false,
       "heading": -135,
       "coverage": {
-        "mappedPixels": 1149,
-        "borrowedPixels": 274,
+        "mappedPixels": 1126,
+        "borrowedPixels": 295,
         "fallbackPixels": 17,
-        "fallbackPercent": 1.1805555555555556
+        "fallbackPercent": 1.1821974965229485
       }
     },
     {
@@ -2452,10 +2452,10 @@
       "close": false,
       "heading": -90,
       "coverage": {
-        "mappedPixels": 1622,
-        "borrowedPixels": 412,
+        "mappedPixels": 1615,
+        "borrowedPixels": 417,
         "fallbackPixels": 28,
-        "fallbackPercent": 1.3579049466537343
+        "fallbackPercent": 1.3592233009708738
       }
     },
     {
@@ -2545,10 +2545,10 @@
       "close": false,
       "heading": 0,
       "coverage": {
-        "mappedPixels": 1334,
-        "borrowedPixels": 465,
+        "mappedPixels": 1326,
+        "borrowedPixels": 469,
         "fallbackPixels": 15,
-        "fallbackPercent": 0.8269018743109151
+        "fallbackPercent": 0.8287292817679558
       }
     },
     {
@@ -2606,10 +2606,10 @@
       "close": false,
       "heading": 45,
       "coverage": {
-        "mappedPixels": 1131,
-        "borrowedPixels": 355,
+        "mappedPixels": 1108,
+        "borrowedPixels": 373,
         "fallbackPixels": 18,
-        "fallbackPercent": 1.196808510638298
+        "fallbackPercent": 1.200800533689126
       }
     },
     {
@@ -2667,10 +2667,10 @@
       "close": false,
       "heading": 90,
       "coverage": {
-        "mappedPixels": 1407,
-        "borrowedPixels": 355,
-        "fallbackPixels": 17,
-        "fallbackPercent": 0.955593029792018
+        "mappedPixels": 1357,
+        "borrowedPixels": 399,
+        "fallbackPixels": 16,
+        "fallbackPercent": 0.9029345372460497
       }
     },
     {
@@ -2728,10 +2728,10 @@
       "close": false,
       "heading": 135,
       "coverage": {
-        "mappedPixels": 1699,
-        "borrowedPixels": 315,
+        "mappedPixels": 1644,
+        "borrowedPixels": 368,
         "fallbackPixels": 34,
-        "fallbackPercent": 1.66015625
+        "fallbackPercent": 1.66177908113392
       }
     },
     {
@@ -2789,10 +2789,10 @@
       "close": false,
       "heading": 180,
       "coverage": {
-        "mappedPixels": 1449,
-        "borrowedPixels": 389,
-        "fallbackPixels": 28,
-        "fallbackPercent": 1.5005359056806002
+        "mappedPixels": 1404,
+        "borrowedPixels": 433,
+        "fallbackPixels": 26,
+        "fallbackPercent": 1.3955984970477724
       }
     },
     {
@@ -2850,10 +2850,10 @@
       "close": false,
       "heading": -135,
       "coverage": {
-        "mappedPixels": 1129,
-        "borrowedPixels": 360,
+        "mappedPixels": 1106,
+        "borrowedPixels": 381,
         "fallbackPixels": 12,
-        "fallbackPercent": 0.7994670219853431
+        "fallbackPercent": 0.800533689126084
       }
     },
     {
@@ -2911,10 +2911,10 @@
       "close": false,
       "heading": -90,
       "coverage": {
-        "mappedPixels": 1402,
-        "borrowedPixels": 430,
+        "mappedPixels": 1395,
+        "borrowedPixels": 435,
         "fallbackPixels": 16,
-        "fallbackPercent": 0.8658008658008658
+        "fallbackPercent": 0.866738894907909
       }
     },
     {

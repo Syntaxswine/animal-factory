@@ -41,9 +41,12 @@ export function createModelPaint(renderer,horse,texture,{species='horse',frame=P
  const target=new THREE.WebGLRenderTarget(2048,1024,{minFilter:THREE.NearestFilter,magFilter:THREE.NearestFilter,depthTexture:new THREE.DepthTexture(2048,1024,THREE.UnsignedIntType)});
  const oldTarget=renderer.getRenderTarget(),oldColor=renderer.getClearColor(new THREE.Color()),oldAlpha=renderer.getClearAlpha(),oldTone=renderer.toneMapping,oldSpace=renderer.outputColorSpace;
  const oldViewport=renderer.getViewport(new THREE.Vector4()),oldScissor=renderer.getScissor(new THREE.Vector4()),oldScissorTest=renderer.getScissorTest();
+ const ratio=renderer.getPixelRatio();
  const camera=new THREE.OrthographicCamera(-frame.width/2,frame.width/2,frame.height/2,-frame.height/2,frame.near,frame.far);
  renderer.setRenderTarget(target);renderer.outputColorSpace=THREE.LinearSRGBColorSpace;renderer.toneMapping=THREE.NoToneMapping;renderer.setClearColor(0,0);renderer.setScissorTest(false);renderer.clear();renderer.setScissorTest(true);
- for(let i=0;i<4;i++){const angle=i*Math.PI/2;camera.position.set(frame.distance*Math.cos(angle),frame.centerY,frame.distance*Math.sin(angle));camera.lookAt(0,frame.centerY,0);camera.updateProjectionMatrix();renderer.setViewport(i*512,0,512,1024);renderer.setScissor(i*512,0,512,1024);renderer.render(scene,camera);}
+ // These setters use logical pixels even for a fixed-size render target.
+ // Keep the visibility atlas at its actual texel dimensions on high-DPI screens.
+ for(let i=0;i<4;i++){const angle=i*Math.PI/2;camera.position.set(frame.distance*Math.cos(angle),frame.centerY,frame.distance*Math.sin(angle));camera.lookAt(0,frame.centerY,0);camera.updateProjectionMatrix();renderer.setViewport(i*512/ratio,0,512/ratio,1024/ratio);renderer.setScissor(i*512/ratio,0,512/ratio,1024/ratio);renderer.render(scene,camera);}
  renderer.setRenderTarget(oldTarget);renderer.outputColorSpace=oldSpace;renderer.toneMapping=oldTone;renderer.setClearColor(oldColor,oldAlpha);renderer.setViewport(oldViewport);renderer.setScissor(oldScissor);renderer.setScissorTest(oldScissorTest);
  idMaterials.forEach(m=>m.dispose());
  const debug={value:0},gripForearm={value:0};
@@ -113,7 +116,7 @@ export function createModelPaint(renderer,horse,texture,{species='horse',frame=P
     return vec3(.060,.025,.009);
    }
    ${paintLayers?paintLayers.declarations:''}
-   ${species==='cow'?`vec3 cowThroat(vec3 p){
+   ${species==='cow'&&!paintLayers?`vec3 cowThroat(vec3 p){
     float a=atan(p.z,p.x+.055);
     vec2 uv=vec2((205.+7.*sin(a))/1774.,1.-clamp(210.-(p.y-1.28)*170.,190.,215.)/887.);
     return texture2D(uModelPaint,uv).rgb;
