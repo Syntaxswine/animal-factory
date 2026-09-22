@@ -201,3 +201,34 @@ Recommended next character work: **author the remaining close/steep aiming poses
 and reconcile knee/elbow support and kneel-to-prone blending with the horse
 proof**. All catalog-wide art/equipment gates remain open. Preserve canonical's
 posture/casualty implementation and other agents' environment integration work.
+
+### 22 September 2026 — section 1 / 6, sequential twelve-animal stance pass
+
+At the user's request, completed horse → goat → bull → cow → donkey → sheep →
+skunk → foreman → director → rabbit → dog → hen, clearing independent hostile
+review at **9/10 for each animal before advancing**. Both original and Red Hat
+outfits were inspected at close and gameplay scale. Implementation is on the
+3D review branch `work/prone-gameplay-refinement`, through **`ead47a7`**.
+Viewer: `tactics/animal-stance-review.html`; full record and evidence:
+[SEQUENTIAL-ANIMAL-STANCE-REVIEW.md](https://github.com/Syntaxswine/animal-factory-tactics-3d/blob/work/prone-gameplay-refinement/docs/tactics/SEQUENTIAL-ANIMAL-STANCE-REVIEW.md).
+
+Transferred supported knee/foot lowering and tucked shirt-hem weights into the
+production posture controller. Corrected hanging-tail floor clearance, skunk
+plume placement, donkey/pig prone gaze, both pigs' belly/foot support, and dog
+cuff/upper-ankle attachment. The hen uses a distinct **unarmed low stance** with
+folded bird legs and a covered neck base. Approved source meshes, paint and
+dimensions remain unchanged; no canonical simulation modules changed.
+
+**605 tests**, asset validation, the 3D build and verification of all 20 shared
+core modules at `e529f4b` passed. Browser evidence covers 144 configurations and
+48 fixed-floor transition strips. The same 1,375-case five-gun aiming matrix now
+aligns **1,248 endpoints**: 64 gained and none lost. Real core prone rifle firing
+and 12 supported → unavailable → supported playback sequences passed, including
+both outfits, reduced motion, preserved impacts and unchanged resolved state.
+
+This is a bounded stance/refinement approval, not completion of either section.
+**127 sampled close/steep endpoints remain unavailable**; full equipment/action
+coverage, crawling, complete support/contact art review, hen wing weapon handling
+and simulation-body alignment, and squad performance/resource checks remain open.
+Architect integration/publication is pending; nothing was merged into canonical
+or deployed by this pass. Preserve other agents' environment work.
