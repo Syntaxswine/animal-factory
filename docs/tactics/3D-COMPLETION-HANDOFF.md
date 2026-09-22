@@ -33,7 +33,9 @@ The mature-tree parser/editor mismatch has a separate reviewed fix: source
 `work/mature-tree-3d`. It passed source/integration tests and actual 3D editor
 save → reload → export/import → playtest checks, with **9/10 hostile review**.
 See that branch's `docs/tactics/MATURE-TREE-INTEGRATION.md`. Canonical merge and
-publication remain separate. Wider environment-art/material reconciliation is
+publication remain separate. The later local 3D canonical baseline inspected for
+the aiming repair is `dd68645`, which includes this mature-tree integration.
+Wider environment-art/material reconciliation is
 still held; preserve approved foliage while resolving it.
 
 ## Constraints and section gate
@@ -60,6 +62,17 @@ First bounded milestone, reviewed at `db9e1ee`:
 - [ ] Transfer the proof to the remaining eleven characters before claiming complete section coverage.
 
 See [Horse prone proof](HORSE-PRONE-PROOF.md) for evidence, exact coverage and canonical footprint limits. The catalog-wide checklist below remains open.
+
+Second bounded milestone: canonical gameplay aiming repair, **`9e9ea43`** on
+the 3D project's `work/prone-gameplay-refinement` branch:
+
+- [x] Prevent near/elevated aim endpoints from throwing a grip-range exception and stopping encounter rendering; restore a complete valid pose after every solve.
+- [x] Align reachable endpoints and explicitly report unavailable firing animation while preserving core outcomes/impacts and suppressing false flash/tracer origins.
+- [x] Record 1,375 endpoint fixtures, complete shot-phase/reverse checks and live original/Red Hat recovery evidence; obtain **9/10 hostile review**.
+- [ ] Author and visually review the close/steep poses still unavailable (191 of those sampled endpoints). The bounded solver result is not proof of anatomical impossibility.
+
+See [Prone aim repair and coverage](https://github.com/Syntaxswine/animal-factory-tactics-3d/blob/9e9ea43/docs/tactics/PRONE-AIM-REPAIR.md).
+This is a crash/alignment repair, not completion of catalog art, equipment or prone coverage.
 
 - [ ] Audit the approved integrated prone rest/aim baseline for torso, elbow, knee and foot/hoof support; apply proven corrections where needed.
 - [ ] Audit standing/kneeling → prone → aim → fire → recover → kneel/stand, including interruption and direct scrubbing. Reuse approved behavior and implement missing transitions rather than replacing working coverage.
@@ -168,4 +181,23 @@ For each completed section/batch append: scope, commit, evidence path/viewer, te
 
 Use the relevant focused tests and browser review harnesses while iterating. At implementation delivery run `npm run check` and `npm run build:tactics-3d`; the recorded baseline is 507 passing tests. Counts will change as coverage grows. Do not rerun the full implementation suite for a documentation-only checklist update.
 
-Recommended next character work: **reconcile the reviewed horse proof with canonical's integrated posture and casualty implementation**, then refine uncovered combinations using the section review gates.
+### 22 September 2026 — section 1 / 6, canonical aiming repair
+
+3D review branch `work/prone-gameplay-refinement`, implementation **`9e9ea43`**,
+based on `dd68645`. **593 tests**, asset validation, Pages build and all 20
+unchanged shared-core modules at `e529f4b` passed. Independent hostile review:
+**9/10** for the bounded repair. Branch pushed; architect integration/publication
+pending. No core gameplay or approved mesh/paint changes.
+
+The audit exposed an actual render-loop crash and nonconvergent bore alignment.
+1,184 of 1,375 sampled endpoints now align; 191 are explicitly unavailable and
+use a valid holding fallback. Phase checks include recoil and lowering; browser
+checks cover original/Red Hat supported → unavailable → supported playback,
+reduced motion, impacts, warning lifetime and unchanged simulation state. A
+separate real core attack check verifies normal prone rifle effects/ammunition.
+Frame counts establish responsiveness only, not a performance benchmark.
+
+Recommended next character work: **author the remaining close/steep aiming poses
+and reconcile knee/elbow support and kneel-to-prone blending with the horse
+proof**. All catalog-wide art/equipment gates remain open. Preserve canonical's
+posture/casualty implementation and other agents' environment integration work.
