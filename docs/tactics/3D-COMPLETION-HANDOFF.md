@@ -28,6 +28,15 @@ Treat model existence, motion coverage, gameplay integration and architect/publi
 
 Start with the horse and separate rifle, then transfer the proven approach to the complete catalog. Keep the hen's prone/crouch locomotion proof unarmed until section 3.
 
+First bounded milestone, reviewed at `db9e1ee`:
+
+- [x] Horse/rifle prone rest, aim, discharge/recovery and reversible kneel/stand transitions in the original and Red Hat outfits.
+- [x] Correct hovering transition knees and the exposed shirt-hem paint/join defect; verify actual surfaces, grips, bore alignment and deterministic scrubbing.
+- [x] Capture close/native motion evidence and obtain **9/10 hostile subagent review** for this horse-only proof.
+- [ ] Transfer the proof to the remaining eleven characters before claiming complete section coverage.
+
+See [Horse prone proof](HORSE-PRONE-PROOF.md) for evidence, exact coverage and canonical footprint limits. The catalog-wide checklist below remains open.
+
 - [ ] Build a grounded prone rest and aiming pose with convincing torso, elbow, knee and foot/hoof support.
 - [ ] Implement standing/kneeling → prone → aim → fire → recover → kneel/stand, including interruption and direct scrubbing to any phase. Reuse the approved walk/kneel/aim/recoil behavior.
 - [ ] Check continuous heading and vertical aim, including angles between compass directions. Preserve correct shoulder contact, support-hand grip, physical barrel/muzzle alignment and recoil timing.
@@ -109,6 +118,27 @@ Acceptance: a 3D presentation using the shared authoritative rules, with explici
 Start in [hybrid-renderer.js](../../dist/tactics/hybrid-renderer.js), [animal-motion-viewer.js](../../dist/tactics/animal-motion-viewer.js), [animal-motion-catalog.js](../../dist/tactics/animal-motion-catalog.js), [RED-HAT-VARIANTS.md](RED-HAT-VARIANTS.md) and the architect's current integrated renderer.
 
 ## Execution record
+
+### 22 September 2026 — section 1, horse/rifle proof
+
+Implementation: **`db9e1ee`**, branch `animal-motion-study`. Viewer:
+`tactics/horse-prone.html?paused`. Evidence and scope:
+[HORSE-PRONE-PROOF.md](HORSE-PRONE-PROOF.md) and
+[hybrid-review/prone-proof](hybrid-review/prone-proof/).
+
+Original and Red Hat outfits passed 1,296 browser pose samples; recorded close and
+native sequences, five view sheets per outfit and grey support views. Eight outfit
+swaps retained stable geometry/texture counts; all twelve prior motion viewers
+passed loading and phase-scrubbing regression checks. **510 tests passed**, asset
+validation passed and the 3D build succeeded.
+
+Independent hostile review: **9/10** for this bounded proof, based on refreshed
+temporal stills, source and checks; uninterrupted video was not part of that review.
+Both blockers (transition knee support and shirt seam) were resolved. Shared hand
+anatomy and compressed clothing remain prototype quality. Architect approval and
+publication are pending. The other eleven characters, other weapons, hen handling,
+prone crawling and gameplay integration are not covered. No subsequent section
+has been started; next work is the section 1 catalog transfer.
 
 For each completed section/batch append: scope, commit, evidence path/viewer, tested combinations, meaningful checks, hostile-review score, architect/publication status and remaining limitations. All section checkboxes are intentionally open at handoff creation.
 

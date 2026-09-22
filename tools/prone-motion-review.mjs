@@ -44,4 +44,3 @@ try{
  assert.deepEqual(errors,[]);fs.writeFileSync(new URL('browser-checks.json',dir),JSON.stringify({capturedAt:new Date().toISOString(),browser:browser.version(),errors,results,resources,legacy},null,2)+'\n');
  console.log('Both outfits, resource replacement and all twelve legacy viewers passed.');
 }finally{await browser.close();}
-
