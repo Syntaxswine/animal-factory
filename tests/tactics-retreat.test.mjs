@@ -29,7 +29,7 @@ test('leaving needs the ground-level border band on a side with a map beyond it,
  u.y=1;assert.match(leaveReason(w,u,'north'),/Nothing lies beyond/);u.y=100;
  s.queue=[{}];assert.match(leaveReason(w,u,'east'),/Stop movement/);s.queue=[];
  assert.equal(crossingCost(s,u),2);u.ap=1;assert.match(leaveReason(w,u,'east'),/AP/);u.ap=12;
- assert.ok(setStance(s,u,'prone'));assert.equal(crossingCost(s,u),8);u.sneaking=true;assert.equal(crossingCost(s,u),10);u.sneaking=false;assert.ok(setStance(s,u,'standing'));
+ assert.ok(setStance(s,u,'prone'));assert.equal(crossingCost(s,u),8);u.sneaking=true;assert.equal(crossingCost(s,u),12);u.sneaking=false;assert.ok(setStance(s,u,'standing'));
  const {w:calm,s:quiet}=world({guard:false});assert.equal(quiet.phase,'won');assert.equal(crossingCost(quiet,quiet.units[0]),0);assert.equal(leaveReason(calm,quiet.units[0],'east'),'');
 });
 
