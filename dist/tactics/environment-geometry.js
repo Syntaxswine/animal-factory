@@ -9,12 +9,10 @@ export function environmentGeometries(){
  const canopy=new THREE.SphereGeometry(.5,28,16),bp=canopy.attributes.position;
  for(let i=0;i<bp.count;i++){const x=bp.getX(i),y=bp.getY(i),z=bp.getZ(i),a=Math.atan2(z,x),r=1+.14*Math.sin(a*3+.4)+.07*Math.cos(a*7-y*7);bp.setXYZ(i,x*r+.035*Math.sin(y*8),y*(1+.12*Math.sin(a*4))+.035*Math.cos(a*3)*(1-Math.abs(y)*2),z*r);}
  canopy.computeVertexNormals();g['broadleaf-crown']=canopy;
- const fanPoints=[[-.5,0],[-.23,-.15],[-.08,-.42],[.08,-.25],[.29,-.39],[.26,-.12],[.5,0],[.30,.12],[.32,.33],[.08,.22],[-.08,.50],[-.25,.18]],fan=[];
- const fv=(point,back=false)=>{const [x,z]=point;return [x,.15-x*.52-Math.abs(z)*.22-(back?.055:0),z];};
- const fanTriangles=THREE.ShapeUtils.triangulateShape(fanPoints.map(([x,z])=>new THREE.Vector2(x,z)),[]);
- for(const triangle of fanTriangles){let [a,b,c]=triangle.map(i=>fanPoints[i]);if((b[0]-a[0])*(c[1]-a[1])-(b[1]-a[1])*(c[0]-a[0])>0)[b,c]=[c,b];fan.push(...fv(a),...fv(b),...fv(c),...fv(a,true),...fv(c,true),...fv(b,true));}
- for(let i=0;i<fanPoints.length;i++){const a=fanPoints[i],b=fanPoints[(i+1)%fanPoints.length];fan.push(...fv(a),...fv(a,true),...fv(b),...fv(b),...fv(a,true),...fv(b,true));}
- const pine=new THREE.BufferGeometry();pine.setAttribute('position',new THREE.Float32BufferAttribute(fan,3));pine.userData.capTriangles=fanTriangles.length;pine.computeVertexNormals();g['pine-fan']=pine;
+ // A modest irregular hem avoids a perfect geometric cone without individual needles.
+ const tier=new THREE.ConeGeometry(.5,1,12,3),tp=tier.attributes.position;
+ for(let i=0;i<tp.count;i++){const x=tp.getX(i),y=tp.getY(i),z=tp.getZ(i),a=Math.atan2(z,x),edge=.5-y,r=1+.055*Math.sin(a*5)+.035*Math.cos(a*3);tp.setXYZ(i,x*r,y-.045*edge*Math.cos(a*5),z*r);}
+ tier.computeVertexNormals();g['pine-tier']=tier;
  const vertices=[];
  for(let i=0;i<7;i++){
   const a=i*2.399,dx=Math.cos(a),dz=Math.sin(a),h=.55+(i%3)*.21,bx=dx*.12,bz=dz*.12;

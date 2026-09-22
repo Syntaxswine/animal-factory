@@ -12,11 +12,11 @@
     },
     "dense": {
       "calls": 29,
-      "triangles": 149032,
+      "triangles": 103048,
       "geometries": 17,
       "textures": 9
     },
-    "p95": 16.799999999813735,
+    "p95": 16.899999999441206,
     "fog": true,
     "grass": 2,
     "upperHidden": true,

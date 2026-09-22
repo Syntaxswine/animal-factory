@@ -8,13 +8,10 @@ export function foliageModel(kind){
  for(let i=0;i<5;i++){const a=i*2.4;branch([0,.15,0],[Math.cos(a)*.33,-.065,Math.sin(a)*.30],.135,'cone');}
  if(kind==='tree-pine'){
   branch([.055,1.45,-.02],[.015,2.30,0],.07);
-  for(let tier=0;tier<5;tier++)for(let i=0;i<5;i++){
-   const angle=i*Math.PI*2/5+tier*.91,radius=.47-tier*.085,y=.82+tier*.30+Math.sin(i*3+tier)*.055;
-   const x=Math.cos(angle)*radius,z=Math.sin(angle)*radius;
-   branch([0,y+.22,0],[x,y-.03,z],.035);
-   add('pine-fan','pine',[x*.74,y+.10,z*.74],[(.84-tier*.13)*(1+.08*Math.sin(i*7)),.33-tier*.03,.61-tier*.095],[0,-angle,.08*Math.sin(i*3)]);
-  }
-  for(let i=0;i<3;i++)add('pine-fan','pine',[.015,2.24+i*.025,0],[.27,.38,.18],[0,i*2.1,-.45]);
+  // Three overlapping masses carry the silhouette; needle detail stays in the paint.
+  add('pine-tier','pine',[0,1.12,0],[1.48,1.0,1.36],[0,.2,0]);
+  add('pine-tier','pine',[.025,1.57,-.01],[1.07,.98,1.02],[0,1.1,0]);
+  add('pine-tier','pine',[.015,2.0,0],[.65,.92,.64],[0,2.0,0]);
  }else{
   const limbs=[[-.46,1.47,-.18],[.40,1.59,.28],[-.22,1.81,.23],[.30,1.91,-.31]];
   add('broadleaf-crown','leaf-light',[.015,1.91,.01],[1.73,1.09,1.60],[0,.7,0]);

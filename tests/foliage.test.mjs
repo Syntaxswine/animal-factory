@@ -2,13 +2,7 @@ import test from 'node:test';import assert from 'node:assert/strict';
 import {buildWorld,traceWorld,DIMENSIONS} from '../dist/tactics/hybrid-world.js';
 import {environmentVisuals} from '../dist/tactics/environment-visuals.js';
 import {mirroredPaintUV} from '../dist/tactics/foliage-materials.js';
-import {environmentGeometries} from '../dist/tactics/environment-geometry.js';
-test('serrated pine branch caps retain consistent winding instead of crossing concave notches',()=>{
- const geometries=environmentGeometries();try{const g=geometries['pine-fan'],p=g.attributes.position;
-  const area=i=>(p.getZ(i+1)-p.getZ(i))*(p.getX(i+2)-p.getX(i))-(p.getX(i+1)-p.getX(i))*(p.getZ(i+2)-p.getZ(i));
-  for(let i=0;i<g.userData.capTriangles;i++){assert(area(i*6)>1e-7,'upper face points outward');assert(area(i*6+3)<-1e-7,'lower face points outward');assert(Math.abs(area(i*6)+area(i*6+3))<1e-7);}
- }finally{for(const g of Object.values(geometries))g.dispose();}
-});
+
 test('grass is deterministic, rooted at its floor, inset from tile edges and excluded from props and hard surfaces',()=>{
  const map={terrain:[['ground-grass','water','floor','ground-concrete','ground-grass'],['woodland','ground-grass','ground-gravel','void','yard']],props:[{x:4,y:0,kind:'crate-wood'}],upper:[{'0,0':'ground-grass'}],edges:{},stairs:[]},world=buildWorld(map),before=JSON.stringify([map,world.boxes]),hit=traceWorld(world,[-2,.4,0],[7,.4,0]);
  const a=environmentVisuals(world,map),b=environmentVisuals(world,map);assert.deepEqual(a,b);assert.equal(JSON.stringify([map,world.boxes]),before);assert.deepEqual(traceWorld(world,[-2,.4,0],[7,.4,0]),hit);

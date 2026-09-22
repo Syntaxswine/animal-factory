@@ -5,7 +5,7 @@ The hybrid renderer, editor preview, and environment workshop share the updated 
 ## Presentation
 
 - Broadleaf: one connected, asymmetric lobed canopy, branching trunk, painted leaves and bark, and flared roots tapering below the ground.
-- Pine: staggered, tapered branch fans with serrated descending tips and needle paint, replacing the stacked solid cones.
+- Pine: three overlapping tapered foliage masses with subtly uneven hems. Per user feedback, the individual branch fans and twigs were simplified; needle detail stays in the painted surface.
 - Grass: quieter painted ground with sparse folded 3D blades. Placement is deterministic by tile/floor; prop footprints, water, concrete, floors, gravel and void receive no tufts. Yard receives less grass than meadow/woodland.
 - The foliage atlas also updates the existing shared leaf materials on shrubs and other plant props. Their geometry remains unchanged.
 
@@ -15,11 +15,11 @@ The atlas is shared across materials and disposed once. The renderer retains its
 
 ## Validation and scope
 
-The browser review script is `tools/foliage-review.mjs`; evidence and exact measurements are in `hybrid-review/foliage/`. It checks six native/close orbits, mobile framing, the 76-entry environment catalog, fog and upper-floor exclusion, identical chunk reuse, twelve changed rebuilds, unchanged collision data and a 32×32 grass scene with 64 trees. The stress scene rendered 149,032 triangles in 29 calls, retained 17 geometries and 9 textures, and recorded approximately 16.8 ms p95 frame time on local Windows/Edge. These are local observations, not universal hardware guarantees.
+The browser review script is `tools/foliage-review.mjs`; evidence and exact measurements are in `hybrid-review/foliage/`. It checks six native/close orbits, mobile framing, the 76-entry environment catalog, fog and upper-floor exclusion, identical chunk reuse, twelve changed rebuilds, unchanged collision data and a 32×32 grass scene with 64 trees. The stress scene rendered 103,048 triangles in 29 calls, retained 17 geometries and 9 textures, and recorded approximately 16.9 ms p95 frame time on local Windows/Edge. These are local observations, not universal hardware guarantees.
 
 Original 2D sprites and the default 2D renderer remain available. This branch carries a visual revision for architect review; it does not publish the separate 3D project. The scenery still uses the prototype collision volumes, so painted canopy outlines are not precise shot silhouettes. Source paint repeats over large areas; small twig/leaf animation and seasonal variants are outside this pass.
 
-The full `npm run check` passes all 507 tests and asset validation; `npm run build:tactics-3d` succeeds. Game and editor hybrid pages also load and draw without page errors, failed page requests or renderer diagnostics. The independent [hostile review](hybrid-review/foliage/HOSTILE-REVIEW.md) scores this bounded update **9/10**.
+The full `npm run check` passes all 506 tests and asset validation; `npm run build:tactics-3d` succeeds. Game and editor hybrid pages also load and draw without page errors, failed page requests or renderer diagnostics. The independent [hostile review](hybrid-review/foliage/HOSTILE-REVIEW.md) scores this bounded update **9/10**.
 
 ## Asset and prompt record
 
