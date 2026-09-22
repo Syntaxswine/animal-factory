@@ -6,7 +6,7 @@ export const ANIMAL_MOTION_FINDINGS={
  horse:{status:'Repair reviewed · 9/10',note:'Raised-arm underarm and overall paint now flows continuously. Architect re-review pending.'},
  bull:{status:'Repair reviewed · 9/10',note:'The exposed under-elbow patch now continues the overall cloth. Architect re-review pending.'},
  cow:{status:'Repair reviewed · 9/10',note:'The raised-arm overall junction now retains continuous garment paint. Architect re-review pending.'},
- donkey:{status:'Repair reviewed · 9/10',note:'Sleeve, lower jacket and trousers keep their own cloth paint under raised arms. Architect re-review pending.'},
+ donkey:{status:'Repair reviewed · 9/10',note:'Garment paint stays continuous under raised arms; neck fur and the mane root are cleaned up. Architect re-review pending.'},
  sheep:{status:'Repair reviewed · 9/10',note:'Shoulder and waistcoat paint now stay on their own garments. Architect re-review pending.'},
  skunk:{status:'Repair reviewed · 9/10',note:'The shirt/overall junction stays visually continuous beneath the raised elbow. Architect re-review pending.'},
  rabbit:{status:'Repair reviewed · 9/10',note:'The angular underarm patch now continues the overall cloth. Architect re-review pending.'},
