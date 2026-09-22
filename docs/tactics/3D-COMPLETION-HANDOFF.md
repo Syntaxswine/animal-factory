@@ -1,6 +1,6 @@
 # Tactics 3D completion handoff
 
-Status: actionable backlog; implementation items below are not complete. This document records the next work, not a gameplay cutover.
+Status: actionable backlog with partial implementation. Read the canonical reconciliation below before continuing; some originally missing features now have approved integrated baselines.
 
 Audited 22 September 2026 in `animal-factory-tactics-animal-motion`, branch `animal-motion-study`, through `2d0cb7a`. Other worktrees and the published 3D project may be ahead in integration. Reconcile their current state before implementing a section; do not duplicate completed work or overwrite the architect's changes.
 
@@ -14,6 +14,28 @@ Audited 22 September 2026 in `animal-factory-tactics-animal-motion`, branch `ani
 
 Treat model existence, motion coverage, gameplay integration and architect/publication approval as separate statuses. Older milestone documents describe earlier snapshots, not the current completion checklist.
 
+## Canonical reconciliation — 22 September 2026
+
+The architect approved and published **`4ff0ab1`** in `animal-factory-tactics-3d`:
+group selection, group stance changes, casualty poses and Walk/Run/Sneak controls.
+That delivery passed 578 tests and browser checks. Its `battle-posture.js` and
+`battle-motion.js` already provide integrated stance/casualty presentation.
+The Starting point above describes the older graphics-study worktree only.
+
+Sections 1 and 2 are now **refinement and coverage audits of those existing
+baselines**, not instructions to recreate absent gameplay features. Compare the
+horse proof against the integrated posture/attachment path before transferring
+any improvement; reuse the approved implementation and record remaining gaps.
+Do not replace the canonical movement or casualty logic with this study's rig.
+
+The mature-tree parser/editor mismatch has a separate reviewed fix: source
+`work/mature-tree-core` at `e529f4b`, and the 3D integration branch
+`work/mature-tree-3d`. It passed source/integration tests and actual 3D editor
+save → reload → export/import → playtest checks, with **9/10 hostile review**.
+See that branch's `docs/tactics/MATURE-TREE-INTEGRATION.md`. Canonical merge and
+publication remain separate. Wider environment-art/material reconciliation is
+still held; preserve approved foliage while resolving it.
+
 ## Constraints and section gate
 
 - Preserve approved prototype dimensions, tile movement, camera convention and character scale. Inspect at **58 CSS px per world unit** as well as close-up; do not resize characters to disguise pose defects.
@@ -24,9 +46,11 @@ Treat model existence, motion coverage, gameplay integration and architect/publi
 - Record the reviewed commit, close/gameplay images, front/side/rear views where relevant, transitions/video, checks run, review score and remaining limits. Never mark an unchecked combination as passed.
 - Commit only the section's files and push the configured review branch after relevant checks pass. Follow the established architect handoff for separate-project integration/publication; a review-branch push is not a deployment.
 
-## 1. Prone poses and transitions
+## 1. Prone refinement, transitions and coverage
 
-Start with the horse and separate rifle, then transfer the proven approach to the complete catalog. Keep the hen's prone/crouch locomotion proof unarmed until section 3.
+Start by comparing canonical's existing prone implementation with the horse/rifle
+proof below, then transfer only reviewed improvements and fill demonstrated gaps.
+Keep the hen's prone/crouch locomotion proof unarmed until section 3.
 
 First bounded milestone, reviewed at `db9e1ee`:
 
@@ -37,8 +61,8 @@ First bounded milestone, reviewed at `db9e1ee`:
 
 See [Horse prone proof](HORSE-PRONE-PROOF.md) for evidence, exact coverage and canonical footprint limits. The catalog-wide checklist below remains open.
 
-- [ ] Build a grounded prone rest and aiming pose with convincing torso, elbow, knee and foot/hoof support.
-- [ ] Implement standing/kneeling → prone → aim → fire → recover → kneel/stand, including interruption and direct scrubbing to any phase. Reuse the approved walk/kneel/aim/recoil behavior.
+- [ ] Audit the approved integrated prone rest/aim baseline for torso, elbow, knee and foot/hoof support; apply proven corrections where needed.
+- [ ] Audit standing/kneeling → prone → aim → fire → recover → kneel/stand, including interruption and direct scrubbing. Reuse approved behavior and implement missing transitions rather than replacing working coverage.
 - [ ] Check continuous heading and vertical aim, including angles between compass directions. Preserve correct shoulder contact, support-hand grip, physical barrel/muzzle alignment and recoil timing.
 - [ ] Transfer to all twelve characters and both outfits. Inspect underarms, collar, waist, crotch, soles, tails and cap fit for exposed paint, detached surfaces, clipping or excessive stretching.
 - [ ] Reconcile prone footprint, picking and render placement with canonical simulation rules. Document any mismatch; do not move simulation hit volumes to make an animation pass.
@@ -48,10 +72,10 @@ Acceptance: readable grounded prone poses and reversible transitions across the 
 
 Start in [animal-motion.js](../../dist/tactics/animal-motion.js), [dog-motion.js](../../dist/tactics/dog-motion.js), [hen-motion.js](../../dist/tactics/hen-motion.js), [animal-motion-catalog.js](../../dist/tactics/animal-motion-catalog.js), [animal-motion-viewer.js](../../dist/tactics/animal-motion-viewer.js) and [animal-motion.test.mjs](../../tests/animal-motion.test.mjs).
 
-## 2. Fallen bodies, casualty poses and death transitions
+## 2. Casualty refinement and death-transition coverage
 
 - [ ] Inventory the current bleeding, stable, dead and captured states and their visual behavior. Preserve their actual gameplay meanings and visibility rules.
-- [ ] Build a settled side/back body pose and a short fall/settle transition, beginning with the horse. A dead unit must not merely freeze in an aiming pose.
+- [ ] Review the approved integrated casualty poses and fall/settle transitions, beginning with the horse; correct demonstrated gaps rather than rebuilding the existing baseline. A dead unit must not merely freeze in an aiming pose.
 - [ ] Support falls from standing, kneeling and prone, plus spawning/loading directly into a settled casualty pose. Do not make game progression depend on waiting for an animation.
 - [ ] Transfer to all twelve characters and both outfits; check head, limbs, wings, horns, caps and tails against the ground and nearby scenery. Use deliberate authored poses before considering ragdolls.
 - [ ] Keep weapon detachment, dropped items and body placement consistent with simulation events. Prevent duplicate drops and distinguish a visible casualty from a removed/captured unit.
@@ -144,4 +168,4 @@ For each completed section/batch append: scope, commit, evidence path/viewer, te
 
 Use the relevant focused tests and browser review harnesses while iterating. At implementation delivery run `npm run check` and `npm run build:tactics-3d`; the recorded baseline is 507 passing tests. Counts will change as coverage grows. Do not rerun the full implementation suite for a documentation-only checklist update.
 
-Recommended first implementation: **section 1, one horse + rifle prone proof**, followed by review and transfer to the remaining catalog.
+Recommended next character work: **reconcile the reviewed horse proof with canonical's integrated posture and casualty implementation**, then refine uncovered combinations using the section review gates.
