@@ -1,0 +1,22 @@
+[
+  {
+    "mode": "hybrid",
+    "kinds": [
+      "tree-broadleaf-large",
+      "tree-pine-large"
+    ],
+    "exportPreserved": true,
+    "playtest": true,
+    "errors": []
+  },
+  {
+    "mode": "2d",
+    "kinds": [
+      "tree-broadleaf-large",
+      "tree-pine-large"
+    ],
+    "exportPreserved": true,
+    "playtest": false,
+    "errors": []
+  }
+]

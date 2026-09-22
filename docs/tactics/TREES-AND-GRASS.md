@@ -1,25 +1,26 @@
 # Painted trees and grass
 
-The hybrid renderer, editor preview, and environment workshop share the updated trees and grass. `tactics/foliage-study.html` places them beside the approved horse at 58 CSS px/unit (gameplay) and 125 CSS px/unit (close inspection). Drag to inspect other sides. The standard tile dimensions and character scale are unchanged.
+The hybrid renderer, editor preview, and environment workshop share the updated trees and grass. `tactics/foliage-study.html` places them beside the approved horse at 58 CSS px/unit (gameplay) and 125 CSS px/unit (close inspection). The Standard/Mature selector compares both sizes at the same camera scale; the 40 px/unit overview also fits narrow screens. Drag to inspect other sides. The standard tile dimensions and character scale are unchanged.
 
 ## Presentation
 
 - Broadleaf: one connected, asymmetric lobed canopy, branching trunk, painted leaves and bark, and flared roots tapering below the ground.
 - Pine: three overlapping tapered foliage masses with subtly uneven hems. Per user feedback, the individual branch fans and twigs were simplified; needle detail stays in the painted surface. Pine paint follows the cone UVs from hem to tip, repeating only around its circumference, so branches hang downward on every side.
+- Mature variants: `tree-broadleaf-large` and `tree-pine-large` scale the standard models by 1.8 in all dimensions, reaching roughly 4.4 world units tall. The editor exposes both sizes; existing maps retain their original trees. They reuse the same geometry and paint, with enlarged sprite fallbacks in the 2D renderer.
 - Grass: quieter painted ground with sparse folded 3D blades. Placement is deterministic by tile/floor; prop footprints, water, concrete, floors, gravel and void receive no tufts. Yard receives less grass than meadow/woodland.
 - The foliage atlas also updates the existing shared leaf materials on shrubs and other plant props. Their geometry remains unchanged.
 
 `foliage-models.js` owns the tree descriptors and grass placement. `environment-geometry.js` provides shared instanced geometries. `foliage-materials.js` projects the painted atlas, using local cylindrical coordinates for bark, native tier UVs for pine, and blended world planes for other foliage. Pine mirrors only horizontally and clamps vertically; other material mappings mirror both coordinates. Each mapping uses an inset inside its atlas panel, so repetition boundaries meet without sampling unrelated panels. This is mirrored texture repetition, not a claim that the generated raw image has numerically identical opposing edges.
 
-The atlas is shared across materials and disposed once. The renderer retains its existing material/shape/chunk instancing and unchanged-chunk reuse. No new collision, movement, shot, visibility or cover rules are introduced; presentation instances retain their source tile/floor for fog filtering.
+The atlas is shared across materials and disposed once. The renderer retains its existing material/shape/chunk instancing and unchanged-chunk reuse. Existing tree rules and collision volumes remain unchanged. The new mature variants retain one solid trunk tile and the same cover value; their shot/sight proxy boxes enlarge by the same 1.8 factor as the visuals. Presentation instances retain their source tile/floor for fog filtering.
 
 ## Validation and scope
 
-The browser review script is `tools/foliage-review.mjs`; evidence and exact measurements are in `hybrid-review/foliage/`. It checks six native/close orbits, mobile framing, the 76-entry environment catalog, fog and upper-floor exclusion, identical chunk reuse, twelve changed rebuilds, unchanged collision data and a 32×32 grass scene with 64 trees. The stress scene rendered 103,048 triangles in 29 calls, retained 17 geometries and 9 textures, and recorded approximately 16.9 ms p95 frame time on local Windows/Edge. These are local observations, not universal hardware guarantees.
+The browser review script is `tools/foliage-review.mjs`; evidence and exact measurements are in `hybrid-review/foliage/`. It checks six mature native/close orbits, two standard-size comparison frames, mobile overview framing, the 78-entry environment catalog, fog and upper-floor exclusion, identical chunk reuse, twelve changed rebuilds, unchanged collision data and a 32×32 grass scene with 64 mixed standard and mature trees. The stress scene rendered 125,116 triangles in 34 calls, retained 17 geometries and 9 textures, and recorded approximately 16.8 ms p95 frame time on local Windows/Edge. These are local observations, not universal hardware guarantees.
 
 Original 2D sprites and the default 2D renderer remain available. This branch carries a visual revision for architect review; it does not publish the separate 3D project. The scenery still uses the prototype collision volumes, so painted canopy outlines are not precise shot silhouettes. Source paint repeats over large areas; small twig/leaf animation and seasonal variants are outside this pass.
 
-The full `npm run check` passes all 506 tests and asset validation; `npm run build:tactics-3d` succeeds. Game and editor hybrid pages also load and draw without page errors, failed page requests or renderer diagnostics. The independent [hostile review](hybrid-review/foliage/HOSTILE-REVIEW.md) scores this bounded update **9/10**.
+The full `npm run check` passes all 507 tests and asset validation; `npm run build:tactics-3d` succeeds. Game and editor hybrid pages also load and draw without page errors, failed page requests or renderer diagnostics. The mature variants also pass the hybrid and 2D editor import/export checks and a hybrid playtest (`tools/foliage-editor-review.mjs`, evidence in `hybrid-review/foliage/editor-checks.json`). The independent [hostile review](hybrid-review/foliage/HOSTILE-REVIEW.md) scores this bounded update **9/10**.
 
 ## Asset and prompt record
 

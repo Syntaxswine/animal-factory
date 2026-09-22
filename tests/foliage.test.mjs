@@ -2,6 +2,18 @@ import test from 'node:test';import assert from 'node:assert/strict';
 import {buildWorld,traceWorld,DIMENSIONS} from '../dist/tactics/hybrid-world.js';
 import {environmentVisuals} from '../dist/tactics/environment-visuals.js';
 import {mirroredPaintUV} from '../dist/tactics/foliage-materials.js';
+import {propCells} from '../dist/tactics/environment.js';
+
+test('mature trees retain one trunk tile but intercept shots through their taller canopy on every floor',()=>{
+ for(const base of ['tree-pine','tree-broadleaf'])for(const z of [0,1,2])for(const rotated of [false,true]){
+  const make=kind=>({terrain:[['yard']],props:[{kind,x:0,y:0,z,rotated}],edges:{},upper:[],stairs:[]}),small=make(base),large=make(base+'-large'),height=z*DIMENSIONS.floorSpacing;
+  assert.deepEqual(propCells(small.props[0]),propCells(large.props[0]));
+  const a=buildWorld(small),b=buildWorld(large);
+  assert.equal(traceWorld(a,[-3,height+2.8,0],[3,height+2.8,0]),null);
+  assert.equal(traceWorld(b,[-3,height+2.8,0],[3,height+2.8,0])?.kind,'prop');
+  assert.equal(traceWorld(b,[-3,height+4.6,0],[3,height+4.6,0]),null);
+ }
+});
 
 test('grass is deterministic, rooted at its floor, inset from tile edges and excluded from props and hard surfaces',()=>{
  const map={terrain:[['ground-grass','water','floor','ground-concrete','ground-grass'],['woodland','ground-grass','ground-gravel','void','yard']],props:[{x:4,y:0,kind:'crate-wood'}],upper:[{'0,0':'ground-grass'}],edges:{},stairs:[]},world=buildWorld(map),before=JSON.stringify([map,world.boxes]),hit=traceWorld(world,[-2,.4,0],[7,.4,0]);

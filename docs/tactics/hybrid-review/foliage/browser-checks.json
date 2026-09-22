@@ -11,12 +11,12 @@
       "textures": 9
     },
     "dense": {
-      "calls": 29,
-      "triangles": 103048,
+      "calls": 34,
+      "triangles": 125116,
       "geometries": 17,
       "textures": 9
     },
-    "p95": 16.899999999441206,
+    "p95": 16.799999999813735,
     "fog": true,
     "grass": 2,
     "upperHidden": true,
@@ -24,7 +24,7 @@
     "collisionUnchanged": true
   },
   "catalog": {
-    "count": 76,
+    "count": 78,
     "diagnostics": []
   },
   "errors": []
