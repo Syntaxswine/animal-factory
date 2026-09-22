@@ -1,4 +1,5 @@
 import {PAINTED_ATLAS} from '../dist/tactics/painted-environment-scene.js';
+import {FOLIAGE_ATLAS} from '../dist/tactics/foliage-materials.js';
 import {PROPS,EDGES,GROUNDS} from '../dist/tactics/environment.js';
 import {CHARACTER_SPECIES,ARMED_WEAPONS,characterArt} from '../dist/tactics/character-art.js';
 import {readFile,readdir} from 'node:fs/promises';
@@ -52,6 +53,7 @@ const active=new Set(environment.assets.map(a=>(DOOR_ART[a.id]||PROP_ART[a.id])?
 for(const {file} of Object.values(ROOM_SURFACES))active.add(file);
 for(const file of active)await readFile(new URL('assets/environment/'+file,root));
 const studyAtlas=PAINTED_ATLAS.replace('../assets/environment/','');active.add(studyAtlas);await checkPNG('assets/environment/'+studyAtlas,1254,1254,2);
+const foliageAtlas=FOLIAGE_ATLAS.replace('../assets/environment/','');active.add(foliageAtlas);await checkPNG('assets/environment/'+foliageAtlas,1254,1254,2);
 active.add('foliage/river-water.png');active.add('foliage/shore-tiles-atlas.png');
 const superseded=new Set(['door-steel-closed.png','door-wood-closed.png','doorway-concrete-open.png','foliage/river-straight.png','foliage/river-bend.png','foliage/river-banks-atlas.png']);
 for(const file of await readdir(new URL('assets/environment/',root),{recursive:true}))if(file.endsWith('.png'))assert.ok(active.has(file.replaceAll('\\','/'))||superseded.has(file.replaceAll('\\','/')),`Unattached environment sprite: ${file}`);
