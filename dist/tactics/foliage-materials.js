@@ -12,7 +12,7 @@ export function paintFoliageMaterial(material,kind,texture){
  const offset=[[0,.5],[.5,.5],[0,0],[.5,0]][panel];
  material.map.dispose();material.map=texture;material.roughness=1;
  material.color.setHex(kind==='leaf-light'?0xe5edb8:kind==='grass-blade'?0xbcca83:0xd4ddbf);
- material.customProgramCacheKey=()=> 'painted-foliage-v1-'+kind;
+ material.customProgramCacheKey=()=> 'painted-foliage-v2-'+kind;
  material.onBeforeCompile=shader=>{
   shader.vertexShader='varying vec3 vNaturePosition,vNatureNormal,vNatureLocal;\n'+shader.vertexShader;
   shader.vertexShader=shader.vertexShader.replace('#include <begin_vertex>',`#include <begin_vertex>
@@ -24,7 +24,10 @@ export function paintFoliageMaterial(material,kind,texture){
   shader.fragmentShader=shader.fragmentShader.replace('#include <map_fragment>',`
    vec3 weights=pow(abs(normalize(vNatureNormal)),vec3(4.));weights/=max(.001,weights.x+weights.y+weights.z);
    vec3 q=vNaturePosition*${kind==='grass'?'.45':kind==='bark'?'1.8':kind==='pine'?'.65':'.80'};
-   ${kind==='bark'?`vec2 barkUV=vec2(atan(vNatureLocal.z,vNatureLocal.x)/6.2831853+0.5,(vNatureLocal.y+.5)*1.5);vec3 paint=${sample('barkUV')};`:`vec3 paint=${sample('q.zy')}*weights.x+${sample('q.xz')}*weights.y+${sample('q.xy')}*weights.z;`}
+   ${kind==='pine'?`// Cone UVs run from hem to tip. Repeat around the tier only: vertical mirroring would invert the hanging branches.
+    vec2 pineUV=vec2(1.-abs(mod(vMapUv.x*4.,2.)-1.),clamp(vMapUv.y,0.,1.));
+    vec3 paint=texture2D(map,vec2(.004,.004)+pineUV*.492).rgb;
+   `:kind==='bark'?`vec2 barkUV=vec2(atan(vNatureLocal.z,vNatureLocal.x)/6.2831853+0.5,(vNatureLocal.y+.5)*1.5);vec3 paint=${sample('barkUV')};`:`vec3 paint=${sample('q.zy')}*weights.x+${sample('q.xz')}*weights.y+${sample('q.xy')}*weights.z;`}
    ${kind==='grass'?`paint=mix(vec3(.20,.27,.105),paint,.40);`:''}
    ${kind==='grass-blade'?`paint=mix(vec3(.12,.23,.055),vec3(.35,.46,.15),clamp(vNatureLocal.y+.5,0.,1.));`:''}
    diffuseColor.rgb*=paint;
