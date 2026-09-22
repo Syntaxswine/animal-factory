@@ -1,5 +1,7 @@
 # Hybrid migration review record
 
+Current completion backlog (22 September 2026): [3D completion handoff](3D-COMPLETION-HANDOFF.md). It tracks prone and casualty poses, armed hen support, world loot, environment polish and gameplay integration, with a **9/10 hostile-review gate** for each section. The milestones and earlier scores below are historical records.
+
 ## Current visual revision gate
 
 Latest: the [horse refinement and motion proof](HYBRID-HORSE-MOTION-REVIEW.md)
