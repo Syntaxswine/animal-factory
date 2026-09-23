@@ -20,6 +20,7 @@ import {environmentRenderer} from './environment-renderer.js';
 import {bounds,inView,focusSector,sectorOverview} from './view.js';
 import {paintDaylight} from './daylight.js';
 import {runScenePass} from './scene-passes.js';
+import {installGroundCover} from './ground-cover.js';
 import {worldPhaseLabel} from './world.js';
 import {createWorld,currentMap,travel,travelReason,locationDistance,factoryIncome,liberated,incomePerHour,clockLabel,tickWorld,spendTime,downtimeReason,medicalRestPreview,MEDIC_SKILL_REQUIRED,leave,leaveReason,recall,recallReason,beyond,borderSides,resolveRetreat,away,crossingCost,BORDER,hire,renew,release,renewReason,releaseReason,candidates,hiringReason,hiringDay,contracted} from './world.js';
 import {parseMap,blockedEdge,levelOf,roofTop,neighbors} from './maps.js';
@@ -42,6 +43,7 @@ const rosterSeed=()=>Math.floor(Math.random()*2**31); // every new campaign draw
 let world=createWorld(customMap,'standard',rosterSeed()),s=currentMap(world),targetId=null,burst=false,showGrid=false,hover=null,hoverActor=null,route=null,lastTick=0,lastRevision=-1,toast='',toastUntil=0,effectUntil=0,effectStart=0,lastEffect=null,flame=null,drag=null,width=1,height=1;
 const reducedMotion=matchMedia('(prefers-reduced-motion: reduce)');
 const fireArt=fireSprites((w,h)=>Object.assign(document.createElement('canvas'),{width:w,height:h})),fireBorn=new Map();
+installGroundCover((w,h)=>Object.assign(document.createElement('canvas'),{width:w,height:h}),{pixelRatio:()=>mainCtx.canvas.width/width});
 const camera={x:0,y:0,zoom:1.15},images=new Map(),sprites=[];
 const art=environmentRenderer(()=>{},id=>message('Could not load '+id+' artwork.'));
 const selected=()=>unit(s,s.selected),target=()=>WEAPONS[selected().weapon].blast&&terrainTarget?groundTarget(terrainTarget):s.units.find(u=>u.id===targetId&&alive(u)&&s.detected.has(u.id));
