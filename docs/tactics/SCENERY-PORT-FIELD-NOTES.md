@@ -11,28 +11,35 @@ If you are picking this up cold, read the plan first, then this, then
 the first content parcel and is the one that says how to decide what a piece of scenery
 should be made of; it holds the measurements this one only gestures at.
 
-## The stack, and why the order matters
+## The stack, and why the order mattered
 
-Five pull requests, four of them a chain. Merge bottom to top.
+All of it is merged. `tactics-prototype` at `a3d2d6b` carries #13, #14, #16, #17 and #18 —
+the plan, parcel A, S1, S2 and K — and the architect's verdicts are in
+`INTEGRATION-REVIEW-2026-09-22.md` and `-23.md`. Two more are open on top: #19, the docs
+this merge stranded, and #20, the scenery baker.
 
-| PR | Branch | Onto | What |
-| --- | --- | --- | --- |
-| #13 | `tactics-scenery-handoff` | `tactics-prototype` | the plan, docs only |
-| #14 | `tactics-mature-trees` | `tactics-prototype` | parcel A |
-| #16 | `tactics-catalog-seam` | `tactics-mature-trees` | parcel S1 |
-| #17 | `tactics-daylight` | `tactics-catalog-seam` | parcel S2 |
-| #18 | `tactics-ground-cover` | `tactics-daylight` | parcel K |
+The chain was not cosmetic while it lasted. S1 replaces the Pages build's hand-written file
+list with a directory scan, and any parcel that adds a module needs that scan or the Pages
+test fails. I learned this by branching S2 off the prototype and watching the test fail with
+five referenced-but-unshipped modules. The fix was to rebase onto S1, not to edit S1's file.
+Now that S1 is in the trunk, **branch a Stage 1 parcel straight off `tactics-prototype`.**
 
-The chain is not cosmetic. S1 replaces the Pages build's hand-written file list with
-a directory scan, and any parcel that adds a module needs that scan or the Pages test
-fails. I learned this by branching S2 off the prototype and watching the test fail
-with five referenced-but-unshipped modules. The fix was to rebase onto S1, not to
-edit S1's file. **If you add a module, branch off S1 or later.**
+**A merged PR is not the same as a merged branch tip.** #13 merged `tactics-scenery-handoff`
+at `1b59013`, which was four commits behind where the branch actually stood, so
+`SCENERY-PORT-FIELD-NOTES.md`, `MAKING-SCENERY.md` and `tools/drawn-size.mjs` were silently
+absent from the trunk while GitHub showed the PR green and closed. Nothing warns you. After
+a merge, check the commit you care about, not the PR:
 
-Worktrees on this clone, all mine, all removable once their PR merges:
-`animal-factory-tactics-scenery`, `-trees`, `-seam`, `-daylight`, `-cover`. The main checkout
-sits on `tactics-prototype`. Two worktrees are not mine: `-flame-animation` and
-`-sprites`. Leave both alone.
+```
+git merge-base --is-ancestor <your-tip> origin/tactics-prototype && echo IN || echo NOT IN
+```
+
+Worktrees on this clone, all mine: `animal-factory-tactics-scenery` (now on
+`tactics-scenery-baker`), `-trees`, `-seam`, `-daylight`, `-cover`. The four parcel worktrees
+are removable — their branches are in the trunk. The main checkout sits on
+`tactics-prototype`. Two worktrees are not mine: `-flame-animation` and `-sprites`. Leave both
+alone. `af-3dref-sprites` is a detached read-only worktree of the 3D branch and is what the
+bakers serve.
 
 ## The fork the next tranche turns on
 
@@ -111,6 +118,26 @@ into Python into a regex loses backslashes in ways that are hard to see. Twice I
 back to writing the whole file with the editor tool instead, which was faster than
 debugging the quoting. Do that sooner than I did.
 
+**`environment-gallery.html` is not a bake source.** It looks like one — 78 entries, every
+canonical prop, in the right camera — but `buildWorld` builds a prop out of plain boxes whose
+height it derives from *our own* catalogue: `rule.tall ? 2 : rule.cover ? 0.8 : rule.visualHeight
+? min(1.8, visualHeight/40) : 0.2`. Baking from it and comparing with the paintings gives
+ratios from 0.72× to 1.70×, which reads like a scale bug and is really a box standing in for a
+model. The art lives in `painted-furniture.js`, `painted-cargo.js`, the two machine studies and
+the conveyor, exactly as the plan's "four art libraries" section says. I spent a probe finding
+this out; the control was noticing that `workbench-vise` and `table-wood` baked to the *same*
+84 × 63 px, which a real model never would.
+
+**A workshop's `select()` does not leave collection mode.** `furnitureWorkshop.select(id)` sets
+the form dropdown and rebuilds, but if `#mode` is still `collection` the page rebuilds all 32
+models and the render is the whole shelf. There is no error; the picture just silently contains
+everything. Set `#mode` to `single` first, then assert `selection().length === 1` and that the
+one placed model carries the id you asked for. Both assertions are in the tool.
+
+**A manifest written per run clobbers the runs beside it.** Baking `--group=cargo` after
+`--group=lighting` left twelve rows describing forty-four PNGs, with no error and no gap in the
+directory listing. Merge against what is on disk and drop rows whose file has gone.
+
 ## Rigs worth reusing
 
 **Catalog render hash.** For any change that must not alter what the game draws: draw
@@ -130,6 +157,22 @@ context cost.
 `pathToFileURL` and run the same input through both. That is how parcel A's
 `Invalid environment props.` to accepted round trip was measured rather than
 asserted.
+
+**Driving a 3D workshop page headlessly.** Every viewer on the 3D branch exposes a
+`window.<name>Workshop` or `<name>Study` object built for exactly this, and between them they
+give you `{ready, renderer, models | scene | trucks, selection(), select(id, skin), view(a, e),
+diagnostics()}`. You do not need the page's camera: import three.js from the served tree, make
+your own `OrthographicCamera`, and reach the scene by walking `.parent` from any placed object.
+That is what makes one adapter shape serve four pages, and it leaves the page's own view
+untouched. `--playwright=<path>` points at a `playwright-core` borrowed from another project;
+this tree has no `node_modules`.
+
+**Asking the render where a world point landed.** The only honest way to check registration:
+project known points — the origin, the unit axes, the footprint centre — through the same
+camera that drew the frame and report their pixel coordinates beside the alpha crop. That is
+how the 2.000000 diamond was confirmed in the picture rather than in the source, and how the
+anchor and centre residuals were measured. A bake that reports only an image cannot be
+checked; one that reports the image plus three projected points can.
 
 ## Decisions that look arbitrary and are not
 
@@ -179,15 +222,24 @@ file. Open the file.
 1. ~~**Parcel K, ground cover.**~~ Done, PR #18. It turned out to need no artwork at all:
    at the size these shapes are drawn, painted leaves and flat procedural blobs are the same
    picture. That is worth knowing before commissioning art for anything else small.
-2. **The scenery baker**, as its own tool, before parcels B and C. It is the thing
-   that unblocks all the art at once, and it is a better use of a session than
-   hand-building one prop family.
+2. ~~**The scenery baker**, as its own tool, before parcels B and C.~~ Done, PR #20.
+   `tools/bake-scenery.mjs` and [SCENERY-BAKE.md](SCENERY-BAKE.md). All 44 forms for groups
+   `lighting`, `towers`, `furniture` and `cargo` are registered and measured; `machines`,
+   `conveyor` and `vehicles` are not adapted and are blocked on open question 1 regardless.
 3. **Parcels B and C**, which have canonical prop kinds already and need no
-   architect's answer. C carries the one real rendering problem in the plan: a
+   architect's answer for the art. C carries the one real rendering problem in the plan: a
    three-story tower on a 28-pixel tile, drawn at ground level, dimmed by the layer
    compositor whenever the player inspects an upper floor. Decide that rule before
-   painting anything. B also now has a consumer for S2's `propPieceDepth` and a worked
-   example of the dressing pass to copy, in `ground-cover.js`.
+   painting anything — and the baker has added a number to it, because the towers also sit
+   10 to 27 px off the renderer's anchor and the ladder variants 20.7 px off-centre. B also
+   now has a consumer for S2's `propPieceDepth` and a worked example of the dressing pass to
+   copy, in `ground-cover.js`, and two of its nine forms are the wall fixtures of open
+   question 5, which the baker measured at one to two tile heights out of place. Start there.
 
 Five parcels are blocked on open question one, whether the furniture, cargo,
 machines, conveyor and truck become prop kinds at all. Do not start them on a guess.
+
+Two questions are new and cheap for the architect to settle, and both get more expensive the
+longer they wait because every parcel inherits them: **open question 7**, whether the 1254²
+gate should flex per entry, and **open question 8**, whether scenery honours the 3D line's
+world scale or the sprite sheet's animals, which differ by 9%.
