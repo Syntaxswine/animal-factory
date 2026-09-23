@@ -281,6 +281,13 @@ wrongly scoped; stop and say so here.
 
 ### Status
 
+Working notes from the sessions that built Stage 0, including the traps and the
+verification rigs, are in [SCENERY-PORT-FIELD-NOTES.md](SCENERY-PORT-FIELD-NOTES.md).
+Read them before starting a parcel. The short version: the three delivered pull
+requests are a chain and must merge in order, and if you add a module you must branch
+off S1 or later or the Pages test will fail.
+
+
 | # | Parcel | Stage | Depends on | Claimed by | State |
 | --- | --- | --- | --- | --- | --- |
 | A | Mature trees | 0 | — · **before S1** | `tactics-mature-trees` | **delivered**, PR #14 |
