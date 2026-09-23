@@ -10,7 +10,7 @@ If you are picking this up cold, read the plan first, then this, then start.
 
 ## The stack, and why the order matters
 
-Four pull requests, three of them a chain. Merge bottom to top.
+Five pull requests, four of them a chain. Merge bottom to top.
 
 | PR | Branch | Onto | What |
 | --- | --- | --- | --- |
@@ -18,6 +18,7 @@ Four pull requests, three of them a chain. Merge bottom to top.
 | #14 | `tactics-mature-trees` | `tactics-prototype` | parcel A |
 | #16 | `tactics-catalog-seam` | `tactics-mature-trees` | parcel S1 |
 | #17 | `tactics-daylight` | `tactics-catalog-seam` | parcel S2 |
+| #18 | `tactics-ground-cover` | `tactics-daylight` | parcel K |
 
 The chain is not cosmetic. S1 replaces the Pages build's hand-written file list with
 a directory scan, and any parcel that adds a module needs that scan or the Pages test
@@ -26,7 +27,7 @@ with five referenced-but-unshipped modules. The fix was to rebase onto S1, not t
 edit S1's file. **If you add a module, branch off S1 or later.**
 
 Worktrees on this clone, all mine, all removable once their PR merges:
-`animal-factory-tactics-scenery`, `-trees`, `-seam`, `-daylight`. The main checkout
+`animal-factory-tactics-scenery`, `-trees`, `-seam`, `-daylight`, `-cover`. The main checkout
 sits on `tactics-prototype`. Two worktrees are not mine: `-flame-animation` and
 `-sprites`. Leave both alone.
 
@@ -86,6 +87,21 @@ list must equal exactly the union of `PROPS` keys, `EDGES[*].art` values and
 `GROUNDS`; and any PNG under `dist/assets/environment/` that nothing references fails
 the build. That is why the empty group folders hold a `.gitkeep` and not a
 placeholder image.
+
+**A sprite cache keyed off the thing being drawn clears itself.** Parcel K renders each shape
+once into a small canvas and stamps it, the way `ground-fire.js` does. I picked the render
+resolution from each piece's own measured size rather than from the zoom, so two neighbouring
+tufts of different sizes flipped the step and cleared the cache between them. Nothing looked
+wrong; the page said `2 cached bitmaps` where it should have said 18. Put the counter on the
+page. A cache that is quietly not caching looks exactly like one that is.
+
+**Anything small loses its detail to the downscale, in both directions.** At the 50 x 32 px
+it is drawn at, `bush.png` is a speckled olive mound with no readable leaf detail — which is
+why parcel K could use flat procedural blobs beside it and ship no artwork at all. The same
+arithmetic cuts the other way: a stroke thinner than one screen pixel fades to nothing, and
+the first version of the grass tufts was measurably present and visually absent. Before
+painting anything for parcels B to H, work out its size on screen. Several of them are
+small.
 
 **Bash heredocs and escaping.** Patching dense one-line JS through a shell heredoc
 into Python into a regex loses backslashes in ways that are hard to see. Twice I fell
@@ -157,10 +173,9 @@ file. Open the file.
 
 ## What I would do next
 
-1. **Parcel K, ground cover.** The only remaining parcel with no art dependency and
-   no unanswered question. Grass tufts and woodland undergrowth are procedural canvas
-   work in the idiom of `ground-fire.js` and `shore-tiles.js`, they hang off S2's
-   `dressing` pass, and they change what the game looks like immediately.
+1. ~~**Parcel K, ground cover.**~~ Done, PR #18. It turned out to need no artwork at all:
+   at the size these shapes are drawn, painted leaves and flat procedural blobs are the same
+   picture. That is worth knowing before commissioning art for anything else small.
 2. **The scenery baker**, as its own tool, before parcels B and C. It is the thing
    that unblocks all the art at once, and it is a better use of a session than
    hand-building one prop family.
@@ -168,7 +183,8 @@ file. Open the file.
    architect's answer. C carries the one real rendering problem in the plan: a
    three-story tower on a 28-pixel tile, drawn at ground level, dimmed by the layer
    compositor whenever the player inspects an upper floor. Decide that rule before
-   painting anything.
+   painting anything. B also now has a consumer for S2's `propPieceDepth` and a worked
+   example of the dressing pass to copy, in `ground-cover.js`.
 
 Five parcels are blocked on open question one, whether the furniture, cargo,
 machines, conveyor and truck become prop kinds at all. Do not start them on a guess.
