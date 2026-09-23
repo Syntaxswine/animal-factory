@@ -163,11 +163,37 @@ count, and fails on any unreferenced PNG under `dist/assets/environment/`.
 id that has both a `PROP_ART` crop and a `PROPS` rule, so a new prop is covered by
 the existing suite the moment it is registered.
 
-Three things in the 3D branch's look must **not** come across. Its camera sits at
-35.26°, giving roughly 1.73:1 diamonds where this game needs 2:1 at a 45° azimuth,
-as `HYBRID-MIGRATION.md` records. Its materials are shaded at runtime; the sprite
-paintings carry their own light. And `HYBRID-VISUAL-HANDOFF.md` already rejected
-the block-built read of that branch's environment once.
+### The camera already matches, and that makes Stage 1 cheaper
+
+`HYBRID-MIGRATION.md` records a 1.73:1 diamond against this game's 2:1, and it is
+tempting to quote. Do not: that was a **gap statement from 17 September, in a
+sentence that ends "The next stages must resolve these gaps."** They resolved it.
+`hybrid-world.js` on `project/tactics-3d` today reads
+
+```js
+export const GAME_CAMERA = Object.freeze({azimuth: Math.PI/4, elevation: Math.PI/6});
+```
+
+π/6 is 30°, and `35.26` appears nowhere in the branch's code. Projecting a unit
+ground square through that branch's own `projectWorld` gives a diamond of exactly
+2.000000, the same ratio as this game's 56 × 28 tile in `view.js`.
+
+So the 3D scenery is **already in this game's projection**. A prop does not have
+to be reprojected to become a sprite, and the scale is forced rather than chosen:
+a render through `GAME_CAMERA` scales to the tile without distortion at any zoom.
+
+That changes what most of Stage 1 costs. Where the 3D branch ships geometry, an
+agent can render it through its own camera and paint over that registered
+underlay, which is exactly the workflow the branch used on its own assets, rather
+than composing a sprite from nothing. It applies to every Stage 1 parcel that has
+a model to render: towers, cargo, furniture, machines, the conveyor, the truck,
+**and the light fixtures**, because `painted-furniture.js` builds all thirteen of
+them. What B still lacks is a finished fixture *sprite*, not a fixture.
+
+Two things must still not come across. The branch's materials are shaded at
+runtime, while a sprite painting carries its own light, so a raw render is an
+underlay and never the deliverable. And `HYBRID-VISUAL-HANDOFF.md` already
+rejected the block-built read of that branch's environment once.
 
 ## Where to look on the 3D branch
 
@@ -470,10 +496,11 @@ a dependency to write down here, not a quiet edit.
 ### B — Lamps, torches and fires · group `lighting`
 
 Nine kinds, art and placement only. No light is emitted in this parcel; that is I.
-Every one of them has to be painted from nothing: the 3D branch builds all thirteen
-fixtures as geometry against two shared atlases and ships **no fixture sprite at
-all**, so there is no source image to trace. This is the largest painting job in
-Stage 1.
+The 3D branch ships **no fixture sprite at all**, so nothing can be traced, but it
+does build all thirteen fixtures as geometry in `painted-furniture.js` against two
+shared atlases. Render them through `GAME_CAMERA` and paint over that, as above.
+This is still the largest painting job in Stage 1: nine objects, several of them
+small and fiddly, and four of them on fire.
 
 `floor-lamp`, `bedside-table-lamp` (cover 25), `gooseneck-sconce` (not solid, wall
 mounted), `streetlight`, `streetlight-double` (2×1), `standing-torch`,
