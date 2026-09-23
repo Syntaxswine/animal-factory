@@ -46,3 +46,17 @@ test('a group’s rules and crops reach the shared catalogs',()=>{
  const registered=new Set(GROUPS.flatMap(g=>Object.keys(g.PROPS)));
  for(const kind of Object.keys(GROUP_PROP_ART))assert.ok(registered.has(kind),`crop for unregistered kind ${kind}`);
 });
+
+test('renderer loads a populated scenery group from its declared subfolder and uses its crop',async()=>{
+ const kind='review-machine',previousImage=globalThis.Image,requests=[],draws=[];
+ GROUP_PROP_ART[kind]={file:'machines/review-machine.png',crop:[2,3,22,33]};
+ PROPS[kind]={w:1,h:1,solid:true,cover:0};
+ globalThis.Image=class {complete=true;naturalWidth=40;set src(value){requests.push(value);}};
+ try{
+  const {environmentRenderer}=await import('../dist/tactics/environment-renderer.js?populated-group-test');
+  const ctx={save(){},restore(){},translate(){},scale(){},drawImage(...args){draws.push(args);}};
+  assert.equal(environmentRenderer().prop(ctx,()=>({x:0,y:0}),1,{x:0,y:0,kind}),true);
+  assert.deepEqual(requests,['../assets/environment/machines/review-machine.png']);
+  assert.deepEqual(draws[0].slice(1,5),[2,3,20,30]);
+ }finally{delete GROUP_PROP_ART[kind];delete PROPS[kind];if(previousImage===undefined)delete globalThis.Image;else globalThis.Image=previousImage;}
+});
