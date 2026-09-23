@@ -120,16 +120,20 @@ export function cropOf(buffer) {
 //   catalogue, barrel      50   18.6    2.26  0.67     oxide skin, a darker red than the painting
 //
 // The 3D iron (0x343b37, one colour in every finish) bakes near-black: a streetlight at median luma
-// 39 where the painted catalogue's iron, jail-bars, is 70. The rig re-tints it for the bake only. The
-// tint whose MEAN matched jail-bars best (0xbca480: rgb 95,75,45 against 93,76,52) read as tan wood at
-// game size, next to the torch that really is wood; 0x8c887e reads as weathered iron and keeps its form
-// (rgb 74,65,44, luma p10/p50/p90 32/65/103 against jail-bars' 28/70/129). Judged by eye at drawn
-// size, after the numbers had narrowed it to four.
+// 39 where the painted catalogue's iron, jail-bars, is 70. The rig re-tints it for the bake only, and
+// the tint has one hard constraint besides looking like iron: it must stay DARKER than every material
+// the source shows darker-than-iron things against. The cooking pot (0x65615a, albedo luma 97.4)
+// hangs from an iron tripod; a tint above that inverts the object, pale legs holding a dark pot, which
+// is what 0x8c887e (136.1) did. 0x5c5f58 (93.3) keeps the order, bakes the streetlight at luma
+// p10/p50/p90 20/51/75, and at game size reads as weathered iron with its form and keeps thin legs
+// visible against grass (docs/tactics/lighting-iron.png: as built, this, and 0x8c887e, side by side).
+// The tint whose MEAN matched jail-bars best, 0xbca480, read as tan wood. The iron material is shared
+// by cargo, towers and furniture, so any parcel that opts into this rig gets the tint on its iron too.
 //
 // ACES tone mapping overshot the light direction on every rig tried, so the catalogue rig turns it
 // off, and with it off three.js ignores toneMappingExposure: brightness goes through `gain`.
 export const RIGS = {
- catalogue: {from: [-1, 2, 3], fill: .5, key: 2.8, gain: 1.3, tone: 'none', flamesUnlit: true, tints: {iron: 0x8c887e}},
+ catalogue: {from: [-1, 2, 3], fill: .5, key: 2.8, gain: 1.3, tone: 'none', flamesUnlit: true, tints: {iron: 0x5c5f58}},
  page: null,
 };
 
@@ -167,6 +171,25 @@ export function registrationMarks({footCentre, crop, tiles, gameScale}) {
  const reach = Math.max(fx - crop[0], crop[2] - fx) + 1;
  const left = Math.floor(fx - reach), right = Math.round(2 * fx - left - 1);
  return {row, left, right};
+}
+
+// Put the marks back on a PNG that has lost them -- a repaint, typically -- from the footprint centre
+// and scale the bake recorded. Any existing marks (exact MARK_RGBA pixels) are stripped first, so this
+// is idempotent and a repaint that happened to keep them is not widened by a pixel each time. Returns
+// the marks, or null when they would not fit on the canvas.
+export function remark(png, {footCentre, tiles, gameScale}) {
+ const {width, height, pixels} = png;
+ for (let i = 0; i < pixels.length; i += 4)
+  if (MARK_RGBA.every((v, c) => pixels[i + c] === v)) pixels.fill(0, i, i + 4);
+ let x0 = width, y0 = height, x1 = -1, y1 = -1;
+ for (let y = 0; y < height; y++) for (let x = 0; x < width; x++) if (pixels[(y * width + x) * 4 + 3] >= 64) {
+  if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y;
+ }
+ if (x1 < 0) throw new Error('nothing to register: the alpha channel is empty');
+ const marks = registrationMarks({footCentre, crop: [x0, y0, x1 + 1, y1 + 1], tiles, gameScale});
+ if (!marksFit(marks, width, height)) return null;
+ paintMarks(png, marks);
+ return marks;
 }
 
 // Whether both marks are on the canvas. A wall fixture's footprint centre is far below the subject,
@@ -353,6 +376,14 @@ const arg = (name, fallback) => {
 };
 const flag = name => process.argv.includes('--' + name);
 
+// Every option this tool reads. Anything else is refused, not ignored: an ignored --shadow (the
+// first version of parcel B's option) produces unregistered art with no error.
+export const OPTIONS = ['list', 'calibrate', 'register', 'remark', 'group', 'form', 'skin', 'light', 'port', 'size', 'margin', 'out', 'playwright'];
+export function checkOptions(argv) {
+ const unknown = argv.filter(a => a.startsWith('--')).map(a => a.slice(2).split('=')[0]).filter(n => !OPTIONS.includes(n));
+ if (unknown.length) throw new Error(`unknown option${unknown.length > 1 ? 's' : ''}: ${unknown.map(n => '--' + n).join(', ')}; have ${OPTIONS.map(n => '--' + n).join(' ')}`);
+}
+
 export async function openWorkshop(browser, {port, page: file, hook}) {
  const page = await browser.newPage({viewport: {width: 1100, height: 850}});
  const errors = [];
@@ -413,6 +444,25 @@ async function bakeOne(page, {hook, id, skin, size, margin, rig, register}) {
 }
 
 async function main() {
+ checkOptions(process.argv.slice(2));
+ // --remark=<side manifest>: restore registration marks on shipped PNGs without a browser, from the
+ // footCentre and gameScale each asset recorded at bake time.
+ if (arg('remark', '')) {
+  const manifestPath = path.resolve(arg('remark', ''));
+  const root = path.dirname(manifestPath);
+  for (const asset of JSON.parse(fs.readFileSync(manifestPath, 'utf8')).assets) {
+   const src = asset.source || {};
+   if (!src.footCentre || !src.gameScale) { console.log(`${asset.id.padEnd(22)}skipped: no footCentre/gameScale recorded`); continue; }
+   const file = path.join(root, asset.file), png = decodePNG(fs.readFileSync(file));
+   const marks = remark(png, {footCentre: src.footCentre, tiles: asset.suggestedFootprint, gameScale: src.gameScale});
+   if (!marks) throw new Error(`${asset.id}: the marks would fall off the canvas; re-bake instead`);
+   fs.writeFileSync(file, encodePNG(png));
+   const row = catalogueRow({crop: cropOf(fs.readFileSync(file)).crop, footCentre: src.footCentre, tiles: asset.suggestedFootprint, gameScale: src.gameScale});
+   console.log(`${asset.id.padEnd(22)}marks at row ${marks.row}, x ${marks.left} and ${marks.right}   anchor ${row.anchor.residual.toFixed(2)}   centre ${row.centre.toFixed(2)}   box ${row.visualWidth} x ${row.visualHeight}`);
+  }
+  console.log('Now run python tools/catalog-environment.py, and set visualWidth/visualHeight to the boxes above.');
+  return;
+ }
  const port = Number(arg('port', 4319));
  const size = Number(arg('size', 1254));
  const margin = Number(arg('margin', 24));

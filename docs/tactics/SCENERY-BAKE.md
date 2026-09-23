@@ -99,7 +99,7 @@ are recorded on each row (`light`, `register`).
 
 **`--light=page | catalogue`**, default `page`. `catalogue` switches the page's lights off and
 puts one key light at (−1, 2, 3) with a hemisphere fill, no tone mapping, the flame meshes drawn
-unlit, and the 3D `iron` material re-tinted from `0x343b37` to `0x8c887e`. It was calibrated
+unlit, and the 3D `iron` material re-tinted from `0x343b37` to `0x5c5f58`. It was calibrated
 against the subjects both lines have, measured at drawn size:
 
 | | luma | sd | TL ÷ BR | saturation |
@@ -109,7 +109,9 @@ against the subjects both lines have, measured at drawn size:
 | baked crate, `catalogue` | 83 | 29.6 | 2.19 | 0.41 |
 
 and for the iron, luma p10/p50/p90 of a baked streetlight against painted `jail-bars`: 9/39/63
-as built, 32/65/103 re-tinted, 28/70/129 painted. ACES tone mapping overshot the light direction
+as built, 20/51/75 re-tinted, 28/70/129 painted. The tint stays darker than the cooking pot the
+iron tripod holds (`0x65615a`): a lighter one, tried, inverts that object, so a tint must keep
+the source's order, not only hit a number. ACES tone mapping overshot the light direction
 on every rig tried. And with tone mapping off, three.js ignores `toneMappingExposure`, so
 brightness is a `gain` on the lights. An unknown `--light` is refused, not quietly treated as
 `page`. The rig was fitted on one crate and a few metals; check anything new against its
@@ -124,6 +126,12 @@ manifest, which recomputes residuals from the marked image. If the marks would l
 the tool retries the tighter fit; if that fails too it bakes without them and says so. A wall
 fixture is that case. A registration field on the prop record would make the marks unnecessary;
 see open question 5.
+
+**`--remark=<side manifest>`.** Restores the marks on PNGs that already exist, a repaint most
+likely, from the `footCentre` and `gameScale` each asset recorded at bake time. It needs no
+browser, strips any existing marks first so running it twice changes nothing, and refuses when the
+marks would leave the canvas. Stripping and restoring the seven shipped lighting sprites gives
+byte-identical files.
 
 ## What cannot be fixed here
 
@@ -211,7 +219,8 @@ The tool stops rather than writing quietly wrong art when:
   this is the defect the 23 September integration review found in the character baker, where
   heading 90 clipped 13 and 7 pixels off the bottom and the run reported it and carried on;
 - the frame came back with an empty alpha channel;
-- `--light` names a rig the table does not have;
+- `--light` names a rig the table does not have, or any option is one the tool does not know
+  (a mistyped or retired flag would otherwise be ignored and the run would look fine);
 - the page's form list no longer matches the `GROUPS` table, in either direction. A form the
   3D branch adds is a form no parcel will paint, and a form it removes is a stale plan entry.
   Both fail the whole run instead of leaving a gap in the manifest.
@@ -242,5 +251,5 @@ guard, the crop rule, the catalog arithmetic and the group partition, and since 
 light table, the registration marks' placement, that they never overwrite the model, and their canvas check. Its
 fixtures are two real manifest rows rather than invented numbers, and the camera probe is a
 recorded measurement rather than a recomputation of the tool's own formula. Fourteen deliberate
-mutations, fourteen caught; parcel B's round added fourteen more across the tool and the parcel,
-all caught.
+mutations, fourteen caught. Parcel B's rounds added more across the tool and the parcel, all
+caught; the lists are in its commit messages.

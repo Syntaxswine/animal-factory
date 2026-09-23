@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {encodePNG} from '../tools/png-rgba.mjs';
 import {GROUPS, TILE_HALF_WIDTH, HEIGHT_PER_GROUND_UNIT, checkCamera, catalogueRow, cropOf, assertFormsCovered,
- RIGS, rigFor, DEFAULT_LIGHT, MARK_RGBA, registrationMarks, marksFit, paintMarks}
+ RIGS, rigFor, DEFAULT_LIGHT, MARK_RGBA, registrationMarks, marksFit, paintMarks, remark, checkOptions, OPTIONS}
  from '../tools/bake-scenery.mjs';
 
 // tools/bake-scenery.mjs needs a browser, a served 3D tree and an installed Edge to take a
@@ -125,7 +125,7 @@ test('the light table refuses a rig it does not know', () => {
  // The calibrated rig, spelled out: a key from the screen's upper left, no tone mapping, and the
  // 3D iron re-tinted to the painted catalogue's. Read back from RIGS it could not be wrong.
  assert.deepEqual(rigFor('catalogue'),
-  {from: [-1, 2, 3], fill: .5, key: 2.8, gain: 1.3, tone: 'none', flamesUnlit: true, tints: {iron: 0x8c887e}});
+  {from: [-1, 2, 3], fill: .5, key: 2.8, gain: 1.3, tone: 'none', flamesUnlit: true, tints: {iron: 0x5c5f58}});
  assert.equal(rigFor('catalogue'), RIGS.catalogue);
  assert.throws(() => rigFor('studio'), /unknown --light="studio"; have catalogue, page/);
  // Inherited properties are not rigs either.
@@ -187,4 +187,37 @@ test('the marks are two pixels at the crop threshold, never painted over the mod
  assert.equal(marksFit({row: 700, left: -1, right: 1000}, 1254, 1254), false, 'left edge');
  assert.equal(marksFit({row: 700, left: 200, right: 1254}, 1254, 1254), false, 'right edge');
  assert.equal(marksFit({row: 700, left: 200, right: 1000}, 1254, 1254), true);
+});
+
+test('a repaint gets its marks back from the recorded footprint centre, and remarking is idempotent', () => {
+ const {gameScale} = checkCamera(TRUE_CAMERA);
+ const foot = [627.4, 700], png = postFrame();
+ const original = remark(png, {footCentre: foot, tiles: [1, 1], gameScale});
+ const once = Buffer.from(encodePNG(png));
+ // A repaint loses the two pixels; putting them back from the same record gives the same image.
+ for (const x of [original.left, original.right]) png.pixels.fill(0, (original.row * 1254 + x) * 4, (original.row * 1254 + x) * 4 + 4);
+ assert.deepEqual(remark(png, {footCentre: foot, tiles: [1, 1], gameScale}), original);
+ assert.ok(Buffer.from(encodePNG(png)).equals(once), 'restored marks differ from the originals');
+ // Remarking a PNG that still has its marks strips them first, so it is not widened by a pixel.
+ assert.deepEqual(remark(png, {footCentre: foot, tiles: [1, 1], gameScale}), original);
+ assert.ok(Buffer.from(encodePNG(png)).equals(once), 'remarking twice changed the image');
+ // A footprint centre far off the canvas (a wall fixture) is refused, not clipped.
+ assert.equal(remark(postFrame(), {footCentre: [985, 2534], tiles: [1, 1], gameScale}), null);
+});
+
+test('the tool refuses options it does not know', () => {
+ assert.doesNotThrow(() => checkOptions(['--group=lighting', '--light=catalogue', '--register', '--out=x']));
+ // --shadow was the first version of parcel B's option. Ignored, it would ship unregistered art.
+ assert.throws(() => checkOptions(['--group=lighting', '--shadow']), /unknown option: --shadow/);
+ assert.throws(() => checkOptions(['--lite=catalogue', '--regster']), /unknown options: --lite, --regster/);
+ assert.deepEqual([...OPTIONS].sort(), ['calibrate', 'form', 'group', 'light', 'list', 'margin', 'out', 'playwright', 'port', 'register', 'remark', 'size', 'skin']);
+});
+
+test('the iron tint keeps the source order: darker than the pot the tripod holds', () => {
+ // painted-furniture.js at 8e7140f: iron 0x343b37, cooking-pot 0x65615a. A tint above the pot's
+ // albedo luma inverts the cooking fire -- pale legs holding a dark pot -- which 0x8c887e did.
+ const luma = h => .299 * (h >> 16) + .587 * (h >> 8 & 255) + .114 * (h & 255);
+ const iron = RIGS.catalogue.tints.iron, pot = 0x65615a;
+ assert.ok(luma(iron) < luma(pot), `iron ${luma(iron).toFixed(1)} is not darker than the pot ${luma(pot).toFixed(1)}`);
+ assert.ok(luma(iron) > luma(0x343b37), 'and it is lighter than the near-black it replaces');
 });

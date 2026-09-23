@@ -698,8 +698,10 @@ PNG. Both are character art and both are out of scope.
 - **They are relit bakes, not paintings — a stated deviation.** There is no image generator in
   this session. `--light=catalogue` matches the painted catalogue's measured light direction,
   contrast and saturation at drawn size, with the 3D iron re-tinted to the painted iron. Whether
-  other parcels may ship bakes is **open question 9**. A painter can still paint over these later;
-  the registration and the catalog rows will not change.
+  other parcels may ship bakes is **open question 9**. A painter can still paint over these
+  later; restore the two registration pixels with `bake-scenery.mjs --remark` from the manifest,
+  and the catalog rows do not change. The catalogue rig re-tints the `iron` material, which cargo,
+  towers and furniture share.
 - **The wall-fixture problem had a floor-fixture twin.** All seven floor kinds would have been
   drawn 1.5 to 10.6 px low, because a lamp on a round base does not fill its footprint the way
   the renderer's anchor rule assumes. `--register` adds two invisible alpha-64 pixels that put
@@ -1068,4 +1070,5 @@ any other parcel in this plan. See the scope note below.
    deviation. [LIGHTING.md](LIGHTING.md) has the measurement. The plan's sprite-aesthetic section still says a render is never the deliverable, and `--light=page` is still the
    baker's default. If the answer is yes, D and E — 18 forms, the best-behaved in the baker —
    become a morning's work each once open question 1 is answered; if no, B's sprites are
-   placeholders awaiting a painter, and nothing about their catalog rows changes.
+   placeholders awaiting a painter, whose repaint keeps its catalog rows as long as
+   `bake-scenery.mjs --remark` restores the registration pixels afterwards.

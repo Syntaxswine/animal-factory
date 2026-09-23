@@ -174,9 +174,12 @@ construction; the review caught it. Record where the footprint centre fell at ba
 (`footCentre`, `gameScale` per manifest row) and assert the pixels against that, then check the
 recorded number against independent geometry: a lamp on a round base stands on its centre.
 
-**A named-mean match can still read wrong** *(parcel B)*. The iron tint whose mean colour matched
-the painted `jail-bars` best made the streetlights look like tan wood beside a wooden torch. The
-numbers narrowed it to four; the eye at drawn size chose.
+**A colour match can still be wrong twice** *(parcel B)*. The iron tint whose mean colour
+matched the painted `jail-bars` best made the streetlights look like tan wood beside a wooden
+torch. The one that matched its brightness inverted the cooking fire: the pot was not tinted,
+so pale iron legs held a dark pot. Re-colouring one material in a model can break the order it
+had with every other one. Check the object where two materials meet, not just the one you
+changed.
 
 **The Browser pane allows five dev servers per folder** *(parcel B)*. With other chats holding all five,
 `preview_start` refuses. The headless Edge the baker already uses verified the review page

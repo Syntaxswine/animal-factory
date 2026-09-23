@@ -42,8 +42,11 @@ The plan says a render is an underlay and never the deliverable, and every paint
 catalogue came out of Codex's built-in image generator (`art/environment-sources.json`). This
 session has no image generator. B therefore ships bakes. **That is this parcel's deviation from
 the plan, not a change to the plan's rule**; whether other parcels may do the same is
-**open question 9** for the architect. The sprites can be painted over later without touching
-their registration or their catalog rows.
+**open question 9** for the architect. A painter can still paint over them. A repaint loses the two registration pixels, so restore them
+with `node tools/bake-scenery.mjs --remark=dist/assets/environment/manifest-lighting.json`,
+which needs no browser and puts them back from the footprint centre and scale each asset
+recorded, then run `catalog-environment.py`. Done that way, the catalog rows do not change. Skip
+it and the fixtures float again, and `tests/tactics-lighting.test.mjs` fails.
 
 What made the deviation defensible is a measurement. The plan's objection is that the 3D branch
 shades at runtime while a sprite carries its own light, so the light was measured, at the size
@@ -66,11 +69,26 @@ skins run darker than the painted palette, which is albedo, not light.
 
 **The rig was fitted on one crate and checked on one barrel, and it missed the iron.** The 3D
 iron is one fixed colour, `0x343b37`, in every finish, and it baked the streetlights near-black
-(median luma 39, against 70 for `jail-bars`, the painted catalogue's iron). The rig now
-re-tints the iron for the bake only, to `0x8c887e`: luma p10/p50/p90 32/65/103 against
-`jail-bars`' 28/70/129. The tint whose *mean* colour matched `jail-bars` best, `0xbca480`,
-read as tan wood at game size next to a torch that really is wood, so the final pick was made by
-eye at drawn size after the numbers had narrowed it to four.
+(median luma 39, against 70 for `jail-bars`, the painted catalogue's iron). The rig re-tints the
+iron for the bake only, to `0x5c5f58`. It took three tries, and each failure taught something:
+
+- `0xbca480` matched `jail-bars`' *mean* colour best and read as tan wood, next to a torch that
+  really is wood.
+- `0x8c887e` matched its brightness (luma p10/p50/p90 32/65/103 against 28/70/129) and
+  **inverted the cooking fire**, as the second review caught. The pot keeps its own colour,
+  `0x65615a`, and a tint lighter than that hangs a dark pot from pale legs. A tint has to keep
+  the source's dark-to-light order, not just hit a number.
+- `0x5c5f58` stays under the pot (albedo luma 93.3 against 97.4, now a test), bakes the
+  streetlight at 20/51/75, reads as weathered iron with its form, and keeps thin legs visible
+  against grass. That is darker than the painted `jail-bars`, deliberately.
+
+![Iron as built, the chosen 0x5c5f58, and the rejected 0x8c887e, 4x at drawn size beside a cow](lighting-iron.png)
+
+*Left to right, in three groups: iron as built, `0x5c5f58` (shipped), `0x8c887e` (rejected:
+pale tripod, dark pot). Each group is a streetlight, a standing torch and the cooking fire.*
+
+The `iron` material is shared by the cargo, tower and furniture libraries, so any parcel that
+opts into `--light=catalogue` gets this tint on its iron too.
 
 ![Workshop light, top; the catalogue rig, bottom; 4x at drawn size beside a cow and the painted crate and barrel](lighting-relight.png)
 
@@ -103,11 +121,20 @@ its bottom is above the anchor, and every one of these would have been drawn low
 `bake-scenery.mjs --register` puts two pixels on the anchor row, one either side of the
 footprint centre at the same distance, just clear of the model. The renderer's alpha ≥ 64 crop
 then ends exactly on the anchor and is centred exactly on the footprint. They are drawn at alpha
-64, the crop threshold itself. At zoom 1 one such pixel, averaged into a 9–23 : 1 downscale, is under
-0.3% of one screen pixel's coverage. At the most generous view the game allows (zoom 2.3 on a 2×
-display, 4.6×) the tallest fixture downsamples about 2 : 1 and a mark is about 6% of one pixel, a
-near-black fleck too faint to see. The
-picture is exactly the model, as in the painted catalogue, with no cast shadow.
+64, the crop threshold itself. The second review located each mark on screen at zoom 0.6, 1, 1.15
+and 3, and at all 28 positions the pixel is within the grass texture's own variation.
+
+That is a measurement, not a guarantee. The renderer leaves `imageSmoothingQuality` at its default
+`low`, which may sample bilinearly without averaging a large downscale. So at some sub-pixel
+positions, most plausibly while panning at the 4.6× maximum, a mark could land as one screen pixel
+of `#13241d` at up to 25% opacity. Nobody has seen it happen.
+
+The picture is otherwise exactly the model, as in the painted catalogue, with no cast shadow.
+
+The marks sit exactly at the threshold, with no margin. Anything that rewrites alpha — a lossy PNG
+optimiser, a premultiplied round trip — can drop them to 63 and silently move the crop.
+`tests/tactics-lighting.test.mjs` checks the bottom row for exactly the two marks, so that fails
+loudly, and `--remark` puts them back.
 
 An earlier version of this parcel registered the sprites with a visible ground-contact ellipse
 instead. The review rejected it. Its size was a choice presented as a constraint, it was larger
@@ -173,7 +200,7 @@ asymmetric *within* the tile:
 The Stage 1 Owns row for `lighting`: `dist/assets/environment/lighting/*`,
 `environment-props-lighting.js`, `prop-art-lighting.js`, `manifest-lighting.json`,
 `lighting-art.html`, `art/lighting-prompts.md`, `tests/tactics-lighting.test.mjs`, and this
-document with its two figures.
+document with its three figures.
 
 Outside it, all of it under the plan's tools carve-out or recording what the parcel found:
 
@@ -201,12 +228,20 @@ asks the integrator to widen it.
   table, and `drawn-size`'s view of group art. The mutation list is in the commit messages.
 - The review page renders all nine props with no console errors at zoom 0.6, 1, 1.15, 2 and 3,
   in both orientations.
-- One independent hostile review, as the plan requires. The first round scored **7/10** and
-  every must-fix is addressed above: the visible shadow replaced by marks, policy returned to the
-  architect as open question 9 with `--light=page` restored as the default, the iron re-tinted,
-  registration tested against recorded numbers and independent geometry, the rotation advice for
-  open question 5 corrected, and this file list written down. The second round's score is in
-  the PR.
+- One independent hostile review, as the plan requires, in rounds:
+  - **Round 1, 7/10.** The visible shadow was replaced by marks. Policy went back to the
+    architect as open question 9, with `--light=page` restored as the default. The iron was
+    re-tinted. Registration is now tested against recorded numbers and independent geometry.
+    The rotation advice for open question 5 was corrected, and the file list written down.
+  - **Round 2, 8/10.** The reviewer confirmed that none of those was papered over, and that
+    all seven sprites register within 0.032 px vertically and 0.011 px horizontally. Two
+    new findings, both fixed: the tint inverted the cooking fire, and the repaint promise was
+    false without a way to restore the marks, which is now `--remark`. From its worth-noting
+    list: the invisibility claim is softened, the zero-margin threshold is recorded, and the
+    tool refuses unknown options, so `--shadow` no longer passes silently.
+  - The final round's score is in the PR.
+- `--remark` checked end to end: strip the 14 mark pixels from copies of the seven PNGs, restore
+  them from the manifest, and all seven are byte-identical to the shipped files.
 
 ## Reproducing the art
 
