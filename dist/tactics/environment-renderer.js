@@ -1,5 +1,6 @@
 import {riverRenderer} from './river-renderer.js';
 import {DOOR_ART} from './door-art.js';
+import {GROUP_PROP_ART} from './prop-art-groups.js';
 import {PROP_ART} from './prop-art.js';
 import {EDGES,PROPS,GROUNDS} from './environment.js';
 import {edgePoints} from './maps.js';
@@ -10,6 +11,9 @@ Object.assign(crops,{'window-brick':[36,16,1221,1242],'window-concrete':[113,56,
 Object.assign(baselines,{'window-brick':[95,1241,1210,847,785],'window-concrete':[176,1218,1135,808,720],'window-corrugated':[131,1239,1128,846,805],'door-steel-closed':[179,1210,1095,776,715],'door-wood-closed':[220,1231,1075,820,745],'doorway-concrete-open':[188,1199,1095,771,690]});
 for(const [id,a] of Object.entries(DOOR_ART)){crops[id]=a.crop;baselines[id]=a.baseline;}
 for(const [id,a] of Object.entries(PROP_ART)){crops[id]=a.crop;if(a.baseline)baselines[id]=a.baseline;}
+for(const [id,a] of Object.entries(GROUP_PROP_ART)){crops[id]=a.crop
+if(a.baseline)baselines[id]=a.baseline
+}
 export function environmentRenderer(onReady=()=>{},onError=()=>{}){
  const images=new Map(),groundCache=new Map(),river=riverRenderer(onReady,onError);
  function load(id){if(!images.has(id)){const image=new Image();image.onload=()=>{if(GROUNDS.includes(id)){const c=document.createElement('canvas');c.width=112;c.height=56;const g=c.getContext('2d');g.setTransform(56/image.width,28/image.height,-56/image.width,28/image.height,56,0);g.drawImage(image,0,0);groundCache.set(id,c);}onReady();};image.onerror=()=>onError(id);image.src='../assets/environment/'+(DOOR_ART[id]?.file||PROP_ART[id]?.file||id+'.png');images.set(id,image);}return images.get(id);}

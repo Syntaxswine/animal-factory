@@ -2,6 +2,7 @@ import {PROPS,EDGES,GROUNDS} from '../dist/tactics/environment.js';
 import {CHARACTER_SPECIES,ARMED_WEAPONS,characterArt} from '../dist/tactics/character-art.js';
 import {readFile,readdir} from 'node:fs/promises';
 import {PROP_ART} from '../dist/tactics/prop-art.js';
+import {GROUP_PROP_ART} from '../dist/tactics/prop-art-groups.js';
 import {DOOR_ART} from '../dist/tactics/door-art.js';
 import {RED_HAT_SPECIES,unitArt} from '../dist/tactics/red-hats-art.js';
 import {EXPANSION_WEAPONS,weaponExpansionArt} from '../dist/tactics/weapon-expansion-art.js';
@@ -41,11 +42,17 @@ for(const [type,t] of Object.entries(TYPES)){if(t.sprite)assert.match(await read
 for(const type of ['mill','bakery','bottler','dairy'])await checkPNG(`assets/machines/industrial/${type}.png`,320,320);
 for(const file of ['index.html','sprites.html','app.js','engine.js','people.js','renderer.js','isometric.js','style.css'])await readFile(new URL(file,root));
 const environment=JSON.parse(await readFile(new URL('assets/environment/manifest.json',root)));
+// Each scenery group of docs/tactics/SCENERY-PORT-HANDOFF.md keeps its own side manifest so two
+// parcels never edit one file. The id bijection and the orphan scan hold over the union.
+for(const group of ['lighting','towers','cargo','furniture','machines','conveyor','vehicles']){
+ const side=JSON.parse(await readFile(new URL(`assets/environment/manifest-${group}.json`,root)));
+ environment.assets.push(...side.assets);
+}
 const artIds=[...Object.keys(PROPS),...new Set(Object.values(EDGES).map(r=>r.art).filter(Boolean)),...GROUNDS];
 assert.deepEqual(environment.assets.map(a=>a.id).sort(),artIds.sort());
 for(const a of environment.assets)await checkPNG('assets/environment/'+a.file,1254,1254,a.kind==='terrain'?2:6);
 // Validate the actual runtime overrides as well as catalog paths.
-const active=new Set(environment.assets.map(a=>(DOOR_ART[a.id]||PROP_ART[a.id])?.file||a.file));
+const active=new Set(environment.assets.map(a=>(DOOR_ART[a.id]||PROP_ART[a.id]||GROUP_PROP_ART[a.id])?.file||a.file));
 for(const file of active)await readFile(new URL('assets/environment/'+file,root));
 active.add('foliage/river-water.png');active.add('foliage/shore-tiles-atlas.png');
 const superseded=new Set(['door-steel-closed.png','door-wood-closed.png','doorway-concrete-open.png','foliage/river-straight.png','foliage/river-bend.png','foliage/river-banks-atlas.png']);
