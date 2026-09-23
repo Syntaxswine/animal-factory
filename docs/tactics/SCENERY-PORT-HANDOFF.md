@@ -302,7 +302,7 @@ off S1 or later or the Pages test will fail.
 | H | Canvas truck | 1 | S1 | — | not started |
 | I | Artificial light and detection | 2 | S2, B | — | not started |
 | J | Sweeping spotlights | 2 | I, C | — | not started |
-| K | Ground cover: tufts and undergrowth | 2 | S2 | — | not started |
+| K | Ground cover: tufts and undergrowth | 2 | S2 | `tactics-ground-cover` | **delivered**, PR #18 |
 | M | Repainting the existing catalog | 3 | — | — | not started |
 
 ---
@@ -734,6 +734,37 @@ tile must draw the same tuft on every reload and after a camera move.
 **Owns.** `dist/tactics/ground-cover.js` (new), `dist/tactics/woodland.js`,
 `dist/assets/environment/undergrowth/*`, `art/undergrowth-prompts.md`,
 `docs/tactics/GROUND-COVER.md` (new), its tests.
+
+**Delivered 23 September 2026**, branch `tactics-ground-cover`, PR #18, stacked on S2. 505
+tests pass, 495 before. See [GROUND-COVER.md](GROUND-COVER.md), `ground-cover.png` and the
+review page `dist/tactics/ground-cover.html`.
+
+Four notes for whoever comes next.
+
+**No new artwork, and no `undergrowth/` folder.** Downscaled to the 50 x 32 px it is
+actually drawn at, `bush.png` turns out to be a speckled olive mound with no readable leaf
+detail, so at the size these shapes are drawn, painted leaves and flat procedural blobs are
+the same picture. `art/undergrowth-prompts.md` was not needed and does not exist. This is
+the one parcel in the plan that needed no painting, and the measurement is why, not a
+shortcut around the missing tool.
+
+**Placement is the 3D branch's function, hash for hash**, checked over 64,800 tiles: 46,795
+tuft placements and 32,400 undergrowth placements identical. Two departures from it are
+deliberate and documented, and both are about how a 3.4 px mark survives a downscale rather
+than about where anything stands. Tufts are drawn twice as tall as their model box and their
+blades about two box units thick, because the first version was measurably present and
+visually absent.
+
+**The woodland dark diamond and bush sprite stay.** They are painted by
+`environment-renderer.js`, which S1 owns, and the undergrowth is layered over them rather
+than replacing them as this section says, so the bush reads as the tile's canopy with scrub
+beneath. The layered result is better than either alone. Whoever next holds that file can
+decide.
+
+**Outside the Owns row:** two lines in `app.js` to install the dressing pass, and one entry
+in `package.json`'s syntax-check list. S2 owns `app.js` and was taken by the same session, so
+no other parcel was blocked; a later parcel that needs a pass installed will have the same
+two lines to add, and that is worth knowing before three of them try.
 
 ---
 
