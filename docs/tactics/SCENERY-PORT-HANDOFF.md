@@ -282,8 +282,9 @@ wrongly scoped; stop and say so here.
 ### Status
 
 Working notes from the sessions that built Stage 0, including the traps and the
-verification rigs, are in [SCENERY-PORT-FIELD-NOTES.md](SCENERY-PORT-FIELD-NOTES.md).
-Read them before starting a parcel. The short version: the three delivered pull
+verification rigs, are in [SCENERY-PORT-FIELD-NOTES.md](SCENERY-PORT-FIELD-NOTES.md), and
+how to decide what a piece of scenery should be made of, with the measurements, is in
+[MAKING-SCENERY.md](MAKING-SCENERY.md). Read both before starting a parcel. The short version: the three delivered pull
 requests are a chain and must merge in order, and if you add a module you must branch
 off S1 or later or the Pages test will fail.
 
@@ -841,3 +842,11 @@ any other parcel in this plan. See the scope note below.
 5. **Wall-mounted props** have no precedent here. `wall-torch` and
    `gooseneck-sconce` need an edge-mounting convention before B can finish.
 6. **Three-story props** need a sorting and dimming rule before C can finish.
+7. **Should the environment gate accept art baked at the size it is drawn at?**
+   `check-assets.mjs` requires every environment PNG to be 1254 x 1254, and at the default
+   zoom the renderer then discards between 98.4% of those pixels (a pine tree, drawn at
+   79 x 130) and 99.98% (a pair of wire cutters, drawn at 12 x 12). Character art is baked at
+   4:1 and its pipeline knows it. This costs disk and load time rather than correctness, but
+   a scenery baker has to choose an output resolution and the only legal answer today is one
+   the renderer does not want. Raised by parcel K; the numbers and the tool that produced
+   them are in [MAKING-SCENERY.md](MAKING-SCENERY.md).
