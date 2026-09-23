@@ -260,7 +260,7 @@ wrongly scoped; stop and say so here.
 | A | Mature trees | 0 | — · **before S1** | — | not started |
 | S1 | Catalog seam | 0 | A | — | not started |
 | S2 | Clock, sun and render hooks | 0 | — | — | not started |
-| B | Lamps, torches and fires | 1 | S1 | — | not started |
+| B | Lamps, torches and fires | 1 | S1, S2 | — | not started |
 | C | Guard towers and guardhouses | 1 | S1, S2 | — | not started |
 | D | Cargo forms | 1 | S1 | — | not started |
 | E | Household furniture | 1 | S1 | — | not started |
@@ -394,16 +394,25 @@ falls apart. One parcel takes it and lands the hooks the others will use.
    - an **overlay** hook, drawn after everything, for J's beam.
    Land all three even though S2 only uses the tint, so no later parcel reopens
    this file.
-5. The phase on the existing clock readout, and a document,
+5. A sort convention in `paint-order.js` for a **static burning prop**, which B
+   needs and which nothing in the tree covers yet. `ground-fire.js` emits its
+   flame clumps as separate objects offset along the depth axis by less than .45,
+   never 0, because walls and fences on a tile's sides sort at ±.5 and a unit
+   standing on the tile sorts at 0. A campfire that is a prop rather than a burning
+   tile has to reach the same result without pretending to be a scorch. Land the
+   convention; B fills in the art.
+6. The phase on the existing clock readout, and a document,
    `docs/tactics/DAYLIGHT.md`.
 
 **Owns.** `dist/tactics/app.js`, `dist/tactics/maps.js`, `dist/tactics/world.js`,
 `dist/tactics/editor-model.js`, `dist/tactics/view.js`,
-`dist/tactics/daylight.js` (new), `docs/tactics/DAYLIGHT.md` (new), and its tests.
+`dist/tactics/paint-order.js`, `dist/tactics/daylight.js` (new),
+`docs/tactics/DAYLIGHT.md` (new), and its tests.
 
 **Done when.** A map authored to start at 21:00 opens dark, the tint eases across
 a dusk boundary while the clock runs, the three hooks are called with no consumer
-registered and cost nothing, and `npm run check` is green.
+registered and cost nothing, a static prop can be sorted the way a fire clump is,
+and `npm run check` is green.
 
 ---
 
@@ -435,6 +444,19 @@ not repeated. Each one:
 `dist/tactics/<group>-art.html` and its script, `art/<group>-prompts.md`,
 `tests/tactics-<group>.test.mjs`, `docs/tactics/<GROUP>.md`.
 
+One addition outside that pattern: **B also owns `dist/tactics/flame-effect.js`**,
+because it is the only parcel that will extend the flame library. Parcel I reads
+`fillFlames` for its light pools; if I needs a change in that file it goes through
+B or waits for B. Nothing else in Stage 1 touches a file outside its own group.
+
+### Shared read-only references
+
+Three files every parcel may read and no parcel may edit, because they encode
+conventions rather than content: `ground-fire.js` (the persistent-fire pattern),
+`shore-tiles.js` (the sixteen-mask neighbour pattern that G copies) and
+`woodland.js` until K claims it. If a parcel concludes it must change one, that is
+a dependency to write down here, not a quiet edit.
+
 ### B — Lamps, torches and fires · group `lighting`
 
 Nine kinds, art and placement only. No light is emitted in this parcel; that is I.
@@ -451,11 +473,38 @@ Two problems to solve rather than inherit. The sprite game has no concept of a
 wall-mounted prop: `wall-torch` and `gooseneck-sconce` occupy a tile but do not
 block it, and the 3D branch mounts them on the tile's north edge, or east when
 rotated. Decide how the sprite renderer offsets them onto the edge, and whether
-the editor should refuse to place one away from a wall. Second, the fires are
-animated on the 3D branch. The sprite game already has an animated flame system in
-`flame-effect.js` and `flame-nozzles.js` for the flamethrower; reuse its idiom
-rather than inventing a second one, and honour reduced motion the way
-`water-preview.js` does.
+the editor should refuse to place one away from a wall.
+
+Second, four of the nine burn, and this tree already has a fire idiom worth
+copying rather than a second one worth inventing. Three files carry it, and none
+of them is the flamethrower's own art:
+
+- **`ground-fire.js`** is the pattern to follow. It is the persistent-burning-thing
+  case rather than a one-shot burst: a scorch decal on its own paint layer, plus a
+  few flame clumps emitted as **separate depth-sorted objects**, so a unit standing
+  in the fire has flames both behind and in front of it and neighbouring walls
+  overlap them the way they overlap sprites. `FIRE_FRAMES = 8` at
+  `FIRE_LOOP_MS = 800`, hand-drawn fire animated on twos, cached to canvases per
+  zoom step. A campfire, a cooking fire and two torches are that shape exactly,
+  minus the three-round burn-down.
+- **`flame-effect.js`** is the drawing library underneath it: `FLAME_PALETTE`,
+  `SMOKE_PALETTE`, `fillFlames`, `smokeCloud`, and the rule in its header that
+  keeps fire looking like the painted sprites, which is that **every shape is
+  outlined once around its union and shaded in flat bands**, so the outline traces
+  only the outside silhouette. It is pure and deterministic in `(options, t)`, so
+  a frame can be scrubbed, and a new fire must keep that property.
+- **`paint-order.js`** is what makes the split-depth trick legal. Walls and fences
+  on a tile's sides sort at ±.5 and a unit standing on it sorts at 0, so a flame
+  clump offsets along the depth axis by less than .45 and never by 0. A static
+  fire prop that wants a flame in front of the post it sits on needs that
+  convention, not a new one.
+
+Honour reduced motion the way `water-preview.js` does.
+
+`flamethrower-art.js` and `flame-nozzles.js` are **not** part of this. The first
+draws the weapon on a character and returns early unless the unit is carrying a
+flamethrower; the second is a generated table of muzzle positions per character
+PNG. Both are character art and both are out of scope.
 
 ### C — Guard towers and guardhouses · group `towers`
 
