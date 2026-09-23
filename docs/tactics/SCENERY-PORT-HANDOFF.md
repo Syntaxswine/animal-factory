@@ -281,11 +281,24 @@ wrongly scoped; stop and say so here.
 
 ### Status
 
+Working notes from the sessions that built Stage 0, including the traps and the
+verification rigs, are in [SCENERY-PORT-FIELD-NOTES.md](SCENERY-PORT-FIELD-NOTES.md), and
+how to decide what a piece of scenery should be made of, with the measurements, is in
+[MAKING-SCENERY.md](MAKING-SCENERY.md). Read both before starting a parcel.
+
+**Stage 0 is finished and merged.** `tactics-prototype` at `a3d2d6b` carries A, S1, S2 and
+K, and the architect's notes on them are in
+[INTEGRATION-REVIEW-2026-09-22.md](INTEGRATION-REVIEW-2026-09-22.md) and
+[INTEGRATION-REVIEW-2026-09-23.md](INTEGRATION-REVIEW-2026-09-23.md). Branch a Stage 1
+parcel straight off `tactics-prototype` now; the earlier advice to branch off S1 and merge
+the chain in order is spent.
+
+
 | # | Parcel | Stage | Depends on | Claimed by | State |
 | --- | --- | --- | --- | --- | --- |
-| A | Mature trees | 0 | — · **before S1** | `tactics-mature-trees` | **delivered**, PR #14 |
-| S1 | Catalog seam | 0 | A | `tactics-catalog-seam` | **delivered**, PR #16 |
-| S2 | Clock, sun and render hooks | 0 | — | — | not started |
+| A | Mature trees | 0 | — · **before S1** | `tactics-mature-trees` | **merged**, PR #14 |
+| S1 | Catalog seam | 0 | A | `tactics-catalog-seam` | **merged**, PR #16 |
+| S2 | Clock, sun and render hooks | 0 | S1 in practice | `tactics-daylight` | **merged**, PR #17 |
 | B | Lamps, torches and fires | 1 | S1, S2 | — | not started |
 | C | Guard towers and guardhouses | 1 | S1, S2 | — | not started |
 | D | Cargo forms | 1 | S1 | — | not started |
@@ -295,7 +308,7 @@ wrongly scoped; stop and say so here.
 | H | Canvas truck | 1 | S1 | — | not started |
 | I | Artificial light and detection | 2 | S2, B | — | not started |
 | J | Sweeping spotlights | 2 | I, C | — | not started |
-| K | Ground cover: tufts and undergrowth | 2 | S2 | — | not started |
+| K | Ground cover: tufts and undergrowth | 2 | S2 | `tactics-ground-cover` | **merged**, PR #18 |
 | M | Repainting the existing catalog | 3 | — | — | not started |
 
 ---
@@ -470,6 +483,22 @@ falls apart. One parcel takes it and lands the hooks the others will use.
 a dusk boundary while the clock runs, the three hooks are called with no consumer
 registered and cost nothing, a static prop can be sorted the way a fire clump is,
 and `npm run check` is green.
+
+**Delivered 22 September 2026**, branch `tactics-daylight`, PR #17. 495 tests pass,
+487 before. See [DAYLIGHT.md](DAYLIGHT.md) and `daylight-phases.png`. The schedule
+and the strength curve are the 3D branch's, checked minute by minute rather than
+eyeballed. Every existing map still opens at 08:00 and paints no wash at all, so
+nothing in the tree changes appearance. The three passes are `dressing`, `light`
+and `overlay` in `scene-passes.js`, and `propPieceDepth` in `paint-order.js` is the
+sort convention B needs for a campfire.
+
+Two notes for the parcels that follow. S2 was branched off `tactics-prototype`
+first and the Pages test immediately failed with five referenced-but-unshipped
+modules, because the flat file list belongs to S1; the branch was rebased onto S1
+rather than editing a file another parcel owns, which is what this plan asks for and
+worth copying. And the editor still has no control for the start time: the model
+operation `setStartTime` exists and is tested, but the DOM wiring is one line in
+`editor.js`, which S1 owns, so it falls to whoever holds that file next.
 
 ---
 
@@ -712,6 +741,46 @@ tile must draw the same tuft on every reload and after a camera move.
 `dist/assets/environment/undergrowth/*`, `art/undergrowth-prompts.md`,
 `docs/tactics/GROUND-COVER.md` (new), its tests.
 
+**Delivered 23 September 2026**, branch `tactics-ground-cover`, PR #18, stacked on S2. 505
+tests pass, 495 before. See [GROUND-COVER.md](GROUND-COVER.md), `ground-cover.png` and the
+review page `dist/tactics/ground-cover.html`.
+
+Four notes for whoever comes next.
+
+**No new artwork, and no `undergrowth/` folder.** Downscaled to the 50 x 32 px it is
+actually drawn at, `bush.png` turns out to be a speckled olive mound with no readable leaf
+detail, so at the size these shapes are drawn, painted leaves and flat procedural blobs are
+the same picture. `art/undergrowth-prompts.md` was not needed and does not exist. This is
+the one parcel in the plan that needed no painting, and the measurement is why, not a
+shortcut around the missing tool.
+
+**Placement is the 3D branch's function, hash for hash**, checked over 64,800 tiles: 46,795
+tuft placements and 32,400 undergrowth placements identical. Two departures from it are
+deliberate and documented, and both are about how a 3.4 px mark survives a downscale rather
+than about where anything stands. Tufts are drawn twice as tall as their model box and their
+blades about two box units thick, because the first version was measurably present and
+visually absent.
+
+**The woodland dark diamond and bush sprite stay.** They are painted by
+`environment-renderer.js`, which S1 owns, and the undergrowth is layered over them rather
+than replacing them as this section says, so the bush reads as the tile's canopy with scrub
+beneath. The layered result is better than either alone. Whoever next holds that file can
+decide.
+
+**Outside the Owns row:** two lines in `app.js` to install the dressing pass, and one entry
+in `package.json`'s syntax-check list. S2 owns `app.js` and was taken by the same session, so
+no other parcel was blocked; a later parcel that needs a pass installed will have the same
+two lines to add, and that is worth knowing before three of them try.
+
+**Open against K, from the integration review of 23 September:** "larger procedural
+undergrowth looks flatter than adjacent painted assets and remains an art-polish candidate."
+The grass passed; the undergrowth clumps did not, and the note is fair — they are drawn at
+26 x 44 px, which is above the roughly 25 px threshold in
+[MAKING-SCENERY.md](MAKING-SCENERY.md) where generating stops paying. The clean fix is not
+more canvas paths but a baked or painted scrub sprite drawn by the same placement function;
+the placement is already correct and already tested, so only `coverClumps`' draw call
+changes.
+
 ---
 
 ## Stage 3
@@ -787,3 +856,11 @@ any other parcel in this plan. See the scope note below.
 5. **Wall-mounted props** have no precedent here. `wall-torch` and
    `gooseneck-sconce` need an edge-mounting convention before B can finish.
 6. **Three-story props** need a sorting and dimming rule before C can finish.
+7. **Should the environment gate accept art baked at the size it is drawn at?**
+   `check-assets.mjs` requires every environment PNG to be 1254 x 1254, and at the default
+   zoom the renderer then discards between 98.4% of those pixels (a pine tree, drawn at
+   79 x 130) and 99.98% (a pair of wire cutters, drawn at 12 x 12). Character art is baked at
+   4:1 and its pipeline knows it. This costs disk and load time rather than correctness, but
+   a scenery baker has to choose an output resolution and the only legal answer today is one
+   the renderer does not want. Raised by parcel K; the numbers and the tool that produced
+   them are in [MAKING-SCENERY.md](MAKING-SCENERY.md).
