@@ -357,7 +357,7 @@ the chain in order is spent.
 | A | Mature trees | 0 | — · **before S1** | `tactics-mature-trees` | **merged**, PR #14 |
 | S1 | Catalog seam | 0 | A | `tactics-catalog-seam` | **merged**, PR #16 |
 | S2 | Clock, sun and render hooks | 0 | S1 in practice | `tactics-daylight` | **merged**, PR #17 |
-| B | Lamps, torches and fires | 1 | S1, S2 | — | not started |
+| B | Lamps, torches and fires | 1 | S1, S2 | `tactics-lighting` | **in progress** — seven floor-standing kinds; the two wall fixtures wait on open question 5 |
 | C | Guard towers and guardhouses | 1 | S1, S2 | — | not started |
 | D | Cargo forms | 1 | S1 | — | not started |
 | E | Household furniture | 1 | S1 | — | not started |
