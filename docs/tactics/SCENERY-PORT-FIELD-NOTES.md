@@ -6,7 +6,10 @@ stays authoritative. This one is the things the plan cannot tell you: what is tr
 about this tree that reading it quickly will not reveal, what cost me time, and what
 I got wrong.
 
-If you are picking this up cold, read the plan first, then this, then start.
+If you are picking this up cold, read the plan first, then this, then
+[MAKING-SCENERY.md](MAKING-SCENERY.md), then start. That third document was written after
+the first content parcel and is the one that says how to decide what a piece of scenery
+should be made of; it holds the measurements this one only gestures at.
 
 ## The stack, and why the order matters
 
