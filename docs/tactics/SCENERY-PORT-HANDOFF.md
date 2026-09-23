@@ -284,16 +284,21 @@ wrongly scoped; stop and say so here.
 Working notes from the sessions that built Stage 0, including the traps and the
 verification rigs, are in [SCENERY-PORT-FIELD-NOTES.md](SCENERY-PORT-FIELD-NOTES.md), and
 how to decide what a piece of scenery should be made of, with the measurements, is in
-[MAKING-SCENERY.md](MAKING-SCENERY.md). Read both before starting a parcel. The short version: the three delivered pull
-requests are a chain and must merge in order, and if you add a module you must branch
-off S1 or later or the Pages test will fail.
+[MAKING-SCENERY.md](MAKING-SCENERY.md). Read both before starting a parcel.
+
+**Stage 0 is finished and merged.** `tactics-prototype` at `a3d2d6b` carries A, S1, S2 and
+K, and the architect's notes on them are in
+[INTEGRATION-REVIEW-2026-09-22.md](INTEGRATION-REVIEW-2026-09-22.md) and
+[INTEGRATION-REVIEW-2026-09-23.md](INTEGRATION-REVIEW-2026-09-23.md). Branch a Stage 1
+parcel straight off `tactics-prototype` now; the earlier advice to branch off S1 and merge
+the chain in order is spent.
 
 
 | # | Parcel | Stage | Depends on | Claimed by | State |
 | --- | --- | --- | --- | --- | --- |
-| A | Mature trees | 0 | — · **before S1** | `tactics-mature-trees` | **delivered**, PR #14 |
-| S1 | Catalog seam | 0 | A | `tactics-catalog-seam` | **delivered**, PR #16 |
-| S2 | Clock, sun and render hooks | 0 | S1 in practice | `tactics-daylight` | **delivered**, PR #17 |
+| A | Mature trees | 0 | — · **before S1** | `tactics-mature-trees` | **merged**, PR #14 |
+| S1 | Catalog seam | 0 | A | `tactics-catalog-seam` | **merged**, PR #16 |
+| S2 | Clock, sun and render hooks | 0 | S1 in practice | `tactics-daylight` | **merged**, PR #17 |
 | B | Lamps, torches and fires | 1 | S1, S2 | — | not started |
 | C | Guard towers and guardhouses | 1 | S1, S2 | — | not started |
 | D | Cargo forms | 1 | S1 | — | not started |
@@ -303,7 +308,7 @@ off S1 or later or the Pages test will fail.
 | H | Canvas truck | 1 | S1 | — | not started |
 | I | Artificial light and detection | 2 | S2, B | — | not started |
 | J | Sweeping spotlights | 2 | I, C | — | not started |
-| K | Ground cover: tufts and undergrowth | 2 | S2 | `tactics-ground-cover` | **delivered**, PR #18 |
+| K | Ground cover: tufts and undergrowth | 2 | S2 | `tactics-ground-cover` | **merged**, PR #18 |
 | M | Repainting the existing catalog | 3 | — | — | not started |
 
 ---
@@ -766,6 +771,15 @@ decide.
 in `package.json`'s syntax-check list. S2 owns `app.js` and was taken by the same session, so
 no other parcel was blocked; a later parcel that needs a pass installed will have the same
 two lines to add, and that is worth knowing before three of them try.
+
+**Open against K, from the integration review of 23 September:** "larger procedural
+undergrowth looks flatter than adjacent painted assets and remains an art-polish candidate."
+The grass passed; the undergrowth clumps did not, and the note is fair — they are drawn at
+26 x 44 px, which is above the roughly 25 px threshold in
+[MAKING-SCENERY.md](MAKING-SCENERY.md) where generating stops paying. The clean fix is not
+more canvas paths but a baked or painted scrub sprite drawn by the same placement function;
+the placement is already correct and already tested, so only `coverClumps`' draw call
+changes.
 
 ---
 
