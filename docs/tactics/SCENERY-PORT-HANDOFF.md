@@ -257,7 +257,7 @@ wrongly scoped; stop and say so here.
 
 | # | Parcel | Stage | Depends on | Claimed by | State |
 | --- | --- | --- | --- | --- | --- |
-| A | Mature trees | 0 | — · **before S1** | — | not started |
+| A | Mature trees | 0 | — · **before S1** | `tactics-mature-trees` | **delivered**, PR #14 |
 | S1 | Catalog seam | 0 | A | — | not started |
 | S2 | Clock, sun and render hooks | 0 | — | — | not started |
 | B | Lamps, torches and fires | 1 | S1, S2 | — | not started |
@@ -322,6 +322,16 @@ canopy covers the tiles behind it. Check it against a standing character.
 
 **Done when.** `npm run check` is green and a map exported from the 3D editor with
 both mature trees on it loads here and draws them.
+
+**Delivered 22 September 2026**, branch `tactics-mature-trees`, PR #14. A
+byte-faithful transplant of `e529f4b`: all five files hash-identical to upstream,
+applied with no conflicts. 483 tests pass, 482 before. A map carrying both kinds
+goes from `Invalid environment props.` to an exact round trip with an impassable
+trunk tile. The editor palette picked both up with no editor change, under the
+existing Foliage group. Evidence: `mature-tree-scale.png`, the four trees drawn
+through the real renderer at zoom 1. S1 now moves them into the `trees-large`
+group; until it does, `environment.js`, `prop-art.js` and `manifest.json` are free
+again.
 
 ### S1 — Catalog seam
 
