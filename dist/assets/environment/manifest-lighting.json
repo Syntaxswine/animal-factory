@@ -3,5 +3,230 @@
   "group": "lighting",
   "label": "Lamps and fires",
   "projection": "2:1 isometric props; overhead terrain textures",
-  "assets": []
+  "assets": [
+    {
+      "id": "floor-lamp",
+      "file": "lighting/floor-lamp.png",
+      "label": "floor lamp",
+      "kind": "prop",
+      "description": "Pleated floor lamp. Weighted base, brass stem and a warm linen shade.",
+      "suggestedFootprint": [
+        1,
+        1
+      ],
+      "orientation": "as baked; rotation mirrors",
+      "suggestedRules": {
+        "blocksMovement": true,
+        "blocksSight": false,
+        "cover": "none"
+      },
+      "source": {
+        "route": "bake",
+        "tool": "tools/bake-scenery.mjs --group=lighting --light=catalogue --register",
+        "branch": "project/tactics-3d",
+        "commit": "8e7140f",
+        "library": "painted-furniture.js",
+        "skin": "honey",
+        "light": "catalogue",
+        "footCentre": [
+          627,
+          1092.14
+        ],
+        "gameScale": 0.065166098,
+        "note": "footCentre is the footprint centre in this PNG's pixels; gameScale is game px per PNG px at zoom 1"
+      }
+    },
+    {
+      "id": "bedside-table-lamp",
+      "file": "lighting/bedside-table-lamp.png",
+      "label": "bedside table lamp",
+      "kind": "prop",
+      "description": "Bedside table with lamp. A compact brass and linen lamp on the drawer table.",
+      "suggestedFootprint": [
+        1,
+        1
+      ],
+      "orientation": "as baked; rotation mirrors",
+      "suggestedRules": {
+        "blocksMovement": true,
+        "blocksSight": false,
+        "cover": "low"
+      },
+      "source": {
+        "route": "bake",
+        "tool": "tools/bake-scenery.mjs --group=lighting --light=catalogue --register",
+        "branch": "project/tactics-3d",
+        "commit": "8e7140f",
+        "library": "painted-furniture.js",
+        "skin": "honey",
+        "light": "catalogue",
+        "footCentre": [
+          633.596,
+          1066.199
+        ],
+        "gameScale": 0.056249322,
+        "note": "footCentre is the footprint centre in this PNG's pixels; gameScale is game px per PNG px at zoom 1"
+      }
+    },
+    {
+      "id": "streetlight",
+      "file": "lighting/streetlight.png",
+      "label": "streetlight",
+      "kind": "prop",
+      "description": "Single-arm streetlight. Fluted cast-iron base and a suspended industrial lantern.",
+      "suggestedFootprint": [
+        1,
+        1
+      ],
+      "orientation": "as baked; rotation mirrors",
+      "suggestedRules": {
+        "blocksMovement": true,
+        "blocksSight": false,
+        "cover": "none"
+      },
+      "source": {
+        "route": "bake",
+        "tool": "tools/bake-scenery.mjs --group=lighting --light=catalogue --register",
+        "branch": "project/tactics-3d",
+        "commit": "8e7140f",
+        "library": "painted-furniture.js",
+        "skin": "honey",
+        "light": "catalogue",
+        "footCentre": [
+          591.389,
+          1130.175
+        ],
+        "gameScale": 0.097891212,
+        "note": "footCentre is the footprint centre in this PNG's pixels; gameScale is game px per PNG px at zoom 1"
+      }
+    },
+    {
+      "id": "streetlight-double",
+      "file": "lighting/streetlight-double.png",
+      "label": "streetlight double",
+      "kind": "prop",
+      "description": "Double-arm streetlight. Paired industrial lanterns on a shared cast-iron post.",
+      "suggestedFootprint": [
+        2,
+        1
+      ],
+      "orientation": "as baked; rotation mirrors",
+      "suggestedRules": {
+        "blocksMovement": true,
+        "blocksSight": false,
+        "cover": "none"
+      },
+      "source": {
+        "route": "bake",
+        "tool": "tools/bake-scenery.mjs --group=lighting --light=catalogue --register",
+        "branch": "project/tactics-3d",
+        "commit": "8e7140f",
+        "library": "painted-furniture.js",
+        "skin": "honey",
+        "light": "catalogue",
+        "footCentre": [
+          627,
+          1088.405
+        ],
+        "gameScale": 0.110540908,
+        "note": "footCentre is the footprint centre in this PNG's pixels; gameScale is game px per PNG px at zoom 1"
+      }
+    },
+    {
+      "id": "standing-torch",
+      "file": "lighting/standing-torch.png",
+      "label": "standing torch",
+      "kind": "prop",
+      "description": "Standing torch. Timber torch in an iron tripod, with a bound fuel head.",
+      "suggestedFootprint": [
+        1,
+        1
+      ],
+      "orientation": "as baked; rotation mirrors",
+      "suggestedRules": {
+        "blocksMovement": true,
+        "blocksSight": false,
+        "cover": "none"
+      },
+      "source": {
+        "route": "bake",
+        "tool": "tools/bake-scenery.mjs --group=lighting --light=catalogue --register",
+        "branch": "project/tactics-3d",
+        "commit": "8e7140f",
+        "library": "painted-furniture.js",
+        "skin": "honey",
+        "light": "catalogue",
+        "footCentre": [
+          652.968,
+          1069.04
+        ],
+        "gameScale": 0.061999846,
+        "note": "footCentre is the footprint centre in this PNG's pixels; gameScale is game px per PNG px at zoom 1"
+      }
+    },
+    {
+      "id": "campfire",
+      "file": "lighting/campfire.png",
+      "label": "campfire",
+      "kind": "prop",
+      "description": "Stone-ring campfire. Charred crossed logs, ash and sculpted flames inside a stone ring.",
+      "suggestedFootprint": [
+        1,
+        1
+      ],
+      "orientation": "as baked; rotation mirrors",
+      "suggestedRules": {
+        "blocksMovement": true,
+        "blocksSight": false,
+        "cover": "none"
+      },
+      "source": {
+        "route": "bake",
+        "tool": "tools/bake-scenery.mjs --group=lighting --light=catalogue --register",
+        "branch": "project/tactics-3d",
+        "commit": "8e7140f",
+        "library": "painted-furniture.js",
+        "skin": "honey",
+        "light": "catalogue",
+        "footCentre": [
+          626.502,
+          913.303
+        ],
+        "gameScale": 0.042713291,
+        "note": "footCentre is the footprint centre in this PNG's pixels; gameScale is game px per PNG px at zoom 1"
+      }
+    },
+    {
+      "id": "cooking-fire",
+      "file": "lighting/cooking-fire.png",
+      "label": "cooking fire",
+      "kind": "prop",
+      "description": "Hanging cooking pot. A suspended iron cooking pot over a stone-ring campfire.",
+      "suggestedFootprint": [
+        2,
+        2
+      ],
+      "orientation": "as baked; rotation mirrors",
+      "suggestedRules": {
+        "blocksMovement": true,
+        "blocksSight": false,
+        "cover": "none"
+      },
+      "source": {
+        "route": "bake",
+        "tool": "tools/bake-scenery.mjs --group=lighting --light=catalogue --register",
+        "branch": "project/tactics-3d",
+        "commit": "8e7140f",
+        "library": "painted-furniture.js",
+        "skin": "honey",
+        "light": "catalogue",
+        "footCentre": [
+          563.989,
+          1039.649
+        ],
+        "gameScale": 0.099983179,
+        "note": "footCentre is the footprint centre in this PNG's pixels; gameScale is game px per PNG px at zoom 1"
+      }
+    }
+  ]
 }

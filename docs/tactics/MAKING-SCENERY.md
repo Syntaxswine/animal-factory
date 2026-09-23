@@ -73,8 +73,11 @@ clearly, and this is what the whole existing catalogue is.
 25 and 60 px: cargo, furniture, machines, conveyor sections, light fixtures. The two games
 share a camera exactly — `GAME_CAMERA` is `{azimuth: π/4, elevation: π/6}`, and π/6 gives a
 diamond of exactly 2.000000, the same as this game's 56 × 28 tile — so a render is already in
-this game's projection and needs no reprojection. A render is an underlay, never the
-deliverable: the branch shades at runtime and a sprite has to carry its own light.
+this game's projection and needs no reprojection. Under the workshop's light a render is only an
+underlay, because the branch shades at runtime and a sprite has to carry its own light. Parcel
+B, which had no image generator, relit its bakes with the baker's catalogue rig, registered them
+with `--register` and shipped them as a stated deviation. [LIGHTING.md](LIGHTING.md) has the
+measurement; whether that route is open to other parcels is open question 9.
 
 `tools/bake-scenery.mjs` does this for all 44 forms in the four groups whose models exist,
 and reports the `visualWidth`/`visualHeight` each one needs plus how far the renderer's
@@ -117,8 +120,10 @@ repeated here. The three things that will actually fail your build:
 2. The same file asserts every environment PNG is exactly 1254 × 1254, RGBA for props and
    barriers, RGB for the six ground textures.
 3. `tests/tactics-new-props.test.mjs` places, rotates, exports and reloads every id that has
-   both a `PROP_ART` crop and a `PROPS` rule, so a new prop joins the suite the moment it is
-   registered — and a half-registered one fails immediately.
+   both a `PROP_ART` crop and a `PROPS` rule. **It does not see group props:** it reads
+   `PROP_ART` only, and a Stage 1 parcel's crops live in `GROUP_PROP_ART`. Until the integrator
+   widens it, a group parcel has to test its own placement round trip, as
+   `tests/tactics-lighting.test.mjs` does.
 
 Sizing, which is the arithmetic `tools/drawn-size.mjs` duplicates:
 

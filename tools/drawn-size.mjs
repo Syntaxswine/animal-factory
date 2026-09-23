@@ -20,6 +20,9 @@
 import {PROPS,EDGES,GROUNDS} from '../dist/tactics/environment.js';
 import {PROP_ART} from '../dist/tactics/prop-art.js';
 import {DOOR_ART} from '../dist/tactics/door-art.js';
+// The scenery groups keep their crops in prop-art-<group>.js (parcel S1), and the renderer reads them
+// after PROP_ART, so a measuring tool that stopped at PROP_ART could not see a single Stage 1 prop.
+import {GROUP_PROP_ART} from '../dist/tactics/prop-art-groups.js';
 
 const SOURCE=1254;
 // environment-renderer.js keeps these two tables inline; they are the crops for the art that
@@ -30,7 +33,7 @@ const LEGACY_CROPS={'barrel-single':[322,88,931,1173],'barrels-cluster':[229,164
 const edgeHeight=id=>/^(wall-|window-|door-|doorway-)/.test(id)?72:DOOR_ART[id]?.height??PROP_ART[id]?.height??(id==='fence-railing'?20:44);
 
 export function cropOf(id){
- const art=PROP_ART[id]||DOOR_ART[id];
+ const art=PROP_ART[id]||DOOR_ART[id]||GROUP_PROP_ART[id];
  return art?.crop||LEGACY_CROPS[id]||null;
 }
 
@@ -97,4 +100,4 @@ function main(argv){
  if(missing.length)console.log(`\n${missing.length} prop kinds have a rule but no crop yet: ${missing.join(', ')}`);
 }
 
-if(import.meta.url===`file://${process.argv[1].replace(/\\/g,'/')}`||process.argv[1]?.endsWith('drawn-size.mjs'))main(process.argv.slice(2));
+if(import.meta.url===`file://${process.argv[1]?.replace(/\\/g,'/')}`||process.argv[1]?.endsWith('drawn-size.mjs'))main(process.argv.slice(2));

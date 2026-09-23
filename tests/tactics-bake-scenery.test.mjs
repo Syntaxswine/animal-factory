@@ -1,7 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {encodePNG} from '../tools/png-rgba.mjs';
-import {GROUPS, TILE_HALF_WIDTH, HEIGHT_PER_GROUND_UNIT, checkCamera, catalogueRow, cropOf, assertFormsCovered}
+import {GROUPS, TILE_HALF_WIDTH, HEIGHT_PER_GROUND_UNIT, checkCamera, catalogueRow, cropOf, assertFormsCovered,
+ RIGS, rigFor, DEFAULT_LIGHT, MARK_RGBA, registrationMarks, marksFit, paintMarks, remark, checkOptions, OPTIONS, FLAGS}
  from '../tools/bake-scenery.mjs';
 
 // tools/bake-scenery.mjs needs a browser, a served 3D tree and an installed Edge to take a
@@ -112,4 +113,132 @@ test('the group table partitions the branch, and says so when it does not', () =
   /Unclaimed on the page: crate-new/);
  assert.throws(() => assertFormsCovered('painted-cargo.html', GROUPS.cargo.forms.slice(1), GROUPS),
   /Claimed but absent: crate-square/);
+});
+
+// --- the catalogue light and the registration marks (parcel B) -----------------------------------
+
+test('the light table refuses a rig it does not know', () => {
+ assert.equal(rigFor('page'), null, 'page means: leave the workshop lights alone');
+ // And it is the default: every other parcel re-bakes under it, so moving it is a policy change
+ // (open question 9), not a tool tweak.
+ assert.equal(DEFAULT_LIGHT, 'page');
+ // The calibrated rig, spelled out: a key from the screen's upper left, no tone mapping, and the
+ // 3D iron re-tinted to the painted catalogue's. Read back from RIGS it could not be wrong.
+ assert.deepEqual(rigFor('catalogue'),
+  {from: [-1, 2, 3], fill: .5, key: 2.8, gain: 1.3, tone: 'none', flamesUnlit: true, tints: {iron: 0x5c5f58}});
+ assert.equal(rigFor('catalogue'), RIGS.catalogue);
+ assert.throws(() => rigFor('studio'), /unknown --light="studio"; have catalogue, page/);
+ // Inherited properties are not rigs either.
+ assert.throws(() => rigFor('toString'), /unknown --light/);
+});
+
+// A frame with a model in it: a 20 px lamp post from y 200 to 600, right of the footprint centre.
+function postFrame(size = 1254) {
+ const png = {width: size, height: size, pixels: new Uint8Array(size * size * 4)};
+ for (let y = 200; y < 600; y++) for (let x = 660; x < 680; x++) png.pixels.set([40, 40, 40, 255], (y * size + x) * 4);
+ return png;
+}
+
+test('two marks put the crop bottom on the renderer anchor and its middle on the footprint', () => {
+ const {gameScale} = checkCamera(TRUE_CAMERA);
+ const foot = [627.4, 700], png = postFrame();
+ const model = cropOf(Buffer.from(encodePNG(png))).crop;
+ const before = catalogueRow({crop: model, footCentre: foot, tiles: [1, 1], gameScale});
+ // Its bottom is 100 bake px ABOVE the footprint centre, where the renderer wants it 10 game px =
+ // 145.4 bake px below; and it is 3.4 game px right of centre.
+ assert.ok(before.anchor.residual < -16, `without marks it floats ${before.anchor.residual} px`);
+ assert.ok(before.centre > 2, 'and sits off-centre');
+
+ const marks = registrationMarks({footCentre: foot, crop: model, tiles: [1, 1], gameScale});
+ // The anchor row: round(700 + 10 / 0.0687733) - 1 = 845 - 1.
+ assert.equal(marks.row, 844);
+ assert.ok(marksFit(marks, 1254, 1254));
+ paintMarks(png, marks);
+ const after = catalogueRow({crop: cropOf(Buffer.from(encodePNG(png))).crop, footCentre: foot, tiles: [1, 1], gameScale});
+ // Within one bake pixel (0.069 game px) both ways, from a footprint centre that is not a whole pixel.
+ assert.ok(Math.abs(after.anchor.residual) < gameScale, `residual ${after.anchor.residual}`);
+ assert.ok(Math.abs(after.centre) < gameScale, `centre ${after.centre}`);
+ // The box is the model reflected about the centre: its far edge is 680 - 627.4 = 52.6 px out, the
+ // left mark goes one pixel further and is floored to x 573, so 2 * (627.4 - 573) = 108.8 -> 109 px.
+ assert.deepEqual(after.cropSize, [109, 845 - 200]);
+
+ // Deeper footprints drop further: 15 and 20 game px for a 2 x 1 and a 2 x 2.
+ for (const [tiles, px] of [[[2, 1], 15], [[2, 2], 20]])
+  assert.equal(registrationMarks({footCentre: foot, crop: model, tiles, gameScale}).row, Math.round(700 + px / 0.0687733) - 1);
+});
+
+test('the marks are two pixels at the crop threshold, never painted over the model', () => {
+ // The renderer crops at alpha >= 64: a mark any fainter would not reach the crop, and any stronger
+ // would be more visible than it needs to be.
+ assert.deepEqual(MARK_RGBA, [0x13, 0x24, 0x1d, 64]);
+ const w = 9, h = 3, pixels = new Uint8Array(w * h * 4);
+ pixels.set([200, 30, 30, 255], (1 * w + 7) * 4);   // model pixel where the right mark would go
+ paintMarks({width: w, height: h, pixels}, {row: 1, left: 1, right: 7});
+ const at = (x, y) => [...pixels.slice((y * w + x) * 4, (y * w + x) * 4 + 4)];
+ assert.deepEqual(at(1, 1), [0x13, 0x24, 0x1d, 64], 'a clear pixel takes the mark');
+ assert.deepEqual(at(7, 1), [200, 30, 30, 255], 'the model is never overwritten');
+ let painted = 0;
+ for (let i = 3; i < pixels.length; i += 4) if (pixels[i]) painted++;
+ assert.equal(painted, 2, 'two pixels, nothing else');
+
+ // A wall fixture's footprint centre is far below its subject, off the canvas: no marks at all,
+ // rather than clipped ones whose crop would claim a registration it does not have.
+ assert.equal(marksFit({row: 2534, left: 800, right: 1170}, 1254, 1254), false);
+ assert.equal(marksFit({row: 700, left: -1, right: 1000}, 1254, 1254), false, 'left edge');
+ assert.equal(marksFit({row: 700, left: 200, right: 1254}, 1254, 1254), false, 'right edge');
+ assert.equal(marksFit({row: 700, left: 200, right: 1000}, 1254, 1254), true);
+ // On the canvas but on its edge: the crop would touch the frame, which bakeOne calls clipped.
+ assert.equal(marksFit({row: 700, left: 0, right: 1000}, 1254, 1254), false, 'left column');
+ assert.equal(marksFit({row: 700, left: 200, right: 1253}, 1254, 1254), false, 'right column');
+ assert.equal(marksFit({row: 1253, left: 200, right: 1000}, 1254, 1254), false, 'bottom row');
+ assert.equal(marksFit({row: 1252, left: 1, right: 1252}, 1254, 1254), true, 'one pixel in');
+});
+
+test('a repaint gets its marks back from the recorded footprint centre, and remarking is idempotent', () => {
+ const {gameScale} = checkCamera(TRUE_CAMERA);
+ const foot = [627.4, 700], png = postFrame();
+ const original = remark(png, {footCentre: foot, tiles: [1, 1], gameScale});
+ const once = Buffer.from(encodePNG(png));
+ // A repaint loses the two pixels; putting them back from the same record gives the same image.
+ for (const x of [original.left, original.right]) png.pixels.fill(0, (original.row * 1254 + x) * 4, (original.row * 1254 + x) * 4 + 4);
+ assert.deepEqual(remark(png, {footCentre: foot, tiles: [1, 1], gameScale}), original);
+ assert.ok(Buffer.from(encodePNG(png)).equals(once), 'restored marks differ from the originals');
+ // Remarking a PNG that still has its marks strips them first, so it is not widened by a pixel.
+ assert.deepEqual(remark(png, {footCentre: foot, tiles: [1, 1], gameScale}), original);
+ assert.ok(Buffer.from(encodePNG(png)).equals(once), 'remarking twice changed the image');
+ // Only the bottom row is stripped: a painted pixel that is exactly the mark colour, inside the
+ // model, is paint, not a mark.
+ const inside = (400 * 1254 + 670) * 4;
+ png.pixels.set(MARK_RGBA, inside);
+ assert.deepEqual(remark(png, {footCentre: foot, tiles: [1, 1], gameScale}), original);
+ assert.deepEqual([...png.pixels.subarray(inside, inside + 4)], MARK_RGBA, 'remark erased paint');
+ // A footprint centre far off the canvas (a wall fixture) is refused, not clipped.
+ assert.equal(remark(postFrame(), {footCentre: [985, 2534], tiles: [1, 1], gameScale}), null);
+});
+
+test('the tool refuses options it does not know, and known ones in the wrong form', () => {
+ assert.doesNotThrow(() => checkOptions(['--group=lighting', '--light=catalogue', '--register', '--out=x']));
+ // --shadow was the first version of parcel B's option. Ignored, it would ship unregistered art.
+ assert.throws(() => checkOptions(['--group=lighting', '--shadow']), /unknown option: --shadow/);
+ assert.throws(() => checkOptions(['--lite=catalogue', '--regster']), /unknown options: --lite, --regster/);
+ // Known names in the wrong form are the same trap: each of these used to run silently wrong.
+ assert.throws(() => checkOptions(['--group=lighting', '--register=true']), /--register takes no value/);
+ assert.throws(() => checkOptions(['--light', 'catalogue', '--group=lighting']), /--light needs a value/);
+ assert.throws(() => checkOptions(['--group', 'lighting']), /stray "lighting"/);
+ assert.throws(() => checkOptions(['--remark']), /--remark needs a value/);
+ assert.throws(() => checkOptions(['--out=']), /--out needs a value/);
+ assert.doesNotThrow(() => checkOptions(['--remark=dist/assets/environment/manifest-lighting.json']));
+ assert.deepEqual([...OPTIONS].sort(), ['calibrate', 'form', 'group', 'light', 'list', 'margin', 'out', 'playwright', 'port', 'register', 'remark', 'size', 'skin']);
+ assert.deepEqual([...FLAGS].sort(), ['calibrate', 'list', 'register']);
+});
+
+test('the iron tint keeps the source order: darker than the pot the tripod holds', () => {
+ // painted-furniture.js at 8e7140f: iron 0x343b37, cooking-pot 0x65615a. A tint above the pot's
+ // colour-factor luma inverts the cooking fire -- pale legs holding a dark pot -- which 0x8c887e did.
+ // These are material colours, not albedo: both multiply atlas cells, so the shipped pixels sit
+ // closer (cooking-fire.png: lit leg p50 51, pot body 55). The factor order is the lever a tint has.
+ const luma = h => .299 * (h >> 16) + .587 * (h >> 8 & 255) + .114 * (h & 255);
+ const iron = RIGS.catalogue.tints.iron, pot = 0x65615a;
+ assert.ok(luma(iron) < luma(pot), `iron ${luma(iron).toFixed(1)} is not darker than the pot ${luma(pot).toFixed(1)}`);
+ assert.ok(luma(iron) > luma(0x343b37), 'and it is lighter than the near-black it replaces');
 });
