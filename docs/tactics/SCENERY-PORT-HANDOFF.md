@@ -7,7 +7,7 @@ evidence that a parcel exists.
 The work is cut so that **two agents can pick any two parcels and never edit the
 same file**. Each parcel below names the files it owns exclusively. If a parcel
 needs to change a file another parcel owns, that is a dependency, and it is
-written down as one. The two Stage 0 parcels exist only to create that separation;
+written down as one. The Stage 0 parcels exist only to create that separation;
 without them every parcel here would collide in `environment.js`, `prop-art.js`,
 `manifest.json`, `editor.js` and the Pages file list.
 
@@ -284,7 +284,7 @@ wrongly scoped; stop and say so here.
 | # | Parcel | Stage | Depends on | Claimed by | State |
 | --- | --- | --- | --- | --- | --- |
 | A | Mature trees | 0 | — · **before S1** | `tactics-mature-trees` | **delivered**, PR #14 |
-| S1 | Catalog seam | 0 | A | — | not started |
+| S1 | Catalog seam | 0 | A | `tactics-catalog-seam` | **delivered**, PR #16 |
 | S2 | Clock, sun and render hooks | 0 | — | — | not started |
 | B | Lamps, torches and fires | 1 | S1, S2 | — | not started |
 | C | Guard towers and guardhouses | 1 | S1, S2 | — | not started |
@@ -325,9 +325,9 @@ enlarges the draw size. The whole upstream change is three files:
 3. `manifest.json` — two `kind: "prop"` entries pointing at the same two PNGs.
 
 All three of those files belong to S1. That is why A goes first and alone: it is
-cheaper to write ten lines into the old registries and let S1 carry them into the
-new `trees-large` group during its split than to make a compatibility fix wait on
-a refactor. If S1 has already started when you read this, do not open those files.
+cheaper to write ten lines into the old registries than to make a compatibility fix
+wait on a refactor. S1 has since landed and chose to leave them there rather than
+move them into a group, so nothing further is owed. If S1 has already started when you read this, do not open those files.
 Hand the three-file diff to whoever holds S1 and let them land it inside the seam.
 
 Whether the two variants eventually deserve their own paintings is a separate
@@ -355,9 +355,9 @@ applied with no conflicts. 483 tests pass, 482 before. A map carrying both kinds
 goes from `Invalid environment props.` to an exact round trip with an impassable
 trunk tile. The editor palette picked both up with no editor change, under the
 existing Foliage group. Evidence: `mature-tree-scale.png`, the four trees drawn
-through the real renderer at zoom 1. S1 now moves them into the `trees-large`
-group; until it does, `environment.js`, `prop-art.js` and `manifest.json` are free
-again.
+through the real renderer at zoom 1. S1 has since landed and deliberately left the
+two entries where upstream put them, so `environment.js`, `prop-art.js` and
+`manifest.json` are free again and no group owns the mature trees.
 
 ### S1 — Catalog seam
 
@@ -369,29 +369,31 @@ in parallel at all.
 
 **Deliverables.**
 
-1. Split `PROPS` so each scenery group lives in its own module. `environment.js`
-   keeps the existing 47 entries and composes the rest:
-   `export const PROPS = {...CORE_PROPS, ...TREES_LARGE_PROPS, ...}`. Create
-   eight group modules, one per Stage 1 parcel plus one for A:
-   `environment-props-trees-large.js`, `-lighting.js`, `-towers.js`, `-cargo.js`,
-   `-furniture.js`, `-machines.js`, `-conveyor.js`, `-vehicles.js`. Each exports
-   its own `PROPS`, a `FOLDER` name and a `LABEL` for the editor palette. Seven
-   start empty; `trees-large` starts holding A's two entries, moved out of
-   `environment.js` unchanged.
+1. Give each scenery group its own rules module. `environment.js` keeps the
+   existing 47 entries exactly where they are and gains two lines: an import of
+   `environment-groups.js` and `Object.assign(PROPS, GROUP_PROPS)` at the end.
+   That is the architect's own move, the same `Object.assign(PROPS, LIGHT_PROPS)`
+   that `core/environment.js` uses on the 3D branch, and it keeps this file close
+   to the upstream source that branch regenerates from. Create seven group
+   modules, one per remaining Stage 1 parcel: `environment-props-lighting.js`,
+   `-towers.js`, `-cargo.js`, `-furniture.js`, `-machines.js`, `-conveyor.js`,
+   `-vehicles.js`, each exporting `PROPS`, a `FOLDER` and a `LABEL`. Parcel A's
+   two mature trees stay in `environment.js` where upstream put them; moving them
+   would buy nothing and cost the byte-identity with `e529f4b`.
 2. Drive the editor palette grouping from those `LABEL` exports instead of the
    hardcoded `{facility: 'Lab and medical', …}` map in `editor.js`.
 3. Teach `tools/catalog-environment.py` to emit one `prop-art-<folder>.js` per
-   asset folder, and pre-generate the eight empty ones.
+   asset folder, and pre-generate the seven empty ones.
    `environment-renderer.js` merges them. `prop-art.js` keeps the existing 39
    entries and is never touched again by a Stage 1 parcel.
 4. Let `tools/check-assets.mjs` read `manifest.json` plus any
-   `manifest-<group>.json` beside it, and create the eight empty side manifests.
+   `manifest-<group>.json` beside it, and create the seven empty side manifests.
    The id bijection and the orphan-PNG scan must still hold over the union.
 5. Replace the hand-written `files` array in `tools/build-tactics-pages.mjs` with
    a scan of `dist/tactics` plus an explicit exclude list, so adding a review page
    never edits the build script. `tests/tactics-pages-files.test.mjs` must still
    pass.
-6. Create the eight asset folders, each holding a `.gitkeep` and nothing else.
+6. Create the seven asset folders, each holding a `.gitkeep` and nothing else.
    Not a placeholder PNG: `check-assets.mjs` fails on any PNG under
    `dist/assets/environment/` that no manifest references, so a placeholder image
    would break the gate the moment it is committed.
@@ -405,6 +407,25 @@ in parallel at all.
 **Done when.** `npm run check` is green with zero behaviour change: the same 49
 props including A's two mature trees, the same manifest ids, the same Pages output
 file set, and a byte-identical render of the default factory map before and after.
+
+**Delivered 22 September 2026**, branch `tactics-catalog-seam`, PR #16, stacked on
+A. 487 tests pass, 483 before. Catalog unchanged at 49 props, 16 edges and 69 ids,
+with the id set compared element by element. The editor palette still shows 49
+options under the same seven headings. A deterministic render of all 6 grounds, 49
+props and 16 edges through the real renderer hashes identically before and after,
+and the probe is not blind: 70 of 71 elements draw, 103,138 opaque pixels, and the
+one that does not is the art-less `door` edge. The Pages output gains the 16 new
+modules and 7 side manifests and loses nothing.
+
+The seam was also proven to carry a prop rather than merely to be a no-op. A
+temporary `probe-lamp` registered through the lighting group alone took the catalog
+to 50, passed the asset gate and added a **Lamps and fires** heading to the palette,
+with no shared registry file opened; then it was removed and every count returned to
+baseline. Two things turned up on the way: `catalog-environment.py` was not
+reproducible against the committed `prop-art.js` (same entries, different order,
+because upstream hand-edited it), now fixed; and the Pages test parsed the old file
+list out of the build script, so both now import one selection from
+`tools/pages-files.mjs`.
 
 ### S2 — Clock, sun and render hooks
 
