@@ -181,6 +181,12 @@ git worktree add --detach ../af-3dref codex/project/tactics-3d
 cd ../af-3dref && PORT=4318 node tools/serve.mjs
 ```
 
+Use 4318 and pass it explicitly. The workspace `launch.json` at the AI root
+already holds 4327 for the main tactics tree, 4337 for the flame worktree, 4367
+for the sprite worktree, and 4617, 4618 and 4719 for unrelated projects. Serving
+without `PORT` set lands on the 3D branch's own default, which is 4318 as well,
+but say it anyway so a reader does not guess.
+
 Then open, in order of usefulness to this port:
 
 | Page | What it shows |
@@ -207,10 +213,10 @@ palette clause.
 
 Fourteen parcels in four stages.
 
-- **Stage 0** removes the shared-file collisions. Its two parcels touch almost
-  every registry in the tree and touch nothing else. They can run at the same time
-  as each other because their file sets are disjoint. Nothing in Stage 1 or 2
-  should start before the stage it depends on has landed.
+- **Stage 0** removes the shared-file collisions. It has three parcels and only
+  one ordering constraint: **A, then S1**. A writes ten lines into the three
+  registries S1 is about to split, so it is cheaper to land it first than to make
+  it wait. S2 touches none of their files and can run beside either.
 - **Stage 1** is new scenery art. Each parcel owns one asset folder, one catalog
   module, one manifest side-file and one review page, all created empty by S1.
   Any two of them can run at once.
@@ -231,13 +237,29 @@ New review pages link outward to the existing index only. Do not edit a sibling
 page's navigation strip to add a link back: every parcel would edit every page.
 Cross-links are the integrator's job at the end.
 
+### Out of scope: character art
+
+This plan is scenery only. A separate line of work owns the roughly 660 character
+PNGs and everything that reads them, and no parcel here touches any of it:
+
+- `dist/assets/characters/**`
+- `art/*-sources.json`, `art/*-generation.json`
+- `dist/tactics/character-art.js`, `red-hats-art.js`, `body-art.js`,
+  `body-frames.js`, `flamethrower-art.js`, `flame-nozzles.js`
+- `dist/tactics/character-art.html`, `weapon-expansion.html`, `red-hats.html`,
+  `bodies.html`
+
+Parcel M holds an existing-art lock, but only over the environment catalog. If a
+scenery parcel finds it needs a character file, that is a sign the parcel is
+wrongly scoped; stop and say so here.
+
 ### Status
 
 | # | Parcel | Stage | Depends on | Claimed by | State |
 | --- | --- | --- | --- | --- | --- |
-| S1 | Catalog seam | 0 | — | — | not started |
+| A | Mature trees | 0 | — · **before S1** | — | not started |
+| S1 | Catalog seam | 0 | A | — | not started |
 | S2 | Clock, sun and render hooks | 0 | — | — | not started |
-| A | Mature trees | 1 | S1 | — | not started |
 | B | Lamps, torches and fires | 1 | S1 | — | not started |
 | C | Guard towers and guardhouses | 1 | S1, S2 | — | not started |
 | D | Cargo forms | 1 | S1 | — | not started |
@@ -254,6 +276,53 @@ Cross-links are the integrator's job at the end.
 
 ## Stage 0
 
+### A — Mature trees
+
+**Do this one first, before S1, and land it before S1 begins.** It is the only
+parcel that writes into the shared registries on purpose, and it is worth the
+exception: it is ten lines, it needs no artwork, and it fixes a live
+incompatibility rather than adding a feature. A map authored in the 3D editor with
+a mature tree on it is rejected by this tree's parser today with
+`Invalid environment props.`, which is the exact failure
+`MATURE-TREE-INTEGRATION.md` was written to repair on the other side.
+
+Two kinds, `tree-broadleaf-large` and `tree-pine-large`, both 1×1, solid, tall,
+cover 25, visual 180 × 234. The canonical source is `work/mature-tree-core` at
+`e529f4b`. It ships **no new artwork**: it aliases the existing tree PNGs and only
+enlarges the draw size. The whole upstream change is three files:
+
+1. `environment.js` — the `TREE_VARIANTS` export and one loop that writes
+   `PROPS[kind] = {...PROPS[base], visualWidth: 100*scale, visualHeight: 130*scale}`.
+2. `prop-art.js` — `"tree-broadleaf-large": {"file": "foliage/tree-broadleaf.png",
+   "crop": [93,62,1176,1194]}` and `"tree-pine-large": {"file":
+   "foliage/tree-pine.png", "crop": [292,16,1019,1205]}`.
+3. `manifest.json` — two `kind: "prop"` entries pointing at the same two PNGs.
+
+All three of those files belong to S1. That is why A goes first and alone: it is
+cheaper to write ten lines into the old registries and let S1 carry them into the
+new `trees-large` group during its split than to make a compatibility fix wait on
+a refactor. If S1 has already started when you read this, do not open those files.
+Hand the three-file diff to whoever holds S1 and let them land it inside the seam.
+
+Whether the two variants eventually deserve their own paintings is a separate
+question, and a Stage 1 parcel if the answer is yes. There is no resolution
+argument either way: the source crop is about 1083 × 1132 px drawn at 180 × 234,
+so it is still heavily downsampled. The argument is compositional. In a
+fixed-scale isometric view, the same painting at two sizes reads as a distance cue
+rather than as two different trees, and this game's camera has no distance. A
+broader crown and a heavier trunk would say "older tree" where a scale factor says
+"nearer tree".
+
+Watch the footprint either way: the crown overhangs but only the trunk tile is
+solid, and the renderer anchors a prop at the foot of its diamond, so a 234 px
+canopy covers the tiles behind it. Check it against a standing character.
+
+**Owns.** `dist/tactics/environment.js`, `dist/tactics/prop-art.js`,
+`dist/assets/environment/manifest.json`, for the duration of this parcel only.
+
+**Done when.** `npm run check` is green and a map exported from the 3D editor with
+both mature trees on it loads here and draws them.
+
 ### S1 — Catalog seam
 
 **Why.** Today a new prop kind means editing five files that every other parcel
@@ -266,11 +335,13 @@ in parallel at all.
 
 1. Split `PROPS` so each scenery group lives in its own module. `environment.js`
    keeps the existing 47 entries and composes the rest:
-   `export const PROPS = {...CORE_PROPS, ...TREES_LARGE_PROPS, ...}`. Create the
-   eight group modules **empty** now, one per Stage 1 parcel:
+   `export const PROPS = {...CORE_PROPS, ...TREES_LARGE_PROPS, ...}`. Create
+   eight group modules, one per Stage 1 parcel plus one for A:
    `environment-props-trees-large.js`, `-lighting.js`, `-towers.js`, `-cargo.js`,
    `-furniture.js`, `-machines.js`, `-conveyor.js`, `-vehicles.js`. Each exports
-   its own `PROPS`, a `FOLDER` name and a `LABEL` for the editor palette.
+   its own `PROPS`, a `FOLDER` name and a `LABEL` for the editor palette. Seven
+   start empty; `trees-large` starts holding A's two entries, moved out of
+   `environment.js` unchanged.
 2. Drive the editor palette grouping from those `LABEL` exports instead of the
    hardcoded `{facility: 'Lab and medical', …}` map in `editor.js`.
 3. Teach `tools/catalog-environment.py` to emit one `prop-art-<folder>.js` per
@@ -284,7 +355,10 @@ in parallel at all.
    a scan of `dist/tactics` plus an explicit exclude list, so adding a review page
    never edits the build script. `tests/tactics-pages-files.test.mjs` must still
    pass.
-6. Create the eight asset folders with a placeholder so the scan finds them.
+6. Create the eight asset folders, each holding a `.gitkeep` and nothing else.
+   Not a placeholder PNG: `check-assets.mjs` fails on any PNG under
+   `dist/assets/environment/` that no manifest references, so a placeholder image
+   would break the gate the moment it is committed.
 
 **Owns.** `dist/tactics/environment.js`, `dist/tactics/prop-art.js`,
 `dist/tactics/environment-renderer.js`, `dist/tactics/editor.js`,
@@ -292,9 +366,9 @@ in parallel at all.
 `tools/catalog-environment.py`, `tools/check-assets.mjs`,
 `tools/build-tactics-pages.mjs`, and every file it creates.
 
-**Done when.** `npm run check` is green with zero behaviour change: the same 47
-props, the same manifest ids, the same Pages output file set, and a byte-identical
-render of the default factory map before and after.
+**Done when.** `npm run check` is green with zero behaviour change: the same 49
+props including A's two mature trees, the same manifest ids, the same Pages output
+file set, and a byte-identical render of the default factory map before and after.
 
 ### S2 — Clock, sun and render hooks
 
@@ -360,40 +434,6 @@ not repeated. Each one:
 `dist/assets/environment/manifest-<group>.json`,
 `dist/tactics/<group>-art.html` and its script, `art/<group>-prompts.md`,
 `tests/tactics-<group>.test.mjs`, `docs/tactics/<GROUP>.md`.
-
-### A — Mature trees · group `trees-large`
-
-Take this one first. It is the smallest parcel here, it is the only one whose prop
-kinds are already canonical upstream, and it is not really an art job: it is a
-compatibility fix. A map authored in the 3D editor with a mature tree on it is
-rejected by this tree's parser today with `Invalid environment props.`, which is
-the exact failure `MATURE-TREE-INTEGRATION.md` was written to repair on the other
-side.
-
-Two kinds, `tree-broadleaf-large` and `tree-pine-large`, both 1×1, solid, tall,
-cover 25, visual 180 × 234. The canonical source is `work/mature-tree-core` at
-`e529f4b`. It ships **no new artwork**: it aliases the existing tree PNGs and only
-enlarges the draw size. The whole upstream change is three files:
-
-1. `environment.js` — the `TREE_VARIANTS` export and one loop that writes
-   `PROPS[kind] = {...PROPS[base], visualWidth: 100*scale, visualHeight: 130*scale}`.
-2. `prop-art.js` — `"tree-broadleaf-large": {"file": "foliage/tree-broadleaf.png",
-   "crop": [93,62,1176,1194]}` and `"tree-pine-large": {"file":
-   "foliage/tree-pine.png", "crop": [292,16,1019,1205]}`.
-3. `manifest.json` — two `kind: "prop"` entries pointing at the same two PNGs.
-
-Land that first and the incompatibility is gone. Then decide separately whether
-the two variants deserve their own paintings. There is no resolution argument
-either way: the source crop is about 1083 × 1132 px and is being drawn at
-180 × 234, so it is still heavily downsampled. The argument is compositional. In a
-fixed-scale isometric view, the same painting at two sizes reads as a distance
-cue rather than as two different trees, and this game's camera has no distance.
-A broader crown and a heavier trunk would say "older tree" where a scale factor
-says "nearer tree".
-
-Watch the footprint either way: the crown overhangs but only the trunk tile is
-solid, and the renderer anchors a prop at the foot of its diamond, so a 234 px
-canopy covers the tiles behind it. Check it against a standing character.
 
 ### B — Lamps, torches and fires · group `lighting`
 
@@ -598,6 +638,10 @@ silhouette; a changed silhouette changes what the player reads as cover.
 **Owns.** The named PNGs under `dist/assets/environment/` and
 `dist/assets/environment/facility/`, their `prop-art.js` crops, and
 `art/environment-prompts.md`.
+
+**Does not cover character art.** The existing-art lock is over the environment
+catalog only. Nothing under `dist/assets/characters/` belongs to this parcel or to
+any other parcel in this plan. See the scope note below.
 
 ---
 
