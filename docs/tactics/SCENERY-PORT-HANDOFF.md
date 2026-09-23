@@ -285,7 +285,7 @@ wrongly scoped; stop and say so here.
 | --- | --- | --- | --- | --- | --- |
 | A | Mature trees | 0 | — · **before S1** | `tactics-mature-trees` | **delivered**, PR #14 |
 | S1 | Catalog seam | 0 | A | `tactics-catalog-seam` | **delivered**, PR #16 |
-| S2 | Clock, sun and render hooks | 0 | — | — | not started |
+| S2 | Clock, sun and render hooks | 0 | S1 in practice | `tactics-daylight` | **delivered**, PR #17 |
 | B | Lamps, torches and fires | 1 | S1, S2 | — | not started |
 | C | Guard towers and guardhouses | 1 | S1, S2 | — | not started |
 | D | Cargo forms | 1 | S1 | — | not started |
@@ -470,6 +470,22 @@ falls apart. One parcel takes it and lands the hooks the others will use.
 a dusk boundary while the clock runs, the three hooks are called with no consumer
 registered and cost nothing, a static prop can be sorted the way a fire clump is,
 and `npm run check` is green.
+
+**Delivered 22 September 2026**, branch `tactics-daylight`, PR #17. 495 tests pass,
+487 before. See [DAYLIGHT.md](DAYLIGHT.md) and `daylight-phases.png`. The schedule
+and the strength curve are the 3D branch's, checked minute by minute rather than
+eyeballed. Every existing map still opens at 08:00 and paints no wash at all, so
+nothing in the tree changes appearance. The three passes are `dressing`, `light`
+and `overlay` in `scene-passes.js`, and `propPieceDepth` in `paint-order.js` is the
+sort convention B needs for a campfire.
+
+Two notes for the parcels that follow. S2 was branched off `tactics-prototype`
+first and the Pages test immediately failed with five referenced-but-unshipped
+modules, because the flat file list belongs to S1; the branch was rebased onto S1
+rather than editing a file another parcel owns, which is what this plan asks for and
+worth copying. And the editor still has no control for the start time: the model
+operation `setStartTime` exists and is tested, but the DOM wiring is one line in
+`editor.js`, which S1 owns, so it falls to whoever holds that file next.
 
 ---
 
