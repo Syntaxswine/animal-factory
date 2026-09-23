@@ -22,11 +22,18 @@
       },
       "source": {
         "route": "bake",
-        "tool": "tools/bake-scenery.mjs --group=lighting --shadow",
+        "tool": "tools/bake-scenery.mjs --group=lighting --light=catalogue --register",
         "branch": "project/tactics-3d",
+        "commit": "8e7140f",
         "library": "painted-furniture.js",
         "skin": "honey",
-        "light": "catalogue"
+        "light": "catalogue",
+        "footCentre": [
+          627,
+          1092.14
+        ],
+        "gameScale": 0.065166098,
+        "note": "footCentre is the footprint centre in this PNG's pixels; gameScale is game px per PNG px at zoom 1"
       }
     },
     {
@@ -47,11 +54,18 @@
       },
       "source": {
         "route": "bake",
-        "tool": "tools/bake-scenery.mjs --group=lighting --shadow",
+        "tool": "tools/bake-scenery.mjs --group=lighting --light=catalogue --register",
         "branch": "project/tactics-3d",
+        "commit": "8e7140f",
         "library": "painted-furniture.js",
         "skin": "honey",
-        "light": "catalogue"
+        "light": "catalogue",
+        "footCentre": [
+          633.596,
+          1066.199
+        ],
+        "gameScale": 0.056249322,
+        "note": "footCentre is the footprint centre in this PNG's pixels; gameScale is game px per PNG px at zoom 1"
       }
     },
     {
@@ -72,11 +86,18 @@
       },
       "source": {
         "route": "bake",
-        "tool": "tools/bake-scenery.mjs --group=lighting --shadow",
+        "tool": "tools/bake-scenery.mjs --group=lighting --light=catalogue --register",
         "branch": "project/tactics-3d",
+        "commit": "8e7140f",
         "library": "painted-furniture.js",
         "skin": "honey",
-        "light": "catalogue"
+        "light": "catalogue",
+        "footCentre": [
+          591.389,
+          1130.175
+        ],
+        "gameScale": 0.097891212,
+        "note": "footCentre is the footprint centre in this PNG's pixels; gameScale is game px per PNG px at zoom 1"
       }
     },
     {
@@ -97,11 +118,18 @@
       },
       "source": {
         "route": "bake",
-        "tool": "tools/bake-scenery.mjs --group=lighting --shadow",
+        "tool": "tools/bake-scenery.mjs --group=lighting --light=catalogue --register",
         "branch": "project/tactics-3d",
+        "commit": "8e7140f",
         "library": "painted-furniture.js",
         "skin": "honey",
-        "light": "catalogue"
+        "light": "catalogue",
+        "footCentre": [
+          627,
+          1088.405
+        ],
+        "gameScale": 0.110540908,
+        "note": "footCentre is the footprint centre in this PNG's pixels; gameScale is game px per PNG px at zoom 1"
       }
     },
     {
@@ -122,11 +150,18 @@
       },
       "source": {
         "route": "bake",
-        "tool": "tools/bake-scenery.mjs --group=lighting --shadow",
+        "tool": "tools/bake-scenery.mjs --group=lighting --light=catalogue --register",
         "branch": "project/tactics-3d",
+        "commit": "8e7140f",
         "library": "painted-furniture.js",
         "skin": "honey",
-        "light": "catalogue"
+        "light": "catalogue",
+        "footCentre": [
+          652.968,
+          1069.04
+        ],
+        "gameScale": 0.061999846,
+        "note": "footCentre is the footprint centre in this PNG's pixels; gameScale is game px per PNG px at zoom 1"
       }
     },
     {
@@ -147,11 +182,18 @@
       },
       "source": {
         "route": "bake",
-        "tool": "tools/bake-scenery.mjs --group=lighting --shadow",
+        "tool": "tools/bake-scenery.mjs --group=lighting --light=catalogue --register",
         "branch": "project/tactics-3d",
+        "commit": "8e7140f",
         "library": "painted-furniture.js",
         "skin": "honey",
-        "light": "catalogue"
+        "light": "catalogue",
+        "footCentre": [
+          626.502,
+          913.303
+        ],
+        "gameScale": 0.042713291,
+        "note": "footCentre is the footprint centre in this PNG's pixels; gameScale is game px per PNG px at zoom 1"
       }
     },
     {
@@ -172,11 +214,18 @@
       },
       "source": {
         "route": "bake",
-        "tool": "tools/bake-scenery.mjs --group=lighting --shadow",
+        "tool": "tools/bake-scenery.mjs --group=lighting --light=catalogue --register",
         "branch": "project/tactics-3d",
+        "commit": "8e7140f",
         "library": "painted-furniture.js",
         "skin": "honey",
-        "light": "catalogue"
+        "light": "catalogue",
+        "footCentre": [
+          563.989,
+          1039.649
+        ],
+        "gameScale": 0.099983179,
+        "note": "footCentre is the footprint centre in this PNG's pixels; gameScale is game px per PNG px at zoom 1"
       }
     }
   ]

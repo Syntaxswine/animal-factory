@@ -74,9 +74,10 @@ clearly, and this is what the whole existing catalogue is.
 share a camera exactly — `GAME_CAMERA` is `{azimuth: π/4, elevation: π/6}`, and π/6 gives a
 diamond of exactly 2.000000, the same as this game's 56 × 28 tile — so a render is already in
 this game's projection and needs no reprojection. Under the workshop's light a render is only an
-underlay, because the branch shades at runtime and a sprite has to carry its own light. Relit
-with the baker's catalogue rig and registered with `--shadow`, parcel B shipped seven light
-fixtures as bakes. [LIGHTING.md](LIGHTING.md) has the measurement that made that defensible.
+underlay, because the branch shades at runtime and a sprite has to carry its own light. Parcel
+B, which had no image generator, relit its bakes with the baker's catalogue rig, registered them
+with `--register` and shipped them as a stated deviation. [LIGHTING.md](LIGHTING.md) has the
+measurement; whether that route is open to other parcels is open question 9.
 
 `tools/bake-scenery.mjs` does this for all 44 forms in the four groups whose models exist,
 and reports the `visualWidth`/`visualHeight` each one needs plus how far the renderer's

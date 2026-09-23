@@ -8,18 +8,19 @@ export const LABEL='Lamps and fires';
 // fixture blocks its tile, only the bedside table is cover, and none is `tall` -- a lamp post does not
 // block sight here any more than it does there. A map authored on either branch loads on the other.
 //
-// visualWidth and visualHeight are what tools/bake-scenery.mjs --shadow reports: the model at true world
-// scale plus the ground-contact ellipse that registers it (docs/tactics/SCENERY-BAKE.md). Both are set,
-// so min(maxWidth/cropWidth, maxHeight/cropHeight) has two equal arguments and neither can bind early.
+// visualWidth and visualHeight are what tools/bake-scenery.mjs --register reports: the model at true world
+// scale, widened to be symmetric about the footprint centre and extended down to the renderer's anchor by
+// two invisible registration marks (docs/tactics/LIGHTING.md). Both are set, so
+// min(maxWidth/cropWidth, maxHeight/cropHeight) has two equal arguments and neither can bind early.
 const fixture=(w,h,visualWidth,visualHeight,cover=0)=>({w,h,cover,solid:true,visualWidth,visualHeight});
 export const PROPS={
- 'floor-lamp':fixture(1,1,40,74),
- 'bedside-table-lamp':fixture(1,1,40,62,25),
- 'streetlight':fixture(1,1,40,110),
- 'streetlight-double':fixture(2,1,60,124),
- 'standing-torch':fixture(1,1,40,66),
- 'campfire':fixture(1,1,40,34),
- 'cooking-fire':fixture(2,2,80,98)
+ 'floor-lamp':fixture(1,1,26,74),
+ 'bedside-table-lamp':fixture(1,1,35,62,25),
+ 'streetlight':fixture(1,1,32,110),
+ 'streetlight-double':fixture(2,1,55,124),
+ 'standing-torch':fixture(1,1,21,66),
+ 'campfire':fixture(1,1,35,34),
+ 'cooking-fire':fixture(2,2,74,98)
 };
 // The two the 3D branch also has and this parcel does not ship. It mounts them on a tile edge
 // (light-sources.js fixturePlacement shifts them .48 tile north, or east when rotated) and this renderer

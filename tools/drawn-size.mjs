@@ -100,4 +100,4 @@ function main(argv){
  if(missing.length)console.log(`\n${missing.length} prop kinds have a rule but no crop yet: ${missing.join(', ')}`);
 }
 
-if(import.meta.url===`file://${process.argv[1].replace(/\\/g,'/')}`||process.argv[1]?.endsWith('drawn-size.mjs'))main(process.argv.slice(2));
+if(import.meta.url===`file://${process.argv[1]?.replace(/\\/g,'/')}`||process.argv[1]?.endsWith('drawn-size.mjs'))main(process.argv.slice(2));

@@ -3,63 +3,63 @@ export const GROUP_PROP_ART = {
   "bedside-table-lamp": {
     "file": "lighting/bedside-table-lamp.png",
     "crop": [
-      278,
+      321,
       139,
-      989,
+      946,
       1244
     ]
   },
   "campfire": {
     "file": "lighting/campfire.png",
     "crop": [
-      158,
+      215,
       361,
-      1095,
+      1038,
       1147
     ]
   },
   "cooking-fire": {
     "file": "lighting/cooking-fire.png",
     "crop": [
-      164,
+      193,
       263,
-      964,
+      935,
       1240
     ]
   },
   "floor-lamp": {
     "file": "lighting/floor-lamp.png",
     "crop": [
-      320,
+      431,
       108,
-      934,
+      823,
       1246
     ]
   },
   "standing-torch": {
     "file": "lighting/standing-torch.png",
     "crop": [
-      330,
+      487,
       170,
-      976,
+      819,
       1230
     ]
   },
   "streetlight-double": {
     "file": "lighting/streetlight-double.png",
     "crop": [
-      356,
+      376,
       103,
-      898,
+      878,
       1224
     ]
   },
   "streetlight": {
     "file": "lighting/streetlight.png",
     "crop": [
-      387,
+      428,
       109,
-      796,
+      755,
       1232
     ]
   }

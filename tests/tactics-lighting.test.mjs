@@ -11,7 +11,7 @@ import {blankMap,parseMap} from '../dist/tactics/maps.js';
 import {createEditor,applyBrush} from '../dist/tactics/editor-model.js';
 import {createGame,walkable} from '../dist/tactics/engine.js';
 
-// Parcel B: seven light fixtures baked out of the 3D branch and registered by a contact shadow.
+// Parcel B: seven light fixtures baked out of the 3D branch and registered by two invisible marks.
 // See docs/tactics/LIGHTING.md.
 
 // The 3D branch's rules, copied from its light-sources.js and core/environment.js at ec13c4a rather than
@@ -45,23 +45,43 @@ test('every form the baker knows for this group is either shipped or deferred wi
 
 const png=kind=>{const g=decodePNG(readFileSync(new URL('../dist/assets/environment/'+GROUP_PROP_ART[kind].file,import.meta.url)));return g;};
 
-test('each sprite is registered by its own pixels: the crop bottom is the shadow, centred on the footprint',()=>{
+const MANIFEST=JSON.parse(readFileSync(new URL('../dist/assets/environment/manifest-lighting.json',import.meta.url),'utf8'));
+
+test('each sprite lands on its footprint: the recorded footprint centre, the pixels, and the renderer agree',()=>{
  for(const kind of Object.keys(LIGHTING)){
-  const {width,height,pixels}=png(kind),[x0,y0,x1,y1]=GROUP_PROP_ART[kind].crop;
+  const {width,height,pixels}=png(kind),[x0,y0,x1,y1]=GROUP_PROP_ART[kind].crop,r=LIGHTING[kind];
   assert.deepEqual([width,height],[1254,1254],kind);
-  // The renderer plants the crop's bottom centre at the anchor. For that to put the model on its
-  // footprint centre, the crop has to be exactly the shadow ellipse: its bottom row the ellipse's
-  // lowest point, its left and right edges the ellipse's. (The lowest point itself is off-centre on a
-  // 2 x 1 -- the ellipse is long along x -- so it is the extent, not that point, that must be centred.)
-  // Read it off the shipped PNG, not off the tool that made it.
-  const shadow=[0x13,0x24,0x1d,0x48],isShadow=i=>shadow.every((v,c)=>pixels[i+c]===v);
-  let sx0=Infinity,sx1=-Infinity,bottom=0;
-  for(let y=y0;y<y1;y++)for(let x=x0;x<x1;x++){const i=(y*width+x)*4;if(isShadow(i)){sx0=Math.min(sx0,x);sx1=Math.max(sx1,x+1);}}
-  for(let x=x0;x<x1;x++){const i=((y1-1)*width+x)*4;if(pixels[i+3]>=64){assert.ok(isShadow(i),`${kind}: the bottom row is not the contact shadow at x=${x}`);bottom++;}}
-  assert.ok(bottom>0,kind);
-  assert.deepEqual([sx0,sx1],[x0,x1],`${kind}: the model is wider than its shadow, so the crop is not centred on the footprint`);
-  // And nothing opaque below the crop the catalogue records.
-  for(let y=y1;y<height;y++)for(let x=0;x<width;x++)assert.ok(pixels[(y*width+x)*4+3]<64,`${kind}: stray pixel at ${x},${y}`);
+  // The bake records where the footprint centre fell in this PNG and how big a PNG pixel is in the game.
+  const {footCentre:[fx,fy],gameScale}=MANIFEST.assets.find(a=>a.id===kind).source;
+  // The renderer plants the crop's bottom centre (w + h) * 5 px below the footprint centre. So the crop
+  // must end exactly that far below it, and be centred on it, to within a PNG pixel or two.
+  const below=(y1-fy)*gameScale,off=((x0+x1)/2-fx)*gameScale;
+  assert.ok(Math.abs(below-(r.w+r.h)*5)<.1,`${kind}: crop ends ${below.toFixed(2)} px below the centre, not ${(r.w+r.h)*5}`);
+  assert.ok(Math.abs(off)<.1,`${kind}: crop centred ${off.toFixed(2)} px off the footprint`);
+  // What puts it there: the two registration marks, alone on the crop's bottom row at its two ends.
+  const mark=[0x13,0x24,0x1d,64],row=[];
+  for(let x=x0;x<x1;x++){const i=((y1-1)*width+x)*4;if(pixels[i+3]>=64)row.push([x,...pixels.slice(i,i+4)]);}
+  assert.deepEqual(row,[[x0,...mark],[x1-1,...mark]],`${kind}: the bottom row is not exactly the two marks`);
+  // Nothing opaque outside the crop the catalogue records.
+  for(let y=0;y<height;y++)for(let x=0;x<width;x++)if(y<y0||y>=y1||x<x0||x>=x1)
+   assert.ok(pixels[(y*width+x)*4+3]<64,`${kind}: stray pixel at ${x},${y}`);
+ }
+});
+
+test('the recorded footprint centre is where the model actually stands',()=>{
+ // Independent of the bake's own bookkeeping: a lamp on a round base stands on its centre, so the
+ // centroid of the lowest band of solid pixels has to be the recorded footprint centre. Measured at
+ // 0.01 game px or better on all three when this was written.
+ for(const kind of ['floor-lamp','streetlight','streetlight-double']){
+  const {width,pixels}=png(kind),{footCentre:[fx,fy],gameScale}=MANIFEST.assets.find(a=>a.id===kind).source;
+  let top=Infinity,bottom=-1;
+  for(let i=3;i<pixels.length;i+=4)if(pixels[i]>=250){const y=Math.floor((i>>2)/width);top=Math.min(top,y);bottom=Math.max(bottom,y);}
+  const band=Math.round((bottom-top)*.04);let n=0,sx=0;
+  for(let y=bottom-band;y<=bottom;y++)for(let x=0;x<width;x++)if(pixels[(y*width+x)*4+3]>=250){n++;sx+=x+.5;}
+  assert.ok(Math.abs((sx/n-fx)*gameScale)<.25,`${kind}: base centred ${((sx/n-fx)*gameScale).toFixed(2)} px off the recorded footprint centre`);
+  // And its base really does stop short of the renderer's anchor -- the reason the marks exist.
+  const base=(bottom+1-fy)*gameScale;
+  assert.ok(base>0&&base<(LIGHTING[kind].w+LIGHTING[kind].h)*5-3,`${kind}: base ${base.toFixed(2)} px below the centre`);
  }
 });
 
@@ -70,8 +90,12 @@ test('the renderer draws each at the baked scale, and both box sides agree on it
   const [x0,y0,x1,y1]=GROUP_PROP_ART[kind].crop,sw=r.visualWidth/(x1-x0),sh=r.visualHeight/(y1-y0);
   // Rounding visualWidth and visualHeight to whole pixels is the only disagreement allowed.
   assert.ok(Math.abs(sw-sh)/sh<.02,`${kind}: width says ${sw.toFixed(5)}, height says ${sh.toFixed(5)}`);
-  const d=drawnProp(kind);
-  assert.ok(Math.abs(d.drawn[0]-r.visualWidth)<1&&Math.abs(d.drawn[1]-r.visualHeight)<1,`${kind}: drawn ${d.drawn}`);
+  // Against the scale the bake recorded: the box sides are whole pixels, so whichever binds is off by at
+  // most half a pixel of itself (streetlight-double: width 55.49 rounds to 55 and draws 0.9% small).
+  const d=drawnProp(kind),{gameScale}=MANIFEST.assets.find(a=>a.id===kind).source,scale=d.drawn[0]/(x1-x0);
+  const bound=.5/(Math.min(r.visualWidth,r.visualHeight)-.5);
+  assert.ok(Math.abs(scale/gameScale-1)<=bound,`${kind}: drawn at ${(scale/gameScale*100).toFixed(2)}% of the baked scale, bound ${(bound*100).toFixed(2)}%`);
+  assert.ok(d.drawn[0]<=r.visualWidth+1e-9&&d.drawn[1]<=r.visualHeight+1e-9,`${kind}: drawn ${d.drawn} outside its box`);
  }
  // Two scale checks against things a reader can see: a standing animal is 59 px tall at zoom 1, and a
  // floor lamp is a little taller than that; a streetlight is nearly twice it.
