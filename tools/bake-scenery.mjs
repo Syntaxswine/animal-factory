@@ -176,15 +176,23 @@ export function registrationMarks({footCentre, crop, tiles, gameScale}) {
 // Put the marks back on a PNG that has lost them -- a repaint, typically -- from the footprint centre
 // and scale the bake recorded. Any existing marks (exact MARK_RGBA pixels) are stripped first, so this
 // is idempotent and a repaint that happened to keep them is not widened by a pixel each time. Returns
-// the marks, or null when they would not fit on the canvas.
+// the marks, or null when they would not fit on the canvas. Only the crop's bottom row is stripped,
+// where marks live, so a painted pixel that happens to be exactly MARK_RGBA elsewhere survives.
 export function remark(png, {footCentre, tiles, gameScale}) {
  const {width, height, pixels} = png;
- for (let i = 0; i < pixels.length; i += 4)
+ const box = () => {
+  let x0 = width, y0 = height, x1 = -1, y1 = -1;
+  for (let y = 0; y < height; y++) for (let x = 0; x < width; x++) if (pixels[(y * width + x) * 4 + 3] >= 64) {
+   if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y;
+  }
+  return [x0, y0, x1, y1];
+ };
+ const bottom = box()[3];
+ if (bottom >= 0) for (let x = 0; x < width; x++) {
+  const i = (bottom * width + x) * 4;
   if (MARK_RGBA.every((v, c) => pixels[i + c] === v)) pixels.fill(0, i, i + 4);
- let x0 = width, y0 = height, x1 = -1, y1 = -1;
- for (let y = 0; y < height; y++) for (let x = 0; x < width; x++) if (pixels[(y * width + x) * 4 + 3] >= 64) {
-  if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y;
  }
+ const [x0, y0, x1, y1] = box();
  if (x1 < 0) throw new Error('nothing to register: the alpha channel is empty');
  const marks = registrationMarks({footCentre, crop: [x0, y0, x1 + 1, y1 + 1], tiles, gameScale});
  if (!marksFit(marks, width, height)) return null;
@@ -192,10 +200,11 @@ export function remark(png, {footCentre, tiles, gameScale}) {
  return marks;
 }
 
-// Whether both marks are on the canvas. A wall fixture's footprint centre is far below the subject,
-// off the canvas, and a mark there would be clipped away while the row claimed a registration it
-// does not have.
-export const marksFit = ({row, left, right}, width, height) => row >= 0 && row < height && left >= 0 && right < width;
+// Whether both marks are on the canvas and clear of its edge. A wall fixture's footprint centre is
+// far below the subject, off the canvas, and a mark there would be clipped away while the row claimed
+// a registration it does not have. A mark ON the edge row or column fits the canvas but makes a crop
+// that touches the frame, which bakeOne reads as a clipped silhouette, so it counts as not fitting.
+export const marksFit = ({row, left, right}, width, height) => row >= 1 && row <= height - 2 && left >= 1 && right <= width - 2;
 
 // Put the marks in, straight alpha, in place. Never over the model: a pixel already at or above the
 // threshold is left alone (it is already content, and the crop reaches it anyway).
@@ -376,12 +385,25 @@ const arg = (name, fallback) => {
 };
 const flag = name => process.argv.includes('--' + name);
 
-// Every option this tool reads. Anything else is refused, not ignored: an ignored --shadow (the
-// first version of parcel B's option) produces unregistered art with no error.
-export const OPTIONS = ['list', 'calibrate', 'register', 'remark', 'group', 'form', 'skin', 'light', 'port', 'size', 'margin', 'out', 'playwright'];
+// Every option this tool reads, and its form. Anything else is refused, not ignored: an ignored
+// --shadow (the first version of parcel B's option) produces unregistered art with no error, and so
+// do the wrong forms of known names -- "--register=true" is not "--register", "--light catalogue"
+// leaves the light at its default and the value stray, and a bare "--remark" would fall through to
+// baking all 44 forms over the committed underlays.
+export const FLAGS = ['list', 'calibrate', 'register'];
+export const VALUED = ['remark', 'group', 'form', 'skin', 'light', 'port', 'size', 'margin', 'out', 'playwright'];
+export const OPTIONS = [...FLAGS, ...VALUED];
 export function checkOptions(argv) {
- const unknown = argv.filter(a => a.startsWith('--')).map(a => a.slice(2).split('=')[0]).filter(n => !OPTIONS.includes(n));
+ const unknown = [], wrong = [];
+ for (const a of argv) {
+  if (!a.startsWith('--')) { wrong.push(`stray "${a}": values go as --name=value`); continue; }
+  const eq = a.indexOf('='), name = a.slice(2, eq < 0 ? undefined : eq);
+  if (!OPTIONS.includes(name)) unknown.push(name);
+  else if (FLAGS.includes(name) && eq >= 0) wrong.push(`--${name} takes no value (got ${a})`);
+  else if (VALUED.includes(name) && (eq < 0 || eq === a.length - 1)) wrong.push(`--${name} needs a value: --${name}=...`);
+ }
  if (unknown.length) throw new Error(`unknown option${unknown.length > 1 ? 's' : ''}: ${unknown.map(n => '--' + n).join(', ')}; have ${OPTIONS.map(n => '--' + n).join(' ')}`);
+ if (wrong.length) throw new Error(wrong.join('; '));
 }
 
 export async function openWorkshop(browser, {port, page: file, hook}) {

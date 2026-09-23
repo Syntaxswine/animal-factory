@@ -114,14 +114,16 @@ iron tripod holds (`0x65615a`): a lighter one, tried, inverts that object, so a 
 the source's order, not only hit a number. ACES tone mapping overshot the light direction
 on every rig tried. And with tone mapping off, three.js ignores `toneMappingExposure`, so
 brightness is a `gain` on the lights. An unknown `--light` is refused, not quietly treated as
-`page`. The rig was fitted on one crate and a few metals; check anything new against its
-painted neighbour at drawn size before trusting it.
+`page`. The rig was fitted on one crate, checked on one barrel and on `jail-bars` for the iron;
+check anything new against its painted neighbour at drawn size before trusting it.
 
 **`--register`.** Puts two pixels, `#13241d` at alpha 64 (the crop threshold), on the
 renderer's anchor row, symmetric about the footprint centre and just clear of the model. The
 alpha crop then ends exactly on the anchor and is centred on the footprint, so a subject that
-would float is registered with a residual of zero both ways. At drawn size the marks are
-invisible. They can only move a crop's bottom *down*: a subject that sinks still shows in the
+would float is registered with a residual of zero both ways at bake scale. As drawn it is a
+fraction of a pixel, because the renderer scales to a box with whole-pixel sides (under 0.15 px
+at zoom 1 for all of parcel B). Nobody has seen a mark at drawn size; LIGHTING.md records where
+one could show. They can only move a crop's bottom *down*: a subject that sinks still shows in the
 manifest, which recomputes residuals from the marked image. If the marks would leave the canvas,
 the tool retries the tighter fit; if that fails too it bakes without them and says so. A wall
 fixture is that case. A registration field on the prop record would make the marks unnecessary;
@@ -129,7 +131,8 @@ see open question 5.
 
 **`--remark=<side manifest>`.** Restores the marks on PNGs that already exist, a repaint most
 likely, from the `footCentre` and `gameScale` each asset recorded at bake time. It needs no
-browser, strips any existing marks first so running it twice changes nothing, and refuses when the
+browser, strips any existing marks first (only on the crop's bottom row, so paint that happens to
+be the mark colour survives) so running it twice changes nothing, and refuses when the
 marks would leave the canvas. Stripping and restoring the seven shipped lighting sprites gives
 byte-identical files.
 
@@ -163,7 +166,7 @@ the towers get for sorting and dimming has to carry an anchoring answer too, bec
 a painter can simply recentre the subject when painting over the underlay.
 
 **Update, parcel B:** for anything that *floats* (the 19), `--register` brings a
-floor-standing subject's residual to zero both ways, and did for all seven of B's floor fixtures,
+floor-standing subject's residual to zero both ways at bake scale, and did for all seven of B's floor fixtures,
 `cooking-fire` included. It can't help the wall fixtures, whose footprint centre is nowhere near
 the subject, or anything that sinks.
 
@@ -220,7 +223,11 @@ The tool stops rather than writing quietly wrong art when:
   heading 90 clipped 13 and 7 pixels off the bottom and the run reported it and carried on;
 - the frame came back with an empty alpha channel;
 - `--light` names a rig the table does not have, or any option is one the tool does not know
-  (a mistyped or retired flag would otherwise be ignored and the run would look fine);
+  (a mistyped or retired flag would otherwise be ignored and the run would look fine), or a
+  known option is in the wrong form: `--register=true` (a flag takes no value), `--light
+  catalogue` (values go after `=`; the space form would bake under the default light), or a
+  bare `--remark` (which would have fallen through to baking every form into the default
+  output folder);
 - the page's form list no longer matches the `GROUPS` table, in either direction. A form the
   3D branch adds is a form no parcel will paint, and a form it removes is a stale plan entry.
   Both fail the whole run instead of leaving a gap in the manifest.

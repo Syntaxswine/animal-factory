@@ -78,9 +78,12 @@ iron for the bake only, to `0x5c5f58`. It took three tries, and each failure tau
   **inverted the cooking fire**, as the second review caught. The pot keeps its own colour,
   `0x65615a`, and a tint lighter than that hangs a dark pot from pale legs. A tint has to keep
   the source's dark-to-light order, not just hit a number.
-- `0x5c5f58` stays under the pot (albedo luma 93.3 against 97.4, now a test), bakes the
+- `0x5c5f58` stays under the pot (colour-factor luma 93.3 against 97.4, now a test), bakes the
   streetlight at 20/51/75, reads as weathered iron with its form, and keeps thin legs visible
-  against grass. That is darker than the painted `jail-bars`, deliberately.
+  against grass. That is darker than the painted `jail-bars`, deliberately. The test compares
+  material colours, not albedo: both multiply textured atlas cells, so in the shipped
+  `cooking-fire.png` the order holds by less (median luma 51 on the lit leg, 55 on the pot body,
+  measured by the third review).
 
 ![Iron as built, the chosen 0x5c5f58, and the rejected 0x8c887e, 4x at drawn size beside a cow](lighting-iron.png)
 
@@ -108,15 +111,21 @@ centre, and no prop field can move that point (SCENERY-BAKE.md, "The registratio
 The rule assumes a subject that fills most of its footprint. A lamp on a round base doesn't, so
 its bottom is above the anchor, and every one of these would have been drawn low:
 
-| | residual before | after |
-| --- | --- | --- |
-| `streetlight-double` | −10.6 px | 0.0 |
-| `standing-torch` | −6.1, 1.2 off-centre | 0.0 |
-| `streetlight` | −5.6, 3.6 off-centre | 0.0 |
-| `floor-lamp` | −4.5 | 0.0 |
-| `bedside-table-lamp` | −2.5 | 0.0 |
-| `campfire` | −2.3 | 0.0 |
-| `cooking-fire` | −1.5, 4.6 off-centre | 0.0 |
+| | residual before | after, at bake scale | after, as drawn at zoom 1 |
+| --- | --- | --- | --- |
+| `streetlight-double` | −10.6 px | 0.0 | 0.14 |
+| `standing-torch` | −6.1, 1.2 off-centre | 0.0 | 0.02 |
+| `streetlight` | −5.6, 3.6 off-centre | 0.0 | 0.04 |
+| `floor-lamp` | −4.5 | 0.0 | 0.01 |
+| `bedside-table-lamp` | −2.5 | 0.0 | 0.04 |
+| `campfire` | −2.3 | 0.0 | 0.06 |
+| `cooking-fire` | −1.5, 4.6 off-centre | 0.0 | 0.02 |
+
+The last column is vertical; horizontally every one is within 0.011 px. It is not zero because
+the renderer draws at `min(visualWidth / cropWidth, visualHeight / cropHeight)`, and the box
+sides are whole pixels, so the drawn scale is a little off the bake's. The anchor sits
+`(w + h) * 5` px below the centre, so the error is that times the scale error: largest for the
+2 × 1 `streetlight-double`, about two thirds of a screen pixel at the 4.6× maximum view.
 
 `bake-scenery.mjs --register` puts two pixels on the anchor row, one either side of the
 footprint centre at the same distance, just clear of the model. The renderer's alpha ≥ 64 crop
@@ -204,13 +213,18 @@ document with its three figures.
 
 Outside it, all of it under the plan's tools carve-out or recording what the parcel found:
 
-- `tools/bake-scenery.mjs`: `--light`, the rig table and its iron tint, `--register` and the
-  marks. `tests/tactics-bake-scenery.test.mjs`: their tests. `SCENERY-BAKE.md`: their
-  documentation.
+- `tools/bake-scenery.mjs`: `--light`, the rig table and its iron tint, `--register`,
+  `--remark` and the marks, and refusing unknown or misformed options.
+  `tests/tactics-bake-scenery.test.mjs`: their tests. `SCENERY-BAKE.md`: their documentation.
 - `tools/drawn-size.mjs`: it read `PROP_ART` only and could not see a single group prop, and its
   main guard crashed when imported from `node -e`.
 - `SCENERY-PORT-HANDOFF.md`: the claim, the status row, B's delivered record, a finding under
-  open question 5, the new open question 9, and a note on the new-props sweep.
+  open question 5, the new open question 9, and a note on the new-props sweep. Also four smaller
+  edits: a *Parcel B* note under the sprite-aesthetic rule, the tooling-table rows for the
+  baker's new options, the flame hook under "not covered anywhere yet", and a paragraph in
+  **parcel C's** section saying the 3D branch has moved since the underlays were baked
+  (`82e60cf..ec13c4a` adds a `wideExit` option to one tower, `iron-searchlight-ladder-tower`),
+  so C re-bakes first.
 - `MAKING-SCENERY.md`: the new-props sweep does not see group props, which that document had told
   parcels to rely on.
 - `SCENERY-PORT-FIELD-NOTES.md`: traps from this parcel, each marked *(parcel B)*.
@@ -234,12 +248,25 @@ asks the integrator to widen it.
     re-tinted. Registration is now tested against recorded numbers and independent geometry.
     The rotation advice for open question 5 was corrected, and the file list written down.
   - **Round 2, 8/10.** The reviewer confirmed that none of those was papered over, and that
-    all seven sprites register within 0.032 px vertically and 0.011 px horizontally. Two
+    all seven sprites register within 0.032 px vertically and 0.011 px horizontally at bake
+    scale. Two
     new findings, both fixed: the tint inverted the cooking fire, and the repaint promise was
     false without a way to restore the marks, which is now `--remark`. From its worth-noting
     list: the invisibility claim is softened, the zero-margin threshold is recorded, and the
     tool refuses unknown options, so `--shadow` no longer passes silently.
-  - The final round's score is in the PR.
+  - **Round 3, 9/10, the plan's gate.** A fresh reviewer re-derived registration by simulating
+    the renderer against the shipped files (the "as drawn" column above), ran 12 mutations of
+    its own on the parcel test (all caught), re-ran `catalog-environment.py` and `--remark` on
+    copies (identical), and checked the rules against `ec13c4a`. Its one must-fix was the PR
+    title, which still named the rejected shadow. Its should-fixes, both done: the tool now
+    refuses known options in the wrong form too (`--register=true`, `--light catalogue`, a bare
+    `--remark`, which would have baked all 44 forms over the committed underlays); and this
+    file list and the plan's review line had not kept up. From its worth-noting list: the drawn
+    residuals above, `marksFit` now agrees with the canvas-edge check, `--remark` strips marks
+    only on the bottom row so paint of the same colour survives, the tint test's wording, and
+    the nine kinds spelled out in the parcel test. Not taken: rounding `streetlight-double` to
+    56 px wide to trade its 0.14 px for about 0.02; and an independent vertical check from the
+    base's ellipse, which agrees with the recorded centres to about 0.2 game px.
 - `--remark` checked end to end: strip the 14 mark pixels from copies of the seven PNGs, restore
   them from the manifest, and all seven are byte-identical to the shipped files.
 

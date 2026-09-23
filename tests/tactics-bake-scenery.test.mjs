@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {encodePNG} from '../tools/png-rgba.mjs';
 import {GROUPS, TILE_HALF_WIDTH, HEIGHT_PER_GROUND_UNIT, checkCamera, catalogueRow, cropOf, assertFormsCovered,
- RIGS, rigFor, DEFAULT_LIGHT, MARK_RGBA, registrationMarks, marksFit, paintMarks, remark, checkOptions, OPTIONS}
+ RIGS, rigFor, DEFAULT_LIGHT, MARK_RGBA, registrationMarks, marksFit, paintMarks, remark, checkOptions, OPTIONS, FLAGS}
  from '../tools/bake-scenery.mjs';
 
 // tools/bake-scenery.mjs needs a browser, a served 3D tree and an installed Edge to take a
@@ -187,6 +187,11 @@ test('the marks are two pixels at the crop threshold, never painted over the mod
  assert.equal(marksFit({row: 700, left: -1, right: 1000}, 1254, 1254), false, 'left edge');
  assert.equal(marksFit({row: 700, left: 200, right: 1254}, 1254, 1254), false, 'right edge');
  assert.equal(marksFit({row: 700, left: 200, right: 1000}, 1254, 1254), true);
+ // On the canvas but on its edge: the crop would touch the frame, which bakeOne calls clipped.
+ assert.equal(marksFit({row: 700, left: 0, right: 1000}, 1254, 1254), false, 'left column');
+ assert.equal(marksFit({row: 700, left: 200, right: 1253}, 1254, 1254), false, 'right column');
+ assert.equal(marksFit({row: 1253, left: 200, right: 1000}, 1254, 1254), false, 'bottom row');
+ assert.equal(marksFit({row: 1252, left: 1, right: 1252}, 1254, 1254), true, 'one pixel in');
 });
 
 test('a repaint gets its marks back from the recorded footprint centre, and remarking is idempotent', () => {
@@ -201,21 +206,37 @@ test('a repaint gets its marks back from the recorded footprint centre, and rema
  // Remarking a PNG that still has its marks strips them first, so it is not widened by a pixel.
  assert.deepEqual(remark(png, {footCentre: foot, tiles: [1, 1], gameScale}), original);
  assert.ok(Buffer.from(encodePNG(png)).equals(once), 'remarking twice changed the image');
+ // Only the bottom row is stripped: a painted pixel that is exactly the mark colour, inside the
+ // model, is paint, not a mark.
+ const inside = (400 * 1254 + 670) * 4;
+ png.pixels.set(MARK_RGBA, inside);
+ assert.deepEqual(remark(png, {footCentre: foot, tiles: [1, 1], gameScale}), original);
+ assert.deepEqual([...png.pixels.subarray(inside, inside + 4)], MARK_RGBA, 'remark erased paint');
  // A footprint centre far off the canvas (a wall fixture) is refused, not clipped.
  assert.equal(remark(postFrame(), {footCentre: [985, 2534], tiles: [1, 1], gameScale}), null);
 });
 
-test('the tool refuses options it does not know', () => {
+test('the tool refuses options it does not know, and known ones in the wrong form', () => {
  assert.doesNotThrow(() => checkOptions(['--group=lighting', '--light=catalogue', '--register', '--out=x']));
  // --shadow was the first version of parcel B's option. Ignored, it would ship unregistered art.
  assert.throws(() => checkOptions(['--group=lighting', '--shadow']), /unknown option: --shadow/);
  assert.throws(() => checkOptions(['--lite=catalogue', '--regster']), /unknown options: --lite, --regster/);
+ // Known names in the wrong form are the same trap: each of these used to run silently wrong.
+ assert.throws(() => checkOptions(['--group=lighting', '--register=true']), /--register takes no value/);
+ assert.throws(() => checkOptions(['--light', 'catalogue', '--group=lighting']), /--light needs a value/);
+ assert.throws(() => checkOptions(['--group', 'lighting']), /stray "lighting"/);
+ assert.throws(() => checkOptions(['--remark']), /--remark needs a value/);
+ assert.throws(() => checkOptions(['--out=']), /--out needs a value/);
+ assert.doesNotThrow(() => checkOptions(['--remark=dist/assets/environment/manifest-lighting.json']));
  assert.deepEqual([...OPTIONS].sort(), ['calibrate', 'form', 'group', 'light', 'list', 'margin', 'out', 'playwright', 'port', 'register', 'remark', 'size', 'skin']);
+ assert.deepEqual([...FLAGS].sort(), ['calibrate', 'list', 'register']);
 });
 
 test('the iron tint keeps the source order: darker than the pot the tripod holds', () => {
  // painted-furniture.js at 8e7140f: iron 0x343b37, cooking-pot 0x65615a. A tint above the pot's
- // albedo luma inverts the cooking fire -- pale legs holding a dark pot -- which 0x8c887e did.
+ // colour-factor luma inverts the cooking fire -- pale legs holding a dark pot -- which 0x8c887e did.
+ // These are material colours, not albedo: both multiply atlas cells, so the shipped pixels sit
+ // closer (cooking-fire.png: lit leg p50 51, pot body 55). The factor order is the lever a tint has.
  const luma = h => .299 * (h >> 16) + .587 * (h >> 8 & 255) + .114 * (h & 255);
  const iron = RIGS.catalogue.tints.iron, pot = 0x65615a;
  assert.ok(luma(iron) < luma(pot), `iron ${luma(iron).toFixed(1)} is not darker than the pot ${luma(pot).toFixed(1)}`);

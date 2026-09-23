@@ -36,6 +36,9 @@ test('the fixtures carry the 3D branch rules exactly, and none of them blocks si
 test('every form the baker knows for this group is either shipped or deferred with a reason',()=>{
  const shipped=Object.keys(LIGHTING),deferred=Object.keys(DEFERRED);
  assert.deepEqual([...shipped,...deferred].sort(),[...GROUPS.lighting.forms].sort());
+ // Spelled out too, so a form dropped from the tool's table cannot shrink this check along with it.
+ assert.deepEqual([...shipped,...deferred].sort(),['bedside-table-lamp','campfire','cooking-fire','floor-lamp',
+  'gooseneck-sconce','standing-torch','streetlight','streetlight-double','wall-torch']);
  assert.equal(shipped.filter(k=>deferred.includes(k)).length,0);
  for(const [kind,why] of Object.entries(DEFERRED)){
   assert.match(why,/open question \d/,kind);

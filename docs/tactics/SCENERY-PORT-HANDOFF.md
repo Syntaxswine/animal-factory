@@ -697,7 +697,8 @@ PNG. Both are character art and both are out of scope.
 
 - **They are relit bakes, not paintings — a stated deviation.** There is no image generator in
   this session. `--light=catalogue` matches the painted catalogue's measured light direction,
-  contrast and saturation at drawn size, with the 3D iron re-tinted to the painted iron. Whether
+  contrast and saturation at drawn size, with the 3D iron re-tinted to a weathered iron that stays
+  darker than the pot it holds (`0x5c5f58`; darker than the painted `jail-bars` too). Whether
   other parcels may ship bakes is **open question 9**. A painter can still paint over these
   later; restore the two registration pixels with `bake-scenery.mjs --remark` from the manifest,
   and the catalog rows do not change. The catalogue rig re-tints the `iron` material, which cargo,
@@ -705,7 +706,8 @@ PNG. Both are character art and both are out of scope.
 - **The wall-fixture problem had a floor-fixture twin.** All seven floor kinds would have been
   drawn 1.5 to 10.6 px low, because a lamp on a round base does not fill its footprint the way
   the renderer's anchor rule assumes. `--register` adds two invisible alpha-64 pixels that put
-  the renderer's crop on the anchor, and all seven now register at 0.0 both ways. A first
+  the renderer's crop on the anchor. All seven register at 0.0 both ways at bake scale, and
+  within 0.15 px as drawn at zoom 1 (the box sides are whole pixels). A first
   version used a visible ground shadow; the review rejected it as a mat that broke the plan's
   no-cast-shadow rule.
 - **Rules are the 3D branch's, exactly** (`LIGHT_PROPS`): solid, cover 0 except the bedside
@@ -716,8 +718,9 @@ PNG. Both are character art and both are out of scope.
   `flame-effect.js`, which it owns.
 - **Checks:** `npm run check` passes; mutation rounds all caught; review page
   `dist/tactics/lighting-art.html` draws through the game's own renderer beside a standing
-  animal, at five zooms and both orientations, with no console errors. Hostile review: first
-  round 7/10, every must-fix addressed; the record is in LIGHTING.md and the PR.
+  animal, at five zooms and both orientations, with no console errors. Hostile review in three
+  rounds, 7/10, 8/10, then **9/10**, the gate; every must-fix and should-fix addressed. The
+  record is in LIGHTING.md and the PR.
 - **Files touched outside the Owns row** are listed in LIGHTING.md, "Files this parcel touched":
   the two tools and the baker's test and document (tools carve-out), and this plan,
   MAKING-SCENERY.md and the field notes (recording what B found).
