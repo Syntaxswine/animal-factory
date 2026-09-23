@@ -73,10 +73,17 @@ clearly, and this is what the whole existing catalogue is.
 25 and 60 px: cargo, furniture, machines, conveyor sections, light fixtures. The two games
 share a camera exactly — `GAME_CAMERA` is `{azimuth: π/4, elevation: π/6}`, and π/6 gives a
 diamond of exactly 2.000000, the same as this game's 56 × 28 tile — so a render is already in
-this game's projection and needs no reprojection. See the plan's camera section, and the
-character-sprite session's `tools/bake-character-sprites.mjs` for a working baker. A render
-is an underlay, never the deliverable: the branch shades at runtime and a sprite has to carry
-its own light.
+this game's projection and needs no reprojection. A render is an underlay, never the
+deliverable: the branch shades at runtime and a sprite has to carry its own light.
+
+`tools/bake-scenery.mjs` does this for all 44 forms in the four groups whose models exist,
+and reports the `visualWidth`/`visualHeight` each one needs plus how far the renderer's
+anchor rule misses. [SCENERY-BAKE.md](SCENERY-BAKE.md) is its document.
+
+```
+node tools/bake-scenery.mjs --list
+node tools/bake-scenery.mjs --group=lighting
+```
 
 **Generate it** when the thing is drawn below roughly 25 px, or when there are hundreds of
 them. Parcel K is the worked example and it shipped no artwork at all. The evidence was one
@@ -159,8 +166,11 @@ The order that worked, on K:
 
 ## The instruments
 
-`tools/drawn-size.mjs` ships, with `tests/tactics-drawn-size.test.mjs` pinning its formula to
-a decoded PNG so the duplicate cannot drift.
+Two ship. `tools/drawn-size.mjs` measures what the renderer keeps of the art that exists,
+with `tests/tactics-drawn-size.test.mjs` pinning its formula to a decoded PNG so the
+duplicate cannot drift. `tools/bake-scenery.mjs` photographs the art that does not exist yet
+out of the 3D models, with `tests/tactics-bake-scenery.test.mjs` on the arithmetic and the
+refusals.
 
 Three more are worth rebuilding in a scratchpad when you need them; each is about twenty
 lines on top of `tools/png-rgba.mjs`, which is a dependency-free PNG codec already in the

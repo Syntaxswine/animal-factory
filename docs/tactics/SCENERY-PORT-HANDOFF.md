@@ -284,7 +284,11 @@ wrongly scoped; stop and say so here.
 Working notes from the sessions that built Stage 0, including the traps and the
 verification rigs, are in [SCENERY-PORT-FIELD-NOTES.md](SCENERY-PORT-FIELD-NOTES.md), and
 how to decide what a piece of scenery should be made of, with the measurements, is in
-[MAKING-SCENERY.md](MAKING-SCENERY.md). Read both before starting a parcel.
+[MAKING-SCENERY.md](MAKING-SCENERY.md). Read both before starting a parcel. If your parcel
+has models on the 3D branch — B, C, D and E all do — read
+[SCENERY-BAKE.md](SCENERY-BAKE.md) as well and start by running `tools/bake-scenery.mjs`;
+all 44 forms are already registered and measured, and the sizing numbers your catalog rows
+need are in its manifest.
 
 **Stage 0 is finished and merged.** `tactics-prototype` at `a3d2d6b` carries A, S1, S2 and
 K, and the architect's notes on them are in
@@ -552,6 +556,12 @@ shared atlases. Render them through `GAME_CAMERA` and paint over that, as above.
 This is still the largest painting job in Stage 1: nine objects, several of them
 small and fiddly, and four of them on fire.
 
+**The underlays exist.** `node tools/bake-scenery.mjs --group=lighting` writes all nine,
+registered and measured; they are drawn between 13 × 50 px (`wall-torch`) and 55 × 113 px
+(`streetlight-double`), which puts the whole group in MAKING-SCENERY.md's paint-or-bake
+band rather than its generate band. Two of the nine are the wall fixtures of open question
+5 and are off by more than a tile, so start there.
+
 `floor-lamp`, `bedside-table-lamp` (cover 25), `gooseneck-sconce` (not solid, wall
 mounted), `streetlight`, `streetlight-double` (2×1), `standing-torch`,
 `wall-torch` (not solid, wall mounted), `campfire`, `cooking-fire` (2×2).
@@ -598,7 +608,13 @@ PNG. Both are character art and both are out of scope.
 Three canonical kinds first: `wooden-spotlight-tower` (5×5),
 `iron-searchlight-stair-tower` (6×5), `iron-searchlight-ladder-tower` (6×5). The
 other fourteen gallery forms listed earlier are a second batch and need the
-architect's word.
+architect's word. The library counts seventeen because `spotlight` rides with it; the
+fourteen tower ids plus those three are sixteen.
+
+**The underlays exist**, all seventeen, from `node tools/bake-scenery.mjs --group=towers`.
+The three canonical kinds bake at 280 × 363, 249 × 413 and 195 × 377 px at zoom 1 — against
+a default box of 250 × 153. Their registration residuals are in
+[SCENERY-BAKE.md](SCENERY-BAKE.md) and are part of open question 6, not separate from it.
 
 This parcel has the one genuine rendering problem in the plan. A tower is three
 stories tall. The sprite game's tallest prop is a 130 px tree on a 28 px tile, and
@@ -854,8 +870,18 @@ any other parcel in this plan. See the scope note below.
    concealment. That is a balance decision, not a visual one, and `STEALTH.md`
    currently promises the opposite.
 5. **Wall-mounted props** have no precedent here. `wall-torch` and
-   `gooseneck-sconce` need an edge-mounting convention before B can finish.
-6. **Three-story props** need a sorting and dimming rule before C can finish.
+   `gooseneck-sconce` need an edge-mounting convention before B can finish. Now measured, by
+   `tools/bake-scenery.mjs`: this is not a rounding problem. `gooseneck-sconce` hangs 41.8 px
+   *above* its own tile centre, so the renderer — which plants a sprite's bottom `(w+h)*5` px
+   *below* that centre — would drop it 51.8 px to the floor and shift it 10.6 px sideways.
+   `wall-torch` is −36.1 and −4.4. That is one to two whole tile heights, and no field in a
+   prop record can correct it. See [SCENERY-BAKE.md](SCENERY-BAKE.md).
+6. **Three-story props** need a sorting and dimming rule before C can finish. The rule also
+   has to carry an anchoring answer, because the towers are the props where drift shows most:
+   baked at true world scale they are 183–391 px wide and 363–459 px tall against a default
+   box of 250 × 153, the stair and wrap towers sink 10 to 27 px under the renderer's anchor,
+   and the three ladder towers sit 20.7 px off-centre because their declared 6×5 and 7×7
+   footprints are not centred on the geometry.
 7. **Should the environment gate accept art baked at the size it is drawn at?**
    `check-assets.mjs` requires every environment PNG to be 1254 x 1254, and at the default
    zoom the renderer then discards between 98.4% of those pixels (a pine tree, drawn at
@@ -864,3 +890,16 @@ any other parcel in this plan. See the scope note below.
    a scenery baker has to choose an output resolution and the only legal answer today is one
    the renderer does not want. Raised by parcel K; the numbers and the tool that produced
    them are in [MAKING-SCENERY.md](MAKING-SCENERY.md).
+
+   Now that the baker exists, the answer is clearly **not a single number**. Baked at 1254²,
+   a guard tower is downscaled 2.4 : 1 and a `wall-torch` 33.4 : 1. Shrinking the gate to suit
+   the fixtures would throw away real detail on the towers. Whatever is decided wants to be a
+   per-entry budget, or a floor rather than a constant.
+
+8. **The two lines disagree about how big an animal is, by 9%.** The 3D reference horse bakes
+   64.4 px tall through the shared camera at true world scale; the sprite sheet's standing
+   animals measure 59. One corroboration on the other side: `barrel-single` bakes 40 px tall
+   and the painted `barrel-single` is drawn 40. So the scale chain is right and the
+   disagreement is real. Every Stage 1 parcel placing baked scenery beside painted characters
+   inherits it, and it is cheaper to settle once here than nine times in nine parcels: does
+   scenery honour the 3D line's world scale, or the sprite sheet's animals?
