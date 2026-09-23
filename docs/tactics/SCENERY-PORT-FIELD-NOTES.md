@@ -67,6 +67,13 @@ A render is an underlay, not the deliverable. The 3D branch shades at runtime; a
 sprite carries its own light. Expect a paint pass over anything baked, and say so
 rather than shipping a render and calling it art.
 
+*Parcel B, later the same day:* that paragraph was right about raw renders and wrong as a rule.
+The objection is about light, and light can be measured. At drawn size the workshop's bake of a
+crate has half the painting's contrast and almost no light direction (upper-left over
+lower-right 1.23 against 1.92). Relit with one key from the upper left it lands at 2.19 and
+29.6 sd against the painting's 30.2. B shipped seven fixtures that way and said so, which
+is what this paragraph was really asking for.
+
 ## Traps, with the control that caught each one
 
 **Two localhost ports are two storage origins.** I nearly filed an editor regression
@@ -138,6 +145,37 @@ one placed model carries the id you asked for. Both assertions are in the tool.
 `--group=lighting` left twelve rows describing forty-four PNGs, with no error and no gap in the
 directory listing. Merge against what is on disk and drop rows whose file has gone.
 
+**`toneMappingExposure` does nothing when tone mapping is off.** The first lighting sweep had an
+exposure knob; four values gave byte-identical statistics. three.js applies it inside the tone
+mapping step and nowhere else. A knob that does nothing is worse than no knob, because the
+sweep reports it as tried. Scale the lights instead.
+
+**The baker's page script is a template literal.** A backtick in a comment inside `INJECT`
+closes the string and the tool fails `node --check` far from the edit. Quote with plain
+quotes in there.
+
+**`sed -i` in Git Bash rewrites CRLF to LF.** Harmless under `autocrlf`, but the next
+patch that matches `\r\n` finds nothing. Patch through a script that detects the file's line
+ending rather than assuming one.
+
+**`catalog-environment.py` rewrites every group's `prop-art-*.js`.** On Windows the others
+come back with only their line endings changed. `git diff --ignore-cr-at-eol` shows nothing,
+so restore them rather than committing seven files you did not change.
+
+**`tactics-new-props.test.mjs` does not see group props,** and `tools/drawn-size.mjs` did not
+either until B. Both were written before S1 split the catalogue, so they read `PROP_ART` and stop.
+The drawn-size test caught its own blind spot the moment the first group prop existed; the
+new-props sweep passes silently.
+
+**A contact shadow's lowest point is off-centre on a non-square footprint.** The ellipse is long
+along x on a 2 × 1, so its lowest pixel sits right of the middle. My first registration test
+asserted it was centred and failed on `streetlight-double`, which was correct. What has to be
+centred is the ellipse's *extent*, because the renderer plants the crop's bottom *centre*.
+
+**The Browser pane allows five dev servers per folder.** With other chats holding all five,
+`preview_start` refuses. The headless Edge the baker already uses verified the review page
+instead: it captures console errors and the canvas, and costs nobody else a server.
+
 ## Rigs worth reusing
 
 **Catalog render hash.** For any change that must not alter what the game draws: draw
@@ -173,6 +211,13 @@ camera that drew the frame and report their pixel coordinates beside the alpha c
 how the 2.000000 diamond was confirmed in the picture rather than in the source, and how the
 anchor and centre residuals were measured. A bake that reports only an image cannot be
 checked; one that reports the image plus three projected points can.
+
+**Measuring a look.** To ask whether two sprites "match", box-filter each crop to the size the
+game draws it, premultiplied, then report luma mean and sd, the upper-left over lower-right
+quadrant ratio, saturation, and the mean luma of the silhouette's outer ring against its
+interior. The quadrant ratio is the light direction, and the ring test says whether a painting
+carries an outline (these don't: ring and interior sit within 6 luma). Sweep a rig against
+subjects both lines have and score on the ratios, not on mean luma, which is mostly albedo.
 
 ## Decisions that look arbitrary and are not
 
@@ -227,7 +272,9 @@ file. Open the file.
    `lighting`, `towers`, `furniture` and `cargo` are registered and measured; `machines`,
    `conveyor` and `vehicles` are not adapted and are blocked on open question 1 regardless.
 3. **Parcels B and C**, which have canonical prop kinds already and need no
-   architect's answer for the art. C carries the one real rendering problem in the plan: a
+   architect's answer for the art. *B done on `tactics-lighting`, seven of nine kinds; see
+   [LIGHTING.md](LIGHTING.md).* The route B found (relight, shadow, ship) is open to D and E too
+   if open question 1 comes back yes, and they are the best-behaved groups in the baker. C carries the one real rendering problem in the plan: a
    three-story tower on a 28-pixel tile, drawn at ground level, dimmed by the layer
    compositor whenever the player inspects an upper floor. Decide that rule before
    painting anything — and the baker has added a number to it, because the towers also sit

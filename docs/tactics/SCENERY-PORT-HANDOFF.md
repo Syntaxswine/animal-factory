@@ -210,6 +210,11 @@ runtime, while a sprite painting carries its own light, so a raw render is an
 underlay and never the deliverable. And `HYBRID-VISUAL-HANDOFF.md` already
 rejected the block-built read of that branch's environment once.
 
+*Qualified by parcel B, 23 September:* "raw" is the operative word. Measured at drawn size,
+the objection is about the workshop's light, and a render relit to the painted catalogue's
+light matches it on contrast, light direction and saturation. B shipped its seven fixtures that
+way. See [LIGHTING.md](LIGHTING.md) and SCENERY-BAKE.md, "Light, and ground contact".
+
 **Confirmed and acted on, 23 September.** The ratio above was checked again the other way
 round, by measuring it in an actual render instead of in the source: one ground unit steps
 407.136 × 203.568 px, which is 2.000000 : 1, and one unit of height rises 1.224745 ground
@@ -357,7 +362,7 @@ the chain in order is spent.
 | A | Mature trees | 0 | — · **before S1** | `tactics-mature-trees` | **merged**, PR #14 |
 | S1 | Catalog seam | 0 | A | `tactics-catalog-seam` | **merged**, PR #16 |
 | S2 | Clock, sun and render hooks | 0 | S1 in practice | `tactics-daylight` | **merged**, PR #17 |
-| B | Lamps, torches and fires | 1 | S1, S2 | `tactics-lighting` | **in progress** — seven floor-standing kinds; the two wall fixtures wait on open question 5 |
+| B | Lamps, torches and fires | 1 | S1, S2 | `tactics-lighting` | **delivered** — seven floor-standing kinds; the two wall fixtures wait on open question 5 |
 | C | Guard towers and guardhouses | 1 | S1, S2 | — | not started |
 | D | Cargo forms | 1 | S1 | — | not started |
 | E | Household furniture | 1 | S1 | — | not started |
@@ -373,8 +378,8 @@ Tooling, which belongs to no parcel and may be used and extended by any of them:
 
 | Tool | What it gives a parcel | Document |
 | --- | --- | --- |
-| `tools/drawn-size.mjs` | how much of an existing painting the renderer keeps | [MAKING-SCENERY.md](MAKING-SCENERY.md) |
-| `tools/bake-scenery.mjs` | registered underlays and catalog numbers for 44 forms, groups `lighting`, `towers`, `furniture`, `cargo` | [SCENERY-BAKE.md](SCENERY-BAKE.md) |
+| `tools/drawn-size.mjs` | how much of an existing painting the renderer keeps, group art included since B | [MAKING-SCENERY.md](MAKING-SCENERY.md) |
+| `tools/bake-scenery.mjs` | registered underlays and catalog numbers for 44 forms, groups `lighting`, `towers`, `furniture`, `cargo`; since B also `--light=catalogue` (the painted catalogue's light) and `--shadow` (exact registration for anything that would float) | [SCENERY-BAKE.md](SCENERY-BAKE.md) |
 | `tools/bake-character-sprites.mjs` | the same trick for characters; out of scope here, read it for the pattern | `SPRITE-BAKE.md` |
 
 Adding a group to the baker is four things — page file, hook name, how to select a subject,
@@ -382,9 +387,14 @@ how to reach the scene — and the parcel that needs `machines`, `conveyor` or `
 should add its adapter rather than start a second tool.
 
 **What is not covered anywhere yet:** the flame animation B needs on four of its nine
-fixtures, which is a drawing job against `flame-effect.js` and has no 3D source; the
+fixtures, which is a drawing job against `flame-effect.js` and has no 3D source, and which
+also needs `app.js` to push per-prop flame pieces into the paint sort (B could not, see B); the
 sixteen-mask conveyor of G; and the repainting of the existing catalog in M. Baking helps
 with none of those.
+
+**Not covered by any test yet:** `tests/tactics-new-props.test.mjs`, the sweep the Stage 1
+shape relies on, reads `PROP_ART` only and never sees a group prop. Until the integrator widens
+it to `GROUP_PROP_ART`, each group parcel tests its own placement round trip, as B does.
 
 ---
 
@@ -682,6 +692,33 @@ draws the weapon on a character and returns early unless the unit is carrying a
 flamethrower; the second is a generated table of muzzle positions per character
 PNG. Both are character art and both are out of scope.
 
+**Delivered 23 September, on `tactics-lighting`.** Seven of the nine kinds: `floor-lamp`,
+`bedside-table-lamp`, `streetlight`, `streetlight-double`, `standing-torch`, `campfire`,
+`cooking-fire`. Full record in [LIGHTING.md](LIGHTING.md). In short:
+
+- **They are relit bakes, not paintings.** There is no image generator in this session, so
+  the baker was made good enough to ship instead: `--light=catalogue` matches the painted
+  catalogue's measured light direction, contrast and saturation at drawn size. A painter with an
+  image tool can still paint over them later; the registration and the catalog rows will not
+  change.
+- **The wall-fixture problem had a floor-fixture twin.** All seven floor kinds would have been
+  drawn 1.5 to 10.6 px low, because a lamp on a round base does not fill its footprint the way
+  the renderer's anchor rule assumes. `--shadow` paints a ground-contact ellipse whose lowest
+  point is exactly the anchor, and all seven now register at 0.0 both ways.
+- **Rules are the 3D branch's, exactly** (`LIGHT_PROPS`): solid, cover 0 except the bedside
+  table's 25, not `tall`. Maps interchange, and `lightMode` survives a load.
+- **Not done:** the two wall fixtures (open question 5; a 3D map carrying one is still refused
+  here), flickering flames (needs `app.js` to sort per-prop flame pieces; the depth rule is
+  S2's `propPieceDepth`), and light emission (parcel I). This parcel therefore did not touch
+  `flame-effect.js`, which it owns.
+- **Checks:** `npm run check` 522 pass; 14 of 14 mutations caught; review page
+  `dist/tactics/lighting-art.html` draws through the game's own renderer beside a standing
+  animal, at five zooms and both orientations, with no console errors. Hostile review: see
+  LIGHTING.md.
+- **Owns, as used:** the Stage 1 row for `lighting`, plus the two tools, which belong to
+  nobody: `tools/bake-scenery.mjs` (the rig, the shadow and their tests) and
+  `tools/drawn-size.mjs` (which could not see group art at all).
+
 ### C — Guard towers and guardhouses · group `towers`
 
 Three canonical kinds first: `wooden-spotlight-tower` (5×5),
@@ -689,6 +726,10 @@ Three canonical kinds first: `wooden-spotlight-tower` (5×5),
 other fourteen gallery forms listed earlier are a second batch and need the
 architect's word. The library counts seventeen because `spotlight` rides with it; the
 fourteen tower ids plus those three are sixteen.
+
+**The 3D branch has moved since the bake.** Its tip is `ec13c4a`; the underlays came from
+`82e60cf`. The only change to `painted-furniture.js` in between is a `wideExit` option on
+`iron-searchlight-ladder-tower`, one of C's three canonical kinds. Re-bake before painting.
 
 **The underlays exist**, all seventeen, from `node tools/bake-scenery.mjs --group=towers`.
 The three canonical kinds bake at 280 × 363, 249 × 413 and 195 × 377 px at zoom 1 — against
@@ -975,6 +1016,15 @@ any other parcel in this plan. See the scope note below.
    *below* that centre — would drop it 51.8 px to the floor and shift it 10.6 px sideways.
    `wall-torch` is −36.1 and −4.4. That is one to two whole tile heights, and no field in a
    prop record can correct it. See [SCENERY-BAKE.md](SCENERY-BAKE.md).
+
+   Two more facts from parcel B. The 3D branch already has a convention to port:
+   `fixturePlacement` in its `light-sources.js` shifts a wall fixture 0.48 tile north of its
+   tile, or east when rotated, which is the edge the model is built against. And the cost of
+   waiting is not only art: **a map authored on the 3D branch with a `wall-torch` or a
+   `gooseneck-sconce` on it is refused here** with `Invalid environment props.`, the same
+   failure parcel A fixed for mature trees. Registering the rule without the art would fail the
+   asset gate, so the two go in together once the renderer can draw a prop off its footprint
+   centre.
 6. **Three-story props** need a sorting and dimming rule before C can finish. The rule also
    has to carry an anchoring answer, because the towers are the props where drift shows most:
    baked at true world scale they are 183–391 px wide and 363–459 px tall against a default

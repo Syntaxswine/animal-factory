@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Animal Factory Tactics — lamps and fires</title><link rel="icon" href="data:,">
+<style>
+*{box-sizing:border-box}body{margin:0;background:#19231e;color:#eee9db;font:15px/1.5 system-ui}main{max-width:1400px;margin:auto;padding:36px 28px}.eyebrow{color:#b9bc94;letter-spacing:.16em;font-size:12px}h1{font-size:clamp(30px,5vw,54px);line-height:1.1;margin:12px 0}h2.section{font-size:22px;margin:34px 0 4px}header p,.lede{max-width:780px;color:#b9c0af}a{color:#ead3a2}nav{display:flex;flex-wrap:wrap;gap:16px;padding:18px 0}label{display:flex;align-items:center;gap:8px}select{font:inherit;color:inherit;background:#2d382d;border:1px solid #68725c;padding:7px;border-radius:4px}.stage{border:1px solid #4e5c48;border-radius:6px;background:#202c29;overflow:auto}#field{display:block;max-width:100%;height:auto}#stats{color:#b9c0af;font:13px/1.5 ui-monospace,monospace;margin:8px 0 0}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px}article{border:1px solid #4e5c48;border-radius:6px;overflow:hidden;background:#29342a}.picture{display:flex;height:270px;align-items:center;justify-content:center;background:#778268}.picture img{width:94%;height:94%;object-fit:contain}.caption{padding:14px 18px}.caption h3{font-size:18px;margin:0 0 6px}.caption p{font-size:13px;color:#b9c0af;margin:0 0 6px}.small .picture{height:150px}.small .picture img{width:96px;height:96px}.check .picture{background:repeating-conic-gradient(#69745f 0 25%,#8c9780 0 50%) 0/24px 24px}.dark .picture{background:#171d19}.light .picture{background:#dddcd0}.note{color:#b9c0af;font-size:13px;margin-top:24px;max-width:900px}a:focus-visible,select:focus-visible{outline:3px solid #e9d49a;outline-offset:3px}
+</style></head><body class="check"><main>
+<header><div class="eyebrow">ANIMAL FACTORY TACTICS / SCENERY PARCEL B</div><h1>Lamps and fires.</h1><p>Seven floor-standing fixtures baked out of the 3D branch's painted furniture library through this game's own camera, relit to match the painted catalogue, and registered on their tiles by a ground-contact shadow. Art and placement only: nothing here emits light yet. <a href="index.html">← Game</a> · <a href="facility-art.html">Facility sprites</a> · <a href="ground-cover.html">Ground cover</a></p></header>
+
+<h2 class="section">In the renderer</h2>
+<p class="lede">Drawn by <code>environment-renderer.js</code>, the function the game itself calls, on a grass yard beside a standing cow and the painted crate and barrel. Every fixture should stand on the middle of its own footprint; the overlay outlines the footprint and marks with a cross the point the renderer plants a sprite's bottom on.</p>
+<nav aria-label="Renderer controls"><label>Zoom <select id="zoom"><option>0.6</option><option selected>1</option><option>1.15</option><option>2</option><option>3</option></select></label><label>Overlay <select id="overlay"><option value="none">None</option><option value="anchor" selected>Footprints and anchors</option></select></label><label>Placement <select id="rotated"><option value="no">As baked</option><option value="yes">Rotated (mirrored)</option></select></label></nav>
+<div class="stage"><canvas id="field" width="1200" height="400" aria-label="The seven fixtures drawn by the game's renderer"></canvas></div>
+<p id="stats">Loading artwork…</p>
+
+<h2 class="section">The sprites</h2>
+<nav aria-label="Sprite preview controls"><label>Backdrop <select id="backdrop"><option value="check">Transparency grid</option><option value="yard">Olive</option><option value="dark">Dark</option><option value="light">Light</option></select></label><label>Size <select id="size"><option value="large">Detail</option><option value="small">96 px silhouette check</option></select></label></nav>
+<section class="grid" id="cards" aria-label="Lighting sprites"></section>
+<p class="note">Original 1254 × 1254 transparent PNGs. The rules are the 3D branch's own: every fixture blocks its tile, only the bedside table gives cover, and none blocks sight. The flames are baked into the sprite and do not flicker yet; animating them needs <code>app.js</code> to sort per-prop flame pieces, and <code>paint-order.js</code> already has the depth rule for that. The wall torch and the gooseneck sconce are not here: they mount on a tile edge and wait on open question 5 of the plan. See <code>docs/tactics/LIGHTING.md</code>.</p>
+</main>
+<script type="module">
+import {environmentRenderer} from './environment-renderer.js';
+import {PROPS,propCells} from './environment.js';
+import {PROPS as LIGHTING,FOLDER} from './environment-props-lighting.js';
+import {GROUP_PROP_ART} from './prop-art-groups.js';
+
+const NAMES={'floor-lamp':'Pleated floor lamp','bedside-table-lamp':'Bedside table with lamp','streetlight':'Single-arm streetlight','streetlight-double':'Double-arm streetlight','standing-torch':'Standing torch','campfire':'Stone-ring campfire','cooking-fire':'Hanging cooking pot'};
+const KINDS=Object.keys(LIGHTING);
+
+// Cards: the source PNGs, built from the group's own rules so a kind cannot go missing here.
+const cards=document.getElementById('cards');
+for(const kind of KINDS){
+ const r=LIGHTING[kind],src='../assets/environment/'+GROUP_PROP_ART[kind].file;
+ cards.insertAdjacentHTML('beforeend',`<article><a class="picture" href="${src}"><img src="${src}" alt="${NAMES[kind]}" loading="lazy"></a><div class="caption"><h3>${NAMES[kind]}</h3><p><code>${kind}</code> · ${r.w} × ${r.h} ${r.w*r.h>1?'tiles':'tile'} · drawn ${r.visualWidth} × ${r.visualHeight} px at zoom 1${r.cover?' · cover '+r.cover:''}</p><a href="${src}" download>Download PNG</a></div></article>`);
+}
+document.getElementById('backdrop').addEventListener('change',e=>{document.body.classList.remove('check','dark','light');if(e.target.value!=='yard')document.body.classList.add(e.target.value);});
+document.getElementById('size').addEventListener('change',e=>document.body.classList.toggle('small',e.target.value==='small'));
+
+// The yard: one row of fixtures along x, each with a cow on the tile after it, then the painted crate and barrel.
+const field=document.getElementById('field'),ctx=field.getContext('2d');
+let queued=false;
+const schedule=()=>{if(!queued){queued=true;requestAnimationFrame(()=>{queued=false;draw();});}};
+const art=environmentRenderer(schedule,id=>console.warn('missing artwork',id));
+const cow=new Image();cow.onload=schedule;cow.src='../assets/characters/cow-idle.png';
+
+function layout(rotated){
+ const things=[];let x=1;
+ for(const kind of KINDS){
+  const r=PROPS[kind],w=rotated?r.h:r.w,h=rotated?r.w:r.h;
+  things.push({type:'prop',kind,x,y:2,z:0,rotated});
+  things.push({type:'animal',x:x+w,y:2+h-1});
+  x+=w+2;
+ }
+ things.push({type:'prop',kind:'crate-wood',x,y:2,z:0},{type:'prop',kind:'barrel-single',x:x+1,y:2,z:0});
+ return {things,cols:x+3,rows:6};
+}
+function diamond(p,zoom,fill,stroke){
+ ctx.beginPath();ctx.moveTo(p.x,p.y-14*zoom);ctx.lineTo(p.x+28*zoom,p.y);ctx.lineTo(p.x,p.y+14*zoom);ctx.lineTo(p.x-28*zoom,p.y);ctx.closePath();
+ if(fill){ctx.fillStyle=fill;ctx.fill();}
+ if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=1;ctx.stroke();}
+}
+function draw(){
+ const zoom=Number(document.getElementById('zoom').value),overlay=document.getElementById('overlay').value==='anchor';
+ const rotated=document.getElementById('rotated').value==='yes',{things,cols,rows}=layout(rotated);
+ const ox=Math.round(20+rows*28*zoom),oy=Math.round(150*zoom);
+ field.width=Math.round(ox+cols*28*zoom+20);field.height=Math.round(oy+(cols+rows)*14*zoom+20);
+ const project=(x,y)=>({x:ox+(x-y)*28*zoom,y:oy+(x+y)*14*zoom});
+ ctx.fillStyle='#202c29';ctx.fillRect(0,0,field.width,field.height);
+ for(let y=0;y<rows;y++)for(let x=0;x<cols;x++){diamond(project(x,y),zoom,['#56613b','#5a643e','#535e39'][(x*37+y*13)%3]);art.ground(ctx,project,zoom,x,y,'ground-grass');}
+ // Back to front by the depth the game uses: a prop sorts at its deepest cell, a unit on a tie paints last.
+ const depth=t=>t.type==='prop'?Math.max(...propCells(t).map(q=>q.x+q.y)):t.x+t.y;
+ let drawn=0,pending=0;
+ for(const t of [...things].sort((a,b)=>depth(a)-depth(b)||(a.type==='animal')-(b.type==='animal'))){
+  if(t.type==='prop'){if(art.prop(ctx,project,zoom,t))drawn++;else pending++;continue;}
+  const p=project(t.x,t.y);
+  ctx.fillStyle='#13241d66';ctx.beginPath();ctx.ellipse(p.x,p.y+2*zoom,15*zoom,7*zoom,0,0,Math.PI*2);ctx.fill();
+  if(cow.complete&&cow.naturalWidth){const sw=cow.naturalWidth/4*zoom,sh=64*zoom;ctx.drawImage(cow,p.x-sw/2,p.y+3*zoom-sh,sw,sh);}
+ }
+ if(overlay)for(const t of things){
+  if(t.type!=='prop')continue;
+  const r=PROPS[t.kind],w=t.rotated?r.h:r.w,h=t.rotated?r.w:r.h;
+  for(const q of propCells(t))diamond(project(q.x,q.y),zoom,null,'#e9d49acc');
+  const c=project(t.x+(w-1)/2,t.y+(h-1)/2),a={x:c.x,y:c.y+(w+h)*5*zoom};
+  ctx.strokeStyle='#ff9b6a';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(a.x-6*zoom,a.y);ctx.lineTo(a.x+6*zoom,a.y);ctx.moveTo(a.x,a.y-4*zoom);ctx.lineTo(a.x,a.y+4*zoom);ctx.stroke();
+ }
+ const total=things.filter(t=>t.type==='prop').length;
+ document.getElementById('stats').textContent=`${drawn} of ${total} props drawn at zoom ${zoom}${pending?`, ${pending} still loading`:''}. Folder ${FOLDER}/, ${KINDS.length} kinds.`;
+ window.lastDrawn=drawn;window.ready=!pending&&cow.complete&&!!cow.naturalWidth;
+}
+for(const id of ['zoom','overlay','rotated'])document.getElementById(id).addEventListener('input',schedule);
+draw();
+window.grab=()=>field.toDataURL('image/png');
+</script></body></html>

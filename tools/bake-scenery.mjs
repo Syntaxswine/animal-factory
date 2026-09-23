@@ -4,11 +4,16 @@
 // {azimuth: PI/4, elevation: PI/6}, and PI/6 is 30 degrees, which projects a unit ground square to
 // a diamond of exactly 2.000000 -- the same ratio as this game's 56 x 28 tile in view.js. So a
 // model needs no reprojection to become a sprite. What it does need is a scale and an anchor, and
-// those are what this tool measures. A render is an UNDERLAY: the branch shades at runtime and a
-// sprite carries its own light, so the deliverable is a painting over this, never this.
+// those are what this tool measures. Under the workshop's own light (--light=page) a render is an
+// UNDERLAY: the branch shades at runtime and a sprite carries its own light. The default,
+// --light=catalogue, relights it to the painted catalogue's measured light instead, and --shadow
+// registers a floor-standing subject on its tile exactly; parcel B shipped seven fixtures that way
+// (docs/tactics/LIGHTING.md). Whether a relit bake is good enough is still a call made at drawn size.
 //
 //   node tools/bake-scenery.mjs --group=lighting
 //   node tools/bake-scenery.mjs --form=campfire,streetlight --skin=all
+//   node tools/bake-scenery.mjs --group=lighting --shadow      registered, ready to ship
+//   node tools/bake-scenery.mjs --group=towers --light=page    the workshop's own light
 //   node tools/bake-scenery.mjs --calibrate        the camera and the 59 px animal datum
 //   node tools/bake-scenery.mjs --list             groups and forms, no browser
 //
@@ -27,7 +32,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {createRequire} from 'node:module';
-import {decodePNG} from './png-rgba.mjs';
+import {decodePNG, encodePNG} from './png-rgba.mjs';
 
 // --- what exists, and who owns it -------------------------------------------------------------
 //
@@ -99,6 +104,82 @@ export function cropOf(buffer) {
  return {width, height, crop: [x0, y0, x1 + 1, y1 + 1]};
 }
 
+// --- the catalogue light and the contact shadow ---------------------------------------------------
+
+// How a bake is lit. `page` keeps the workshop's own sun, which lights the two visible side faces
+// almost equally (it stands at (5, 7, 6)). `catalogue` replaces it with one key light from the
+// screen's upper left and a hemisphere fill, calibrated on 23 September 2026 against the two
+// subjects both lines have, measured at the size the game draws them (luma mean, luma sd,
+// upper-left quadrant over lower-right quadrant, saturation):
+//
+//                        luma     sd   TL/BR   sat
+//   painted crate-wood     82   30.2    1.92  0.44
+//   page light, crate     104   18.9    1.23  0.48     weathered skin
+//   catalogue, crate       83   29.6    2.19  0.41
+//   painted barrel         64   24.4    2.26  0.64
+//   catalogue, barrel      50   18.6    2.26  0.67     oxide skin, a darker red than the painting
+//
+// ACES tone mapping overshot the light direction on every rig tried, so the catalogue rig turns it
+// off, and with it off three.js ignores toneMappingExposure: brightness goes through `gain`.
+export const RIGS = {
+ catalogue: {from: [-1, 2, 3], fill: .5, key: 2.8, gain: 1.3, tone: 'none', flamesUnlit: true},
+ page: null,
+};
+
+// app.js draws a flat #13241d ellipse at 40% under every standing unit. A floor fixture gets the
+// same ground contact, sized so its lowest point is exactly where environment-renderer.js plants a
+// crop's bottom, (w + h) * 5 px below the footprint centre. The crop then grows to that ellipse,
+// and a subject that stands inside it is registered exactly: vertically because the ellipse's
+// bottom IS the anchor, horizontally because the ellipse is centred on the footprint.
+//
+// The ellipse is the footprint's own shape scaled by k, so it stays inside the footprint: k is
+// 0.479 for a 2 x 1 and 0.505 for a square, which touches the edge midpoints and no more. It can
+// only move a crop's bottom DOWN, so it corrects a fixture that would float and does nothing for a
+// tower that sinks, and it cannot recentre a subject wider than itself. The residuals are
+// recomputed after compositing, so either failure still shows in the manifest.
+// A light the table does not know is refused rather than quietly falling back to the page sun.
+export function rigFor(name) {
+ if (!Object.hasOwn(RIGS, name)) throw new Error(`unknown --light="${name}"; have ${Object.keys(RIGS).join(', ')}`);
+ return RIGS[name];
+}
+
+export const SHADOW_RGBA = [0x13, 0x24, 0x1d, 0x48];
+
+export function contactShadow({footCentre, o, ox, oz, tiles, gameScale}) {
+ const [w, h] = tiles;
+ const ex = [ox[0] - o[0], ox[1] - o[1]], ez = [oz[0] - o[0], oz[1] - o[1]];
+ const drop = (w + h) * 5 / gameScale;
+ const k = drop / Math.hypot(w * ex[1], h * ez[1]);
+ return {centre: [...footCentre], u: [k * w * ex[0], k * w * ex[1]], v: [k * h * ez[0], k * h * ez[1]], k};
+}
+
+// Composite a flat ellipse UNDER straight-alpha RGBA pixels, in place. A pixel is inside when its
+// centre is; the edge is hard, like the unit shadow's, so the outermost row keeps the full alpha and
+// the alpha >= 64 crop reaches it.
+// Whether the whole ellipse lies on the canvas. One that does not would be clipped by the frame, so
+// the crop would stop short of the anchor and the row would claim a registration it does not have.
+// A wall fixture is the case: its footprint centre is far below the subject, off the canvas.
+export function shadowFits({centre, u, v}, width, height) {
+ const rx = Math.hypot(u[0], v[0]), ry = Math.hypot(u[1], v[1]);
+ return centre[0] - rx >= 0 && centre[1] - ry >= 0 && centre[0] + rx <= width && centre[1] + ry <= height;
+}
+
+export function paintShadow({width, height, pixels}, {centre, u, v}, rgba = SHADOW_RGBA) {
+ const det = u[0] * v[1] - v[0] * u[1];
+ if (!det) throw new Error('degenerate shadow ellipse');
+ const rx = Math.hypot(u[0], v[0]), ry = Math.hypot(u[1], v[1]);
+ const sa = rgba[3] / 255;
+ for (let y = Math.max(0, Math.floor(centre[1] - ry)); y <= Math.min(height - 1, Math.ceil(centre[1] + ry)); y++)
+  for (let x = Math.max(0, Math.floor(centre[0] - rx)); x <= Math.min(width - 1, Math.ceil(centre[0] + rx)); x++) {
+   const dx = x + .5 - centre[0], dy = y + .5 - centre[1];
+   const s = (dx * v[1] - v[0] * dy) / det, t = (u[0] * dy - dx * u[1]) / det;
+   if (s * s + t * t > 1) continue;
+   const i = (y * width + x) * 4, a = pixels[i + 3] / 255, out = a + sa * (1 - a);
+   for (let c = 0; c < 3; c++) pixels[i + c] = Math.round((pixels[i + c] * a + rgba[c] * sa * (1 - a)) / out);
+   pixels[i + 3] = Math.round(out * 255);
+  }
+}
+
 // What a catalog row would have to say for this bake to be drawn at true world scale, and how far
 // off the renderer's own anchor rule then lands.
 //
@@ -136,7 +217,33 @@ window.__bakeForms = function (hook) {
  if (!W) throw new Error('no workshop hook: ' + hook);
  return [...document.querySelectorAll('#form option')].map(o => o.value);
 };
-window.__bake = function ({hook, id, skin, size, margin, shrink}) {
+// The catalogue rig: an optional relight so a bake matches the painted catalogue's light rather
+// than the workshop's. The page's own lights stay in the scene but are switched off; a hemisphere
+// fill and one key light from the screen's upper left replace them, tone mapping is set from the
+// rig (brightness goes through gain on both lights: three.js ignores toneMappingExposure
+// when tone mapping is off), and flame meshes (the ones the page flickers) are drawn unlit so they read as fire.
+// Returns the undo, which __bake runs whether or not the render throws.
+window.__applyRig = function (scene, r, rig) {
+ if (!rig) return () => {};
+ const undo = [];
+ scene.traverse(o => { if (o.isLight && o.visible) { o.visible = false; undo.push(() => { o.visible = true; }); } });
+ const hemi = new THREE.HemisphereLight(rig.sky ?? 0xffffff, rig.ground ?? 0x6f6a5c, rig.fill * (rig.gain ?? 1));
+ const key = new THREE.DirectionalLight(rig.keyColor ?? 0xfff4e0, rig.key * (rig.gain ?? 1));
+ key.position.set(...rig.from);
+ scene.add(hemi, key, key.target);
+ undo.push(() => { scene.remove(hemi, key, key.target); hemi.dispose(); key.dispose(); });
+ const tone = r.toneMapping;
+ r.toneMapping = rig.tone === 'none' ? THREE.NoToneMapping : THREE.ACESFilmicToneMapping;
+ undo.push(() => { r.toneMapping = tone; });
+ if (rig.flamesUnlit) scene.traverse(o => {
+  if (!o.isMesh || !o.userData.flicker) return;
+  const lit = o.material, flat = new THREE.MeshBasicMaterial({map: lit.map, color: lit.color, vertexColors: lit.vertexColors,
+   transparent: lit.transparent, alphaTest: lit.alphaTest, side: lit.side});
+  o.material = flat; undo.push(() => { o.material = lit; flat.dispose(); });
+ });
+ return () => { for (const f of undo.reverse()) f(); };
+};
+window.__bake = function ({hook, id, skin, size, margin, shrink, rig}) {
  const W = window[hook];
  const mode = document.getElementById('mode'); if (mode) mode.value = 'single';
  for (const box of ['tiles', 'horse', 'wire', 'flicker']) {
@@ -171,8 +278,9 @@ window.__bake = function ({hook, id, skin, size, margin, shrink}) {
  r.setPixelRatio(1); r.setSize(size, size, false); r.setClearAlpha(0); scene.background = null;
  cam.left = -size / ppu / 2; cam.right = size / ppu / 2; cam.top = size / ppu / 2; cam.bottom = -size / ppu / 2;
  cam.near = .1; cam.far = 200; cam.updateProjectionMatrix();
- r.render(scene, cam);
- const url = r.domElement.toDataURL('image/png');
+ const unrig = window.__applyRig(scene, r, rig);
+ let url;
+ try { r.render(scene, cam); url = r.domElement.toDataURL('image/png'); } finally { unrig(); }
  const at = p => { const v = new THREE.Vector3(p[0], p[1], p[2]).project(cam); return [(v.x + 1) * size / 2, (1 - v.y) * size / 2]; };
  const root = subject.position;
  const out = {url, ppu, size, id, skin: chosen, skins, tiles: placed[0].form.tiles,
@@ -255,18 +363,31 @@ export function assertFormsCovered(file, onPage, groups) {
   'Update GROUPS in tools/bake-scenery.mjs and the parcel sections it follows.');
 }
 
-async function bakeOne(page, {hook, id, skin, size, margin}) {
+async function bakeOne(page, {hook, id, skin, size, margin, rig, shadow}) {
  // A silhouette that touches the canvas edge has been cropped by the frame, which is the defect
  // the 23 September integration review found in the character baker. Try once at a tighter fit,
  // then refuse; a clipped underlay is worse than none because the loss is invisible downstream.
- for (const shrink of [1, 0.92]) {
-  const res = await page.evaluate(a => window.__bake(a), {hook, id, skin, size, margin, shrink});
-  const buffer = Buffer.from(res.url.split(',')[1], 'base64');
+ // A contact shadow that would leave the canvas gets the same second chance, and is dropped (and
+ // reported) only when the tighter fit cannot hold it either -- a wall fixture, whose footprint
+ // centre is nowhere near the subject.
+ const fits = [1, 0.92];
+ for (const shrink of fits) {
+  const res = await page.evaluate(a => window.__bake(a), {hook, id, skin, size, margin, shrink, rig});
+  let buffer = Buffer.from(res.url.split(',')[1], 'base64');
+  let shadowed = false;
+  if (shadow) {
+   const png = decodePNG(buffer), {gameScale} = checkCamera(res), ellipse = contactShadow({...res, gameScale});
+   if (shadowFits(ellipse, png.width, png.height)) {
+    paintShadow(png, ellipse);
+    buffer = Buffer.from(encodePNG(png));
+    shadowed = true;
+   } else if (shrink !== fits.at(-1)) continue;
+  }
   const {width, height, crop} = cropOf(buffer);
   if (!crop) throw new Error(`${id}: rendered nothing -- the alpha channel is empty`);
   if (crop[0] > 0 && crop[1] > 0 && crop[2] < width && crop[3] < height) {
    const {gameScale} = checkCamera(res);
-   return {buffer, res, row: catalogueRow({crop, footCentre: res.footCentre, tiles: res.tiles, gameScale}), gameScale};
+   return {buffer, res, shadowed, row: catalogueRow({crop, footCentre: res.footCentre, tiles: res.tiles, gameScale}), gameScale};
   }
  }
  throw new Error(`${id}: the silhouette still touches the canvas edge at a 0.92 fit; raise --size or --margin`);
@@ -278,6 +399,8 @@ async function main() {
  const margin = Number(arg('margin', 24));
  const out = path.resolve(arg('out', path.join(HERE, '..', 'docs', 'tactics', 'scenery-bake', 'out')));
  const wantSkins = arg('skin', '');
+ const light = arg('light', 'catalogue'), shadow = flag('shadow');
+ const rig = rigFor(light);
 
  const groupNames = arg('group', '') ? arg('group', '').split(',') : [];
  const formNames = arg('form', '') ? arg('form', '').split(',') : [];
@@ -314,16 +437,16 @@ async function main() {
    const {page} = await openWorkshop(browser, {port, page: file, hook});
    assertFormsCovered(file, await page.evaluate(h => window.__bakeForms(h), hook), GROUPS);
    for (const job of pageJobs) {
-    const first = await bakeOne(page, {hook, id: job.id, skin: '', size, margin});
+    const first = await bakeOne(page, {hook, id: job.id, skin: '', size, margin, rig, shadow});
     const skins = wantSkins === 'all' ? first.res.skins : [first.res.skin];
     for (const skin of skins) {
-     const baked = skin === first.res.skin ? first : await bakeOne(page, {hook, id: job.id, skin, size, margin});
+     const baked = skin === first.res.skin ? first : await bakeOne(page, {hook, id: job.id, skin, size, margin, rig, shadow});
      const dir = path.join(out, job.group);
      fs.mkdirSync(dir, {recursive: true});
      const file = `${job.id}${skins.length > 1 ? '-' + skin : ''}.png`;
      fs.writeFileSync(path.join(dir, file), baked.buffer);
      manifest.push({group: job.group, parcel: GROUPS[job.group].parcel, id: job.id, skin: baked.res.skin,
-      file: `${job.group}/${file}`, name: baked.res.name, ppu: +baked.res.ppu.toFixed(2),
+      file: `${job.group}/${file}`, name: baked.res.name, ppu: +baked.res.ppu.toFixed(2), light, shadow: baked.shadowed,
       // The point every residual below is measured from, so a reader can redo the arithmetic.
       footCentre: baked.res.footCentre.map(v => +v.toFixed(3)), gameScale: baked.gameScale, ...baked.row});
      const r = baked.row;
@@ -349,6 +472,8 @@ async function main() {
   console.log(`\n${manifest.length} baked into ${out}; the manifest now describes ${merged.length}`);
   const sunk = manifest.filter(m => m.anchor.residual < -2), high = manifest.filter(m => m.anchor.residual > 2);
   const off = manifest.filter(m => Math.abs(m.centre) > 2);
+  const unshadowed = shadow ? manifest.filter(m => !m.shadow) : [];
+  if (unshadowed.length) console.log(`${unshadowed.length} got no contact shadow, because it would fall off the canvas (the subject is nowhere near its footprint centre): ${unshadowed.map(m => m.id).join(', ')}`);
   if (sunk.length) console.log(`${sunk.length} sit ABOVE the renderer's anchor and will float: ${sunk.map(m => m.id).join(', ')}`);
   if (high.length) console.log(`${high.length} sit BELOW it and will sink: ${high.map(m => m.id).join(', ')}`);
   if (off.length) console.log(`${off.length} ${off.length === 1 ? 'is' : 'are'} off-centre by more than 2 px: ${off.map(m => `${m.id} ${m.centre.toFixed(1)}`).join(', ')}`);

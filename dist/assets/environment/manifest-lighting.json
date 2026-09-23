@@ -3,5 +3,181 @@
   "group": "lighting",
   "label": "Lamps and fires",
   "projection": "2:1 isometric props; overhead terrain textures",
-  "assets": []
+  "assets": [
+    {
+      "id": "floor-lamp",
+      "file": "lighting/floor-lamp.png",
+      "label": "floor lamp",
+      "kind": "prop",
+      "description": "Pleated floor lamp. Weighted base, brass stem and a warm linen shade.",
+      "suggestedFootprint": [
+        1,
+        1
+      ],
+      "orientation": "as baked; rotation mirrors",
+      "suggestedRules": {
+        "blocksMovement": true,
+        "blocksSight": false,
+        "cover": "none"
+      },
+      "source": {
+        "route": "bake",
+        "tool": "tools/bake-scenery.mjs --group=lighting --shadow",
+        "branch": "project/tactics-3d",
+        "library": "painted-furniture.js",
+        "skin": "honey",
+        "light": "catalogue"
+      }
+    },
+    {
+      "id": "bedside-table-lamp",
+      "file": "lighting/bedside-table-lamp.png",
+      "label": "bedside table lamp",
+      "kind": "prop",
+      "description": "Bedside table with lamp. A compact brass and linen lamp on the drawer table.",
+      "suggestedFootprint": [
+        1,
+        1
+      ],
+      "orientation": "as baked; rotation mirrors",
+      "suggestedRules": {
+        "blocksMovement": true,
+        "blocksSight": false,
+        "cover": "low"
+      },
+      "source": {
+        "route": "bake",
+        "tool": "tools/bake-scenery.mjs --group=lighting --shadow",
+        "branch": "project/tactics-3d",
+        "library": "painted-furniture.js",
+        "skin": "honey",
+        "light": "catalogue"
+      }
+    },
+    {
+      "id": "streetlight",
+      "file": "lighting/streetlight.png",
+      "label": "streetlight",
+      "kind": "prop",
+      "description": "Single-arm streetlight. Fluted cast-iron base and a suspended industrial lantern.",
+      "suggestedFootprint": [
+        1,
+        1
+      ],
+      "orientation": "as baked; rotation mirrors",
+      "suggestedRules": {
+        "blocksMovement": true,
+        "blocksSight": false,
+        "cover": "none"
+      },
+      "source": {
+        "route": "bake",
+        "tool": "tools/bake-scenery.mjs --group=lighting --shadow",
+        "branch": "project/tactics-3d",
+        "library": "painted-furniture.js",
+        "skin": "honey",
+        "light": "catalogue"
+      }
+    },
+    {
+      "id": "streetlight-double",
+      "file": "lighting/streetlight-double.png",
+      "label": "streetlight double",
+      "kind": "prop",
+      "description": "Double-arm streetlight. Paired industrial lanterns on a shared cast-iron post.",
+      "suggestedFootprint": [
+        2,
+        1
+      ],
+      "orientation": "as baked; rotation mirrors",
+      "suggestedRules": {
+        "blocksMovement": true,
+        "blocksSight": false,
+        "cover": "none"
+      },
+      "source": {
+        "route": "bake",
+        "tool": "tools/bake-scenery.mjs --group=lighting --shadow",
+        "branch": "project/tactics-3d",
+        "library": "painted-furniture.js",
+        "skin": "honey",
+        "light": "catalogue"
+      }
+    },
+    {
+      "id": "standing-torch",
+      "file": "lighting/standing-torch.png",
+      "label": "standing torch",
+      "kind": "prop",
+      "description": "Standing torch. Timber torch in an iron tripod, with a bound fuel head.",
+      "suggestedFootprint": [
+        1,
+        1
+      ],
+      "orientation": "as baked; rotation mirrors",
+      "suggestedRules": {
+        "blocksMovement": true,
+        "blocksSight": false,
+        "cover": "none"
+      },
+      "source": {
+        "route": "bake",
+        "tool": "tools/bake-scenery.mjs --group=lighting --shadow",
+        "branch": "project/tactics-3d",
+        "library": "painted-furniture.js",
+        "skin": "honey",
+        "light": "catalogue"
+      }
+    },
+    {
+      "id": "campfire",
+      "file": "lighting/campfire.png",
+      "label": "campfire",
+      "kind": "prop",
+      "description": "Stone-ring campfire. Charred crossed logs, ash and sculpted flames inside a stone ring.",
+      "suggestedFootprint": [
+        1,
+        1
+      ],
+      "orientation": "as baked; rotation mirrors",
+      "suggestedRules": {
+        "blocksMovement": true,
+        "blocksSight": false,
+        "cover": "none"
+      },
+      "source": {
+        "route": "bake",
+        "tool": "tools/bake-scenery.mjs --group=lighting --shadow",
+        "branch": "project/tactics-3d",
+        "library": "painted-furniture.js",
+        "skin": "honey",
+        "light": "catalogue"
+      }
+    },
+    {
+      "id": "cooking-fire",
+      "file": "lighting/cooking-fire.png",
+      "label": "cooking fire",
+      "kind": "prop",
+      "description": "Hanging cooking pot. A suspended iron cooking pot over a stone-ring campfire.",
+      "suggestedFootprint": [
+        2,
+        2
+      ],
+      "orientation": "as baked; rotation mirrors",
+      "suggestedRules": {
+        "blocksMovement": true,
+        "blocksSight": false,
+        "cover": "none"
+      },
+      "source": {
+        "route": "bake",
+        "tool": "tools/bake-scenery.mjs --group=lighting --shadow",
+        "branch": "project/tactics-3d",
+        "library": "painted-furniture.js",
+        "skin": "honey",
+        "light": "catalogue"
+      }
+    }
+  ]
 }

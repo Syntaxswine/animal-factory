@@ -1,7 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {encodePNG} from '../tools/png-rgba.mjs';
-import {GROUPS, TILE_HALF_WIDTH, HEIGHT_PER_GROUND_UNIT, checkCamera, catalogueRow, cropOf, assertFormsCovered}
+import {GROUPS, TILE_HALF_WIDTH, HEIGHT_PER_GROUND_UNIT, checkCamera, catalogueRow, cropOf, assertFormsCovered,
+ RIGS, rigFor, SHADOW_RGBA, contactShadow, shadowFits, paintShadow}
  from '../tools/bake-scenery.mjs';
 
 // tools/bake-scenery.mjs needs a browser, a served 3D tree and an installed Edge to take a
@@ -112,4 +113,82 @@ test('the group table partitions the branch, and says so when it does not', () =
   /Unclaimed on the page: crate-new/);
  assert.throws(() => assertFormsCovered('painted-cargo.html', GROUPS.cargo.forms.slice(1), GROUPS),
   /Claimed but absent: crate-square/);
+});
+
+// --- the catalogue light and the contact shadow (parcel B) --------------------------------------
+
+test('the light table refuses a rig it does not know', () => {
+ assert.equal(rigFor('page'), null, 'page means: leave the workshop lights alone');
+ // The calibrated rig, spelled out: a key from the screen's upper left, no tone mapping. Read back
+ // from RIGS it could not be wrong, so the numbers live here too.
+ assert.deepEqual(rigFor('catalogue'), {from: [-1, 2, 3], fill: .5, key: 2.8, gain: 1.3, tone: 'none', flamesUnlit: true});
+ assert.equal(rigFor('catalogue'), RIGS.catalogue);
+ assert.throws(() => rigFor('studio'), /unknown --light="studio"; have catalogue, page/);
+ // Inherited properties are not rigs either.
+ assert.throws(() => rigFor('toString'), /unknown --light/);
+});
+
+test('the contact shadow reaches exactly the renderer anchor and stays inside the footprint', () => {
+ const {gameScale} = checkCamera(TRUE_CAMERA);
+ const foot = [627, 700];
+ // (w + h) * 5 game px below the footprint centre, in bake px at 0.0687733 game px per bake px:
+ // 10 / 0.0687733 = 145.40, 15 / ... = 218.11, 20 / ... = 290.81.
+ for (const [tiles, drop, k] of [[[1, 1], 145.40, 0.505076], [[2, 1], 218.11, 0.479157], [[2, 2], 290.81, 0.505076]]) {
+  const e = contactShadow({footCentre: foot, ...TRUE_CAMERA, tiles, gameScale});
+  const lowest = e.centre[1] + Math.hypot(e.u[1], e.v[1]);
+  assert.ok(Math.abs(lowest - foot[1] - drop) < 0.01, `${tiles}: lowest point ${lowest - foot[1]} below, wanted ${drop}`);
+  // k scales the footprint's own half-extents, (w/2, h/2), by 2k: 1.01 for a square touches the
+  // edge midpoints, 0.958 for a 2 x 1 sits inside them.
+  assert.ok(Math.abs(e.k - k) < 1e-6, `${tiles}: k was ${e.k}`);
+  assert.ok(2 * e.k <= 1.0102, `${tiles}: the ellipse leaves the footprint`);
+  // Centred on the footprint, so a rotated (mirrored) prop keeps its registration.
+  assert.deepEqual(e.centre, foot);
+  assert.ok(Math.abs(e.u[0] + e.v[0] * (tiles[0] / tiles[1])) < 1e-9, 'the two semi-axes are the two ground axes');
+ }
+});
+
+test('a thin fixture that would float registers exactly once the shadow is under it', () => {
+ const {gameScale} = checkCamera(TRUE_CAMERA);
+ const size = 1254, foot = [627, 700], png = {width: size, height: size, pixels: new Uint8Array(size * size * 4)};
+ // A lamp post 20 px wide standing from y 200 to 600, a little right of the footprint centre: its
+ // bottom is 100 bake px ABOVE the centre, where the renderer wants it 145 px below.
+ for (let y = 200; y < 600; y++) for (let x = 660; x < 680; x++) png.pixels.set([40, 40, 40, 255], (y * size + x) * 4);
+ const before = catalogueRow({crop: cropOf(Buffer.from(encodePNG(png))).crop, footCentre: foot, tiles: [1, 1], gameScale});
+ assert.ok(before.anchor.residual < -16, `without a shadow it floats ${before.anchor.residual} px`);
+ assert.ok(before.centre > 2, 'and sits off-centre');
+
+ const e = contactShadow({footCentre: foot, ...TRUE_CAMERA, tiles: [1, 1], gameScale});
+ assert.ok(shadowFits(e, size, size));
+ paintShadow(png, e);
+ const after = catalogueRow({crop: cropOf(Buffer.from(encodePNG(png))).crop, footCentre: foot, tiles: [1, 1], gameScale});
+ // One bake pixel is 0.069 game px; the ellipse's edge lands within one of them.
+ assert.ok(Math.abs(after.anchor.residual) < gameScale, `residual ${after.anchor.residual}`);
+ assert.ok(Math.abs(after.centre) < gameScale, `centre ${after.centre}`);
+ // And the drawn width is now the shadow's, 40 px for one tile, which is what a catalog row says.
+ assert.equal(after.visualWidth, 40);
+});
+
+test('the shadow goes under the art, never over it, and refuses to leave the canvas', () => {
+ // The crop rule is alpha >= 64, so a shadow any fainter than that would not reach the crop at all.
+ assert.deepEqual(SHADOW_RGBA, [0x13, 0x24, 0x1d, 0x48]);
+ assert.ok(SHADOW_RGBA[3] >= 64);
+ const w = 9, h = 9, pixels = new Uint8Array(w * h * 4);
+ pixels.set([200, 30, 30, 255], (4 * w + 4) * 4);   // opaque red, dead centre
+ pixels.set([200, 30, 30, 128], (4 * w + 5) * 4);   // half-covered red beside it
+ const e = {centre: [4.5, 4.5], u: [3, 0], v: [0, 3]};
+ paintShadow({width: w, height: h, pixels}, e);
+ const at = (x, y) => [...pixels.slice((y * w + x) * 4, (y * w + x) * 4 + 4)];
+ assert.deepEqual(at(4, 4), [200, 30, 30, 255], 'an opaque pixel is untouched');
+ assert.deepEqual(at(3, 4), [0x13, 0x24, 0x1d, 0x48], 'a clear pixel becomes exactly the shadow');
+ // Source over shadow: 128/255 + 72/255 * (1 - 128/255) = 0.6414 -> 164.
+ const [r, , , a] = at(5, 4);
+ assert.equal(a, 164);
+ assert.ok(r > 0x13 && r < 200, `blended red ${r}`);
+ assert.deepEqual(at(0, 0), [0, 0, 0, 0], 'outside the ellipse nothing is painted');
+
+ // A wall fixture's footprint centre is far below its subject, off the canvas: no shadow at all
+ // rather than a clipped one whose crop would claim a registration it does not have.
+ assert.equal(shadowFits({centre: [985, 2534], u: [100, 50], v: [-100, 50]}, 1254, 1254), false);
+ assert.equal(shadowFits({centre: [627, 1200], u: [100, 50], v: [-100, 50]}, 1254, 1254), false, 'bottom edge');
+ assert.equal(shadowFits({centre: [627, 700], u: [100, 50], v: [-100, 50]}, 1254, 1254), true);
 });

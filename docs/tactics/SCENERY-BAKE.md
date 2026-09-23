@@ -7,12 +7,20 @@ for the result to land on the right tile. It is the tool
 Stage 1 groups whose models exist: `lighting` (parcel B), `towers` (C), `furniture` (E) and
 `cargo` (D).
 
-**A render is an underlay, never the deliverable.** The 3D branch shades its materials at
-runtime; a sprite carries its own light and its own painted grain. Look at the bottom row of
-`scenery-bake.png` and the difference is plain — the baked pieces are cleaner and flatter
-than the painted `crate-wood` and `bush` beside them. What a bake gives you is the
-silhouette, the projection, the proportions and the registration, correct and for free. The
-painting still has to happen on top.
+**Under the workshop's own light, a render is an underlay.** The 3D branch shades its materials
+at runtime; a sprite carries its own light and its own painted grain. Look at the bottom row of
+`scenery-bake.png`, which was baked that way, and the difference is plain — the baked pieces are
+cleaner and flatter than the painted `crate-wood` and `bush` beside them. What a bake gives
+you for free is the silhouette, the projection, the proportions and the registration.
+
+**Parcel B measured the objection instead of accepting it, and it turned out to be about light.**
+The workshop's sun lights both visible faces almost equally; the paintings are lit hard from the
+upper left. `--light=catalogue`, now the default, relights the bake to match the painted
+catalogue at drawn size, and `--shadow` registers a floor-standing subject on its tile exactly.
+B shipped seven fixtures as relit bakes on that basis; the numbers are in the section below and
+in [LIGHTING.md](LIGHTING.md). Whether a relit bake is good enough is still a call made per
+parcel at the size the game draws it. B made it at 9–23 : 1; a tower at 2.4 : 1 shows far more
+of whatever grain a painting would have had.
 
 ![Baked scenery at the size the game draws it](scenery-bake.png)
 
@@ -84,6 +92,33 @@ Nothing in a prop record moves that point. The footprint diamond's true bottom v
 `(w + h) * 7` below the centre, not `(w + h) * 5`, so the rule assumes art whose base is
 inset from the tiles it claims — which is exactly how the existing catalogue is painted.
 
+## Light, and ground contact
+
+Two options added by parcel B. Neither changes the geometry numbers in the manifest, and both
+are recorded on each row (`light`, `shadow`).
+
+**`--light=catalogue | page`.** `catalogue` switches the page's lights off and puts one key
+light at (−1, 2, 3) with a hemisphere fill, no tone mapping, and the flame meshes drawn unlit.
+It was calibrated against the two subjects both lines have, measured at drawn size:
+
+| | luma | sd | TL ÷ BR | saturation |
+| --- | --- | --- | --- | --- |
+| painted `crate-wood` | 82 | 30.2 | 1.92 | 0.44 |
+| baked crate, `page` | 104 | 18.9 | 1.23 | 0.48 |
+| baked crate, `catalogue` | 83 | 29.6 | 2.19 | 0.41 |
+
+ACES tone mapping overshot the light direction on every rig tried. And with tone mapping
+off, three.js ignores `toneMappingExposure`, so brightness is a `gain` on the lights. An
+unknown `--light` is refused, not quietly treated as `page`.
+
+**`--shadow`.** Paints a flat `#13241d` ellipse at alpha 72 under the subject: the
+footprint's own shape, scaled so its lowest point is exactly the renderer's anchor and centred
+on the footprint. The crop then *is* the ellipse, so a subject that would float is registered
+with a residual of zero both ways, as long as it stands inside its shadow. Residuals are
+recomputed after compositing, so a subject wider than its shadow or one that sinks still shows
+in the manifest. If the ellipse would leave the canvas the tool first retries the tighter fit;
+if that fails too it bakes without one and says so. A wall fixture is that case.
+
 ## What cannot be fixed here
 
 The two residuals in the manifest are the renderer's, not the bake's, and no output
@@ -112,6 +147,11 @@ the towers get for sorting and dimming has to carry an anchoring answer too, bec
 
 **`barrel-pile` is 10.2 px off-centre** and `cooking-fire` −4.6. Those are the ordinary case and
 a painter can simply recentre the subject when painting over the underlay.
+
+**Update, parcel B:** for anything that *floats* (the 19), there is now a fix that needs no
+painter. `--shadow` brings a floor-standing subject's residual to zero both ways, and did for
+all seven of B's floor fixtures, `cooking-fire` included. It can't help the wall fixtures,
+whose footprint centre is nowhere near the subject, or anything that sinks.
 
 ## The calibration
 
@@ -165,6 +205,7 @@ The tool stops rather than writing quietly wrong art when:
   this is the defect the 23 September integration review found in the character baker, where
   heading 90 clipped 13 and 7 pixels off the bottom and the run reported it and carried on;
 - the frame came back with an empty alpha channel;
+- `--light` names a rig the table does not have;
 - the page's form list no longer matches the `GROUPS` table, in either direction. A form the
   3D branch adds is a form no parcel will paint, and a form it removes is a stale plan entry.
   Both fail the whole run instead of leaving a gap in the manifest.
@@ -191,7 +232,9 @@ clipping retry, crop, catalog arithmetic — is shared and already tested.
 ## Tests
 
 `tests/tactics-bake-scenery.test.mjs` covers the part that does not need a browser: the camera
-guard, the crop rule, the catalog arithmetic and the group partition. Its fixtures are two real
-manifest rows rather than invented numbers, and the camera probe is a recorded measurement
-rather than a recomputation of the tool's own formula. Fourteen deliberate mutations, fourteen
-caught.
+guard, the crop rule, the catalog arithmetic and the group partition, and since parcel B the
+light table, the contact shadow's geometry, its compositing order and its canvas check. Its
+fixtures are two real manifest rows rather than invented numbers, and the camera probe is a
+recorded measurement rather than a recomputation of the tool's own formula. Fourteen deliberate
+mutations, fourteen caught; parcel B's round added fourteen more across the tool and the parcel,
+all caught.
