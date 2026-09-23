@@ -1,8 +1,17 @@
 # Porting the 3D branch's scenery to the sprite game
 
-Opened 22 September 2026. Nothing in this document is built. Update the status
-table when a parcel is claimed, landed or abandoned; a conversation answer is not
-evidence that a parcel exists.
+Opened 22 September 2026, revised 23 September. **Stage 0 and parcel K are built and
+merged**; everything in Stage 1 is still a plan. Update the status table when a parcel is
+claimed, landed or abandoned; a conversation answer is not evidence that a parcel exists.
+
+Two things have changed since this was written that a reader should have before the detail.
+The camera section below turned out to be the load-bearing finding — the two games share a
+projection exactly — and `tools/bake-scenery.mjs` now acts on it: **the underlays for all 44
+forms in parcels B, C, D and E already exist**, registered and measured, and every "render
+them through `GAME_CAMERA` and paint over that" instruction below is now one command. And
+the measuring that went with it turned three of the open questions from judgement calls into
+arithmetic, and added a fourth. Read [SCENERY-BAKE.md](SCENERY-BAKE.md) before starting any
+Stage 1 parcel.
 
 The work is cut so that **two agents can pick any two parcels and never edit the
 same file**. Each parcel below names the files it owns exclusively. If a parcel
@@ -19,7 +28,13 @@ without them every parcel here would collide in `environment.js`, `prop-art.js`,
   Its companion branches `work/tactics-3d`, `work/editor-3d`,
   `work/mature-tree-3d`, `work/mature-tree-core` and `environment-painted-study`
   were read for provenance only.
-- Sprite branch: `tactics-prototype` at **`6e2782a`**.
+- Sprite branch: `tactics-prototype` at **`6e2782a`**, now at `a3d2d6b` with Stage 0 and K in.
+- Re-read 23 September at **`82e60cf`** for the baker: `painted-furniture.js`,
+  `painted-cargo.js`, their two viewers, `hybrid-world.js` and `environment-gallery.js`.
+  `painted-furniture.js` and `painted-cargo.js` are **byte-identical** between `4743662` and
+  `82e60cf`, checked rather than assumed, so the 32 furniture forms and 12 cargo forms this
+  plan describes are the ones the baker photographed. The tip moved on ladder motion and
+  tower fixes, which are model internals this port does not read.
 - The 3D environment workshop was opened and driven in a browser
   (`tactics/environment-gallery.html`, 78 entries, courtyard and clinic scenes),
   as were the sprite art pages `environment-art.html`, `facility-art.html`,
@@ -195,6 +210,18 @@ runtime, while a sprite painting carries its own light, so a raw render is an
 underlay and never the deliverable. And `HYBRID-VISUAL-HANDOFF.md` already
 rejected the block-built read of that branch's environment once.
 
+**Confirmed and acted on, 23 September.** The ratio above was checked again the other way
+round, by measuring it in an actual render instead of in the source: one ground unit steps
+407.136 × 203.568 px, which is 2.000000 : 1, and one unit of height rises 1.224745 ground
+units, which is cos(30)/cos(45). Both exact to six decimals. `tools/bake-scenery.mjs` now
+refuses to bake if either drifts, because a retilted camera makes art that looks plausible
+and is in the wrong projection — which is the mistake the stale `HYBRID-MIGRATION.md`
+paragraph would have caused had anyone believed it.
+
+One thing the camera being shared does **not** settle: how big things are. The 3D reference
+horse bakes 64.4 px tall where this game's standing animals are drawn 59. See open
+question 8.
+
 ## Where to look on the 3D branch
 
 Do not check the 3D branch out over anything. Add the Codex clone as a read-only
@@ -207,17 +234,28 @@ git worktree add --detach ../af-3dref codex/project/tactics-3d
 cd ../af-3dref && PORT=4318 node tools/serve.mjs
 ```
 
-Use 4318 and pass it explicitly. The workspace `launch.json` at the AI root
+Pass the port explicitly. The workspace `launch.json` at the AI root
 already holds 4327 for the main tactics tree, 4337 for the flame worktree, 4367
 for the sprite worktree, and 4617, 4618 and 4719 for unrelated projects. Serving
-without `PORT` set lands on the 3D branch's own default, which is 4318 as well,
-but say it anyway so a reader does not guess.
+without `PORT` set lands on the 3D branch's own default, which is 4318, and
+`bake-character-sprites.mjs` also expects 4318 — so a scenery session that finds the port
+taken is probably looking at the character session's server, which is fine to read but not
+to kill. `bake-scenery.mjs` defaults to **4319** for that reason.
+
+Everything below can be looked at by hand, and for the four groups with models it is faster
+not to. One command puts all 44 forms on disk as registered PNGs with their measurements:
+
+```
+cd ../af-3dref && PORT=4319 node tools/serve.mjs &
+node tools/bake-scenery.mjs --calibrate        # prove the camera before trusting anything
+node tools/bake-scenery.mjs                    # all four groups, about eight seconds
+```
 
 Then open, in order of usefulness to this port:
 
 | Page | What it shows |
 | --- | --- |
-| `tactics/environment-gallery.html` | The whole catalog, 78 entries, plus assembled courtyard and clinic scenes |
+| `tactics/environment-gallery.html` | The whole catalog, 78 entries, plus assembled courtyard and clinic scenes. **Not a bake source** — see below |
 | `tactics/painted-furniture.html` | All 32 furniture and tower forms, three timber finishes, flame toggle |
 | `tactics/painted-cargo.html` | The 12 cargo forms × 8 finishes × 5 label sets |
 | `tactics/factory-machines.html` | Lathe, mill and press, author and reduced meshes |
@@ -225,6 +263,15 @@ Then open, in order of usefulness to this port:
 | `tactics/canvas-truck.html` | The truck, grey and painted |
 | `tactics/foliage-study.html` | Trees and grass beside an approved character at gameplay scale |
 | `tactics/battle-3d.html` | The scenery in an actual encounter |
+
+**The gallery is the wrong place to take a picture of a prop.** It looks ideal — every
+canonical kind, in the right camera — but `buildWorld` assembles a prop out of plain boxes
+whose height it derives from *our own* catalog:
+`rule.tall ? 2 : rule.cover ? 0.8 : rule.visualHeight ? min(1.8, visualHeight/40) : 0.2`.
+Bake from it and the results land between 0.72× and 1.70× of the paintings, which reads like
+a scale bug and is really a collision box standing in for a model. The art is in the four
+painted libraries, exactly as the section above says. The tell, if you ever wonder: two
+different props come out the same size.
 
 Reference images that already exist there and are worth painting from rather than
 inventing: `dist/assets/environment/factory-machines/{lathe,mill,press}-sketch-v1.png`
@@ -262,6 +309,13 @@ files this plan never mentions, and they stay untouched.
 New review pages link outward to the existing index only. Do not edit a sibling
 page's navigation strip to add a link back: every parcel would edit every page.
 Cross-links are the integrator's job at the end.
+
+**Tools are the exception, and deliberately so.** `tools/drawn-size.mjs` and
+`tools/bake-scenery.mjs` belong to no parcel; any parcel may extend either, because the
+alternative is five parcels each writing their own baker. A parcel that adds a group to
+`bake-scenery.mjs` should say so in the Owns row it writes for itself, so a concurrent
+parcel knows the file is in play. The same does not go for `GROUPS`: that table follows the
+parcel sections in this document, and changing one means changing the other.
 
 ### Out of scope: character art
 
@@ -314,6 +368,23 @@ the chain in order is spent.
 | J | Sweeping spotlights | 2 | I, C | — | not started |
 | K | Ground cover: tufts and undergrowth | 2 | S2 | `tactics-ground-cover` | **merged**, PR #18 |
 | M | Repainting the existing catalog | 3 | — | — | not started |
+
+Tooling, which belongs to no parcel and may be used and extended by any of them:
+
+| Tool | What it gives a parcel | Document |
+| --- | --- | --- |
+| `tools/drawn-size.mjs` | how much of an existing painting the renderer keeps | [MAKING-SCENERY.md](MAKING-SCENERY.md) |
+| `tools/bake-scenery.mjs` | registered underlays and catalog numbers for 44 forms, groups `lighting`, `towers`, `furniture`, `cargo` | [SCENERY-BAKE.md](SCENERY-BAKE.md) |
+| `tools/bake-character-sprites.mjs` | the same trick for characters; out of scope here, read it for the pattern | `SPRITE-BAKE.md` |
+
+Adding a group to the baker is four things — page file, hook name, how to select a subject,
+how to reach the scene — and the parcel that needs `machines`, `conveyor` or `vehicles`
+should add its adapter rather than start a second tool.
+
+**What is not covered anywhere yet:** the flame animation B needs on four of its nine
+fixtures, which is a drawing job against `flame-effect.js` and has no 3D source; the
+sixteen-mask conveyor of G; and the repainting of the existing catalog in M. Baking helps
+with none of those.
 
 ---
 
@@ -511,6 +582,14 @@ operation `setStartTime` exists and is tested, but the DOM wiring is one line in
 Every parcel in this stage follows the same shape, so it is written once here and
 not repeated. Each one:
 
+- **starts from its baked underlays**, if it has models — B, C, D and E all do.
+  `node tools/bake-scenery.mjs --group=<group>` writes them registered and measured, and its
+  manifest carries the `visualWidth` and `visualHeight` your catalog rows need. Most of these
+  forms overflow the default box badly, so a parcel that skips the override paints its
+  subject at the wrong size and has no way to notice. Read [SCENERY-BAKE.md](SCENERY-BAKE.md)
+  first, including **what cannot be fixed there** — the renderer registers a prop by the
+  bottom and horizontal middle of its own alpha box, and for some forms that is off by more
+  than a tile;
 - paints its sprites at 1254 × 1254 RGBA, 2:1 isometric, ground axes 26.565°,
   upper-left light, transparent background, no cast shadow, in the established
   olive and weathered-wood palette;
@@ -640,7 +719,15 @@ The 3D branch offers four finishes per family and five label sets, a 48-way and
 then 240-way matrix. Do not port the matrix. A painted sprite is one file per
 combination, and 48 files of crate is not a sensible catalog. Pick one finish per
 form so the nine read as nine different objects, and treat labels as part of the
-painting where they help legibility.
+painting where they help legibility. `--skin=all` bakes the finishes if you want to compare
+before choosing; the default bakes one.
+
+**The underlays exist**, all twelve, from `node tools/bake-scenery.mjs --group=cargo`. This
+is the best-behaved group in the plan: every form is within 4.9 px of the renderer's anchor
+and only `barrel-pile` is off-centre, by 10.2 px. Most also sit close to the default box, so
+D is the one parcel that may not need visual overrides at all — check each against the
+manifest rather than assuming, because `crate-tall` is 76 × 81 against a 75 × 51 box and
+would be squashed to two thirds height without one.
 
 ### E — Household furniture · group `furniture`
 
@@ -652,6 +739,11 @@ This is the parcel the campaign direction actually needs. `CAMPAIGN-BACKLOG.md`
 item 3 asks what a town is and what is on its tile, and item 6 asks what a town's
 social services are. Neither can be authored on a map that has only factory
 furniture. Say so when handing this over.
+
+**The underlays exist**, all six, from `node tools/bake-scenery.mjs --group=furniture`, and
+they are the tidiest set in the plan: every one is within 4.5 px of the anchor and within
+1 px of centre. They are drawn 35 × 37 (`bedside-table`) to 79 × 72 (`single-bed`), so four
+of the six overflow their default box on height and need the override.
 
 ### F — Factory machines · group `machines`
 
@@ -861,6 +953,13 @@ any other parcel in this plan. See the scope note below.
    canonical ones, furniture, cargo forms, machines, the conveyor and the truck are
    explicitly not map prop kinds on the 3D branch. Porting them to sprites creates
    fifteen or more new canonical kinds. Parcels D through H are blocked on a yes.
+
+   The cost side of this has dropped since it was written. D and E are 18 forms whose
+   underlays are already baked, registered and measured, and `furniture` and `cargo` are the
+   two best-behaved groups in the plan — everything within 4.9 px of the anchor, one form
+   off-centre between them. What is left for each is a painting pass and a catalog row. That
+   does not decide the design question, which is about how many kinds the editor should
+   carry, but a yes is now much cheaper to act on than a no is to keep paying for.
 2. **Mature trees: repaint or upscale?** Upstream aliases the existing 2D artwork
    at 1.8×. This plan recommends two new paintings.
 3. **Does the sprite game want a day cycle at all?** S2 is the foundation of
