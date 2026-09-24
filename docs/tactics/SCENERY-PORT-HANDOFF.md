@@ -775,8 +775,9 @@ tower's shell of open windows blocks sight and shots. Here, nobody climbs.
 - **Placement is a renderer field, `foot`:** the footprint centre the bake recorded.
   `catalog-environment.py` copies it from the side manifest, and `environment-renderer.js`
   plants the sprite by it. A sprite without one is drawn exactly as before. This is the
-  field open question 5 asked for. It lands the stair tower, which sank 10 px and which
-  B's marks could not lift, and the ladder tower, 17.9 px off-centre. B's lamps now carry
+  field open question 5 asked for. It lands the stair tower, which the old rule drew 10 px too
+  high and which B's marks, which can only raise a sprite, could not bring down. It also lands the
+  ladder tower, 17.9 px off-centre. B's lamps now carry
   it as well.
 - **The sorting and dimming rule, by the boss's direction:** one sprite on the ground
   layer, sorted at its front corner, dimmed with the ground on upper floors. It fades to
@@ -790,7 +791,10 @@ tower's shell of open windows blocks sight and shots. Here, nobody climbs.
   - the fourteen gallery towers (open question 1).
 - **Checks:**
   - `npm run check` passes, 534 (525 before).
-  - 29 of 29 mutations caught, including review round 1's survivors.
+  - 30 of 30 mutations caught, including the survivors from review rounds 1 and 2.
+  - Hostile review: 8/10 in round 1, then 8/10 in round 2. Both rounds found no failures in the
+    game; they found checks that proved less than claimed. All findings are fixed; see TOWERS.md
+    and the PR.
   - `tools/see-through-proof.mjs` checks the fade in the real game against a control.
   - The review page `dist/tactics/towers-art.html` is clean at four zooms, both
     orientations.
@@ -1094,7 +1098,9 @@ any other parcel in this plan. See the scope note below.
    and the three ladder towers sit 20.7 px off-centre because their declared 6×5 and 7×7
    footprints are not centred on the geometry. (Those figures are the `82e60cf` underlays. At
    `b23334c`, `iron-searchlight-ladder-tower`, with its wider exit, is 17.9 px off-centre and
-   floats 26.5; the stair tower sinks 10.0. See [TOWERS.md](TOWERS.md).)
+   would be drawn 26.5 too low; the stair tower 10.0 too high. "Float" and "sink" above name the
+   model's base against the anchor, and the drawing goes the other way; see the note in
+   [SCENERY-BAKE.md](SCENERY-BAKE.md) and [TOWERS.md](TOWERS.md).)
 
    **Answered for the three canonical towers by the boss, 24 September 2026, and built by C.**
    A tower is one ground-layer sprite, planted by `foot`, and it fades while the player looks

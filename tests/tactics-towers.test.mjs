@@ -135,6 +135,9 @@ test('a tower fades while the player looks behind it, and only then',()=>{
   assert.equal(seeThroughAlpha(box,cells,at(...out,{x:6,y:5})),1,`outside the ${side} side`);
   assert.equal(seeThroughAlpha(box,cells,at(...inside,{x:6,y:5})),FADED,`on the ${side} side`);
  }
+ // Behind it in the same column as the footprint, x 10..14: membership is by tile, not by column.
+ assert.equal(seeThroughAlpha(box,cells,at(240,80,{x:12,y:5})),FADED);
+ assert.equal(seeThroughAlpha(box,cells,at(240,80,{x:5,y:12})),FADED);
  // Beside a front face, where the sprite paints over what stands there: fade too.
  assert.equal(seeThroughAlpha(box,cells,at(360,300,{x:15,y:12})),FADED);
  // Level with the front corner is not behind it: (15, 13) is outside the footprint and sorts with (14, 14).

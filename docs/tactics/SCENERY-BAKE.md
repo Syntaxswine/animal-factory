@@ -151,6 +151,14 @@ byte-identical files.
 any sprite whose group copies its manifest into the catalog. The residuals are still what the old
 rule would do, and still what a painted sprite without `foot` gets.*
 
+*A word on "float" and "sink" in this document, corrected by parcel C's second review. They name
+where the model's base sits against the anchor, not how it is drawn, and the drawing goes the other
+way. The old rule pulls the crop's bottom onto the anchor, so a base **above** the anchor (the
+lamps, the wall fixtures) is drawn too **low**, and a base **below** it (the stair tower's
+overhanging stairs) is drawn too **high**. The tool's console now says it that way. Registration
+marks can only lengthen a crop downwards, which raises the drawn sprite, so they help the first
+kind and never the second.*
+
 The two residuals in the manifest are the renderer's, not the bake's, and no output
 resolution or framing choice touches them. Measured across all 44 forms:
 

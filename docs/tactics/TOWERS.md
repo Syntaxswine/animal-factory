@@ -13,12 +13,16 @@ them.*
 
 ## What shipped
 
-| kind | tiles | drawn at zoom 1 | residual the old anchor rule would have left | see-through |
+| kind | tiles | drawn at zoom 1 | where the old anchor rule would have drawn it | see-through |
 | --- | --- | --- | --- | --- |
-| `wooden-spotlight-tower` | 5 × 5 | 280 × 363 | floats 8.3 px | yes |
-| `iron-searchlight-stair-tower` | 6 × 5 | 249 × 413 | sinks 10.0 px, 6.1 off-centre | yes |
-| `iron-searchlight-ladder-tower` | 6 × 5 | 201 × 377 | floats 26.5 px, 17.9 off-centre | yes |
-| `spotlight` | 1 × 1 | 29 × 109 | floats 3.7 px, 1.8 off-centre | no |
+| `wooden-spotlight-tower` | 5 × 5 | 280 × 363 | 8.3 px too low | yes |
+| `iron-searchlight-stair-tower` | 6 × 5 | 249 × 413 | **10.0 px too high**, 6.1 off-centre | yes |
+| `iron-searchlight-ladder-tower` | 6 × 5 | 201 × 377 | 26.5 px too low, 17.9 off-centre | yes |
+| `spotlight` | 1 × 1 | 29 × 109 | 3.7 px too low, 1.8 off-centre | no |
+
+The baker's manifest and SCENERY-BAKE.md call the first kind "float" and the second "sink". Those words
+describe where the model's base sits against the anchor, and the drawing goes the opposite way. See the
+note in SCENERY-BAKE.md.
 
 The rules are the 3D branch's, exactly. Its `core/environment.js` merges `LIGHT_PROPS` into `PROPS`,
 and `light-sources.js` lists all four in `LIGHT_FORMS`, so each is `{w, h, solid: true, cover: 0}`,
@@ -45,10 +49,12 @@ The renderer used to plant every standing sprite by the bottom middle of its alp
 below the footprint centre. Parcel B made its lamps fit that rule with two invisible marks. A tower
 cannot be fitted to it:
 
-- **The stair tower sinks.** Its stairs hang off one side, so its alpha box already ends 10 px below the
-  anchor. Marks can only move a crop's bottom down, never up.
-- **The ladder tower is 17.9 px off-centre** and floats 26.5 px, because its declared 6 × 5 footprint
-  is not centred on the geometry. Marks could fix this one only by widening the crop a long way.
+- **The stair tower would be drawn 10 px too high.** Its stairs hang off one side, so its alpha box
+  already ends 10 px below the anchor, and the old rule pulls that bottom up onto it. Marks can only
+  lengthen a crop downwards, which raises a sprite, so they cannot bring this one down.
+- **The ladder tower is 17.9 px off-centre**, and would be drawn 26.5 px too low, because its declared
+  6 × 5 footprint is not centred on the geometry. Marks could fix this one only by widening the crop a
+  long way.
 
 So the renderer now has the field that open question 5 asked for. `tools/catalog-environment.py` copies
 each baked sprite's recorded footprint centre (`source.footCentre` in the side manifest) into its
@@ -99,9 +105,23 @@ it if the ground point under the cursor is behind the tower.
 
 `lookTargets` in the same module builds the two targets from the cursor, the hover tile and the selected
 animal, for the layer being drawn, and is tested on its own. `app.js` only calls the two functions.
-`tools/see-through-proof.mjs` shoots the real game with and without the branch, so the wiring can be
-checked again. It refuses when the two shots are identical, which a copy with see-through off in both
-shots confirms.
+`tools/see-through-proof.mjs` shoots the real game with and without the branch, and drives both of its
+paths:
+- the selected animal behind a tower;
+- with animal 4 selected clear of the tower:
+  - the pointer off the canvas;
+  - the pointer on the platform, with ground behind the tower under it;
+  - the pointer on the tower's lower legs, with its own footprint under it.
+
+The first and third must differ with the branch on; the other two must not. It refuses when any case
+goes the wrong way, or when the tower image never loaded.
+
+Against four `app.js` wiring mutants served into the real page, it catches the two that break the
+feature: dropping the cursor path, and dropping the selected-animal path. It misses two, and says so
+here rather than claiming more:
+- **assigning the fade instead of multiplying it**, which only differs on a fogged tower the proof
+  does not construct;
+- **fixing the body offset at zoom 1**, which only moves the animal's point at other zooms.
 
 ![The real game, same map, same moment: left with see-through switched off in the page, right as shipped](towers-see-through.png)
 
@@ -161,6 +181,7 @@ Outside it, under the boss's direction for see-through and the tools carve-out:
 - `dist/tactics/see-through.js`: new, the rule itself and `lookTargets`.
 - `tools/see-through-proof.mjs`: new, the real-game check with a control.
 - `dist/tactics/lighting-art.html`: its overlay caption, which described the old anchor rule.
+- `tools/bake-scenery.mjs`: its console now says which way the old rule draws a subject.
 - `tools/catalog-environment.py`: it copies `foot` from the side manifests. As a result,
   `prop-art-lighting.js` was regenerated and gained `foot`, and nothing else in it changed.
 - `dist/tactics/environment-props-lighting.js`: its comment, which said this renderer could not draw a
@@ -185,8 +206,22 @@ Outside it, under the boss's direction for see-through and the tools carve-out:
   - **After review round 1, 29 of 29.** That set adds the reviewer's own survivors: three sides of the
     see-through box, the alpha read from the module under test, `foot` limited to the towers. It also adds
     four mutants of `lookTargets`.
-- `tools/see-through-proof.mjs` against the real game: 71,503 of 735,900 canvas pixels differ between
-  see-through on and off. A copy with it off in both shots reports 0 and exits 1.
+  - **After review round 2, 30 of 30.** That adds footprint membership by x alone, round 2's survivor.
+- `tools/see-through-proof.mjs` against the real game, four cases, all the right way:
+
+  | case | pixels differing (of 735,900) | expected |
+  | --- | --- | --- |
+  | selected animal behind the tower | 71,503 | differ |
+  | hover, pointer off the canvas | 0 | no difference |
+  | hover, pointer on the platform | 71,276 | differ |
+  | hover, pointer on the lower legs | 0 | no difference |
+
+  It catches 2 of 4 `app.js` wiring mutants, above. An earlier one-case version, with see-through off
+  in both shots, reported 0 and exited 1.
+- **After review round 2:** a behind tile in the footprint's own column is tested, because deciding
+  footprint membership by x alone had survived.
+- The float/sink wording is corrected wherever this parcel uses it, and in the baker's console. The
+  "B's marks could not lift the stair tower" of the first draft had the direction backwards.
 - The review page draws all four at zoom 0.6, 1, 1.15 and 2, in both orientations, with no console
   errors, and fades by the game's own rule under the pointer.
 - The real game draws the towers and fades them, with no page errors; the one 404 is the game page's own

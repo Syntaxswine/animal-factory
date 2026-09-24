@@ -245,6 +245,12 @@ shots of `index.html?map=custom`, with the playtest map in `sessionStorage` set 
 One is as shipped. The other has `page.route` serving the rules file with `seeThrough` removed.
 Everything else is the same page, so the difference in the pictures is the branch.
 
+That proves only the path the scene exercises, though. The first version never moved the mouse, so it
+proved the selected-animal path and said nothing about the hover path, which is the one the boss
+described. Drive every input the branch reads, and add a case that must NOT differ for each one that
+must. Then run the proof against mutants of the page's code, served with `page.route`, to learn what it
+really catches (2 of 4 here). Write the misses down.
+
 **A fixture's own premise needs asserting** *(parcel C)*. A see-through case labelled "level with the
 front corner" was one tile in front of it, and the `<` versus `<=` mutant survived. The fix was
 asserting the fixture's depth in the test. The other survivor was a box whose non-binding side could

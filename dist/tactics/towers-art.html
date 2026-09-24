@@ -21,7 +21,7 @@ import {environmentRenderer,propScreenBox} from './environment-renderer.js';
 import {PROPS,propCells} from './environment.js';
 import {PROPS as TOWERS,FOLDER} from './environment-props-towers.js';
 import {GROUP_PROP_ART} from './prop-art-groups.js';
-import {seeThroughAlpha} from './see-through.js';
+import {seeThroughAlpha,lookTargets} from './see-through.js';
 
 const NAMES={'wooden-spotlight-tower':'Wooden spotlight tower','iron-searchlight-stair-tower':'Iron searchlight tower, stairs','iron-searchlight-ladder-tower':'Iron searchlight tower, ladder','spotlight':'Spotlight'};
 const KINDS=Object.keys(TOWERS);
@@ -67,8 +67,9 @@ function draw(){
  view={ox,oy,zoom};
  ctx.fillStyle='#202c29';ctx.fillRect(0,0,field.width,field.height);
  for(let y=0;y<rows;y++)for(let x=0;x<cols;x++){diamond(project(x,y),zoom,['#56613b','#5a643e','#535e39'][(x*37+y*13)%3]);art.ground(ctx,project,zoom,x,y,'ground-grass');}
- // What the player is looking at, as app.js builds it: the ground tile under the pointer.
- const looking=pointer?[{x:pointer.x,y:pointer.y,tile:pick(pointer.x,pointer.y)}]:[];
+ // What the player is looking at, built by the same lookTargets app.js calls. There is no selected animal
+ // on this page, so it is only the ground tile under the pointer.
+ const looking=lookTargets({renderLevel:0,viewLevel:0,hover:pointer?pick(pointer.x,pointer.y):null,cursor:pointer,selected:null,levelOf:()=>0,project,zoom});
  const depth=t=>t.type==='prop'?Math.max(...propCells(t).map(q=>q.x+q.y)):t.x+t.y;
  let drawn=0,pending=0,faded=0;
  for(const t of [...things].sort((a,b)=>depth(a)-depth(b)||(a.type==='animal')-(b.type==='animal'))){

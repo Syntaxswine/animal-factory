@@ -10,7 +10,7 @@ export const LABEL='Guard towers';
 //
 // visualWidth and visualHeight are the model at true world scale, as tools/bake-scenery.mjs reports it.
 // The sprites are planted by the footprint centre the bake recorded (`foot` in prop-art-towers.js), not by
-// the bottom of the alpha box, which would sink the stair tower 10 px and slide the ladder tower 18.
+// the bottom of the alpha box, which would draw the stair tower 10 px too high and slide the ladder tower 18.
 //
 // seeThrough: the tower fades while the cursor is over it and pointing at something behind it, or while
 // the selected animal stands behind it -- the way a wall would get out of the way (app.js, see-through.js).
