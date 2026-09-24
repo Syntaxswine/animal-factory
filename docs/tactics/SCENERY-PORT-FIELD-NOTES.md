@@ -228,6 +228,28 @@ interior. The quadrant ratio is the light direction, and the ring test says whet
 carries an outline (these don't: ring and interior sit within 6 luma). Sweep a rig against
 subjects both lines have and score on the ratios, not on mean luma, which is mostly albedo.
 
+**A plan's claim about the other branch goes stale before the plan does** *(parcel C)*. The plan
+said climbing "is not wired on either branch". The 3D branch had climb actions a day before the
+plan was written. Before building to a sentence about the other line, `git grep` its tip for the
+thing: here `towerPost`, `towerSlots`, `ladder-journey`. Its map validator is the quickest
+witness, because it names what a map may contain.
+
+**A map kind can hide in a table you are not porting** *(parcel C)*. `spotlight` is in no tower
+list, but it is in `LIGHT_FORMS`, so it is a map kind there, and a 3D map carrying one is refused
+here. To find the kinds a parcel owes interchange, diff the 3D branch's merged `PROPS` keys
+against this game's, not the gallery.
+
+**Prove a render-time rule in the real game with a control that differs only by it** *(parcel C)*.
+The see-through fade lives in `app.js`, which does not import in node. So the proof is two headless
+shots of `index.html?map=custom`, with the playtest map in `sessionStorage` set by `addInitScript`.
+One is as shipped. The other has `page.route` serving the rules file with `seeThrough` removed.
+Everything else is the same page, so the difference in the pictures is the branch.
+
+**A fixture's own premise needs asserting** *(parcel C)*. A see-through case labelled "level with the
+front corner" was one tile in front of it, and the `<` versus `<=` mutant survived. The fix was
+asserting the fixture's depth in the test. The other survivor was a box whose non-binding side could
+change freely; checking both sides imply the same scale caught it.
+
 ## Decisions that look arbitrary and are not
 
 **Parcel A's two mature trees stay in `environment.js`** instead of moving into the

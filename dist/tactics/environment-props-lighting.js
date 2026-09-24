@@ -23,7 +23,8 @@ export const PROPS={
  'cooking-fire':fixture(2,2,74,98)
 };
 // The two the 3D branch also has and this parcel does not ship. It mounts them on a tile edge
-// (light-sources.js fixturePlacement shifts them .48 tile north, or east when rotated) and this renderer
-// has no way to draw a prop off its footprint centre: baked, they land 36 and 52 px from where it would
-// plant them. Until then a 3D map carrying one is refused here as an unknown prop kind.
+// (light-sources.js fixturePlacement shifts them .48 tile north, or east when rotated). Since parcel C the
+// renderer can draw a prop off its footprint centre (`foot`, docs/tactics/TOWERS.md); what is missing is the
+// edge convention, because rotation here is a mirror and there a quarter turn. Until then a 3D map carrying
+// one is refused here as an unknown prop kind.
 export const DEFERRED={'wall-torch':'open question 5: edge mounting','gooseneck-sconce':'open question 5: edge mounting'};

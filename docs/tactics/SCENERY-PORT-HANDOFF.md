@@ -362,7 +362,7 @@ the chain in order is spent.
 | S1 | Catalog seam | 0 | A | `tactics-catalog-seam` | **merged**, PR #16 |
 | S2 | Clock, sun and render hooks | 0 | S1 in practice | `tactics-daylight` | **merged**, PR #17 |
 | B | Lamps, torches and fires | 1 | S1, S2 | `tactics-lighting` | **delivered** — seven floor-standing kinds; the two wall fixtures wait on open question 5 |
-| C | Guard towers and guardhouses | 1 | S1, S2 | `tactics-towers` | claimed — the three canonical towers and `spotlight` |
+| C | Guard towers and guardhouses | 1 | S1, S2 | `tactics-towers` | **delivered** — the three canonical towers and `spotlight`; nobody climbs them |
 | D | Cargo forms | 1 | S1 | — | not started |
 | E | Household furniture | 1 | S1 | — | not started |
 | F | Factory machines | 1 | S1 | — | not started |
@@ -378,7 +378,8 @@ Tooling, which belongs to no parcel and may be used and extended by any of them:
 | Tool | What it gives a parcel | Document |
 | --- | --- | --- |
 | `tools/drawn-size.mjs` | how much of an existing painting the renderer keeps, group art included since B | [MAKING-SCENERY.md](MAKING-SCENERY.md) |
-| `tools/bake-scenery.mjs` | registered underlays and catalog numbers for 44 forms, groups `lighting`, `towers`, `furniture`, `cargo`; since B also `--light=catalogue` (opt-in; the painted catalogue's measured light) and `--register` (invisible marks that land anything that would float exactly on its tile) | [SCENERY-BAKE.md](SCENERY-BAKE.md) |
+| `tools/bake-scenery.mjs` | registered underlays and catalog numbers for 44 forms, groups `lighting`, `towers`, `furniture`, `cargo`; since B also `--light=catalogue` (opt-in; the painted catalogue's measured light) and `--register` (invisible marks that land anything that would float exactly on its tile); since C its manifest's `footCentre` becomes the renderer's `foot`, which plants anything, floating, sinking or off-centre | [SCENERY-BAKE.md](SCENERY-BAKE.md) |
+| `tools/catalog-environment.py` | each group's crop catalog; since C also `foot` from the side manifest | [TOWERS.md](TOWERS.md) |
 | `tools/bake-character-sprites.mjs` | the same trick for characters; out of scope here, read it for the pattern | `SPRITE-BAKE.md` |
 
 Adding a group to the baker is four things — page file, hook name, how to select a subject,
@@ -757,6 +758,46 @@ hook draws it above the compositor. Do not move simulation volumes to make the a
 sit right. Stairs and ladders on these models are art; climbing them is not wired
 on either branch.
 
+**Correction, parcel C:** that last sentence was already false on the 3D branch when
+it was written. Climb actions landed on 22 September (`4a49177`), and since then a 3D
+tower has four posts 6.36 units up, and a guard can start on one (`towerPost`). A
+tower's shell of open windows blocks sight and shots. Here, nobody climbs.
+
+**Delivered 24 September 2026**, branch `tactics-towers`. See [TOWERS.md](TOWERS.md),
+`towers.png` and `towers-see-through.png`.
+
+- **Four kinds:** `wooden-spotlight-tower`, `iron-searchlight-stair-tower`,
+  `iron-searchlight-ladder-tower` and `spotlight`. The spotlight ships because it is a
+  map kind on the 3D branch. They are relit bakes from `b23334c`, a second stated
+  deviation, by the boss's call (open question 9).
+- **Rules are the 3D branch's `LIGHT_PROPS`:** solid footprint, cover 0, not `tall`.
+  `lightMode` and `lightTargets` survive a load.
+- **Placement is a renderer field, `foot`:** the footprint centre the bake recorded.
+  `catalog-environment.py` copies it from the side manifest, and `environment-renderer.js`
+  plants the sprite by it. A sprite without one is drawn exactly as before. This is the
+  field open question 5 asked for. It lands the stair tower, which sank 10 px and which
+  B's marks could not lift, and the ladder tower, 17.9 px off-centre. B's lamps now carry
+  it as well.
+- **The sorting and dimming rule, by the boss's direction:** one sprite on the ground
+  layer, sorted at its front corner, dimmed with the ground on upper floors. It fades to
+  alpha 0.3 while the cursor points at ground behind it, or while the selected animal
+  stands behind it: `see-through.js`, called from `app.js`.
+- **Not done:**
+  - climbing. A 3D map that starts a guard on a tower post is refused here, and a test
+    pins that.
+  - per-column sorting. A unit beside a front face is covered until you look at it.
+  - beams (J) and emission (I).
+  - the fourteen gallery towers (open question 1).
+- **Checks:**
+  - `npm run check` passes, 532 (525 before).
+  - 19 of 19 mutations caught.
+  - The review page `dist/tactics/towers-art.html` is clean at four zooms, both
+    orientations.
+  - The real game, shot with and without see-through, shows the fade.
+- **Files outside the Owns row:** `environment-renderer.js`, `app.js` (three lines),
+  `see-through.js` (new), `catalog-environment.py` and the regenerated
+  `prop-art-lighting.js`. All are listed in TOWERS.md.
+
 ### D — Cargo forms · group `cargo`
 
 Nine new kinds beyond the sprite game's existing `crate-wood`, `crate-steel`,
@@ -1039,12 +1080,23 @@ any other parcel in this plan. See the scope note below.
    failure parcel A fixed for mature trees. Registering the rule without the art would fail the
    asset gate, so the two go in together once the renderer can draw a prop off its footprint
    centre.
+
+   **The renderer half is done, by parcel C.** A catalog row can now carry `foot`, the point in
+   the PNG to plant on the footprint centre, and the renderer honours it; see
+   [TOWERS.md](TOWERS.md). A wall fixture can be drawn anywhere relative to its tile. What is
+   left is the convention: which edge, and what rotation means for it, given the mirror above.
 6. **Three-story props** need a sorting and dimming rule before C can finish. The rule also
    has to carry an anchoring answer, because the towers are the props where drift shows most:
    baked at true world scale they are 183–391 px wide and 363–459 px tall against a default
    box of 250 × 153, the stair and wrap towers sink 10 to 27 px under the renderer's anchor,
    and the three ladder towers sit 20.7 px off-centre because their declared 6×5 and 7×7
    footprints are not centred on the geometry.
+
+   **Answered for the three canonical towers by the boss, 24 September 2026, and built by C.**
+   A tower is one ground-layer sprite, planted by `foot`, and it fades while the player looks
+   behind it, "like walls, where they can get translucent if you are trying to select something
+   behind them". What is still open for the architect is whether to cut such sprites into
+   per-column strips, so a unit beside a front face sorts correctly without the fade.
 7. **Should the environment gate accept art baked at the size it is drawn at?**
    `check-assets.mjs` requires every environment PNG to be 1254 x 1254, and at the default
    zoom the renderer then discards between 98.4% of those pixels (a pine tree, drawn at
@@ -1075,3 +1127,7 @@ any other parcel in this plan. See the scope note below.
    become a morning's work each once open question 1 is answered; if no, B's sprites are
    placeholders awaiting a painter, whose repaint keeps its catalog rows as long as
    `bake-scenery.mjs --remark` restores the registration pixels afterwards.
+
+   Parcel C shipped its four towers the same way, as a second stated deviation, by the boss's
+   call on 24 September 2026. A tower repaint needs no restoring at all, because it is planted
+   by `foot`, a point recorded in the catalog, not by pixels.

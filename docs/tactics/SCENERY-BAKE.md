@@ -126,8 +126,17 @@ at zoom 1 for all of parcel B). Nobody has seen a mark at drawn size; LIGHTING.m
 one could show. They can only move a crop's bottom *down*: a subject that sinks still shows in the
 manifest, which recomputes residuals from the marked image. If the marks would leave the canvas,
 the tool retries the tighter fit; if that fails too it bakes without them and says so. A wall
-fixture is that case. A registration field on the prop record would make the marks unnecessary;
-see open question 5.
+fixture is that case. A registration field would make the marks unnecessary, and since parcel C
+there is one: `foot`, below.
+
+**`foot`, since parcel C.** The bake records where the footprint centre fell in each PNG
+(`footCentre` in the manifest). `tools/catalog-environment.py` copies it from a group's side
+manifest into that group's catalog row. `environment-renderer.js` plants a sprite that has one
+by that point, exactly on the footprint centre, and mirrors it about that point when rotated. It
+fixes all three residuals at once: floating, sinking and off-centre, because nothing is inferred
+from the alpha box any more. A sprite without `foot` is drawn by the old rule, unchanged. Parcel
+B's lamps carry it too now; their marks are redundant and harmless. See
+[TOWERS.md](TOWERS.md).
 
 **`--remark=<side manifest>`.** Restores the marks on PNGs that already exist, a repaint most
 likely, from the `footCentre` and `gameScale` each asset recorded at bake time. It needs no
@@ -137,6 +146,10 @@ marks would leave the canvas. Stripping and restoring the seven shipped lighting
 byte-identical files.
 
 ## What cannot be fixed here
+
+*Since parcel C this heading is history. `foot` (above) fixes every row of the table below for
+any sprite whose group copies its manifest into the catalog. The residuals are still what the old
+rule would do, and still what a painted sprite without `foot` gets.*
 
 The two residuals in the manifest are the renderer's, not the bake's, and no output
 resolution or framing choice touches them. Measured across all 44 forms:

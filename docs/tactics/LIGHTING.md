@@ -155,6 +155,12 @@ They are a stopgap that works with today's renderer. **The bedrock fix is a regi
 on the prop record**, which the wall fixtures need anyway (open question 5). With one, the marks
 go away.
 
+**Since parcel C, that field exists.** `foot`, the footprint centre the bake recorded, is copied
+into `prop-art-lighting.js`, and the renderer plants the lamps by it, which also removes the
+as-drawn residual in the table above. The marks are now redundant but harmless: the tests above
+still hold them, and `--remark` still restores them. Removing them is a cleanup for whoever
+next re-bakes the lamps. See [TOWERS.md](TOWERS.md).
+
 `tests/tactics-lighting.test.mjs` checks the registration against numbers recorded at bake time,
 not against the tool that made the PNGs. `manifest-lighting.json` carries each sprite's
 `footCentre` (where the footprint centre fell, in that PNG's pixels) and `gameScale`. The test
