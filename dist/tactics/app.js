@@ -17,7 +17,7 @@ import {unitArt} from './red-hats-art.js';
 import {drawBody} from './body-art.js';
 import {PROPS,propCells} from './environment.js';
 import {environmentRenderer,propScreenBox} from './environment-renderer.js';
-import {seeThroughAlpha} from './see-through.js';
+import {seeThroughAlpha,lookTargets} from './see-through.js';
 import {bounds,inView,focusSector,sectorOverview} from './view.js';
 import {paintDaylight} from './daylight.js';
 import {runScenePass} from './scene-passes.js';
@@ -100,7 +100,7 @@ function drawObjects(now){const numbers=new Map(cards().map((u,i)=>[u.id,i+1]));
  objects.sort(paintOrder);
  // What the player is looking at, for props that get out of the way (see-through.js): the ground tile
  // under the cursor, and the selected animal's body.
- const looking=[];if(renderLevel===viewLevel){if(hover&&cursor)looking.push({x:cursor.x,y:cursor.y,tile:hover});const u=selected();if(u&&levelOf(u)===renderLevel){const p=project(u.x,u.y);looking.push({x:p.x,y:p.y-25*camera.zoom,tile:u});}}
+ const looking=lookTargets({renderLevel,viewLevel,hover,cursor,selected:selected(),levelOf,project,zoom:camera.zoom});
  for(const obj of objects){const {x,y,type}=obj,visible=obj.visible??s.visible.has(key(x,y,renderLevel));ctx.globalAlpha=visible?1:.45;
   if(type==='prop'){if(PROPS[obj.kind]?.seeThrough)ctx.globalAlpha*=seeThroughAlpha(propScreenBox(project,camera.zoom,obj),propCells(obj),looking);art.prop(ctx,project,camera.zoom,obj);}
   else if(type==='loot'){if(!drawLootPile(ctx,load,obj,project(x,y),camera.zoom))diamond(x,y,'#d5b95870','#f2d78c',0,.35);}

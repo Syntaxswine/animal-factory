@@ -85,10 +85,23 @@ they are harmless, B's tests still hold them, and `--remark` still restores them
 
 "Behind" means outside the footprint and sorting before the footprint's front corner (`x + y` less
 than the front corner's). That is also every tile the renderer paints under the tower, so a unit
-standing beside a front face, which the single sprite wrongly covers, fades it too. Hovering the tower's
-own footprint, or anything in front of it, does not fade it. The cursor's tile is found the way the game
-already picks tiles, by projecting the cursor onto the ground, so pointing at a tower's cabin is pointing
-at the ground far behind it, which is the case that needs the fade.
+standing beside a front face, which the single sprite wrongly covers, fades it too. It does not fade
+when the cursor is over the tower's own footprint, or over a tile level with or in front of its front
+corner. The cursor's tile is found the way the game already picks tiles, by projecting the cursor onto
+the ground, so pointing at a tower's cabin is pointing at the ground far behind it, which is the case
+that needs the fade.
+
+The test is the sprite's box, not its painted shape. Pointing at a transparent corner of the box, with
+ground behind the tower under the cursor, fades it too. That is looking behind it, and it keeps the rule
+cheap: one rectangle and one footprint per tower per frame. The cursor's tile is the ground pick, not the
+unit under the cursor, so pointing at an animal in front of a tower whose head overlaps the tower fades
+it if the ground point under the cursor is behind the tower.
+
+`lookTargets` in the same module builds the two targets from the cursor, the hover tile and the selected
+animal, for the layer being drawn, and is tested on its own. `app.js` only calls the two functions.
+`tools/see-through-proof.mjs` shoots the real game with and without the branch, so the wiring can be
+checked again. It refuses when the two shots are identical, which a copy with see-through off in both
+shots confirms.
 
 ![The real game, same map, same moment: left with see-through switched off in the page, right as shipped](towers-see-through.png)
 
@@ -127,6 +140,9 @@ the ground, so a unit behind a tower could always be selected; it just could not
   and a round trip, and are tested, so both parcels have something to read.
 - **The fourteen gallery towers** are not map kinds on either branch: open question 1.
 - **Per-column sorting**, above.
+- **See-through in the map editor.** The editor draws props through the same renderer but has no
+  selected animal, and it was not given the fade. Placing something behind a 363 px tower there means
+  panning, or placing the tower last.
 - **Mirroring flips the key light**, as for every painted prop, and puts the stair tower's stairs on the
   other side. On the 3D branch, rotation is a quarter turn, so a rotated tower there and here have their
   stairs on different sides, as with B's bedside table.
@@ -142,7 +158,9 @@ Outside it, under the boss's direction for see-through and the tools carve-out:
 - `dist/tactics/environment-renderer.js`: the `foot` field, `propPlacement` and `propScreenBox`.
   Drawing without `foot` is unchanged, and the test holds it.
 - `dist/tactics/app.js`: the see-through call, in three lines of `drawObjects`.
-- `dist/tactics/see-through.js`: new, the rule itself.
+- `dist/tactics/see-through.js`: new, the rule itself and `lookTargets`.
+- `tools/see-through-proof.mjs`: new, the real-game check with a control.
+- `dist/tactics/lighting-art.html`: its overlay caption, which described the old anchor rule.
 - `tools/catalog-environment.py`: it copies `foot` from the side manifests. As a result,
   `prop-art-lighting.js` was regenerated and gained `foot`, and nothing else in it changed.
 - `dist/tactics/environment-props-lighting.js`: its comment, which said this renderer could not draw a
@@ -158,11 +176,17 @@ Outside it, under the boss's direction for see-through and the tools carve-out:
 
 ## Verification
 
-- `npm run check` passes, 532 tests (525 before), plus the asset gate.
-- Mutation round on the parcel, the renderer field and the see-through rule, run in a sandbox copy that
-  passed unmutated first: 19 of 19 caught. The first run caught 17. The two survivors were a see-through
-  fixture that was not level with the front corner as it claimed, and a drawn-box check that read only
-  the binding side; both tests were fixed.
+- `npm run check` passes, 534 tests (525 before), plus the asset gate.
+- Mutation rounds on the parcel, the renderer field and the see-through rule, run in a sandbox copy that
+  passed unmutated first:
+  - **First, 19 mutations.** The first run caught 17. The two survivors were a see-through fixture that
+    was not level with the front corner as it claimed, and a drawn-box check that read only the binding
+    side. Both tests were fixed.
+  - **After review round 1, 29 of 29.** That set adds the reviewer's own survivors: three sides of the
+    see-through box, the alpha read from the module under test, `foot` limited to the towers. It also adds
+    four mutants of `lookTargets`.
+- `tools/see-through-proof.mjs` against the real game: 71,503 of 735,900 canvas pixels differ between
+  see-through on and off. A copy with it off in both shots reports 0 and exits 1.
 - The review page draws all four at zoom 0.6, 1, 1.15 and 2, in both orientations, with no console
   errors, and fades by the game's own rule under the pointer.
 - The real game draws the towers and fades them, with no page errors; the one 404 is the game page's own

@@ -9,7 +9,11 @@ import {PROPS,propCells,propBlocks,propTall} from '../dist/tactics/environment.j
 import {blankMap,parseMap} from '../dist/tactics/maps.js';
 import {createEditor,applyBrush} from '../dist/tactics/editor-model.js';
 import {createGame,walkable} from '../dist/tactics/engine.js';
-import {seeThroughAlpha,SEE_THROUGH_ALPHA} from '../dist/tactics/see-through.js';
+import {seeThroughAlpha,lookTargets} from '../dist/tactics/see-through.js';
+import {PROPS as LIGHTING} from '../dist/tactics/environment-props-lighting.js';
+import {GROUP_PROP_ART as LIGHTING_ART} from '../dist/tactics/prop-art-lighting.js';
+// The fade the docs promise, spelled out rather than read from the module under test.
+const FADED=.3;
 
 // Parcel C: three guard towers and the spotlight, baked out of the 3D branch and planted by the footprint
 // centre the bake recorded. See docs/tactics/TOWERS.md.
@@ -120,23 +124,53 @@ test('a tower fades while the player looks behind it, and only then',()=>{
  const box={x:100,y:0,w:280,h:363},cells=propCells({kind:'wooden-spotlight-tower',x:10,y:10,z:0});
  const at=(x,y,tile)=>[{x,y,tile}];
  // The cursor over the tower's cabin points at ground far behind it.
- assert.equal(seeThroughAlpha(box,cells,at(240,80,{x:6,y:5})),SEE_THROUGH_ALPHA);
+ assert.equal(seeThroughAlpha(box,cells,at(240,80,{x:6,y:5})),FADED);
  // Over the tower, but at a tile in front of it: nothing hidden, no fade.
  assert.equal(seeThroughAlpha(box,cells,at(240,350,{x:15,y:16})),1);
  // At the tower's own footprint: that is the tower, not something behind it.
  assert.equal(seeThroughAlpha(box,cells,at(240,340,{x:12,y:12})),1);
- // Behind it, but the cursor is not over the sprite.
- assert.equal(seeThroughAlpha(box,cells,at(60,80,{x:6,y:5})),1);
+ // A tile behind it, with the cursor just outside the sprite on each of its four sides: no fade. And just
+ // inside each side: fade. The box is 100..380 across and 0..363 down.
+ for(const [out,inside,side] of [[[99,80],[100,80],'left'],[[381,80],[380,80],'right'],[[240,-1],[240,0],'top'],[[240,364],[240,363],'bottom']]){
+  assert.equal(seeThroughAlpha(box,cells,at(...out,{x:6,y:5})),1,`outside the ${side} side`);
+  assert.equal(seeThroughAlpha(box,cells,at(...inside,{x:6,y:5})),FADED,`on the ${side} side`);
+ }
  // Beside a front face, where the sprite paints over what stands there: fade too.
- assert.equal(seeThroughAlpha(box,cells,at(360,300,{x:15,y:12})),SEE_THROUGH_ALPHA);
+ assert.equal(seeThroughAlpha(box,cells,at(360,300,{x:15,y:12})),FADED);
  // Level with the front corner is not behind it: (15, 13) is outside the footprint and sorts with (14, 14).
  assert.equal(Math.max(...cells.map(c=>c.x+c.y)),15+13,'the fixture is level with the front corner');
  assert.equal(seeThroughAlpha(box,cells,at(360,300,{x:15,y:13})),1);
  // The selected animal behind it, with the cursor elsewhere entirely.
- assert.equal(seeThroughAlpha(box,cells,[{x:900,y:900,tile:{x:1,y:1}},{x:200,y:150,tile:{x:8,y:9}}]),SEE_THROUGH_ALPHA);
+ assert.equal(seeThroughAlpha(box,cells,[{x:900,y:900,tile:{x:1,y:1}},{x:200,y:150,tile:{x:8,y:9}}]),FADED);
  // Nothing to look at, or nothing to fade.
  assert.equal(seeThroughAlpha(box,cells,[]),1);
  assert.equal(seeThroughAlpha(null,cells,at(240,80,{x:6,y:5})),1);
+});
+
+test('what the player is looking at, as app.js asks for it each layer',()=>{
+ const levelOf=u=>u.z??0,project=(x,y)=>({x:10*x,y:10*y}),cursor={x:5,y:6},hover={x:3,y:4};
+ const cow={x:7,y:8,z:0},base={renderLevel:0,viewLevel:0,hover,cursor,selected:cow,levelOf,project,zoom:2};
+ // Both: the cursor's ground tile, and the selected animal's body 25 px up at zoom 1, so 50 at zoom 2.
+ assert.deepEqual(lookTargets(base),[{x:5,y:6,tile:hover},{x:70,y:30,tile:cow}]);
+ // Nothing on a layer the player is not viewing.
+ assert.deepEqual(lookTargets({...base,renderLevel:1}),[]);
+ // No cursor on the map: only the animal. No animal selected: only the cursor.
+ assert.deepEqual(lookTargets({...base,hover:null}),[{x:70,y:30,tile:cow}]);
+ assert.deepEqual(lookTargets({...base,cursor:null}),[{x:70,y:30,tile:cow}]);
+ assert.deepEqual(lookTargets({...base,selected:null}),[{x:5,y:6,tile:hover}]);
+ // The animal is upstairs while the player views the ground: it is not behind anything down here.
+ assert.deepEqual(lookTargets({...base,selected:{...cow,z:1}}),[{x:5,y:6,tile:hover}]);
+});
+
+test("parcel B's lamps are planted by their recorded foot too",()=>{
+ const art=environmentRenderer();
+ for(const kind of Object.keys(LIGHTING))for(const rotated of [false,true]){
+  const c=recorder(),p={kind,x:7,y:3,z:0,rotated},r=PROPS[kind];
+  assert.ok(LIGHTING_ART[kind].foot,`${kind} has no foot`);
+  assert.equal(art.prop(c,project,zoom,p),true,kind);
+  const w=rotated?r.h:r.w,h=rotated?r.w:r.h,q=project(p.x+(w-1)/2,p.y+(h-1)/2),[sx,sy]=lands(c.calls[0],LIGHTING_ART[kind].foot);
+  assert.ok(Math.abs(sx-q.x)<1e-9&&Math.abs(sy-q.y)<1e-9,`${kind}${rotated?' rotated':''}: foot lands ${(sx-q.x).toFixed(3)}, ${(sy-q.y).toFixed(3)} off`);
+ }
 });
 
 test('placed, exported, reloaded and walked into in both orientations, with the 3D fields riding along',()=>{
@@ -159,12 +193,17 @@ test('placed, exported, reloaded and walked into in both orientations, with the 
    assert.equal(propTall(map,c.x,c.y,c.z),false,`${p.kind} would hide what is behind it from sight`);
   }
  }
- // The gap, pinned so it cannot change unnoticed: the 3D branch lets a guard start on a tower post (a
- // climber standing on top). Nobody climbs here, so that map is refused, by name, not loaded wrong.
+ // The gap, pinned so it cannot change unnoticed. The 3D branch lets a guard or a squad member start on
+ // a tower post, a climber standing on top; its towerSlots are tiles inside the footprint. Nobody climbs
+ // here, and the footprint is solid, so this game refuses that map for the tile it stands on. towerPost
+ // itself is not what is read; the point is that such a map is refused by name, not loaded wrong.
  const posted=blankMap();posted.props=[{kind:'wooden-spotlight-tower',x:20,y:20,z:0}];
  const guard={x:21,y:21,z:0,species:'goat',weapon:'pistol',towerPost:{dx:-1,dy:-1,kind:'wooden-spotlight-tower'}};
  posted.guards=[guard];
  assert.throws(()=>parseMap(JSON.stringify(posted)),/Unit start needs a walkable floor at 21,21/);
  guard.x=30;guard.y=30;delete guard.towerPost;
  assert.doesNotThrow(()=>parseMap(JSON.stringify(posted)),'the same guard on open ground loads');
+ const squad=JSON.parse(JSON.stringify(posted));
+ squad.starts[0]={x:22,y:21,z:0,towerPost:{dx:-2,dy:-1,kind:'wooden-spotlight-tower'}};
+ assert.throws(()=>parseMap(JSON.stringify(squad)),/Unit start needs a walkable floor at 22,21/);
 });

@@ -4,6 +4,16 @@
 // Parcel C of docs/tactics/SCENERY-PORT-HANDOFF.md; see docs/tactics/TOWERS.md.
 export const SEE_THROUGH_ALPHA=.3;
 
+// What the player is looking at, on the layer being drawn: the ground tile under the cursor, and the
+// selected animal's body, 25 px above its feet at zoom 1. Only on the layer the player is viewing, and
+// the animal only when it stands on that layer. app.js calls this once per layer and passes the result on.
+export function lookTargets({renderLevel,viewLevel,hover,cursor,selected,levelOf,project,zoom}){
+ const out=[];if(renderLevel!==viewLevel)return out;
+ if(hover&&cursor)out.push({x:cursor.x,y:cursor.y,tile:hover});
+ if(selected&&levelOf(selected)===renderLevel){const p=project(selected.x,selected.y);out.push({x:p.x,y:p.y-25*zoom,tile:selected});}
+ return out;
+}
+
 // box: the prop's box on screen {x,y,w,h}. cells: its footprint tiles.
 // targets: [{x,y,tile:{x,y}}], a screen point and the ground tile it stands for.
 // A tile is behind the prop when it is outside the footprint and sorts before the footprint's front

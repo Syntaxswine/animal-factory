@@ -789,14 +789,16 @@ tower's shell of open windows blocks sight and shots. Here, nobody climbs.
   - beams (J) and emission (I).
   - the fourteen gallery towers (open question 1).
 - **Checks:**
-  - `npm run check` passes, 532 (525 before).
-  - 19 of 19 mutations caught.
+  - `npm run check` passes, 534 (525 before).
+  - 29 of 29 mutations caught, including review round 1's survivors.
+  - `tools/see-through-proof.mjs` checks the fade in the real game against a control.
   - The review page `dist/tactics/towers-art.html` is clean at four zooms, both
     orientations.
   - The real game, shot with and without see-through, shows the fade.
 - **Files outside the Owns row:** `environment-renderer.js`, `app.js` (three lines),
-  `see-through.js` (new), `catalog-environment.py` and the regenerated
-  `prop-art-lighting.js`. All are listed in TOWERS.md.
+  `see-through.js` (new), `tools/see-through-proof.mjs` (new), `catalog-environment.py`,
+  the regenerated `prop-art-lighting.js`, and comment or caption edits in
+  `environment-props-lighting.js` and `lighting-art.html`. All are listed in TOWERS.md.
 
 ### D — Cargo forms · group `cargo`
 
@@ -1090,7 +1092,9 @@ any other parcel in this plan. See the scope note below.
    baked at true world scale they are 183–391 px wide and 363–459 px tall against a default
    box of 250 × 153, the stair and wrap towers sink 10 to 27 px under the renderer's anchor,
    and the three ladder towers sit 20.7 px off-centre because their declared 6×5 and 7×7
-   footprints are not centred on the geometry.
+   footprints are not centred on the geometry. (Those figures are the `82e60cf` underlays. At
+   `b23334c`, `iron-searchlight-ladder-tower`, with its wider exit, is 17.9 px off-centre and
+   floats 26.5; the stair tower sinks 10.0. See [TOWERS.md](TOWERS.md).)
 
    **Answered for the three canonical towers by the boss, 24 September 2026, and built by C.**
    A tower is one ground-layer sprite, planted by `foot`, and it fades while the player looks
