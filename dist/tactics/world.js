@@ -15,7 +15,11 @@ export const BORDER=3,SIDES={north:{dx:0,dy:-1},east:{dx:1,dy:0},south:{dx:0,dy:
 export function linksFrom(positions){const ids=Object.keys(positions),links=[];for(const a of ids)for(const b of ids)if(a<b&&Math.abs(positions[a].x-positions[b].x)+Math.abs(positions[a].y-positions[b].y)===1)links.push([a,b]);return links;}
 export function createWorld(custom=null,difficulty='standard',rosterSeed=1947) {
   const positions={factory:{x:0,y:0},yard:{x:1,y:0},annex:{x:2,y:0}};
-  return {difficulty,current:'factory',start:'factory',clock:{minutes:mapStartMinutes(custom),incomeRemainder:0},money:0,journeys:0,lastIncome:0,locations:{factory:{type:'factory'},yard:{type:'yard'},annex:{type:'factory'}},definitions:{factory:custom||factoryMap(),yard:generateMap(83,'Freight yard'),annex:generateMap(126,'Outer factory')},rosterSeed,nextId:MERC_ID_BASE,hired:[],states:{factory:createGame(1947,custom||factoryMap(),true,difficulty,{social:true,rosterSeed})},positions,links:linksFrom(positions)};
+  const world={difficulty,current:'factory',start:'factory',clock:{minutes:mapStartMinutes(custom),incomeRemainder:0},money:0,journeys:0,lastIncome:0,locations:{factory:{type:'factory'},yard:{type:'yard'},annex:{type:'factory'}},definitions:{factory:custom||factoryMap(),yard:generateMap(83,'Freight yard'),annex:generateMap(126,'Outer factory')},rosterSeed,nextId:MERC_ID_BASE,hired:[],states:{factory:createGame(1947,custom||factoryMap(),true,difficulty,{social:true,rosterSeed})},positions,links:linksFrom(positions)};
+  // Parcel I: a map's state reads the campaign clock, so detection knows when it is dark. The same object,
+  // not a copy: the clock moves and every state sees it move.
+  world.states.factory.clock=world.clock;
+  return world;
 }
 export const currentMap=world=>world.states[world.current];
 // Shortest overmap route from the original starting tile, never from the squad.
@@ -123,6 +127,7 @@ function landing(s,start,occupied) {
 function entryTile(next,u){const from=u.away;if(!from)return next.definition.starts[u.id]??next.definition.starts[0];/* a hired merc has no start of its own: it lands beside the first */return {x:from.side==='east'?0:from.side==='west'?W-1:from.x,y:from.side==='south'?0:from.side==='north'?H-1:from.y,z:0};}
 function arrivalPlan(world,destination){
   const previous=currentMap(world),next=world.states[destination]||createGame(1947,world.definitions[destination],false,world.difficulty,{social:true,rosterSeed:world.rosterSeed});
+  next.clock=world.clock;
   const occupied=new Set(guards(next).map(u=>tileKey(u.x,u.y,levelOf(u)))),places=new Map();
   for(const u of previous.units.filter(u=>u.team==='squad')){const p=landing(next,entryTile(next,u),occupied);if(!p)return {ok:false,error:'No free arrival tile.'};places.set(u.id,p);if(alive(u)||u.away)occupied.add(tileKey(p.x,p.y,levelOf(p)));}
   return {ok:true,next,places};

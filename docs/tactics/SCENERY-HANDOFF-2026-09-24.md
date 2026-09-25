@@ -96,7 +96,10 @@ blocking. The plan has the full text and the measurements.
 
 In the order I would take them.
 
-1. **Parcel I: artificial light and detection.**
+1. ~~**Parcel I: artificial light and detection.**~~ **Delivered 25 September**, branch `tactics-light`,
+   stacked on #22; see [ARTIFICIAL-LIGHTING.md](ARTIFICIAL-LIGHTING.md). The boss added the numbers:
+   an unlit animal at night is seen from 15 tiles, a lamp-lit one from the full 60. What follows is the
+   brief as it stood.
    - It depends on S2 (merged) and B (#21), so it can start as soon as #21 merges, or be stacked on it.
    - The brief is in the plan: port the 3D branch's `light-sources.js`. That is the emitter offsets, the
      30-tile range, the stepped falloff, and `lightEnabled` with `lightMode` and condition.

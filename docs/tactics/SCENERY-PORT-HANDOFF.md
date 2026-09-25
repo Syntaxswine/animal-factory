@@ -372,7 +372,7 @@ the chain in order is spent.
 | F | Factory machines | 1 | S1 | — | not started |
 | G | Connecting conveyors | 1 | S1 | — | not started |
 | H | Canvas truck | 1 | S1 | — | not started |
-| I | Artificial light and detection | 2 | S2, B | `tactics-light` | claimed |
+| I | Artificial light and detection | 2 | S2, B | `tactics-light` | **delivered** — night hides you, lamps give you away; spot beams are J |
 | J | Sweeping spotlights | 2 | I, C | — | not started |
 | K | Ground cover: tufts and undergrowth | 2 | S2 | `tactics-ground-cover` | **merged**, PR #18 |
 | M | Repainting the existing catalog | 3 | — | — | not started |
@@ -900,6 +900,23 @@ source's own footprint. Light must never bypass the sight cone or line of sight.
 **Owns.** `dist/tactics/light-sources.js` (new), `dist/tactics/light-render.js`
 (new), `dist/tactics/visibility.js`, `dist/tactics/perception.js`,
 `dist/tactics/engine.js`, `docs/tactics/ARTIFICIAL-LIGHTING.md` (new), its tests.
+
+**Delivered 25 September 2026**, branch `tactics-light`. See [ARTIFICIAL-LIGHTING.md](ARTIFICIAL-LIGHTING.md).
+
+- **The boss's rule:** night hides you. An unlit animal is seen from 15 tiles, a lamp-lit one from the
+  full 60: `range × (0.25 + 0.75 × light)`, where light is daylight plus lamps, capped at 1. By day
+  nothing changes.
+- **The port:** `light-sources.js` is ported from `b23334c`, with the bulbs, the falloff and the
+  schedule. The map state reads the campaign clock through `world.js`.
+- **Drawing:** the drawn pools are the rule itself, tile for tile. They stop at walls, show only on seen
+  ground, and sit over the night wash, a stated change from the brief's `light` pass.
+- **Editor:** a Light selector (Automatic, Always on, Off).
+- **Not done:** spot beams, which are J.
+- **Checks:**
+  - `npm run check` passes, 544.
+  - 26 of 27 mutations caught; the survivor is recorded as equivalent.
+  - In the real game at midnight, a guard 37 tiles away misses the squad in the dark and spots it under a
+    lamp.
 
 ### J — Sweeping spotlights
 
