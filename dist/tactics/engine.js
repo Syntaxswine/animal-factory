@@ -149,12 +149,14 @@ export function notices(s,a,b){
  if(!canSee(s,a,b)){delete records[b.id];return false;}
  if(old?.seen)return true;
  const stamp=[s.round,a.x,a.y,levelOf(a),a.heading,a.steps,b.x,b.y,levelOf(b),b.steps].join(',');
- if(old?.stamp===stamp)return false;
+ // Parcel I: nothing in the stamp moves with the light, so the same draw is compared again with the current
+ // chance. A roll that failed in the dark can succeed as the dawn comes up, without a fresh roll.
+ if(old?.stamp===stamp){if(old.draw<detectionChance(s,a,b)){old.seen=true;return true;}return false;}
  // Independent deterministic stream leaves combat RNG untouched.
  let hash=(s.perceptionSeed??1947)>>>0;
  for(const c of a.id+':'+b.id+':'+stamp)hash=Math.imul(hash^c.charCodeAt(0),16777619)>>>0;
  hash^=hash>>>16;hash=Math.imul(hash,0x45d9f3b);hash^=hash>>>16;
- const seen=(hash>>>0)/4294967296<detectionChance(s,a,b);records[b.id]={stamp,seen};return seen;
+ const draw=(hash>>>0)/4294967296,seen=draw<detectionChance(s,a,b);records[b.id]={stamp,seen,draw};return seen;
 }
 // Every trigger that can put several guards in Alert at once (a refresh's sightings, a gunshot's alarm ring) is one cascade: a listener that
 // declined a shout is not re-asked by the next guard the same trigger alerts.
@@ -327,7 +329,7 @@ export function attack(s,a,b,burst=false,byAI=false,zone='torso',reaction=false)
   if(shot)trajectories.push(...(pellets||[shot]));
   const victim=ballistic?s.units.find(u=>u.id===shot.unitId):accurate&&alive(target)?target:null;
   const event={shooter:shooter.id,target:target.id,ax:shooter.x,ay:shooter.y,bx:f.aim.x,by:f.aim.y,az:levelOf(shooter),bz:levelOf(f.aim),hit:!!victim,incendiary:!!w.incendiary,trajectories:pellets||(shot?[shot]:[]),explosions:[],downed:[],reply:f.reply};sequence.push(event);
-  const blastResult=w.blast?detonate(s,shot,w):null;if(blastResult)forgetLight(s);
+  const blastResult=w.blast?detonate(s,shot,w):null;if(blastResult)forgetLight(s,true);
   if(blastResult){event.explosions.push(blastResult.blast);explosions.push(blastResult.blast);event.hit=blastResult.hits.length>0;log(s,`${shooter.name}: ${w.short} detonated / ${blastResult.blast.destroyed} structures destroyed.`);}
   if(!victim&&!blastResult&&!pellets){log(s,`${shooter.name} → ${target.name}: miss${f.reply?' / retaliation':''}.`);continue;}
   const pelletHits=pellets?.map(p=>({unit:s.units.find(u=>u.id===p.unitId),zone:p.zone,damage:Math.round(w.damage*AIM_ZONES[p.zone||f.zone].damage*(shooter.team==='guard'?.65:1))})).filter(p=>p.unit);

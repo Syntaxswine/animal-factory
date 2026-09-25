@@ -915,11 +915,13 @@ source's own footprint. Light must never bypass the sight cone or line of sight.
 - **Clock:** the world rechecks detection every minute while daylight eases, so a squad standing still
   is found at dawn. The first review caught that it was not.
 - **Checks:**
-  - `npm run check` passes, 550.
-  - 40 of 43 mutations caught; two survivors are equivalent and one is not reached, all recorded.
+  - `npm run check` passes, 554.
+  - 45 of 49 mutations caught; two survivors are equivalent and two are engine call sites no test
+    reaches, all recorded.
   - In the real game at midnight, a guard 37 tiles away misses the squad in the dark and spots it under a
     lamp. At dawn, it finds a squad that never moves.
-  - Hostile review: round 1 scored 6/10, and every finding is fixed.
+  - Hostile review: 6/10 in round 1, then 7/10 in round 2. Every finding is fixed; a third round waits
+    on the boss.
 
 ### J — Sweeping spotlights
 

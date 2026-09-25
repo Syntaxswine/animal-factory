@@ -88,10 +88,12 @@ export function lightEpoch(minutes){
  const d=daylightStrength(minutes);
  return d>=1?'day':d<=0?'night':`easing|${Math.floor(minutes)}`;
 }
-// Opening a door, cutting a fence or blowing a wall changes where light reaches without moving the state's
-// revision. The engine calls this wherever it does one of those: it drops the lamp memo, and bumps
-// s.lightVersion, which light-render.js's drawing cache also watches.
-export const forgetLight=s=>{lampCache.delete(s);s.lightVersion=(s.lightVersion||0)+1;};
+// Opening a door changes where light reaches without moving the state's revision, and a blast can change it
+// before anything moves the revision (a crate destroyed is terrain, not an edge). The engine calls this after
+// each: it drops the lamp memo and bumps s.lightVersion, which light-render.js's drawing cache watches. The
+// drawing redoes only the bulbs near a changed edge, unless `terrain` says the ground itself changed, which
+// no edge comparison can see (s.lightTerrain): then it redoes every bulb.
+export const forgetLight=(s,terrain=false)=>{lampCache.delete(s);s.lightVersion=(s.lightVersion||0)+1;if(terrain)s.lightTerrain=(s.lightTerrain||0)+1;};
 
 // Sight through the dark, by the boss's rule of 24 September 2026: an unlit animal is seen from a quarter of
 // the daylight range (15 of 60 tiles), one lit by a lamp from the full range, and in between in proportion.

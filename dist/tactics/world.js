@@ -49,10 +49,10 @@ export function advanceTime(world,minutes){
 export function tickWorld(world,elapsedMs,{paused=false}={}){
  if(paused||currentMap(world).phase==='lost'||!Number.isFinite(elapsedMs)||elapsedMs<=0)return 0;
  const minutes=elapsedMs/1000*PLAY_MINUTES_PER_SECOND,epoch=lightEpoch(world.clock.minutes),income=advanceTime(world,minutes);settleMorale(world,currentMap(world),minutes);settleContracts(world,currentMap(world));
- // Parcel I: light changes who can see whom with nobody moving, at dawn, at dusk and when the lamps switch.
- // Detection is otherwise only rechecked when someone acts, so recheck it here, and move the revision so
- // the interface follows.
- const s=currentMap(world);if(lightEpoch(world.clock.minutes)!==epoch&&s.phase!=='lost'){refresh(s);s.revision=(s.revision||0)+1;}
+ // Parcel I: light changes who can see whom with nobody moving, every minute of dawn and dusk. Detection is
+ // otherwise only rechecked when someone acts, so recheck it here. refresh moves the revision itself, so the
+ // interface and every revision-keyed cache follow.
+ const s=currentMap(world);if(lightEpoch(world.clock.minutes)!==epoch&&s.phase!=='lost')refresh(s);
  return income;
 }
 // G5: happiness is settled whenever the campaign clock advances (exploration, downtime, travel). A waiting crosser counts as on its destination.

@@ -210,7 +210,8 @@ test('the world rechecks detection as the light changes, with nobody moving', ()
  assert.deepEqual(where(), before, 'nobody moved');
  assert.equal(s.detected.size, 1, 'the squad sees the goat at dawn');
  assert.ok(goat.alert, 'and the goat has seen the squad');
- // The epoch changes every minute while daylight eases, and at the lamps' switch; otherwise not.
+ // The epoch changes every minute while daylight eases, and not otherwise: 06:00 ends the dawn (easing to
+ // day), and the lamps' own switch at 06:00 and 18:00 falls in full daylight, where it changes no one's light.
  assert.notEqual(lightEpoch(325), lightEpoch(326));
  assert.equal(lightEpoch(600), lightEpoch(900)); assert.equal(lightEpoch(1250), lightEpoch(1400));
  assert.notEqual(lightEpoch(359), lightEpoch(360));
@@ -283,4 +284,64 @@ test('the drawn light is a standing body, and the pool eases in at dusk', () => 
  const makeCanvas = (w, h) => ({width: w, height: h, getContext: () => ({createImageData: (w, h) => ({data: new Uint8ClampedArray(w * h * 4)}), putImageData() {}})});
  assert.equal(paintLight(ctx, {project: (x, y) => ({x, y}), zoom: 1, level: 0, state: s, minutes: 1140}, makeCanvas), true);
  assert.ok(Math.abs(ctx.globalAlpha - .15) < 1e-12, `alpha ${ctx.globalAlpha}`);
+});
+
+// Review round 2.
+
+test('a blast that destroys a crate lets the fire light the ground behind it, drawn and detected', async () => {
+ const {detonate} = await import('../dist/tactics/explosives.js');
+ const {WEAPONS} = await import('../dist/tactics/engine.js');
+ const m = blankMap(); m.props = [{kind: 'campfire', x: 6, y: 10, z: 0}]; setTerrain(m, 7, 10, 0, 'crate');
+ const s = createGame(1, parseMap(JSON.stringify(m)), false); s.clock = {minutes: MIDNIGHT};
+ const row = () => [8, 9, 10].map(x => [cachedTiles(s, MIDNIGHT, 0).get(x + ',10')?.light ?? 0, illuminationAt(s, {x, y: 10, z: 0}, MIDNIGHT)]);
+ assert.deepEqual(row(), [[0, 0], [0, 0], [0, 0]], 'the crate shadows the low fire');
+ const blast = detonate(s, {x: 9.4, y: 10, h: .08, z: 0}, WEAPONS.grenade);
+ assert.ok(blast, 'the premise: the grenade went off');
+ // What engine.js does after a blast: the ground changed, so every bulb is redone.
+ forgetLight(s, true);
+ assert.deepEqual(row(), [[1, 1], [1, 1], [1, 1]], 'lit, and drawn lit');
+});
+
+test('replacing the props redoes the drawn light', () => {
+ const {s} = scene(MIDNIGHT, [{kind: 'campfire', x: 10, y: 10, z: 0}]);
+ assert.equal(cachedTiles(s, MIDNIGHT, 0).get('12,10').light, 1);
+ // A crate beside the fire: a new props array and a new revision, as a map change would bring.
+ s.props = [...s.props, {kind: 'crate-wood', x: 11, y: 10, z: 0}]; s.revision = (s.revision || 0) + 1;
+ const now = illuminationAt(s, {x: 12, y: 10, z: 0}, MIDNIGHT);
+ assert.ok(now < 1, 'the premise: the crate shadows (12, 10) from the fire');
+ assert.equal(cachedTiles(s, MIDNIGHT, 0).get('12,10')?.light ?? 0, now);
+});
+
+test('a door far from one lamp still redoes that lamp, where its light meets another pool', () => {
+ // Lamp A at (10, 10), lamp B at (32, 10), a wall on the east edges of x = 20 with a door at y = 10. Tile
+ // (23, 10) is 9 from B (half light) and 13 from A through the doorway (a quarter): the door is 10 from A.
+ const edges = Object.fromEntries(Array.from({length: 40}, (_, y) => [`e:20:${y}`, y === 10 ? 'door-wood-closed' : 'wall']));
+ const {s} = scene(MIDNIGHT, [{kind: 'floor-lamp', x: 10, y: 10, z: 0}, {kind: 'floor-lamp', x: 32, y: 10, z: 0}], edges);
+ assert.equal(cachedTiles(s, MIDNIGHT, 0).get('23,10').light, .5, 'only B, while the door is shut');
+ s.edges['e:20:10'] = 'doorway-concrete-open'; forgetLight(s);
+ assert.equal(illuminationAt(s, {x: 23, y: 10, z: 0}), .75, 'the premise: A reaches it through the doorway');
+ assert.equal(cachedTiles(s, MIDNIGHT, 0).get('23,10').light, .75, 'and the drawing redid A');
+});
+
+test('a notice roll that failed in the dark succeeds as the light comes up, with nobody moving', () => {
+ // A goat 7 tiles from Yakov, looking at him, from 04:50 to 06:10. In the dark its chance of noticing is
+ // .717; in daylight .892. Its one draw for this stamp falls between the two (the premise, checked below),
+ // so it fails at night and must succeed by sunrise, without anyone moving and without a fresh roll.
+ const start = (minutes) => {
+  const m = blankMap(); m.time = {startMinutes: minutes};
+  m.guards = [{x: 10, y: 4, z: 0, species: 'goat', weapon: 'pistol', heading: 180}];
+  const world = createWorld(parseMap(JSON.stringify(m))), s = currentMap(world);
+  return {world, s, goat: s.units.find(u => u.team === 'guard'), yakov: s.units.find(u => u.team === 'squad' && u.x === 3 && u.y === 4)};
+ };
+ const dawn = start(290);
+ assert.ok(!dawn.goat.alert, 'the premise: in the dark the roll failed');
+ const record = dawn.goat.noticed?.[dawn.yakov.id];
+ assert.ok(record && record.draw > detectionChance(dawn.s, dawn.goat, dawn.yakov), 'the premise: the draw is above the dark chance');
+ const before = JSON.stringify(dawn.s.units.map(u => [u.x, u.y]));
+ for (let i = 0; i < 80; i++) tickWorld(dawn.world, 1000);
+ assert.equal(JSON.stringify(dawn.s.units.map(u => [u.x, u.y])), before, 'nobody moved');
+ assert.ok(record.draw < detectionChance(dawn.s, dawn.goat, dawn.yakov), 'the premise: and below the daylight one');
+ assert.ok(dawn.goat.alert, 'by 06:10 the goat has noticed him');
+ // Control: the same map opened at 06:10.
+ assert.ok(start(370).goat.alert);
 });

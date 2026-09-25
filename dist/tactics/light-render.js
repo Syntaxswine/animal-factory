@@ -88,10 +88,10 @@ export function cachedTiles(s,minutes,level){
  let entry=byLevel.get(level);if(!entry){entry={bulbs:new Map(),edges:{},props:null};byLevel.set(level,entry);}
  const lamps=lightSources(s.props,minutes),keys=lamps.map(bulbKey).join(';'),edges=s.edges||{};
  if(entry.revision===s.revision&&entry.lightVersion===s.lightVersion&&entry.keys===keys&&entry.tiles)return entry.tiles;
- if(entry.props!==s.props){entry.bulbs.clear();entry.props=s.props;}
+ if(entry.props!==s.props||entry.lightTerrain!==s.lightTerrain){entry.bulbs.clear();entry.props=s.props;entry.lightTerrain=s.lightTerrain;}
  const changed=changedEdgeCells(entry.edges,edges);
  if(changed.length)for(const [k,lamp] of [...entry.bulbs])if(changed.some(([x,y])=>Math.hypot(x-lamp.x,y-lamp.y)<=LIGHT_RANGE+2))entry.bulbs.delete(k);
- let recomputed=!!changed.length||entry.keys!==keys;
+ let recomputed=!!changed.length||entry.keys!==keys||!entry.bulbs.size;
  const perBulb=lamp=>{const k=bulbKey(lamp);let b=entry.bulbs.get(k);if(!b){b={x:lamp.x,y:lamp.y,tiles:bulbTiles(s,lamp,level)};entry.bulbs.set(k,b);recomputed=true;}return b.tiles;};
  const tiles=litTiles(s,minutes,level,perBulb);
  if(recomputed||!entry.tiles){entry.tiles=tiles;entry.map=undefined;}

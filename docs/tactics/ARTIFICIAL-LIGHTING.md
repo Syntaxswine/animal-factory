@@ -43,6 +43,13 @@ range  = sightRange × (0.25 + 0.75 × light)
   `.95 − .5 × distance / range`, and the range is now the lit one. At 10 tiles an unlit animal at night
   is noticed with 0.62, against 0.87 by day or in lamplight. This follows from the same rule, "how far
   you can see", and it is tested.
+- **A notice roll follows the light too.** A guard rolls once per stamp: its position and heading, the
+  target's, and the round. Nothing in the stamp moves with the light, so the stored draw is compared
+  again with the current chance.
+  - A roll that failed in the dark succeeds as the dawn raises the chance, without a fresh roll and
+    without anyone moving.
+  - The second review found a goat 7 tiles away that never noticed a squad through a whole sunrise.
+    It now does, at every distance from 5 to 14 tiles, matching a map opened at 06:10.
 - **Light never gets around the sight cone or line of sight.** It only changes how far the cap reaches.
 - **The sneaking floor is scaled too.** A sneaking target's cap has a floor of 8 tiles, and in the
   dark that becomes 2. So a prone, silent sneaker at night is identified only up to 2 tiles away dead
@@ -85,8 +92,11 @@ standing still at dawn stayed hidden until someone moved. The first review caugh
 
 - `tickWorld` now compares `lightEpoch` before and after each tick. The epoch changes every minute while
   daylight eases, and not otherwise, since the lamps switch at 06:00 and 18:00, when daylight is exactly 1.
-- When it changes, `tickWorld` runs the engine's `refresh` and moves the state's revision, so the
-  interface and every revision-keyed cache follow.
+- When it changes, `tickWorld` runs the engine's `refresh`. That moves the state's revision itself, so
+  the interface and every revision-keyed cache follow.
+  - Cost: on a 46-guard map with 20 lamps, the second review measured a median of 23 ms per refresh,
+    once per game minute through dusk and dawn. That is about one dropped frame a second while the light
+    changes.
 - **In the real game:** a map starting at 05:25, one goat 37 tiles away facing the squad, nobody moving.
   It reads "Local map ready" at 05:28, then **CONTACT, "You have been seen"** at 05:37, with nobody
   moving.
@@ -126,16 +136,26 @@ At night the selected animal's sight cone shrinks with the dark to 60 × (0.25 +
 what that animal can see of an unlit target. A lit guard can still be seen from further away than the cone
 shows.
 
-## Doors, fences and blasts
+## Doors and blasts
 
-Opening a door, cutting a fence and blowing a wall change where light reaches, and none of them moves the
-state's revision. The engine calls `forgetLight` after each one, which does two things:
-- it drops the detection memo;
-- it bumps `s.lightVersion`, which the drawing cache watches.
+**Opening a door changes where light reaches without moving the state's revision.** A guard's move can
+look first (and fill the memo), then open a door, then refresh detection, all at one revision. So the
+engine calls `forgetLight` wherever it opens one. That drops the detection memo and bumps
+`s.lightVersion`, which the drawing cache watches. The drawing then redoes only the bulbs within reach
+of the changed edge.
 
-This matters within one step. A guard's move can look first (and fill the memo), then open a door, then
-refresh detection, all at one revision. A test opens a door beside a lamp and checks both detection and
-the drawing see through it.
+**A blast can destroy a crate,** which is terrain, not an edge, so no edge comparison sees it.
+- The engine calls `forgetLight(s, true)` after a blast, and the drawing redoes every bulb.
+- Crates are 0.8 tiles tall, so only the low fires are shadowed by them. The second review found a dark
+  wedge left behind a destroyed crate; a test now blows one up beside a campfire.
+
+**A cut chain-link fence changes nothing.** It is not opaque. The engine still calls `forgetLight` after
+a cut, which is harmless. Cuts and blasts also move the revision through the log, so the door is the
+case that needed the call.
+
+A test opens a door beside a lamp and checks that detection and the drawing both see through it. Another
+opens a door 10 tiles from one lamp, where its light meets a second lamp's pool, and checks the far lamp
+is redone.
 
 ## Cost
 
@@ -185,21 +205,36 @@ handling, this document and its two figures, and `tests/tactics-light.test.mjs`.
 
 ## Verification
 
-- `npm run check` passes: 550 tests, 534 before.
-- **Mutation rounds,** in a sandbox copy that passed unmutated first. The last run caught 40 of 43.
+- `npm run check` passes: 554 tests, 534 before.
+- **Mutation rounds,** in a sandbox copy that passed unmutated first. The last run caught 45 of 49.
   - **First round, 26 of 27.** It found three gaps, each now tested:
     - the bedside table is the one lamp with cover, so its own footprint can shadow its bulb;
     - two lamps must not add past daylight;
     - a fire burning at noon must still draw nothing.
     It also found a mismatch where pools overlap: the drawing counted only the bulbs within 15 tiles.
   - **The review's thirteen mutants, re-aimed, plus the new pieces.** Eleven of the reviewer's had
-    survived; all are caught now. Three mutants still survive, and each is recorded:
+    survived; all are caught now.
+  - **Round 2's additions:**
+    - the dark roll holding through dawn;
+    - props replaced without redoing the bulbs;
+    - a terrain change without redoing them;
+    - the redo radius cut to 5;
+    - the terrain flag ignored.
+
+    All are caught.
+  - **Four mutants still survive,** and each is recorded:
     - the in-bounds check on drawn tiles, **equivalent**: the trace already refuses a ray from off the map.
       It stays because it saves those traces;
     - the minute in the detection memo, **equivalent**, as above;
     - the engine's door wrapper forgetting nothing, **not reached**: no test walks a unit through a door
       in the engine. The effect it guards, light through a newly opened door, is tested through
-      `forgetLight` directly.
+      `forgetLight` directly;
+    - the engine's blast passing no terrain flag, **not reached** for the same reason. The effect, a
+      destroyed crate no longer shadowing a fire, is tested through `forgetLight(s, true)` directly.
 - **The real game,** with controls: the midnight contact figure above, and the dawn run in "Clock".
-- **Review:** round 1 scored 6/10. Its two must-fixes, a stale clock and drawn-versus-detected light,
-  are fixed and tested, and so are its should-fixes. The full list is in the PR.
+- **Review, two rounds:**
+  - **Round 1, 6/10.** Must-fixes: a stale clock, and drawn-versus-detected light.
+  - **Round 2, 7/10.** It confirmed every round-1 fix in code and in the game. Its must-fix was the
+    drawing's per-bulb cache missing a blast that destroys a crate. Its should-fixes were a dark notice
+    roll holding through dawn and test gaps.
+  - All are fixed and tested. The full lists are in the PR. A third round needs the boss's word.
