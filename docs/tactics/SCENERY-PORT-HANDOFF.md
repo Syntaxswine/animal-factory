@@ -339,6 +339,10 @@ wrongly scoped; stop and say so here.
 
 ### Status
 
+**What is left, as of 24 September 2026, is in
+[SCENERY-HANDOFF-2026-09-24.md](SCENERY-HANDOFF-2026-09-24.md):** the merge order for the open stack,
+the architect's questions ranked by what they block, and the work ready to build. Start there.
+
 Working notes from the sessions that built Stage 0, including the traps and the
 verification rigs, are in [SCENERY-PORT-FIELD-NOTES.md](SCENERY-PORT-FIELD-NOTES.md), and
 how to decide what a piece of scenery should be made of, with the measurements, is in

@@ -301,6 +301,9 @@ file. Open the file.
 
 ## What I would do next
 
+*Superseded on 24 September 2026 by [SCENERY-HANDOFF-2026-09-24.md](SCENERY-HANDOFF-2026-09-24.md).
+B and C are both built: C is [TOWERS.md](TOWERS.md), PR #22. The list below is kept as it was written.*
+
 1. ~~**Parcel K, ground cover.**~~ Done, PR #18. It turned out to need no artwork at all:
    at the size these shapes are drawn, painted leaves and flat procedural blobs are the same
    picture. That is worth knowing before commissioning art for anything else small.
