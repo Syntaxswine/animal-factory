@@ -1061,6 +1061,9 @@ any other parcel in this plan. See the scope note below.
    off-centre between them. What is left for each is a painting pass and a catalog row. That
    does not decide the design question, which is about how many kinds the editor should
    carry, but a yes is now much cheaper to act on than a no is to keep paying for.
+
+   **Answered by the boss, 24 September 2026: yes.** D–H are unblocked. See
+   [SCENERY-HANDOFF-2026-09-24.md](SCENERY-HANDOFF-2026-09-24.md), §0.
 2. **Mature trees: repaint or upscale?** Upstream aliases the existing 2D artwork
    at 1.8×. This plan recommends two new paintings.
 3. **Does the sprite game want a day cycle at all?** S2 is the foundation of
@@ -1069,6 +1072,12 @@ any other parcel in this plan. See the scope note below.
 4. **The spotlight instant-reveal rule** overrides sneaking, stance and foliage
    concealment. That is a balance decision, not a visual one, and `STEALTH.md`
    currently promises the opposite.
+
+   **Answered by the boss, 24 September 2026:** "if anyone is in the tower or has line of sight on
+   them they are automatically spotted. if there is one guard, not in the tower, and he is looking the
+   opposite way they are not automatically spotted." So light alone reveals nobody. A lit animal is
+   spotted at once when a guard is manning the tower or has line of sight to it. `STEALTH.md`'s
+   promise stands for a lit animal that nobody is watching.
 5. **Wall-mounted props** have no precedent here. `wall-torch` and
    `gooseneck-sconce` need an edge-mounting convention before B can finish. Now measured, by
    `tools/bake-scenery.mjs`: this is not a rounding problem. `gooseneck-sconce` hangs 41.8 px
@@ -1095,6 +1104,10 @@ any other parcel in this plan. See the scope note below.
    the PNG to plant on the footprint centre, and the renderer honours it; see
    [TOWERS.md](TOWERS.md). A wall fixture can be drawn anywhere relative to its tile. What is
    left is the convention: which edge, and what rotation means for it, given the mirror above.
+
+   **Answered by the boss, 24 September 2026:** a wall fixture can go on any wall, and it does not
+   block standing. There is a sketch in [SCENERY-HANDOFF-2026-09-24.md](SCENERY-HANDOFF-2026-09-24.md),
+   §0. So the prop carries a side, and a 3D map's north (or east, rotated) maps onto it.
 6. **Three-story props** need a sorting and dimming rule before C can finish. The rule also
    has to carry an anchoring answer, because the towers are the props where drift shows most:
    baked at true world scale they are 183–391 px wide and 363–459 px tall against a default
@@ -1145,3 +1158,6 @@ any other parcel in this plan. See the scope note below.
    Parcel C shipped its four towers the same way, as a second stated deviation, by the boss's
    call on 24 September 2026. A tower repaint needs no restoring at all, because it is planted
    by `foot`, a point recorded in the catalog, not by pixels.
+
+   **The boss, 24 September 2026:** "I believe they are final art, but you can show me pictures and I
+   can clarify better." Treat them as final unless the boss says otherwise on seeing them.

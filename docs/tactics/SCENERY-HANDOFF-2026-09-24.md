@@ -9,6 +9,38 @@ Parcels A, S1, S2 and K are merged. B (lamps) and C (towers) are built, reviewed
 Everything below is either a decision, a parcel nobody has started, or a follow-up that B or C left on
 purpose and wrote down.
 
+## 0. The boss's answers, later the same day
+
+Asked "what questions do you have?", the boss answered eight. These override anything below that
+still reads as open, and the sections below have been updated to match.
+
+1. **Merging.** "If you pushed it, it's been approved." There is no third review of #22; the stack
+   #19–#22 is approved to merge. The merge itself was refused by the session's permission checker, so
+   the boss runs it (§1).
+2. **Stale PRs.** "If the changes were already adopted then they can be closed." #16, #17, #18 and
+   #5 were closed, each with a comment giving the ancestry check. Their branches still exist.
+3. **Parcel I, light: yes.** It is the next parcel.
+4. **Open question 1: yes.** Furniture, cargo, machines, conveyors and the truck become prop kinds,
+   which unblocks D–H.
+5. **Open question 9:** "I believe they are final art, but you can show me pictures and I can clarify
+   better." The bakes are final unless the boss says otherwise on seeing them.
+6. **Open question 4, spotlights and being spotted.** The boss's words: "if anyone is in the tower or
+   has line of sight on them they are automatically spotted. if there is one guard, not in the tower,
+   and he is looking the opposite way they are not automatically spotted." So a beam does not reveal
+   anyone by itself. A lit animal is spotted at once when a guard is manning that tower, or when a guard
+   has line of sight to it. With no one in the tower and no guard seeing it, standing in the light gives
+   nothing away on its own. This is the rule for parcels I and J.
+7. **Open question 5, wall fixtures.** A wall fixture can go on **any wall**, and it **does not block
+   standing**: the tile under it stays walkable. The 3D branch agrees on walkability (`solid: !wall`).
+   It only mounts north, or east when rotated; "any wall" is wider than that, so the prop needs a
+   side, and a 3D map's north/east must map onto it. The boss's sketch:
+
+   ![A gooseneck lamp on a wall panel at the back of a floor tile, its light falling on the tile](wall-fixture-sketch.webp)
+8. **Climbing: port it.** "For now you can just 'teleport' the sprite up, just skip the animation
+   and move the character." It follows the same rules as any other action:
+   - no AP, no climb in turn-based;
+   - if someone is standing at the top or at the bottom, the ladder cannot be used.
+
 ## 1. Waiting to merge: four stacked PRs
 
 Merge them bottom-up, in this order. Each one is based on the one before, so merging out of order
@@ -23,18 +55,26 @@ drags the lower ones in unreviewed.
 
 At #22's tip, `npm run check` passes 534 tests.
 
-**Before merging #22**, the boss decides one thing: whether to run a third hostile review on it. The
-review cap allows two rounds and then asks. Neither round found anything broken in the game. Both
-found checks that claimed more than they proved, and every one of those is fixed. So a third round is a
-fair bet at 9/10, and so is sending it to the architect at 8.
+**Approved by the boss, not yet merged.** The session's permission checker refused the merge as
+"merge without review", so the boss runs it. The whole stack is a fast-forward: `tactics-prototype`
+(`a3d2d6b`) is an ancestor of `tactics-towers`. Landing it the way #14 landed keeps every commit SHA
+the docs quote. Push each PR's tip to the base in turn, and GitHub marks each one merged:
 
-**Also open with the boss:** PRs [#16](https://github.com/Syntaxswine/animal-factory/pull/16),
+```
+git fetch origin
+git push origin origin/tactics-scenery-docs:tactics-prototype
+git push origin origin/tactics-scenery-baker:tactics-prototype
+git push origin origin/tactics-lighting:tactics-prototype
+git push origin origin/tactics-towers:tactics-prototype
+```
+
+Check that all four read MERGED before deleting any head branch.
+
+**Closed:** PRs [#16](https://github.com/Syntaxswine/animal-factory/pull/16),
 [#17](https://github.com/Syntaxswine/animal-factory/pull/17),
 [#18](https://github.com/Syntaxswine/animal-factory/pull/18) and
-[#5](https://github.com/Syntaxswine/animal-factory/pull/5) are still open, but their branches are
-already ancestors of `tactics-prototype` (checked with `git merge-base --is-ancestor origin/<branch>
-origin/tactics-prototype`). Closing them, and removing their branches and worktrees, needs the boss's
-yes.
+[#5](https://github.com/Syntaxswine/animal-factory/pull/5), whose branches are ancestors of
+`tactics-prototype`. Their branches and local worktrees are still there.
 
 ## 2. Waiting on the architect
 
@@ -43,10 +83,10 @@ blocking. The plan has the full text and the measurements.
 
 | # | question | blocks | state |
 | --- | --- | --- | --- |
-| 1 | Do furniture, cargo, machines, conveyor and the truck become prop kinds at all? | parcels **D, E, F, G, H** | open. D and E are 18 forms already baked and measured, so a yes is cheap |
-| 9 | May a relit bake ship as the deliverable? | whether B and C are final or placeholders; how D and E get made | open. B and C both shipped bakes as stated deviations, C on the boss's call |
-| 4 | Spotlight instant-reveal overrides sneaking; `STEALTH.md` promises the opposite | parcel **J** | open, a balance call |
-| 5 | Edge-mounting convention for `wall-torch` and `gooseneck-sconce` | B's last two kinds; 3D maps carrying them are refused | **half done.** C added `foot`, so the renderer can draw a prop anywhere. What is left is which edge, and what rotation means for it, because rotation here is a mirror and there a quarter turn |
+| 1 | Do furniture, cargo, machines, conveyor and the truck become prop kinds at all? | parcels **D, E, F, G, H** | **yes, the boss, 24 Sep** (§0). D–H are unblocked |
+| 9 | May a relit bake ship as the deliverable? | whether B and C are final or placeholders; how D and E get made | **final art, the boss, 24 Sep**, pending a look at the pictures (§0) |
+| 4 | Spotlight instant-reveal overrides sneaking; `STEALTH.md` promises the opposite | parcel **J** | **answered, the boss, 24 Sep** (§0, item 6): spotted at once only when a guard mans the tower or has line of sight to the lit animal |
+| 5 | Edge-mounting convention for `wall-torch` and `gooseneck-sconce` | B's last two kinds; 3D maps carrying them are refused | **answered, the boss, 24 Sep**: any wall, does not block standing (§0, item 7). C's `foot` draws it. Left to design: a `side` on the prop, and mapping the 3D north/east onto it |
 | 6 | Sorting and dimming for three-story props | nothing now | **answered** for the canonical towers by the boss (see-through). Still open: per-column sorting (§3) |
 | 8 | Scenery at the 3D line's world scale, or the sprite sheet's animals? They differ by 9% | every baked parcel inherits it | open. B and C both used the 3D scale |
 | 7 | Should the 1254² asset gate flex per entry? | disk and load time, not correctness | open. It wants a per-entry budget, not one number |
@@ -62,6 +102,9 @@ In the order I would take them.
      30-tile range, the stepped falloff, and `lightEnabled` with `lightMode` and condition.
    - Both B's and C's maps already keep `lightMode`, and C's keep a spotlight's `lightTargets`. Tests pin
      both, so I has data to read from day one.
+   - **Approved by the boss (§0, item 3), and next.** Detection follows §0, item 6: light makes an
+     animal seeable, but only a watcher spots it. That watcher is a guard with line of sight, or a guard
+     manning a tower.
 2. **Flickering flames on B's four fires.**
    - The flames are baked into the sprite and do not move.
    - `app.js` needs to push per-prop flame pieces into the paint sort. S2's `propPieceDepth` in
@@ -99,17 +142,32 @@ stair journeys with their own animation.
 
 Here, a tower is a solid footprint that blocks nothing above the ground. **A 3D map that starts a guard or
 a squad member on a tower post is refused here**, and a test in `tests/tactics-towers.test.mjs` pins
-that. Porting climbing is a gameplay parcel, not an art one: elevation, sight, shots and movement. It
-needs its own brief from the architect before anyone starts it.
+that. Porting climbing is a gameplay parcel, not an art one: elevation, sight, shots and movement.
 
-## 5. Blocked or last
+**The boss's brief, 24 September (§0, item 8):**
+- Port climbing, without the animation for now: the climber moves to the top, or back down, in one step.
+- It is an action like any other, so in turn-based it costs AP, and without the AP there is no climb.
+- The ladder or stairs cannot be used while someone stands at the top or at the bottom.
 
-- **Parcels D–H**: open question 1. The baker has no adapters for `machines`, `conveyor` or `vehicles`
-  yet; add one there rather than starting a second tool.
-- **Parcel J**, sweeping spotlights: needs I first, and open question 4.
-- **Parcel M**, repainting the existing catalog: runs alone, because it rewrites PNGs every other parcel
+What the port needs from the 3D branch:
+- `tower-geometry.js`: `towerSlots`, `towerEntry`, `towerPost`, `towerForUnit`, `unitBaseHeight`;
+- `tower-actions.js`, for the action and its cost;
+- the shell that blocks sight and shots.
+
+Once climbing exists, a 3D map that starts a guard on a post should load, and the refusal test in
+`tests/tactics-towers.test.mjs` should flip to a load test.
+
+## 5. Unblocked by the boss's answers, and what is still last
+
+- **Parcels D–H** are unblocked (open question 1, yes). D and E are 18 forms already baked and
+  measured. The baker has no adapters for `machines`, `conveyor` or `vehicles` yet; add one there
+  rather than starting a second tool.
+- **Parcel J**, sweeping spotlights, needs I first. Its spotting rule is §0, item 6.
+- **The two wall fixtures** (B's last kinds): any wall, walkable (§0, item 7).
+- **Parcel M**, repainting the existing catalog, runs alone, because it rewrites PNGs every other parcel
   reads. Take it first or last, never interleaved.
-- **The fourteen gallery towers**: open question 1.
+- **The fourteen gallery towers**: map kinds now (open question 1, yes). They are 14 more bakes, and the
+  wrap and stair variants need `foot`.
 
 ## 6. For whoever runs the next session
 
