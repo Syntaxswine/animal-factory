@@ -9,10 +9,13 @@ import {ARCHETYPES,drawArchetype,hearingScale,stepsScale,cellsScale,alertScale,n
 export {ARCHETYPES,NAMES as ARCHETYPE_NAMES,drawArchetype,drawSquad,rungOf,retaliationScale,bond as archetypeBond,shoutRadius,describeArchetype} from './archetypes.js';
 export {inCone,headingTo,bearingOffset,sightOf,identifyRange,detectRange,acuity,SIGHT,JOHNSON} from './perception.js';
 import {woodlandDepth} from './woodland.js';
+import {illuminationAt,sightScale,forgetLight} from './light-sources.js';
+// A door that opens changes where light reaches, without moving the state's revision (parcel I).
+const openDoorBetween=(s,a,b)=>{const opened=openEdge(s,a,b);if(opened)forgetLight(s);return opened;};
 import {terrainVisibility,TERRAIN_RANGE,CHARACTER_RANGE} from './visibility.js';
 export {TERRAIN_RANGE,CHARACTER_RANGE} from './visibility.js';
 import {PROPS,EDGES,propAt,propTall,propCells} from './environment.js';
-import {W,H,factoryMap,validateMap,openDoorBetween,blockedEdge,levelOf,tileKey,terrainAt,neighbors,stairSet,canStep,LEVELS,passable,sightEdge,edgeBetween,edgeCells,inBounds} from './maps.js';
+import {W,H,factoryMap,validateMap,openDoorBetween as openEdge,blockedEdge,levelOf,tileKey,terrainAt,neighbors,stairSet,canStep,LEVELS,passable,sightEdge,edgeBetween,edgeCells,inBounds} from './maps.js';
 export {W,H} from './maps.js';
 export const WEAPONS={
  hands:{name:'Workers’ fists',short:'Hands',cost:3,range:1,damage:16,mag:0},
@@ -125,13 +128,16 @@ export function threatens(s,g){
 }
 export const sightRange=(a,b)=>b?.sneaking?Math.max(8,CHARACTER_RANGE-20-(b.stealth||0)*.2-(stanceOf(b)==='prone'?10:0)):CHARACTER_RANGE;
 // 0 unseen, 1 glimpsed (a moving target inside the detect lobe), 2 identified (inside the identify lobe). Walls block both. See docs/tactics/SIGHT.md.
-export function perceive(s,a,b){const cap=sightRange(a,b),d=distance(a,b)+9*woodlandDepth(s,a,b);if(d<=identifyRange(a,b,cap))return lineOfSight(s,a,b)?2:0;if(b.moved&&d<=detectRange(a,b,cap))return lineOfSight(s,a,b)?1:0;return 0;}
+// Parcel I: in the dark an unlit body is seen from a quarter of that range, a lamp-lit one from all of it
+// (light-sources.js, docs/tactics/ARTIFICIAL-LIGHTING.md). By day the scale is 1 and nothing changes.
+export const litSightRange=(s,a,b)=>sightRange(a,b)*sightScale(illuminationAt(s,b));
+export function perceive(s,a,b){const cap=litSightRange(s,a,b),d=distance(a,b)+9*woodlandDepth(s,a,b);if(d<=identifyRange(a,b,cap))return lineOfSight(s,a,b)?2:0;if(b.moved&&d<=detectRange(a,b,cap))return lineOfSight(s,a,b)?1:0;return 0;}
 export const glimpsed=(s,a,b)=>perceive(s,a,b)>=1;
 export const canSee=(s,a,b)=>perceive(s,a,b)===2;
 // Awareness rolls are cached until movement or a new turn; UI refresh never rerolls.
 export function detectionChance(s,a,b){
  if(!canSee(s,a,b))return 0;
- const range=identifyRange(a,b,sightRange(a,b));
+ const range=identifyRange(a,b,litSightRange(s,a,b));
  let chance=.95-.5*Math.min(1,distance(a,b)/Math.max(1,range));
  if(b.sneaking)chance*=Math.max(.2,.55-(b.stealth||0)*.003);
  if(stanceOf(b)==='kneeling')chance*=.75;else if(stanceOf(b)==='prone')chance*=.45;
@@ -143,12 +149,14 @@ export function notices(s,a,b){
  if(!canSee(s,a,b)){delete records[b.id];return false;}
  if(old?.seen)return true;
  const stamp=[s.round,a.x,a.y,levelOf(a),a.heading,a.steps,b.x,b.y,levelOf(b),b.steps].join(',');
- if(old?.stamp===stamp)return false;
+ // Parcel I: nothing in the stamp moves with the light, so the same draw is compared again with the current
+ // chance. A roll that failed in the dark can succeed as the dawn comes up, without a fresh roll.
+ if(old?.stamp===stamp){if(old.draw<detectionChance(s,a,b)){old.seen=true;return true;}return false;}
  // Independent deterministic stream leaves combat RNG untouched.
  let hash=(s.perceptionSeed??1947)>>>0;
  for(const c of a.id+':'+b.id+':'+stamp)hash=Math.imul(hash^c.charCodeAt(0),16777619)>>>0;
  hash^=hash>>>16;hash=Math.imul(hash,0x45d9f3b);hash^=hash>>>16;
- const seen=(hash>>>0)/4294967296<detectionChance(s,a,b);records[b.id]={stamp,seen};return seen;
+ const draw=(hash>>>0)/4294967296,seen=draw<detectionChance(s,a,b);records[b.id]={stamp,seen,draw};return seen;
 }
 // Every trigger that can put several guards in Alert at once (a refresh's sightings, a gunshot's alarm ring) is one cascade: a listener that
 // declined a shout is not re-asked by the next guard the same trigger alerts.
@@ -321,7 +329,7 @@ export function attack(s,a,b,burst=false,byAI=false,zone='torso',reaction=false)
   if(shot)trajectories.push(...(pellets||[shot]));
   const victim=ballistic?s.units.find(u=>u.id===shot.unitId):accurate&&alive(target)?target:null;
   const event={shooter:shooter.id,target:target.id,ax:shooter.x,ay:shooter.y,bx:f.aim.x,by:f.aim.y,az:levelOf(shooter),bz:levelOf(f.aim),hit:!!victim,incendiary:!!w.incendiary,trajectories:pellets||(shot?[shot]:[]),explosions:[],downed:[],reply:f.reply};sequence.push(event);
-  const blastResult=w.blast?detonate(s,shot,w):null;
+  const blastResult=w.blast?detonate(s,shot,w):null;if(blastResult)forgetLight(s,true);
   if(blastResult){event.explosions.push(blastResult.blast);explosions.push(blastResult.blast);event.hit=blastResult.hits.length>0;log(s,`${shooter.name}: ${w.short} detonated / ${blastResult.blast.destroyed} structures destroyed.`);}
   if(!victim&&!blastResult&&!pellets){log(s,`${shooter.name} → ${target.name}: miss${f.reply?' / retaliation':''}.`);continue;}
   const pelletHits=pellets?.map(p=>({unit:s.units.find(u=>u.id===p.unitId),zone:p.zone,damage:Math.round(w.damage*AIM_ZONES[p.zone||f.zone].damage*(shooter.team==='guard'?.65:1))})).filter(p=>p.unit);
@@ -419,7 +427,7 @@ function fleeTurn(s,g,target){
 export function stabilizePreview(s,medic,patient){const cost=medicalCost(medic);let reason='';if(!canControl(s,medic)||s.queue.length)reason='Cannot act now';else if(!s.units.includes(patient)||patient.team!=='squad'||patient.casualty!=='bleeding'||patient.bleedTurns<=0)reason='Choose a bleeding teammate';else if(!medic.medkits)reason='No medkits remaining';else if(levelOf(medic)!==levelOf(patient)||Math.abs(medic.x-patient.x)+Math.abs(medic.y-patient.y)!==1||blockedEdge(s,medic,patient))reason='Stand beside the casualty with an open edge';else if(combatCosts(s)&&medic.ap<cost)reason='Not enough AP';return {ok:!reason,reason,cost};}
 export function stabilize(s,medic,patient){const p=stabilizePreview(s,medic,patient);if(!p.ok)return false;if(combatCosts(s))medic.ap-=p.cost;medic.medkits--;patient.casualty='stable';patient.bleedTurns=0;beginRecovery(s,patient);const thanks=helped(patient,medic);if(s.rules?.social)stabilizedPartner(medic,patient);if(thanks)log(s,patient.name+': '+thanks);log(s,medic.name+' stabilized '+patient.name+'.');refresh(s);return true;}
 export function cutPreview(s,u,edge){let reason='';const cost=4;if(!canControl(s,u)||s.queue.length)reason='Cannot act now';else if(!u.wireCutters)reason='Wire cutters required';else if(!u.slots.includes('wireCutters'))reason='Equip wire cutters in a held slot';else if(s.edges[edge]!=='fence-chainlink')reason='Choose a chain-link fence';else if(!edgeCells(edge).some(p=>p.x===u.x&&p.y===u.y&&levelOf(p)===levelOf(u)))reason='Stand beside the fence';else if(combatCosts(s)&&u.ap<cost)reason='Not enough AP';return {ok:!reason,reason,cost};}
-export function cutFence(s,u,edge){const p=cutPreview(s,u,edge);if(!p.ok)return false;if(combatCosts(s))u.ap-=p.cost;s.edges[edge]='fence-cut';u.overwatch=null;log(s,u.name+' cut a passable opening in the fence.');refresh(s);return true;}
+export function cutFence(s,u,edge){const p=cutPreview(s,u,edge);if(!p.ok)return false;if(combatCosts(s))u.ap-=p.cost;s.edges[edge]='fence-cut';forgetLight(s);u.overwatch=null;log(s,u.name+' cut a passable opening in the fence.');refresh(s);return true;}
 
 export function moveGroup(s,ids,leader,x,y,z=levelOf(leader)){
  const members=[...new Set(ids)].map(id=>unit(s,id));if(!members.length||!members.includes(leader)||members.some(u=>!canControl(s,u)||levelOf(u)!==levelOf(leader)))return false;

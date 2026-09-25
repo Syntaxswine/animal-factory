@@ -46,6 +46,13 @@ Each stage needs the full suite green, the 20-seed balance run reported before a
 
 ## The model
 
+**Since parcel I (the boss's rule of 24 September 2026, delivered on the 25th), night scales the
+character cap.** `R` is multiplied by
+`0.25 + 0.75 × light`. `light` is the target's own illumination: daylight plus lamps and fires, capped
+at 1. So an unlit animal at night is seen from 15 tiles, and one in a lamp's first band from the full 60.
+By day the multiplier is exactly 1. The terrain cap is unchanged. See
+[ARTIFICIAL-LIGHTING.md](ARTIFICIAL-LIGHTING.md).
+
 All angles in degrees, `e` = absolute bearing offset from the heading, `R` = 60 tiles (characters) or 75 (terrain), per-species parameters `field` (total), `bino` (total binocular), `e2` (acuity half-fall eccentricity beyond the binocular edge, in the ground plane), `floor` (peripheral identification fraction), optional `range` multiplier.
 
 ```

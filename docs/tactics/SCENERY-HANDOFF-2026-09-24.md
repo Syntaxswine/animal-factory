@@ -90,13 +90,17 @@ blocking. The plan has the full text and the measurements.
 | 6 | Sorting and dimming for three-story props | nothing now | **answered** for the canonical towers by the boss (see-through). Still open: per-column sorting (§3) |
 | 8 | Scenery at the 3D line's world scale, or the sprite sheet's animals? They differ by 9% | every baked parcel inherits it | open. B and C both used the 3D scale |
 | 7 | Should the 1254² asset gate flex per entry? | disk and load time, not correctness | open. It wants a per-entry budget, not one number |
-| 2, 3 | Mature trees repaint or upscale; does the game want a day cycle | nothing now | no answer recorded. A shipped the trees and S2 shipped the clock, with every map still opening at 08:00 unwashed |
+| 2, 3 | Mature trees repaint or upscale; does the game want a day cycle | nothing now | no answer recorded. A shipped the trees and S2 shipped the clock, with every map still opening at 08:00 unwashed. Parcel I made night count for detection, on the boss's word |
+| new | At night the 8-tile sneaking floor becomes 2: should a body at arm's reach always be seen, as on the 3D branch? | nothing, a balance call | open, for the boss. Raised by parcel I's first review |
 
 ## 3. Ready to build, no decision needed
 
 In the order I would take them.
 
-1. **Parcel I: artificial light and detection.**
+1. ~~**Parcel I: artificial light and detection.**~~ **Delivered 25 September**, branch `tactics-light`,
+   stacked on #22; see [ARTIFICIAL-LIGHTING.md](ARTIFICIAL-LIGHTING.md). The boss added the numbers:
+   an unlit animal at night is seen from 15 tiles, a lamp-lit one from the full 60. What follows is the
+   brief as it stood.
    - It depends on S2 (merged) and B (#21), so it can start as soon as #21 merges, or be stacked on it.
    - The brief is in the plan: port the 3D branch's `light-sources.js`. That is the emitter offsets, the
      30-tile range, the stepped falloff, and `lightEnabled` with `lightMode` and condition.
