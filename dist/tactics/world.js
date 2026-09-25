@@ -5,6 +5,7 @@ import {quitMerc} from './engine.js';
 import {factoryMap,generateMap,blockedEdge,tileKey,levelOf,neighbors,mapStartMinutes,W,H} from './maps.js';
 import {createGame,squad,guards,alive,incapacitated,canControl,abandonCasualties,occupant,refresh,walkable,log,STANCES,stanceOf,emitNoise,enterFire,combatCosts,settleGuards,spawnUnit,unit,WEAPONS} from './engine.js';
 import {initInventory} from './inventory.js';
+import {lightEpoch} from './light-sources.js';
 import {initProgression} from './progression.js';
 import {onContract} from './happiness.js';
 import {slate,fit,dailyRate,pricesFor,buildRecruit,recruitSocial,contractPrices,payDay,ROSTER_MAX,MERC_ID_BASE,DAY_MINUTES} from './recruits.js';
@@ -47,7 +48,12 @@ export function advanceTime(world,minutes){
 }
 export function tickWorld(world,elapsedMs,{paused=false}={}){
  if(paused||currentMap(world).phase==='lost'||!Number.isFinite(elapsedMs)||elapsedMs<=0)return 0;
- const minutes=elapsedMs/1000*PLAY_MINUTES_PER_SECOND,income=advanceTime(world,minutes);settleMorale(world,currentMap(world),minutes);settleContracts(world,currentMap(world));return income;
+ const minutes=elapsedMs/1000*PLAY_MINUTES_PER_SECOND,epoch=lightEpoch(world.clock.minutes),income=advanceTime(world,minutes);settleMorale(world,currentMap(world),minutes);settleContracts(world,currentMap(world));
+ // Parcel I: light changes who can see whom with nobody moving, at dawn, at dusk and when the lamps switch.
+ // Detection is otherwise only rechecked when someone acts, so recheck it here, and move the revision so
+ // the interface follows.
+ const s=currentMap(world);if(lightEpoch(world.clock.minutes)!==epoch&&s.phase!=='lost'){refresh(s);s.revision=(s.revision||0)+1;}
+ return income;
 }
 // G5: happiness is settled whenever the campaign clock advances (exploration, downtime, travel). A waiting crosser counts as on its destination.
 // A merc whose meter has been at zero for a day quits here if the map is calm; otherwise the engine lets it go when the contact ends.

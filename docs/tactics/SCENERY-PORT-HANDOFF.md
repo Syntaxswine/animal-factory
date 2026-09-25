@@ -912,11 +912,14 @@ source's own footprint. Light must never bypass the sight cone or line of sight.
   ground, and sit over the night wash, a stated change from the brief's `light` pass.
 - **Editor:** a Light selector (Automatic, Always on, Off).
 - **Not done:** spot beams, which are J.
+- **Clock:** the world rechecks detection every minute while daylight eases, so a squad standing still
+  is found at dawn. The first review caught that it was not.
 - **Checks:**
-  - `npm run check` passes, 544.
-  - 26 of 27 mutations caught; the survivor is recorded as equivalent.
+  - `npm run check` passes, 550.
+  - 40 of 43 mutations caught; two survivors are equivalent and one is not reached, all recorded.
   - In the real game at midnight, a guard 37 tiles away misses the squad in the dark and spots it under a
-    lamp.
+    lamp. At dawn, it finds a squad that never moves.
+  - Hostile review: round 1 scored 6/10, and every finding is fixed.
 
 ### J — Sweeping spotlights
 

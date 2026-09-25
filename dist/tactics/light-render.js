@@ -1,43 +1,60 @@
 // Artificial light on the map at night. Parcel I of docs/tactics/SCENERY-PORT-HANDOFF.md; see
 // docs/tactics/ARTIFICIAL-LIGHTING.md.
 //
-// The light is not a picture of light, it is the tactical rule drawn: every tile gets the same
-// lampStrength detection uses, from the same bulbs, through the same walls, at the height of a body's
-// torso. So where the screen is lit is exactly where an animal is seen from the full range at night.
-// Each tile becomes one pixel of a small light map, drawn through the isometric transform with smoothing,
-// so a pool is soft but still stops at a wall.
-import {addScenePass} from './scene-passes.js';
+// The light is not a picture of light, it is the tactical rule drawn: every tile gets the same lampStrength
+// sum detection uses, from the same bulbs, through the same walls, at the torso of a STANDING body (1.296
+// tiles up). A kneeling or prone body sits lower and can be shadowed where a standing one is not; the
+// drawing shows the standing case. Each tile becomes one pixel of a small light map, drawn through the
+// isometric transform with smoothing, so a pool is soft but still stops at a wall.
 import {daylightStrength} from './daylight.js';
-import {lightSources,lampStrength} from './light-sources.js';
+import {lightSources,lampStrength,LIGHT_RANGE} from './light-sources.js';
+import {targetHeight} from './projectiles.js';
 import {inBounds,tileKey,W,H} from './maps.js';
 
-const TORSO=1,FLOOR_HEIGHT=3;
-// Tiles are lit out to fifteen from a bulb: the first three bands, 100%, 50% and 25% (12.5% where the bulb's
-// height carries a ray just past fifteen). The faint remainder out to thirty is not drawn.
+const FLOOR_HEIGHT=3;
+export const TORSO=targetHeight({},'torso');
+// Tiles are drawn out to fifteen from a bulb: the first three bands, 100%, 50% and 25% (12.5% where the
+// bulb's height carries a ray just past fifteen). Each one is lit by every bulb out to thirty, as detection is.
 export const POOL_REACH=15;
 // The strongest tint, at full night on a fully lit tile.
 export const POOL_ALPHA=.3;
 const rgb=c=>[c>>16&255,c>>8&255,c&255];
+const bulbKey=l=>`${l.x},${l.y},${l.h}`;
 
-// Light per tile on one level: Map of "x,y" -> {light, color}, out to POOL_REACH from each bulb. The
-// colour is the strongest bulb's: fires orange, electric lamps pale. The inBounds check only saves work:
-// a ray from off the map is refused by the trace anyway.
-export function litTiles(s,minutes,level){
- const lamps=lightSources(s.props,minutes),tiles=new Map();
- // Which tiles to draw: those within POOL_REACH of a bulb on this level.
+// One bulb's light on one level: Map of "x,y" -> strength, for every tile within LIGHT_RANGE that it reaches.
+// The inBounds check only saves work: a ray from off the map is refused by the trace anyway.
+export function bulbTiles(s,lamp,level){
+ const out=new Map();
+ for(let y=Math.floor(lamp.y-LIGHT_RANGE);y<=Math.ceil(lamp.y+LIGHT_RANGE);y++)for(let x=Math.floor(lamp.x-LIGHT_RANGE);x<=Math.ceil(lamp.x+LIGHT_RANGE);x++){
+  if(Math.hypot(x-lamp.x,y-lamp.y)>LIGHT_RANGE||!inBounds(x,y,level))continue;
+  const l=lampStrength(s,lamp,{x,y,h:level*FLOOR_HEIGHT+TORSO});if(l>0)out.set(x+','+y,l);
+ }
+ return out;
+}
+
+// Light per tile on one level: Map of "x,y" -> {light, color}, for tiles within POOL_REACH of a bulb on this
+// level, lit by every bulb (any level) that reaches them. The colour is the strongest bulb's: fires orange,
+// electric lamps pale. `perBulb` supplies each bulb's tiles (cached by the caller); by default computed.
+export function litTiles(s,minutes,level,perBulb=lamp=>bulbTiles(s,lamp,level)){
+ const lamps=lightSources(s.props,minutes),tiles=new Map(),maps=lamps.map(perBulb);
  const candidates=new Set();
  for(const lamp of lamps){
   if(Math.floor(lamp.h/FLOOR_HEIGHT+1e-9)!==level)continue;
   for(let y=Math.floor(lamp.y-POOL_REACH);y<=Math.ceil(lamp.y+POOL_REACH);y++)for(let x=Math.floor(lamp.x-POOL_REACH);x<=Math.ceil(lamp.x+POOL_REACH);x++)
    if(Math.hypot(x-lamp.x,y-lamp.y)<=POOL_REACH&&inBounds(x,y,level))candidates.add(x+','+y);
  }
- // How lit each one is: every bulb detection would count, at any distance up to thirty, so the drawn light
- // and illuminationAt agree tile for tile.
  for(const k of candidates){
-  const [x,y]=k.split(',').map(Number),origin={x,y,h:level*FLOOR_HEIGHT+TORSO};let light=0,best=0,color=0;
-  for(const lamp of lamps){const l=lampStrength(s,lamp,origin);light+=l;if(l>best){best=l;color=lamp.color;}}
+  let light=0,best=0,color=0;
+  lamps.forEach((lamp,i)=>{const l=maps[i].get(k)||0;light+=l;if(l>best){best=l;color=lamp.color;}});
   if(light>0)tiles.set(k,{light:Math.min(1,light),color});
  }
+ return tiles;
+}
+
+// Only ground the squad has seen is lit on screen: light on an unexplored tile would give the lamp away.
+export function seenOnly(tiles,seen,level){
+ if(!seen)return tiles;
+ for(const k of [...tiles.keys()]){const [x,y]=k.split(',').map(Number);if(!seen.has(tileKey(x,y,level)))tiles.delete(k);}
  return tiles;
 }
 
@@ -54,34 +71,41 @@ export function lightMap(tiles,makeCanvas){
  return {canvas,x0,y0};
 }
 
-// Only ground the squad has seen is lit on screen: light on an unexplored tile would give the lamp away.
-export function seenOnly(tiles,seen,level){
- if(!seen)return tiles;
- for(const k of [...tiles.keys()]){const [x,y]=k.split(',').map(Number);if(!seen.has(tileKey(x,y,level)))tiles.delete(k);}
- return tiles;
-}
-
-// Two caches per state and level. The lit tiles are expensive (a trace per tile per bulb) and depend only on
-// the lit bulbs and the solids: walls, doors, props. Animals are left out of the trace. The drawn map is
-// cheap and also depends on what has been seen, which grows every step while exploring. So a step only
-// refilters and repaints; the traces rerun when a bulb switches or a door or wall changes. The geometry key
-// is only rebuilt when the state's revision moves.
+// Caches, per state and level. Each bulb's tiles are the expensive part, a trace per tile, and depend only on
+// the solids between: walls, doors, props. Animals are left out of the trace, so moving never recomputes.
+// The edges are compared whenever the revision or s.lightVersion (bumped by the engine's forgetLight) moves;
+// only bulbs within reach of a changed edge are redone, so a door across the map costs nothing. The drawn
+// map is cheap and is rebuilt when the tiles change or more ground has been seen, which is every step while
+// exploring.
 const cache=new WeakMap();
-function cachedMap(s,minutes,level,makeCanvas){
+function changedEdgeCells(before,after){
+ const cells=[];
+ for(const k of new Set([...Object.keys(before),...Object.keys(after)]))if(before[k]!==after[k]){const [,x,y]=k.split(':');cells.push([Number(x),Number(y)]);}
+ return cells;
+}
+export function cachedTiles(s,minutes,level){
  let byLevel=cache.get(s);if(!byLevel){byLevel=new Map();cache.set(s,byLevel);}
- let entry=byLevel.get(level);if(!entry){entry={};byLevel.set(level,entry);}
- const lamps=lightSources(s.props,minutes).map(l=>`${l.x},${l.y},${l.h}`).join(';');
- if(entry.revision!==s.revision||entry.lamps!==lamps){
-  const geometry=[lamps,Object.entries(s.edges||{}).join(';'),(s.props||[]).length].join('|');
-  if(entry.geometry!==geometry){entry.geometry=geometry;entry.tiles=litTiles(s,minutes,level);entry.map=undefined;}
-  entry.revision=s.revision;entry.lamps=lamps;
- }
- const seen=s.seen?.size??0;
- if(entry.map===undefined||entry.seen!==seen){entry.seen=seen;entry.map=lightMap(seenOnly(new Map(entry.tiles),s.seen,level),makeCanvas);}
+ let entry=byLevel.get(level);if(!entry){entry={bulbs:new Map(),edges:{},props:null};byLevel.set(level,entry);}
+ const lamps=lightSources(s.props,minutes),keys=lamps.map(bulbKey).join(';'),edges=s.edges||{};
+ if(entry.revision===s.revision&&entry.lightVersion===s.lightVersion&&entry.keys===keys&&entry.tiles)return entry.tiles;
+ if(entry.props!==s.props){entry.bulbs.clear();entry.props=s.props;}
+ const changed=changedEdgeCells(entry.edges,edges);
+ if(changed.length)for(const [k,lamp] of [...entry.bulbs])if(changed.some(([x,y])=>Math.hypot(x-lamp.x,y-lamp.y)<=LIGHT_RANGE+2))entry.bulbs.delete(k);
+ let recomputed=!!changed.length||entry.keys!==keys;
+ const perBulb=lamp=>{const k=bulbKey(lamp);let b=entry.bulbs.get(k);if(!b){b={x:lamp.x,y:lamp.y,tiles:bulbTiles(s,lamp,level)};entry.bulbs.set(k,b);recomputed=true;}return b.tiles;};
+ const tiles=litTiles(s,minutes,level,perBulb);
+ if(recomputed||!entry.tiles){entry.tiles=tiles;entry.map=undefined;}
+ entry.edges={...edges};entry.keys=keys;entry.revision=s.revision;entry.lightVersion=s.lightVersion;
+ return entry.tiles;
+}
+function cachedMap(s,minutes,level,makeCanvas){
+ const tiles=cachedTiles(s,minutes,level),entry=cache.get(s).get(level),seen=s.seen?.size??0;
+ if(entry.map===undefined||entry.seen!==seen||entry.mapTiles!==tiles){entry.seen=seen;entry.mapTiles=tiles;entry.map=lightMap(seenOnly(new Map(tiles),s.seen,level),makeCanvas);}
  return entry.map;
 }
 
-// Draw one layer's light. Nothing by day, full strength at night, eased through dawn and dusk.
+// Draw the viewed layer's light, over the finished scene and its night wash, under the interface. Nothing by
+// day, full strength at night, eased through dawn and dusk. app.js calls it straight after paintDaylight.
 export function paintLight(ctx,{project,zoom,level,state,minutes},makeCanvas){
  const dark=1-daylightStrength(minutes);if(dark<=.001||!state)return false;
  const map=cachedMap(state,minutes,level,makeCanvas);if(!map)return false;
@@ -95,7 +119,3 @@ export function paintLight(ctx,{project,zoom,level,state,minutes},makeCanvas){
  ctx.transform(a,b,-a,b,o.x,o.y);ctx.drawImage(map.canvas,0,0);ctx.restore();
  return true;
 }
-
-// Registers the pass and hands back its remover, so app.js needs the import and the call and nothing else.
-// The overlay stage runs over the daylight wash, so the light lifts the dark instead of being darkened by it.
-export const installLightPools=(makeCanvas,stage='overlay')=>addScenePass(stage,(ctx,view)=>paintLight(ctx,view,makeCanvas));

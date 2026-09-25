@@ -46,7 +46,8 @@ Each stage needs the full suite green, the 20-seed balance run reported before a
 
 ## The model
 
-**Since parcel I (24 September 2026), night scales the character cap.** `R` is multiplied by
+**Since parcel I (the boss's rule of 24 September 2026, delivered on the 25th), night scales the
+character cap.** `R` is multiplied by
 `0.25 + 0.75 × light`. `light` is the target's own illumination: daylight plus lamps and fires, capped
 at 1. So an unlit animal at night is seen from 15 tiles, and one in a lamp's first band from the full 60.
 By day the multiplier is exactly 1. The terrain cap is unchanged. See

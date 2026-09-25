@@ -80,6 +80,19 @@ export function illuminationAt(s,u,minutes=stateMinutes(s)){
  return Math.min(1,day+lampLight(s,u.x,u.y,(u.z||0)*FLOOR_HEIGHT+targetHeight(u,'torso'),minutes));
 }
 
+// A name for the lighting at a minute that changes whenever detection could change on the clock alone,
+// with nobody moving: every minute while daylight is easing (dawn, dusk). The electric lamps switch at 06:00
+// and 18:00, but daylight is exactly 1 at both, so that switch changes no one's light and needs no recheck.
+// The world refreshes detection when this changes (world.js tickWorld).
+export function lightEpoch(minutes){
+ const d=daylightStrength(minutes);
+ return d>=1?'day':d<=0?'night':`easing|${Math.floor(minutes)}`;
+}
+// Opening a door, cutting a fence or blowing a wall changes where light reaches without moving the state's
+// revision. The engine calls this wherever it does one of those: it drops the lamp memo, and bumps
+// s.lightVersion, which light-render.js's drawing cache also watches.
+export const forgetLight=s=>{lampCache.delete(s);s.lightVersion=(s.lightVersion||0)+1;};
+
 // Sight through the dark, by the boss's rule of 24 September 2026: an unlit animal is seen from a quarter of
 // the daylight range (15 of 60 tiles), one lit by a lamp from the full range, and in between in proportion.
 export const DARK_SIGHT=.25;
