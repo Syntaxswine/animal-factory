@@ -372,7 +372,7 @@ the chain in order is spent.
 | F | Factory machines | 1 | S1 | — | not started |
 | G | Connecting conveyors | 1 | S1 | — | not started |
 | H | Canvas truck | 1 | S1 | — | not started |
-| I | Artificial light and detection | 2 | S2, B | — | not started |
+| I | Artificial light and detection | 2 | S2, B | `tactics-light` | claimed |
 | J | Sweeping spotlights | 2 | I, C | — | not started |
 | K | Ground cover: tufts and undergrowth | 2 | S2 | `tactics-ground-cover` | **merged**, PR #18 |
 | M | Repainting the existing catalog | 3 | — | — | not started |
