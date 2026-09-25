@@ -3,5 +3,134 @@
   "group": "towers",
   "label": "Guard towers",
   "projection": "2:1 isometric props; overhead terrain textures",
-  "assets": []
+  "assets": [
+    {
+      "id": "wooden-spotlight-tower",
+      "file": "towers/wooden-spotlight-tower.png",
+      "label": "wooden spotlight tower",
+      "kind": "prop",
+      "description": "Open timber watchtower, cross-braced legs, a railed platform and a hatch ladder; a searchlight on the rail.",
+      "suggestedFootprint": [
+        5,
+        5
+      ],
+      "orientation": "as baked; rotation mirrors",
+      "suggestedRules": {
+        "blocksMovement": true,
+        "blocksSight": false,
+        "cover": "none"
+      },
+      "source": {
+        "route": "bake",
+        "tool": "tools/bake-scenery.mjs --group=towers --form=wooden-spotlight-tower,iron-searchlight-stair-tower,iron-searchlight-ladder-tower,spotlight --light=catalogue",
+        "branch": "project/tactics-3d",
+        "commit": "b23334c",
+        "library": "painted-furniture.js",
+        "skin": "honey",
+        "light": "catalogue",
+        "footCentre": [
+          627,
+          1034.77
+        ],
+        "gameScale": 0.35873865,
+        "note": "footCentre is the footprint centre in this PNG's pixels; gameScale is game px per PNG px at zoom 1"
+      }
+    },
+    {
+      "id": "iron-searchlight-stair-tower",
+      "file": "towers/iron-searchlight-stair-tower.png",
+      "label": "iron searchlight stair tower",
+      "kind": "prop",
+      "description": "Rust-red cabin on an iron frame, reached by three switchback flights of stairs hung off one side; a searchlight under the eave.",
+      "suggestedFootprint": [
+        6,
+        5
+      ],
+      "orientation": "as baked; rotation mirrors",
+      "suggestedRules": {
+        "blocksMovement": true,
+        "blocksSight": false,
+        "cover": "none"
+      },
+      "source": {
+        "route": "bake",
+        "tool": "tools/bake-scenery.mjs --group=towers --form=wooden-spotlight-tower,iron-searchlight-stair-tower,iron-searchlight-ladder-tower,spotlight --light=catalogue",
+        "branch": "project/tactics-3d",
+        "commit": "b23334c",
+        "library": "painted-furniture.js",
+        "skin": "honey",
+        "light": "catalogue",
+        "footCentre": [
+          639.92,
+          1040.4
+        ],
+        "gameScale": 0.366091495,
+        "note": "footCentre is the footprint centre in this PNG's pixels; gameScale is game px per PNG px at zoom 1"
+      }
+    },
+    {
+      "id": "iron-searchlight-ladder-tower",
+      "file": "towers/iron-searchlight-ladder-tower.png",
+      "label": "iron searchlight ladder tower",
+      "kind": "prop",
+      "description": "Rust-red cabin on a braced iron frame, a caged ladder up one side to a landing; a searchlight under the eave.",
+      "suggestedFootprint": [
+        6,
+        5
+      ],
+      "orientation": "as baked; rotation mirrors",
+      "suggestedRules": {
+        "blocksMovement": true,
+        "blocksSight": false,
+        "cover": "none"
+      },
+      "source": {
+        "route": "bake",
+        "tool": "tools/bake-scenery.mjs --group=towers --form=wooden-spotlight-tower,iron-searchlight-stair-tower,iron-searchlight-ladder-tower,spotlight --light=catalogue",
+        "branch": "project/tactics-3d",
+        "commit": "b23334c",
+        "library": "painted-furniture.js",
+        "skin": "honey",
+        "light": "catalogue",
+        "footCentre": [
+          699.73,
+          1070.21
+        ],
+        "gameScale": 0.348968774,
+        "note": "footCentre is the footprint centre in this PNG's pixels; gameScale is game px per PNG px at zoom 1"
+      }
+    },
+    {
+      "id": "spotlight",
+      "file": "towers/spotlight.png",
+      "label": "spotlight",
+      "kind": "prop",
+      "description": "Floodlight on a weathered pole with a weighted base; green housing, brass rim.",
+      "suggestedFootprint": [
+        1,
+        1
+      ],
+      "orientation": "as baked; rotation mirrors",
+      "suggestedRules": {
+        "blocksMovement": true,
+        "blocksSight": false,
+        "cover": "none"
+      },
+      "source": {
+        "route": "bake",
+        "tool": "tools/bake-scenery.mjs --group=towers --form=wooden-spotlight-tower,iron-searchlight-stair-tower,iron-searchlight-ladder-tower,spotlight --light=catalogue",
+        "branch": "project/tactics-3d",
+        "commit": "b23334c",
+        "library": "painted-furniture.js",
+        "skin": "honey",
+        "light": "catalogue",
+        "footCentre": [
+          622.71,
+          1134.16
+        ],
+        "gameScale": 0.097783737,
+        "note": "footCentre is the footprint centre in this PNG's pixels; gameScale is game px per PNG px at zoom 1"
+      }
+    }
+  ]
 }

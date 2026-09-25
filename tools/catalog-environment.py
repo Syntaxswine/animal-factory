@@ -41,9 +41,27 @@ for key in ['jail-bars', 'jail-door-closed']:
 art['fence-cut'].update(baseline=[230, 1165, 1110, 694, 530], height=44)
 emit(root / 'dist/tactics/prop-art.js', 'PROP_ART', art)
 
+# A baked group records where each footprint centre landed in its PNG (the side manifest's
+# source.footCentre). Carried into the catalog as `foot`, the renderer plants that point on the
+# tile instead of guessing from the bottom of the alpha box, which cannot place a subject that
+# overhangs its footprint (parcel C's stair tower) or hangs off a wall (open question 5).
+def feet(group):
+    side = assets / f'manifest-{group}.json'
+    if not side.is_file():
+        return {}
+    out = {}
+    for asset in json.loads(side.read_text(encoding='utf-8')).get('assets', []):
+        centre = (asset.get('source') or {}).get('footCentre')
+        if centre:
+            out[asset['id']] = [round(centre[0], 2), round(centre[1], 2)]
+    return out
+
+
 for group in GROUPS:
     folder = assets / group
-    entries = {}
+    entries, foot = {}, feet(group)
     for path in (sorted(folder.glob('*.png')) if folder.is_dir() else []):
         entries[path.stem] = {'file': f'{group}/{path.name}', 'crop': bounds(path)}
+        if path.stem in foot:
+            entries[path.stem]['foot'] = foot[path.stem]
     emit(root / f'dist/tactics/prop-art-{group}.js', 'GROUP_PROP_ART', entries)

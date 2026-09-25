@@ -565,8 +565,11 @@ async function main() {
   const off = manifest.filter(m => Math.abs(m.centre) > 2);
   const unregistered = register ? manifest.filter(m => !m.register) : [];
   if (unregistered.length) console.log(`${unregistered.length} got no registration marks, because they would fall off the canvas (the subject is nowhere near its footprint centre): ${unregistered.map(m => m.id).join(', ')}`);
-  if (sunk.length) console.log(`${sunk.length} sit ABOVE the renderer's anchor and will float: ${sunk.map(m => m.id).join(', ')}`);
-  if (high.length) console.log(`${high.length} sit BELOW it and will sink: ${high.map(m => m.id).join(', ')}`);
+  // "Above" and "below" are the model's base against the anchor. The old rule pulls the crop's bottom onto
+  // the anchor, so each is drawn the other way: a base above it lands too low, a base below it too high.
+  // A catalog row with `foot` (catalog-environment.py) is planted by the footprint centre and has neither.
+  if (sunk.length) console.log(`${sunk.length} sit ABOVE the renderer's anchor, so the old rule draws them too LOW: ${sunk.map(m => m.id).join(', ')}`);
+  if (high.length) console.log(`${high.length} sit BELOW it, so the old rule draws them too HIGH: ${high.map(m => m.id).join(', ')}`);
   if (off.length) console.log(`${off.length} ${off.length === 1 ? 'is' : 'are'} off-centre by more than 2 px: ${off.map(m => `${m.id} ${m.centre.toFixed(1)}`).join(', ')}`);
   if (sunk.length || high.length || off.length)
    console.log('Those two residuals are the renderer\'s, not the bake\'s. See SCENERY-BAKE.md, "What cannot be fixed here".');

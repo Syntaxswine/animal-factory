@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Animal Factory Tactics — guard towers</title><link rel="icon" href="data:,">
+<style>
+*{box-sizing:border-box}body{margin:0;background:#19231e;color:#eee9db;font:15px/1.5 system-ui}main{max-width:1400px;margin:auto;padding:36px 28px}.eyebrow{color:#b9bc94;letter-spacing:.16em;font-size:12px}h1{font-size:clamp(30px,5vw,54px);line-height:1.1;margin:12px 0}h2.section{font-size:22px;margin:34px 0 4px}header p,.lede{max-width:780px;color:#b9c0af}a{color:#ead3a2}nav{display:flex;flex-wrap:wrap;gap:16px;padding:18px 0}label{display:flex;align-items:center;gap:8px}select{font:inherit;color:inherit;background:#2d382d;border:1px solid #68725c;padding:7px;border-radius:4px}.stage{border:1px solid #4e5c48;border-radius:6px;background:#202c29;overflow:auto}#field{display:block;max-width:none}#stats{color:#b9c0af;font:13px/1.5 ui-monospace,monospace;margin:8px 0 0}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px}article{border:1px solid #4e5c48;border-radius:6px;overflow:hidden;background:#29342a}.picture{display:flex;height:320px;align-items:center;justify-content:center;background:#778268}.picture img{width:94%;height:94%;object-fit:contain}.caption{padding:14px 18px}.caption h3{font-size:18px;margin:0 0 6px}.caption p{font-size:13px;color:#b9c0af;margin:0 0 6px}.small .picture{height:150px}.small .picture img{width:96px;height:96px}.check .picture{background:repeating-conic-gradient(#69745f 0 25%,#8c9780 0 50%) 0/24px 24px}.dark .picture{background:#171d19}.light .picture{background:#dddcd0}.note{color:#b9c0af;font-size:13px;margin-top:24px;max-width:900px}a:focus-visible,select:focus-visible{outline:3px solid #e9d49a;outline-offset:3px}
+</style></head><body class="check"><main>
+<header><div class="eyebrow">ANIMAL FACTORY TACTICS / SCENERY PARCEL C</div><h1>Guard towers.</h1><p>Three guard towers and a spotlight baked out of the 3D branch's painted library through this game's own camera, relit to match the painted catalogue, and planted on their tiles by the footprint centre the bake recorded. A tower fades while you look behind it. Nobody climbs them yet, and the lamps do not shine: that is parcel J. <a href="index.html">← Game</a> · <a href="lighting-art.html">Lamps and fires</a> · <a href="facility-art.html">Facility sprites</a></p></header>
+
+<h2 class="section">In the renderer</h2>
+<p class="lede">Drawn by <code>environment-renderer.js</code>, the function the game itself calls, on a grass yard, with a cow behind each tower and one in front. Move the pointer over a tower's upper half, where the ground under the pointer is behind it, and it fades by <code>see-through.js</code>, the rule the game uses. The overlay outlines each footprint and crosses its centre, the point the sprite is planted by.</p>
+<nav aria-label="Renderer controls"><label>Zoom <select id="zoom"><option>0.6</option><option selected>1</option><option>1.15</option><option>2</option></select></label><label>Overlay <select id="overlay"><option value="none">None</option><option value="anchor" selected>Footprints and centres</option></select></label><label>Placement <select id="rotated"><option value="no">As baked</option><option value="yes">Rotated (mirrored)</option></select></label><label>Look behind <select id="look"><option value="pointer" selected>Follow the pointer</option><option value="all">Every tower</option></select></label></nav>
+<div class="stage"><canvas id="field" width="1200" height="600" aria-label="The towers drawn by the game's renderer"></canvas></div>
+<p id="stats">Loading artwork…</p>
+
+<h2 class="section">The sprites</h2>
+<nav aria-label="Sprite preview controls"><label>Backdrop <select id="backdrop"><option value="check">Transparency grid</option><option value="yard">Olive</option><option value="dark">Dark</option><option value="light">Light</option></select></label><label>Size <select id="size"><option value="large">Detail</option><option value="small">96 px silhouette check</option></select></label></nav>
+<section class="grid" id="cards" aria-label="Tower sprites"></section>
+<p class="note">Original 1254 × 1254 transparent PNGs. The rules are the 3D branch's own: every one blocks its whole footprint, none gives cover and none blocks sight. On the 3D branch a guard can climb a tower and stand on top; here nobody can, so a 3D map that starts a guard on a tower post is refused. The fourteen other towers in the 3D gallery are not map kinds on either branch. See <code>docs/tactics/TOWERS.md</code>.</p>
+</main>
+<script type="module">
+import {environmentRenderer,propScreenBox} from './environment-renderer.js';
+import {PROPS,propCells} from './environment.js';
+import {PROPS as TOWERS,FOLDER} from './environment-props-towers.js';
+import {GROUP_PROP_ART} from './prop-art-groups.js';
+import {seeThroughAlpha,lookTargets} from './see-through.js';
+
+const NAMES={'wooden-spotlight-tower':'Wooden spotlight tower','iron-searchlight-stair-tower':'Iron searchlight tower, stairs','iron-searchlight-ladder-tower':'Iron searchlight tower, ladder','spotlight':'Spotlight'};
+const KINDS=Object.keys(TOWERS);
+
+const cards=document.getElementById('cards');
+for(const kind of KINDS){
+ const r=TOWERS[kind],src='../assets/environment/'+GROUP_PROP_ART[kind].file;
+ cards.insertAdjacentHTML('beforeend',`<article><a class="picture" href="${src}"><img src="${src}" alt="${NAMES[kind]}" loading="lazy"></a><div class="caption"><h3>${NAMES[kind]}</h3><p><code>${kind}</code> · ${r.w} × ${r.h} ${r.w*r.h>1?'tiles':'tile'} · drawn ${r.visualWidth} × ${r.visualHeight} px at zoom 1${r.seeThrough?' · fades when you look behind it':''}</p><a href="${src}" download>Download PNG</a></div></article>`);
+}
+document.getElementById('backdrop').addEventListener('change',e=>{document.body.classList.remove('check','dark','light');if(e.target.value!=='yard')document.body.classList.add(e.target.value);});
+document.getElementById('size').addEventListener('change',e=>document.body.classList.toggle('small',e.target.value==='small'));
+
+const field=document.getElementById('field'),ctx=field.getContext('2d');
+let queued=false,pointer=null;
+const schedule=()=>{if(!queued){queued=true;requestAnimationFrame(()=>{queued=false;draw();});}};
+const art=environmentRenderer(schedule,id=>console.warn('missing artwork',id));
+const cow=new Image();cow.onload=schedule;cow.src='../assets/characters/cow-idle.png';
+
+// One row of towers along x. A cow stands four tiles straight back from each back corner, where the tower
+// hides it, and one in front of it.
+function layout(rotated){
+ const things=[];let x=6;
+ for(const kind of KINDS){
+  const r=PROPS[kind],w=rotated?r.h:r.w,h=rotated?r.w:r.h;
+  things.push({type:'prop',kind,x,y:5,z:0,rotated});
+  things.push({type:'animal',x:x-4,y:1},{type:'animal',x:x+w,y:5+h});
+  x+=w+4;
+ }
+ return {things,cols:x+2,rows:13};
+}
+function diamond(p,zoom,fill,stroke){
+ ctx.beginPath();ctx.moveTo(p.x,p.y-14*zoom);ctx.lineTo(p.x+28*zoom,p.y);ctx.lineTo(p.x,p.y+14*zoom);ctx.lineTo(p.x-28*zoom,p.y);ctx.closePath();
+ if(fill){ctx.fillStyle=fill;ctx.fill();}
+ if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=1;ctx.stroke();}
+}
+let view=null;
+function draw(){
+ const zoom=Number(document.getElementById('zoom').value),overlay=document.getElementById('overlay').value==='anchor';
+ const rotated=document.getElementById('rotated').value==='yes',everyTower=document.getElementById('look').value==='all',{things,cols,rows}=layout(rotated);
+ const ox=Math.round(20+rows*28*zoom),oy=Math.round(440*zoom);
+ field.width=Math.round(ox+cols*28*zoom+20);field.height=Math.round(oy+(cols+rows)*14*zoom+20);
+ const project=(x,y)=>({x:ox+(x-y)*28*zoom,y:oy+(x+y)*14*zoom});
+ view={ox,oy,zoom};
+ ctx.fillStyle='#202c29';ctx.fillRect(0,0,field.width,field.height);
+ for(let y=0;y<rows;y++)for(let x=0;x<cols;x++){diamond(project(x,y),zoom,['#56613b','#5a643e','#535e39'][(x*37+y*13)%3]);art.ground(ctx,project,zoom,x,y,'ground-grass');}
+ // What the player is looking at, built by the same lookTargets app.js calls. There is no selected animal
+ // on this page, so it is only the ground tile under the pointer.
+ const looking=lookTargets({renderLevel:0,viewLevel:0,hover:pointer?pick(pointer.x,pointer.y):null,cursor:pointer,selected:null,levelOf:()=>0,project,zoom});
+ const depth=t=>t.type==='prop'?Math.max(...propCells(t).map(q=>q.x+q.y)):t.x+t.y;
+ let drawn=0,pending=0,faded=0;
+ for(const t of [...things].sort((a,b)=>depth(a)-depth(b)||(a.type==='animal')-(b.type==='animal'))){
+  if(t.type==='prop'){
+   let alpha=1;
+   if(PROPS[t.kind].seeThrough){const box=propScreenBox(project,zoom,t);alpha=everyTower?seeThroughAlpha(box,propCells(t),[{x:box.x+box.w/2,y:box.y+box.h*.2,tile:{x:t.x-1,y:t.y-1}}]):seeThroughAlpha(box,propCells(t),looking);}
+   if(alpha<1)faded++;
+   ctx.globalAlpha=alpha;if(art.prop(ctx,project,zoom,t))drawn++;else pending++;ctx.globalAlpha=1;continue;
+  }
+  const p=project(t.x,t.y);
+  ctx.fillStyle='#13241d66';ctx.beginPath();ctx.ellipse(p.x,p.y+2*zoom,15*zoom,7*zoom,0,0,Math.PI*2);ctx.fill();
+  if(cow.complete&&cow.naturalWidth){const sw=cow.naturalWidth/4*zoom,sh=64*zoom;ctx.drawImage(cow,p.x-sw/2,p.y+3*zoom-sh,sw,sh);}
+ }
+ if(overlay)for(const t of things){
+  if(t.type!=='prop')continue;
+  const r=PROPS[t.kind],w=t.rotated?r.h:r.w,h=t.rotated?r.w:r.h;
+  for(const q of propCells(t))diamond(project(q.x,q.y),zoom,null,'#e9d49a66');
+  const c=project(t.x+(w-1)/2,t.y+(h-1)/2);
+  ctx.strokeStyle='#ff9b6a';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(c.x-6*zoom,c.y);ctx.lineTo(c.x+6*zoom,c.y);ctx.moveTo(c.x,c.y-4*zoom);ctx.lineTo(c.x,c.y+4*zoom);ctx.stroke();
+ }
+ if(pointer){const q=pick(pointer.x,pointer.y),p=project(q.x,q.y);diamond(p,zoom,'#e0c78133','#d2bb78');}
+ const total=things.filter(t=>t.type==='prop').length;
+ document.getElementById('stats').textContent=`${drawn} of ${total} props drawn at zoom ${zoom}${pending?`, ${pending} still loading`:''}; ${faded} faded. Folder ${FOLDER}/, ${KINDS.length} kinds.`;
+ window.lastDrawn=drawn;window.lastFaded=faded;window.ready=!pending&&cow.complete&&!!cow.naturalWidth;
+}
+// The ground tile under a screen point, the inverse of project.
+function pick(sx,sy){const {ox,oy,zoom}=view,a=(sx-ox)/(28*zoom),b=(sy-oy)/(14*zoom);return {x:Math.round((a+b)/2),y:Math.round((b-a)/2)};}
+field.addEventListener('pointermove',e=>{const r=field.getBoundingClientRect();pointer={x:(e.clientX-r.left)*field.width/r.width,y:(e.clientY-r.top)*field.height/r.height};schedule();});
+field.addEventListener('pointerleave',()=>{pointer=null;schedule();});
+for(const id of ['zoom','overlay','rotated','look'])document.getElementById(id).addEventListener('input',schedule);
+draw();
+window.lookAt=(x,y)=>{pointer={x,y};draw();};
+window.grab=()=>field.toDataURL('image/png');
+</script></body></html>

@@ -7,6 +7,10 @@ export const GROUP_PROP_ART = {
       139,
       946,
       1244
+    ],
+    "foot": [
+      633.6,
+      1066.2
     ]
   },
   "campfire": {
@@ -16,6 +20,10 @@ export const GROUP_PROP_ART = {
       361,
       1038,
       1147
+    ],
+    "foot": [
+      626.5,
+      913.3
     ]
   },
   "cooking-fire": {
@@ -25,6 +33,10 @@ export const GROUP_PROP_ART = {
       263,
       935,
       1240
+    ],
+    "foot": [
+      563.99,
+      1039.65
     ]
   },
   "floor-lamp": {
@@ -34,6 +46,10 @@ export const GROUP_PROP_ART = {
       108,
       823,
       1246
+    ],
+    "foot": [
+      627,
+      1092.14
     ]
   },
   "standing-torch": {
@@ -43,6 +59,10 @@ export const GROUP_PROP_ART = {
       170,
       819,
       1230
+    ],
+    "foot": [
+      652.97,
+      1069.04
     ]
   },
   "streetlight-double": {
@@ -52,6 +72,10 @@ export const GROUP_PROP_ART = {
       103,
       878,
       1224
+    ],
+    "foot": [
+      627,
+      1088.4
     ]
   },
   "streetlight": {
@@ -61,6 +85,10 @@ export const GROUP_PROP_ART = {
       109,
       755,
       1232
+    ],
+    "foot": [
+      591.39,
+      1130.17
     ]
   }
 };
